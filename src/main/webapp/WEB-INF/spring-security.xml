@@ -21,8 +21,10 @@
 		      from users where login=?"
 
                                authorities-by-username-query="
-		      select u.login as username, ur.rolename as authorities from users u, user_roles ur
-		      where u.id = ur.user_id and u.login =?  "/>
+		      SELECT users.login, roles.name FROM users
+		      JOIN user_role ON users.login = ? AND user_role.users_id=users.id
+		      JOIN roles ON user_role.roles_id = roles.id
+		      "/>
         </authentication-provider>
     </authentication-manager>
 </beans:beans>
