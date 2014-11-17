@@ -22,7 +22,7 @@
             root
         </property>
         <property name="hbm2ddl.auto">
-            validate
+            create
         </property>
         <property name="hibernate.show_sql">
             true
@@ -31,6 +31,11 @@
         <!-- List of XML mapping files -->
         <mapping class="com.ss.atmlocator.entity.User"/>
         <mapping class="com.ss.atmlocator.entity.Role"/>
+        <mapping class="com.ss.atmlocator.entity.Bank"/>
+        <mapping class="com.ss.atmlocator.entity.AtmNetwork"/>
+        <mapping class="com.ss.atmlocator.entity.AtmOffice"/>
+        <mapping class="com.ss.atmlocator.entity.GeoPosition"/>
+
 
     </session-factory>
 </hibernate-configuration>
