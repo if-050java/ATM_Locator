@@ -1,12 +1,13 @@
 package com.ss.atmlocator.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by roman on 10.11.14.
  */
+@Entity
+@Table(name ="users")
 public class User {
 
     @Id
@@ -15,7 +16,27 @@ public class User {
     private String login;
     private String email;
     private String password;
-    private UserRole role;
+    private String avatar;
+    @ManyToMany
+    @JoinTable(name = "user_role")
+    @JoinColumn(name = "role_id")
+    private Set<Role> roles;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     public int getId() {
         return id;
@@ -49,3 +70,4 @@ public class User {
         this.password = password;
     }
 }
+
