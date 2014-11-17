@@ -1,0 +1,13 @@
+#findBox{
+    height: 200px;
+    width: 800px;
+    margin: auto;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.findTable{
+    margin: auto;
+    width: 500px;
+}

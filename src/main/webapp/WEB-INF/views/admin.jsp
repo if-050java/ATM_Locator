@@ -14,6 +14,7 @@
     </div>
     <div class="panel-body">
         This is admin page!!! It's secured! <a href="<c:url value="/j_spring_security_logout"/> ">Logout</a>
+        <a href="<c:url value="/adminUsers"/> ">Users</a>
     </div>
 </div>
 </body>
