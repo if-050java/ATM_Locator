@@ -25,16 +25,16 @@ public class AdminUsersController {
     private IUsersDAO usersDAO;
 
     @RequestMapping(value = "/findUser", method = RequestMethod.GET)
-    public @ResponseBody
-    User findUser(HttpServletRequest request){
+    public @ResponseBody User findUser(HttpServletRequest request){
         String findBy = request.getParameter("findBy");
         String findValue = request.getParameter("findValue");
+        User responce = null;
         if(findBy.equals("name")){
-            System.out.println("ВИбрано імя");
+            responce = usersDAO.getUserByName(findValue);
         }else{
-            System.out.println("вибрано емеіл");
+            responce = usersDAO.getUserByEmail(findValue);
         }
-        return new User();
+        return responce;
     }
 
     @RequestMapping(value = "/adminUsers", method = RequestMethod.GET)
