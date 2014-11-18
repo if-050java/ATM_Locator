@@ -4,7 +4,7 @@
 
 <hibernate-configuration>
     <session-factory>
-        <!-- List of mapping files -->
+        <!-- List of mappings -->
         <mapping class="com.ss.atmlocator.entity.User"/>
         <mapping class="com.ss.atmlocator.entity.Role"/>
     </session-factory>
