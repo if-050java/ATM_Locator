@@ -1,11 +1,11 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.util.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -14,12 +14,13 @@ import java.util.List;
  */
 public class UsersDAO implements IUsersDAO{
 
-    private  static Session hibernateSession = HibernateUtil.getSessionFactory().openSession();
+    @Autowired
+    private SessionFactory sessionFactory;
 
 
     @Override
     public User getUserByName(String name) {
-        Criteria criteria = hibernateSession.createCriteria(com.ss.atmlocator.entity.User.class);
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(com.ss.atmlocator.entity.User.class);
         criteria.add(Restrictions.like("login", name));
         List usersList = criteria.list();
         if(! usersList.isEmpty()){
@@ -28,4 +29,6 @@ public class UsersDAO implements IUsersDAO{
             throw new HibernateException("NoSuchRecords");
         }
     }
+
+
 }
