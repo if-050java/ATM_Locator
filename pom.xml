@@ -8,7 +8,7 @@
   <name>ATM Locator Webapp</name>
   <properties>
         <spring.version>3.2.11.RELEASE</spring.version>
-        <hibernate.version>4.3.6.Final</hibernate.version>
+        <hibernate.version>4.2.11.Final</hibernate.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
     </properties>
 
@@ -39,7 +39,11 @@
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
         <!-- Hibnernate dependencies -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -68,6 +72,16 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-extras</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.2</version>
+        </dependency>
 		<!-- MySQL connector -->
         <dependency>
             <groupId>mysql</groupId>
@@ -85,6 +99,13 @@
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
         </dependency>
+        <!-- Jackson JSON Mapper -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.10</version>
+        </dependency>
+
     </dependencies>
   <build>
     <finalName>ATM_locator</finalName>
