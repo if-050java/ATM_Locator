@@ -94,8 +94,17 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
   <build>
-    <finalName>ATM_locator</finalName>
+    <finalName>atmlocator</finalName>
   </build>
 </project>

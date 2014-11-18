@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="ATM_locator:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="ATM_locator.war">
-      <element id="artifact" artifact-name="ATM_locator:war exploded" />
-    </root>
-  </artifact>
-</component>
