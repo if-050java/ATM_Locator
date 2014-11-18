@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class AdminUsersController {
-
-    IUsersDAO usersDAO = new UsersDAO();
+    @Autowired
+    private IUsersDAO usersDAO;
 
     @RequestMapping("/saveUsersProfile")
     public String sendCredentials(@ModelAttribute("user") User user){
