@@ -1,0 +1,13 @@
+.profile-container{
+    margin: 5px 5px;
+}
+
+.left{
+    float: left;
+    width: 200px;
+}
+.user_img img{
+    display: block;
+    width: 200px;
+    height: 200px;
+}

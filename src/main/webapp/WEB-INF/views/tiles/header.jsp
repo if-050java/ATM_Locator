@@ -18,7 +18,7 @@
                     <li><a href="<c:url value="/adminUsers" />">Users</a></li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="<c:url value="/user/profile" />">Profile</a></li>
                     <li><a href="<c:url value="/j_spring_security_logout" />">Logout</a></li>
                 </sec:authorize>
             </ul>

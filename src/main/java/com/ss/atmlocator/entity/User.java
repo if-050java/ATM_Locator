@@ -101,5 +101,20 @@ public class User {
     public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
         this.atmFavorites = atmFavorites;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", roles=" + roles +
+                ", enabled=" + enabled +
+                ", atmComments=" + atmComments +
+                ", atmFavorites=" + atmFavorites +
+                '}';
+    }
 }
 
