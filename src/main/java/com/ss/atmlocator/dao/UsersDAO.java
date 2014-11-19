@@ -15,9 +15,12 @@ import java.util.List;
  */
 public class UsersDAO implements IUsersDAO{
 
+
+
     @Autowired
     private SessionFactory sessionFactory;
-    //Session currentSession = sessionFactory.openSession();
+    private Session hibernateSession;
+
 
 
     @Override
@@ -45,8 +48,23 @@ public class UsersDAO implements IUsersDAO{
     }
 
     @Override
-    public void deleteUserByName(String name) {
-            sessionFactory.openSession().delete(getUserByName(name));
+    public void deleteUser(String name) {
+        try {
+            Session session = sessionFactory.openSession();
+            Criteria criteria = session.createCriteria(com.ss.atmlocator.entity.User.class);
+            criteria.add(Restrictions.like("login", name));
+            List usersList = criteria.list();
+            User user;
+            if(! usersList.isEmpty()){
+               user = (User)usersList.get(0);
+            } else{
+                throw new HibernateException("NoSuchRecords");
+            }
+            session.delete(user);
+            session.flush();
+        }catch (HibernateException HE){
+            throw new HibernateException("Exception in deleting");
+        }
     }
 
 

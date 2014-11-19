@@ -62,7 +62,7 @@ public class AdminUsersController {
         String userName = request.getParameter("login");
         AJAXResponse response = new AJAXResponse();
         try {
-            usersDAO.deleteUserByName(userName);
+            usersDAO.deleteUser(userName);
             response.setResult("SUCCESS");
         }catch (HibernateException HE){
             response.setResult("ERROR");
