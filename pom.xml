@@ -50,6 +50,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
         <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -94,6 +99,15 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -108,6 +122,6 @@
 
     </dependencies>
   <build>
-    <finalName>ATM_locator</finalName>
+    <finalName>atmlocator</finalName>
   </build>
 </project>
