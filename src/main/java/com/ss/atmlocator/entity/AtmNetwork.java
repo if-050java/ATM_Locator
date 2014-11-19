@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name="atmnetworks")
 public class AtmNetwork {
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int Id;
 
