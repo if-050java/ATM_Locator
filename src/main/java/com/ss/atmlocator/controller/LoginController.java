@@ -20,8 +20,7 @@ import java.util.Set;
  */
 @Controller
 public class LoginController {
-    @Autowired
-    SessionFactory sessionFactory;
+
 
     @RequestMapping(value = "/login")
     public String login(@RequestParam(value = "error", required = false) String error, ModelMap model) {
