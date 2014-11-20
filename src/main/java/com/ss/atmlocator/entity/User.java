@@ -14,10 +14,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(unique=true)
     private String login;
+
+    @Column(unique=true)
     private String email;
+
+    @Column
     private String password;
+
+    @Column
     private String avatar;
+
     @Column
     private int enabled;
 
