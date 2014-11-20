@@ -15,7 +15,7 @@
 
     <authentication-manager>
         <authentication-provider>
-            <jdbc-user-service data-source-ref="dataSource"
+            <jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
                                users-by-username-query="
 		      select login as username, password, enabled
 		      from users where login=?"

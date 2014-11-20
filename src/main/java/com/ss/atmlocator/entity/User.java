@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -9,7 +11,6 @@ import java.util.Set;
 @Entity
 @Table(name ="users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -17,10 +18,22 @@ public class User {
     private String email;
     private String password;
     private String avatar;
-    @ManyToMany
+    @Column
+    private int enabled;
+
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
     @JoinColumn(name = "role_id")
     private Set<Role> roles;
+
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
+    private Set<AtmComment> atmComments;
+
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
+    private Set<AtmFavorite> atmFavorites;
 
     public String getAvatar() {
         return avatar;
@@ -68,6 +81,45 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
+
+    public Set<AtmComment> getAtmComments() {
+        return atmComments;
+    }
+
+    public void setAtmComments(Set<AtmComment> atmComments) {
+        this.atmComments = atmComments;
+    }
+
+    public Set<AtmFavorite> getAtmFavorites() {
+        return atmFavorites;
+    }
+
+    public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
+        this.atmFavorites = atmFavorites;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", login='" + login + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", roles=" + roles +
+                ", enabled=" + enabled +
+                ", atmComments=" + atmComments +
+                ", atmFavorites=" + atmFavorites +
+                '}';
     }
 }
 

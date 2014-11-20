@@ -65,7 +65,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (1,1),(1,2);
+INSERT INTO `user_role` VALUES (1,1),(1,2),(2,1);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,7 +80,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `avatar` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `enabled` bit(1) NOT NULL,
+  `enabled` int(1) NOT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -93,7 +93,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'defaultUserAvatar.jpg','admin@mail.com','','admin','1'),(2,'defaultUserAvatar.jpg','user@mail.com','','user','1');
+INSERT INTO `users` VALUES (1,'defaultUserAvatar.jpg','admin@mail.com','1','admin','1'),(2,'defaultUserAvatar.jpg','user@mail.com','1','user','1');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
