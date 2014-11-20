@@ -4,7 +4,7 @@ USE `atmlocator`;
 --
 -- Host: localhost    Database: atmlocator
 -- ------------------------------------------------------
--- Server version	5.5.27
+-- Server version   5.5.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,10 +33,10 @@ CREATE TABLE `atm` (
   `photo` varchar(255) DEFAULT NULL,
   `state` int(11) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
-  `bank_id` int(11) DEFAULT NULL,
+  `bank_id` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_9ullxpauvabhfpsfrbls9hboq` (`bank_id`),
-  CONSTRAINT `FK_9ullxpauvabhfpsfrbls9hboq` FOREIGN KEY (`bank_id`) REFERENCES `banks` (`Id`)
+  KEY `FK_ATM_BANKS` (`bank_id`),
+  CONSTRAINT `FK_ATM_BANKS` FOREIGN KEY (`bank_id`) REFERENCES `banks` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -89,8 +89,8 @@ CREATE TABLE `banks` (
   `webSite` varchar(255) DEFAULT NULL,
   `network_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_gt16uxf7jnyii8i4sgi5j90dd` (`network_id`),
-  CONSTRAINT `FK_gt16uxf7jnyii8i4sgi5j90dd` FOREIGN KEY (`network_id`) REFERENCES `atmnetworks` (`Id`)
+  KEY `FK_BANKS_ATMNETWORKS` (`network_id`),
+  CONSTRAINT `FK_BANKS_ATMNETWORKS` FOREIGN KEY (`network_id`) REFERENCES `atmnetworks` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -114,13 +114,13 @@ CREATE TABLE `comments` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `text` varchar(255) DEFAULT NULL,
   `timeCreated` datetime DEFAULT NULL,
-  `atm_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
+  `atm_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_3mka83yrsd3tyj5mvb1ta1buy` (`atm_id`),
-  KEY `FK_1x3vdhb5vv8eu5708riqe07wc` (`user_id`),
-  CONSTRAINT `FK_1x3vdhb5vv8eu5708riqe07wc` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `FK_3mka83yrsd3tyj5mvb1ta1buy` FOREIGN KEY (`atm_id`) REFERENCES `atm` (`Id`)
+  KEY `FK_COMMENTS_ATM` (`atm_id`),
+  KEY `FK_COMMENTS_USERS` (`user_id`),
+  CONSTRAINT `FK_COMMENTS_USERS` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `FK_COMMENTS_ATM` FOREIGN KEY (`atm_id`) REFERENCES `atm` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -146,10 +146,10 @@ CREATE TABLE `favorites` (
   `atm_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_ifxvxbp4qteqok8f2kvid1drr` (`atm_id`),
-  KEY `FK_8pr7wrtwt7dh3ehoh67f6ao18` (`user_id`),
-  CONSTRAINT `FK_8pr7wrtwt7dh3ehoh67f6ao18` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `FK_ifxvxbp4qteqok8f2kvid1drr` FOREIGN KEY (`atm_id`) REFERENCES `atm` (`Id`)
+  KEY `FK_FAVORITES_ATM` (`atm_id`),
+  KEY `FK_FAVORITES_USERS` (`user_id`),
+  CONSTRAINT `FK_FAVORITES_USERS` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `FK_FAVORITES_ATM` FOREIGN KEY (`atm_id`) REFERENCES `atm` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -173,10 +173,10 @@ CREATE TABLE `parser_params` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `parameter` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
-  `parser_id` int(11) DEFAULT NULL,
+  `parser_id` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_t8a4thouaexpidhdi7paj0k1r` (`parser_id`),
-  CONSTRAINT `FK_t8a4thouaexpidhdi7paj0k1r` FOREIGN KEY (`parser_id`) REFERENCES `parsers` (`Id`)
+  KEY `FK_PP_PARSERS` (`parser_id`),
+  CONSTRAINT `FK_PP_PARSERS` FOREIGN KEY (`parser_id`) REFERENCES `parsers` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -202,10 +202,10 @@ CREATE TABLE `parsers` (
   `name` varchar(255) DEFAULT NULL,
   `state` int(11) DEFAULT NULL,
   `type` int(11) DEFAULT NULL,
-  `bank_id` int(11) DEFAULT NULL,
+  `bank_id` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_251evea75ipggs9y7krq0ldqa` (`bank_id`),
-  CONSTRAINT `FK_251evea75ipggs9y7krq0ldqa` FOREIGN KEY (`bank_id`) REFERENCES `banks` (`Id`)
+  KEY `FK_PARSERS_BANKS` (`bank_id`),
+  CONSTRAINT `FK_PARSERS_BANKS` FOREIGN KEY (`bank_id`) REFERENCES `banks` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,9 +254,9 @@ CREATE TABLE `user_role` (
   `users_id` int(11) NOT NULL,
   `roles_id` int(11) NOT NULL,
   PRIMARY KEY (`users_id`,`roles_id`),
-  KEY `FK_5k3dviices5fr7560hvc81x4r` (`roles_id`),
-  CONSTRAINT `FK_4edf6ibqo9873ixvuyri8xua2` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `FK_5k3dviices5fr7560hvc81x4r` FOREIGN KEY (`roles_id`) REFERENCES `roles` (`id`)
+  KEY `FK_USER_ROLE_ROLES` (`roles_id`),
+  CONSTRAINT `FK_USER_ROLE_USERS` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `FK_USER_ROLE_ROLES` FOREIGN KEY (`roles_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -280,9 +280,9 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `avatar` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL UNIQUE,
   `enabled` int(1) NOT NULL,
-  `login` varchar(255) DEFAULT NULL,
+  `login` varchar(255) NOT NULL UNIQUE,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

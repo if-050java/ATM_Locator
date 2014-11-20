@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by roman on 19.11.14.
  */
-
 public class UserService {
     @Autowired
     IUsersDAO usersDAO;
