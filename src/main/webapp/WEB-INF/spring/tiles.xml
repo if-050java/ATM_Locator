@@ -18,8 +18,14 @@
     <definition name="admin" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/admin.jsp"/>
     </definition>
+
+    <definition name="adminUsers" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminUsers.jsp"/>
+    </definition>
+
     <definition name="signup" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/signup_template.jsp"/>
+
     </definition>
 
 </tiles-definitions>
