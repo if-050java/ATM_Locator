@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -16,18 +18,21 @@ public class User {
     private String email;
     private String password;
     private String avatar;
-    @ManyToMany
+    @Column
+    private int enabled;
+
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
     @JoinColumn(name = "role_id")
     private Set<Role> roles;
 
-    @Column
-    private int enabled;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     private Set<AtmComment> atmComments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     private Set<AtmFavorite> atmFavorites;
 
     public String getAvatar() {

@@ -1,13 +1,15 @@
-.profile-container{
-    margin: 5px 5px;
+.change_avatar{
+    text-align: center;
 }
-
-.left{
-    float: left;
-    width: 200px;
+div.last{
+    text-align: center;
 }
-.user_img img{
-    display: block;
-    width: 200px;
-    height: 200px;
+.btn-file { position: relative; overflow: hidden; margin-right: 4px; }
+.btn-file input { position: absolute; top: 0; right: 0; margin: 0; opacity: 0; filter: alpha(opacity=0);
+    transform: translate(-300px, 0) scale(4); font-size: 23px; direction: ltr; cursor: pointer; }
+/* Fix for IE 7: */
+* + html .btn-file { padding: 2px 15px; margin: 1px 0 0 0; }
+.clearfix{
+    text-align: center;
+    margin-top: 20px;
 }

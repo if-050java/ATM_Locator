@@ -7,7 +7,7 @@
         </div>
         <div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <sec:authorize access="isAnonymous()">
                     <li><a href="<c:url value="/login"/>">Login</a></li>
                     <li><a href="<c:url value="/signup"/>">Sign in</a></li>
