@@ -7,7 +7,7 @@
         </div>
         <div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <sec:authorize access="isAnonymous()">
                     <li><a href="<c:url value="/login"/>">Login</a></li>
                     <li><a href="<c:url value="/signup"/>">Sign in</a></li>
@@ -18,7 +18,7 @@
                     <li><a href="<c:url value="/adminUsers" />">Users</a></li>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
-                    <li><a href="#">Profile</a></li>
+                    <li><a href="<c:url value="/user/profile" />">Profile</a></li>
                     <li><a href="<c:url value="/j_spring_security_logout" />">Logout</a></li>
                 </sec:authorize>
             </ul>

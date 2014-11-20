@@ -28,5 +28,9 @@
         <property name="suffix" value=".jsp"/>
         <property name="order" value="2"/>
     </bean>
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
 
+    </bean>
 </beans>

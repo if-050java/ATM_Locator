@@ -2,16 +2,14 @@ package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-/**
- * Created by Vasyl Danylyuk on 16.11.2014.
- */
-@Repository("usersDao")
+@Repository
 public class UsersDAO implements IUsersDAO {
 
     @PersistenceContext
@@ -66,6 +64,13 @@ public class UsersDAO implements IUsersDAO {
         //Updating data in DB
         updateEntityManager.flush();
         updatingTransaction.commit();
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user) {
+        entityManager.merge(user);
+        entityManager.flush();
     }
 
 
