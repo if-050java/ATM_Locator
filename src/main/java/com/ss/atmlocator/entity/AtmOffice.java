@@ -3,6 +3,7 @@ package com.ss.atmlocator.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 
 /**
  * Created by Olavin on 17.11.2014.
@@ -21,7 +22,7 @@ public class AtmOffice {
     private GeoPosition geoPosition;
 
     @Column
-    private int state;
+    private int state; //todo: substitute with enum
 
     @Enumerated(EnumType.ORDINAL)
     private AtmType type;
@@ -37,6 +38,12 @@ public class AtmOffice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
     Bank bank;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice")
+    private Set<AtmComment> atmComments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice")
+    private Set<AtmFavorite> atmFavorites;
 
     public int getId() {
         return Id;
@@ -92,6 +99,22 @@ public class AtmOffice {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public Set<AtmComment> getAtmComments() {
+        return atmComments;
+    }
+
+    public void setAtmComments(Set<AtmComment> atmComments) {
+        this.atmComments = atmComments;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
     }
 }
 

@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name="banks")
 public class Bank {
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int Id;
 
@@ -34,6 +34,9 @@ public class Bank {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
     private Set<AtmOffice> atmOfficeSet;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    private Set<AtmParser> atmParserSet;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "network_id")
