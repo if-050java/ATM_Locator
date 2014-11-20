@@ -106,7 +106,7 @@
                 <div class="row">
                     <div class="col-md-2"><button type="button" class="btn btn-primary col-md-12">Send e-mail</button></div>
                     <div class="col-md-2"><button type="button" onclick="deleteUser()" class="btn btn-danger col-md-12">Delete user</button></div>
-                    <div class="col-md-6"><button type="button" class="btn btn-success col-md-12">Save</button></div>
+                    <div class="col-md-6"><button type="button" onclick="updateUser()" class="btn btn-success col-md-12">Save</button></div>
                     <div class="col-md-2"><button type="button" onclick="cancel()" class="btn btn-warning col-md-12">Cancel</button></div>
                 </div>
             </div>
@@ -114,7 +114,7 @@
     </div>
 
     <!--Модальне вікно при видаленні -->
-    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

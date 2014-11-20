@@ -2,7 +2,7 @@
  * Created by Vasyl Danylyuk on 17.11.2014.
  */
 var xmlhttp;            //AJAX request
-
+var user;               //Instance of current loaded user
 
 //Установка полів вводу дозволеними/блокованими в залежності від вибору параметру пошуку
 function SelectFindType() {
@@ -67,16 +67,20 @@ function GetXmlHttpObject(){
 //Заповнення та демонстрація даних користувача
 function fillData(){
     //Отримуємо обєкт користувача з JSON
-    User = JSON.parse(xmlhttp.responseText);
+    try {
+        user = JSON.parse(xmlhttp.responseText);
+    }catch (Exception){
+        alert("Can't find user with this name or e-mail")
+    }
     //Заповнюємо всі поля
     //Аватар
-    document.getElementById("userAvatar").setAttribute("src", "/resources/images/"+User.avatar);
+    document.getElementById("userAvatar").setAttribute("src", "/resources/images/"+user.avatar);
     //Ім'я
-    document.getElementById("inputName").setAttribute("value", User.login);
+    document.getElementById("inputName").setAttribute("value", user.login);
     //E-mail
-    document.getElementById("inputEmail").setAttribute("value", User.email);
+    document.getElementById("inputEmail").setAttribute("value", user.email);
     //Enabled
-    if(User.enabled != 0){
+    if(user.enabled != 0){
         document.getElementById("enabled").setAttribute("checked", "true");
     } else {
         document.getElementById("enabled").setAttribute("checked", "false");
@@ -111,22 +115,16 @@ function deleteUser(){
         return;
     }
 
-    //Параметри запиту
-    var login;
-
-    //Отримання параметрів запиту з форми
-    login = document.getElementById("inputName").value;
-
     //Створення запиту
-    var url = "/deleteUser?login="+login;
+    var url = "/deleteUser?id="+user.id;
 
     //Відправка запиту та очікування на відповідь
     xmlhttp.open("POST", url, true);
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
-                document.getElementById("ModalLabel").setAttribute("value", "Deleting user")
-
+                document.getElementById("ModalLabel").setAttribute("value", "Deleting user");
+                showModal();
             }
         }
     };
@@ -135,9 +133,50 @@ function deleteUser(){
 
 function showModal(){
     response = JSON.parse(xmlhttp.responseText);
-    document.getElementById("ModalBody").setAttribute("value", response.result)
-    document.getElementById("Modal").modal;
-}
+    document.getElementById("ModalBody").innerHTML = response.result;
+
+    var options = {
+        "backdrop" : "static"
+    }
+
+   // document.getElementById("resultModal").modal(options);
+    $('#resultModal').modal(options);
+};
+
+function updateUser(){
+    //Об'єкт AJAX запиту
+    xmlhttp=GetXmlHttpObject();
+    //Перевірка на підтримку AJAX браузером
+    if (xmlhttp==null){
+        alert ("Your browser does not support Ajax HTTP");
+        return;
+    }
+
+    //Request params
+    var login = document.getElementById("inputName").value;
+    var email = document.getElementById("inputEmail").value;
+    var password = document.getElementById("inputPassword").value;
+    if(document.getElementById("enabled").checked == true){
+        var enabled = 1;
+    }else{
+        var enabled = 0;
+    };
+
+    //Створення запиту
+    var url = "/updateUser?id="+user.id+"&login="+login+"&email="+email+"&password="+password+"&enabled="+enabled;
+
+    //Відправка запиту та очікування на відповідь
+    xmlhttp.open("POST", url, true);
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4) {
+            if(xmlhttp.status == 200) {
+                document.getElementById("ModalLabel").setAttribute("value", "Updating user");
+                showModal();
+            }
+        }
+    };
+    xmlhttp.send(null);
+};
 
 
 

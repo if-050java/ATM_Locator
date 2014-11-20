@@ -8,5 +8,6 @@ import com.ss.atmlocator.entity.User;
 public interface IUsersDAO {
     User getUserByName(String name);
     User getUserByEmail(String email);
-    void deleteUser(String name);
+    void deleteUser(int id);
+    void updateUser(int id, User user);
 }
