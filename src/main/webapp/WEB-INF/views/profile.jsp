@@ -3,18 +3,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:url value="/user/save" var="updateURL"/>
-<style>
-    .form-group {
-        margin-top: 5px;
-        margin-bottom: 5px;
-    }
-</style>
-<script>
-    $(document).ready(function () {
-        //$('.${update}').addClass('active');
-    });
-</script>
-
 <div class="container">
     <!-- Small modal window-->
     <c:if test="${status=='OK'}">
@@ -100,6 +88,19 @@
         </div>
     </div>
 </div>
-
-
-</div>
+<script type='text/javascript'>
+    $(window).load(function () {
+        function changeImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#userAvatar').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#image").change(function () {
+            changeImage(this);
+        });
+    });
+</script>
