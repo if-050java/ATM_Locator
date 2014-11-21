@@ -2,6 +2,7 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,7 @@ public class AdminUsersController {
     }
 
     @Autowired
-    private IUsersDAO usersDAO;
+    UserService userService;
 
     @RequestMapping(value = "/findUser", method = RequestMethod.GET)
     public
@@ -43,9 +44,9 @@ public class AdminUsersController {
         User response = null;
         try {
             if (findBy.equals("name")) {
-                response = usersDAO.getUserByName(findValue);
+                response = userService.getUserByName(findValue);
             } else {
-                response = usersDAO.getUserByEmail(findValue);
+                response = userService.getUserByEmail(findValue);
             }
         } catch (NoResultException NRE) {
             response = null;
@@ -63,10 +64,16 @@ public class AdminUsersController {
     public
     @ResponseBody
     AJAXResponse deleteUser(HttpServletRequest request) {
+
+        AJAXResponse ajaxResponse = new AJAXResponse();
+        ajaxResponse.setResult("ERROR");
+        if(true)
+            return ajaxResponse;
+
         int id = Integer.parseInt(request.getParameter("id"));
         AJAXResponse response = new AJAXResponse();
         try {
-            usersDAO.deleteUser(id);
+            userService.deleteUser(id);
             response.setResult("SUCCESS");
         } catch (Exception HE) {
             response.setResult("ERROR");
@@ -76,9 +83,8 @@ public class AdminUsersController {
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AJAXResponse updateUser(HttpServletRequest request) {
+    public @ResponseBody AJAXResponse updateUser(HttpServletRequest request) {
+
         int id = Integer.parseInt(request.getParameter("id"));
         String newLogin = request.getParameter("login");
         String newEmail = request.getParameter("email");
@@ -94,7 +100,7 @@ public class AdminUsersController {
 
         AJAXResponse response = new AJAXResponse();
         try {
-            usersDAO.updateUser(id, updatedUser);
+            userService.editUser(updatedUser);
             response.setResult("SUCCESS");
         } catch (Exception HE) {
             response.setResult("ERROR");

@@ -34,42 +34,34 @@ public class UsersDAO implements IUsersDAO {
     }
 
     @Override
+    @Transactional
     public void deleteUser(int id) {
-        //Creating new EntityManager for deleting(Default can't delete/update anything. Why?)
-        EntityManager deleteEntityManager = entityManager.getEntityManagerFactory().createEntityManager();
-        //Finding user for deleting by id
-        User deleteUser = deleteEntityManager.find(User.class, id);
-        //Creating and start deleting transaction
-        EntityTransaction deletingTransaction = deleteEntityManager.getTransaction();
-        deletingTransaction.begin();
-        //Deleting user from DB
-        deleteEntityManager.remove(deleteUser);
-        deletingTransaction.commit();
+        User deletedUser = entityManager.find(User.class, id);
+        entityManager.remove(deletedUser);
     }
 
-    @Override
-    public void updateUser(int id, User user) {
-        //Creating new EntityManager for updating(Default can't delete/update anything. Why?)
-        EntityManager updateEntityManager = entityManager.getEntityManagerFactory().createEntityManager();
-        //Finding user for updating by id
-        User updatedUser = updateEntityManager.find(User.class, id);
-        //Creating and start updating transaction
-        EntityTransaction updatingTransaction = updateEntityManager.getTransaction();
-        updatingTransaction.begin();
-        //Updating fields in persisted user
-        updatedUser.setLogin(user.getLogin());
-        updatedUser.setEmail(user.getEmail());
-        updatedUser.setPassword(user.getPassword());
-        updatedUser.setEnabled(user.getEnabled());
-        //Updating data in DB
-        updateEntityManager.flush();
-        updatingTransaction.commit();
-    }
 
     @Override
     @Transactional
     public void updateUser(User user) {
-        entityManager.merge(user);
+        User persistedUser = entityManager.find(User.class, user.getId());
+
+        if(user.getLogin() != null)
+            persistedUser.setLogin(user.getLogin());
+        if(user.getAvatar() != null)
+            persistedUser.setAvatar(user.getAvatar());
+        if(user.getEmail() != null)
+            persistedUser.setEmail(user.getEmail());
+        if(user.getPassword() != null)
+            persistedUser.setPassword(user.getPassword());
+        if(user.getRoles() != null)
+            persistedUser.setRoles(user.getRoles());
+        if(user.getAtmComments() != null)
+            persistedUser.setAtmComments(user.getAtmComments());
+        if(user.getAtmFavorites() != null)
+            persistedUser.setAtmFavorites(user.getAtmFavorites());
+
+        //entityManager.merge(user);
         entityManager.flush();
     }
 

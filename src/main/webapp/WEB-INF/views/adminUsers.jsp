@@ -64,57 +64,80 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="/resources/images/defaultUserAvatar.jpg" class="img-responsive" alt="Responsive image" id="userAvatar">
+                        <img src="/resources/images/defaultUserAvatar.jpg" class="img-responsive" alt="Responsive image"
+                             id="userAvatar">
                     </div>
                     <div class="col-md-8">
                         <form action="" method="post" class="form-horizontal" role="form">
                             <div class="form-group">
-                                <label for="inputName" class="col-sm-2 control-label">NickName</label>
+                                <label for="inputLogin" class="col-sm-2 control-label">NickName</label>
+
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="inputName" placeholder="NickName">
+                                    <input type="text" class="form-control" id="inputLogin" placeholder="NickName"
+                                           title="" data-content="" data-placement="left" data-toggle="popover"
+                                           data-original-title="" onclick="hidePopover('inputLogin')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputEmail" class="col-sm-2 control-label">E-mail</label>
+
                                 <div class="col-md-10">
-                                    <input type="text" class="form-control" id="inputEmail" placeholder="Email">
+                                    <input type="text" class="form-control" id="inputEmail" placeholder="E-mail"
+                                           title="" data-content="E-mail isn't valid" data-placement="left"
+                                           data-toggle="popover" data-original-title="" onclick="hidePopover('inputEmail')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+
                                 <div class="col-md-10">
                                     <input type="password" class="form-control" id="inputPassword"
-                                           placeholder="Password">
+                                           placeholder="Password" title="" data-content="" data-placement="left"
+                                           data-toggle="popover" data-original-title="" onclick="hidePopover('inputPassword')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputConfirmPassword" class="col-sm-2 control-label">Confirm</label>
+
                                 <div class="col-md-10">
                                     <input type="password" class="form-control" id="inputConfirmPassword"
-                                           placeholder="Confirm password">
+                                           placeholder="Confirm password" title=""
+                                           data-content="Password and confirm is different" data-placement="left"
+                                           data-toggle="popover" data-original-title="" onclick="hidePopover('inputConfirmPassword')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="enabled" class="col-sm-2 control-label">Enabled</label>
+
                                 <div class="col-md-10">
-                                    <input type="checkbox" class="checkbox" id="enabled" checked="true">
+                                    <input type="checkbox" class="checkbox" id="enabled" checked="true"/>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><button type="button" class="btn btn-primary col-md-12">Send e-mail</button></div>
-                    <div class="col-md-2"><button type="button" onclick="deleteUser()" class="btn btn-danger col-md-12">Delete user</button></div>
-                    <div class="col-md-6"><button type="button" onclick="updateUser()" class="btn btn-success col-md-12">Save</button></div>
-                    <div class="col-md-2"><button type="button" onclick="cancel()" class="btn btn-warning col-md-12">Cancel</button></div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary col-md-12">Send e-mail</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="deleteUser()" class="btn btn-danger col-md-12">Delete user
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" onclick="updateUser()" class="btn btn-success col-md-12">Save</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="clearForm()" class="btn btn-warning col-md-12">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!--Модальне вікно при видаленні -->
-    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

@@ -18,7 +18,15 @@ public class UserService {
         return usersDAO.getUserByName(name);
     }
 
+    public User getUserByEmail(String email){
+        return usersDAO.getUserByEmail(email);
+    }
+
     public void editUser(User user) {
         usersDAO.updateUser(user);
+    }
+
+    public void deleteUser(int id){
+        usersDAO.deleteUser(id);
     }
 }
