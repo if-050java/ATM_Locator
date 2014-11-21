@@ -4,6 +4,12 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +42,10 @@ public class AdminUsersController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    @Qualifier("jdbcUserService")
+    public UserDetailsManager userDetailsManager;
+
     @RequestMapping(value = "/findUser", method = RequestMethod.GET)
     public
     @ResponseBody
@@ -67,25 +77,31 @@ public class AdminUsersController {
     @ResponseBody
     AJAXResponse deleteUser(HttpServletRequest request) {
 
-        AJAXResponse ajaxResponse = new AJAXResponse();
-        ajaxResponse.setResult("ERROR");
-        if(true)
-            return ajaxResponse;
-
+        //get ID of loginned user before updating
+        int loginnedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+        //get ID of user for deleting
         int id = Integer.parseInt(request.getParameter("id"));
+
         AJAXResponse response = new AJAXResponse();
+
+        //User cant delete his own profile
+        if(id== loginnedUserId){
+            response.setResult("REMOVE_HIMSELF");
+            return response;
+        }
+
         try {
             userService.deleteUser(id);
             response.setResult("SUCCESS");
+            return response;
         } catch (Exception HE) {
             response.setResult("ERROR");
-        } finally {
             return response;
         }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public @ResponseBody AJAXResponse updateUser(HttpServletRequest request) {
+    public  @ResponseBody AJAXResponse updateUser(HttpServletRequest request) {
 
         int id = Integer.parseInt(request.getParameter("id"));
         String newLogin = request.getParameter("login");
@@ -102,12 +118,25 @@ public class AdminUsersController {
 
         AJAXResponse response = new AJAXResponse();
         try {
+            //get ID of loginned user before updating
+            int loginnedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
             userService.editUser(updatedUser);
+            //if admin want to change own profile relogin this user with new name
+            if(updatedUser.getId()== loginnedUserId){
+                doAutoLogin(updatedUser.getLogin());
+            }
             response.setResult("SUCCESS");
         } catch (Exception HE) {
             response.setResult("ERROR");
         } finally {
             return response;
         }
+    }
+
+    private void doAutoLogin(String username) {
+        UserDetails user = userDetailsManager.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
     }
 }
