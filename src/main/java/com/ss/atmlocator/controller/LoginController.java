@@ -18,6 +18,7 @@ public class LoginController {
         if (error != null) {
             model.addAttribute("error", "Login error!");
         }
+        model.addAttribute("active","login");
         return "login";
     }
 
