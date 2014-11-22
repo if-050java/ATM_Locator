@@ -13,7 +13,7 @@
         <logout logout-success-url="/"/>
     </http>
 
-    <authentication-manager>
+    <authentication-manager alias="authenticationManager">
         <authentication-provider>
             <jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
                                users-by-username-query="
