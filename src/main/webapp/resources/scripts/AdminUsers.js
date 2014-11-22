@@ -135,7 +135,7 @@ function deleteUser(){
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
-                document.getElementById("ModalLabel").setAttribute("value", "Deleting user");
+                document.getElementById("ModalLabel").innerHTML = "Deleting user";
                 showModal();
             }
         }
@@ -209,7 +209,7 @@ function updateUser(){
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
-                document.getElementById("ModalLabel").value =  "Updating user";
+                document.getElementById("ModalLabel").innerHTML =  "Updating user";
                 showModal();
             }
         }
