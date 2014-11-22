@@ -1,11 +1,15 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import javax.servlet.ServletContext;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,10 +19,19 @@ import java.util.regex.Pattern;
  */
 @Service
 public class ValidateUsersFieldsService implements Validator {
+
     //Property with validation RegExps
+    //private final String PROPERTY_PATH = "resources\\validation.properties";
     private Properties validationPatterns;
 
+
+
     public ValidateUsersFieldsService() {
+        /*try {
+            validationPatterns.load(new FileInputStream(PROPERTY_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         validationPatterns = new Properties();
         validationPatterns.setProperty("email", "^\\w[\\w-]*(\\.(\\w[\\w-]*)+)*@([a-zA-Z0-9]" +
                                                 "([-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z][a-zA-Z]+$");

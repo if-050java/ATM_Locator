@@ -39,7 +39,8 @@ public class AdminUsersController {
         CANT_REMOVE_YOURSELF,
         INVALID_LOGIN,
         INVALID_EMAIL,
-        INVALID_PASSWORD
+        INVALID_PASSWORD,
+        LOGIN_OR_EMAIL_ALREADY_EXISTING
     }
 
     @Autowired
@@ -122,6 +123,13 @@ public class AdminUsersController {
         if(! errors.hasErrors()) {
             //if validation was successful try to save
             try {
+                //Check existing login and email in db
+                //dont check if it is this user
+                if(! userService.getUserById(updatedUser.getId()).getLogin().equals(updatedUser.getLogin()))
+                    if((userService.checkExistLoginName(updatedUser.getLogin()) || userService.checkExistEmail(updatedUser.getEmail()))) { //if not exist
+                        results.add(ResultResponse.LOGIN_OR_EMAIL_ALREADY_EXISTING);
+                        return results;
+                    }
                 //get ID of logged user before updating
                 int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
                 userService.editUser(updatedUser);

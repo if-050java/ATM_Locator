@@ -51,4 +51,12 @@ public class UserService {
     public void deleteUser(int id){
         usersDAO.deleteUser(id);
     }
+    /* Verify existing of login in DB */
+    public boolean checkExistLoginName(String login){
+        return usersDAO.checkExistLoginName(login);
+    };
+    /* Verify existing of email address in DB */
+    public boolean checkExistEmail(String email){
+        return usersDAO.checkExistEmail(email);
+    };
 }
