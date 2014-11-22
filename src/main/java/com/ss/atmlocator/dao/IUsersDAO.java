@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 public interface IUsersDAO {
     /* Select User from DB by Login*/
     User getUserByName(String name);
+    /* Select user from DB by id */
+    User getUserById(int id);
     /* Persist updated user information in DB*/
     void updateUser(User user);
     /* Select User from DB by email address */
