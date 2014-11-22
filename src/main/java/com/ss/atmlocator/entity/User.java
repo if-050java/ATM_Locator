@@ -5,9 +5,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.util.Set;
 
-/**
- * Created by roman on 10.11.14.
- */
 @Entity
 @Table(name ="users")
 public class User {
@@ -33,7 +30,7 @@ public class User {
     @JsonIgnore //Ignoring this field in JSON serializing
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "roles_id")
     private Set<Role> roles;
 
     @JsonIgnore //Ignoring this field in JSON serializing

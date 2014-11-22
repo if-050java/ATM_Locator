@@ -10,11 +10,11 @@
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
-    <context:component-scan base-package="com.ss.atmlocator">
-        <context:exclude-filter expression="org.springframework.stereotype.Controller"
-                                type="annotation"/>
-    </context:component-scan>
+
+    <context:component-scan base-package="com.ss.atmlocator"/>
     <context:annotation-config/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
@@ -49,12 +49,10 @@
 
     </bean>
 
-    <tx:annotation-driven/>
+
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
-
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
 </beans>

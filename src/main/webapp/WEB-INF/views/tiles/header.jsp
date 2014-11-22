@@ -17,7 +17,7 @@
                 <li class="main"><a href="/">Home</a></li>
                 <sec:authorize access="isAnonymous()">
                     <li class="login"><a href="<c:url value="/login"/>">Login</a></li>
-                    <li class="signup"><a href="<c:url value="/signup"/>">Sign in</a></li>
+                    <li class="signup"><a href="<c:url value="/signup"/>">Sign up</a></li>
                 </sec:authorize>
                 <sec:authorize access="hasRole('ADMIN')">
                     <li class="admin"><a href="<c:url value="/admin" />">Banks</a></li>

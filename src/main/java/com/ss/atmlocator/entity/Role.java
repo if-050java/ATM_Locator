@@ -1,6 +1,7 @@
 package com.ss.atmlocator.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by roman on 10.11.14.
