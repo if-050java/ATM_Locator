@@ -5,10 +5,8 @@ import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
+import java.math.BigInteger;
 
 @Repository
 public class UsersDAO implements IUsersDAO {
@@ -72,12 +70,22 @@ public class UsersDAO implements IUsersDAO {
 
     @Override
     public boolean checkExistLoginName(String login) {
-        return false;
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE login = :login";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("login", login);
+        int value =  ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0 ) return false;
+        return true;
     }
 
     @Override
     public boolean checkExistEmail(String email) {
-        return false;
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE email = :email";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("email", email);
+        int value =  ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0 ) return false;
+        return true;
     }
 
 

@@ -4,6 +4,7 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.utils.SendMails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,10 @@ public class SignUpController {
     @Autowired
     private IUsersDAO usersDAO;
 
+    @Autowired
+    @Qualifier("mail")
+    private SendMails sendMails;
+
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup() {
         return "signup";
@@ -45,30 +50,34 @@ public class SignUpController {
                               Model model,HttpServletRequest request) {
 
 
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setEnabled(ENABLED_USER_STATUS);
-        user.setAvatar(DEFAULT_USER_AVATAR);
-        Role role = usersDAO.getDefaultUserRole();
-        Set<Role> roles = new HashSet<Role>(0);
-        roles.add(role);
-        user.setRoles(roles);
+        if (usersDAO.checkExistEmail(email) == false && usersDAO.checkExistLoginName(login) == false) {
+            User user = new User();
+            user.setLogin(login);
+            user.setPassword(password);
+            user.setEmail(email);
+            user.setEnabled(ENABLED_USER_STATUS);
+            user.setAvatar(DEFAULT_USER_AVATAR);
+            Role role = usersDAO.getDefaultUserRole();
+            Set<Role> roles = new HashSet<Role>(0);
+            roles.add(role);
+            user.setRoles(roles);
 
-        usersDAO.createUser(user);
-        if(signMe != null && signMe.length()>0) {
-            loginUser(user, request);
+            usersDAO.createUser(user);
+            if (signMe != null && signMe.length() > 0) {
+                loginUser(user, request);
+            }
+            model.addAttribute("active", "main");
+            return "main";
         }
-        /*model.addAttribute("login", login);
-        model.addAttribute("email", email);
-        model.addAttribute("password", password);
-        model.addAttribute("signMe", signMe);
-        model.addAttribute("role", role);
-        return "signup";*/
+        /*sendMails.sendMail("if-050java","s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());*/
+        else {
+            model.addAttribute("login", login);
+            model.addAttribute("email", email);
+            model.addAttribute("password", password);
+            model.addAttribute("signMe", signMe);
+            return "signup";
 
-        model.addAttribute("active","main");
-        return "main";
+        }
     }
 
     @Autowired
