@@ -9,5 +9,4 @@ public interface IUsersDAO {
     void updateUser(User user);
     User getUserByEmail(String email);
     void deleteUser(int id);
-    void updateUser(int id, User user);
 }

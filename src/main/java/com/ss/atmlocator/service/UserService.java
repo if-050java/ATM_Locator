@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Created by roman on 19.11.14.
  */
+@Service
 public class UserService {
     @Autowired
     IUsersDAO usersDAO;
@@ -18,7 +19,15 @@ public class UserService {
         return usersDAO.getUserByName(name);
     }
 
+    public User getUserByEmail(String email){
+        return usersDAO.getUserByEmail(email);
+    }
+
     public void editUser(User user) {
         usersDAO.updateUser(user);
+    }
+
+    public void deleteUser(int id){
+        usersDAO.deleteUser(id);
     }
 }

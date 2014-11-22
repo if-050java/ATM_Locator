@@ -45,6 +45,7 @@ public class UserController {
     public String profile(ModelMap model, Principal principal) {
         String userName = principal.getName();
         model.addAttribute(userService.getUserByName(userName));
+        model.addAttribute("active","profile");
         return "profile";
     }
 
