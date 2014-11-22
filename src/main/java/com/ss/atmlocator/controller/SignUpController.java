@@ -5,12 +5,19 @@ import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,13 +37,13 @@ public class SignUpController {
     }
 
 
-
     @RequestMapping(value = "/registering", method = RequestMethod.POST)
     public String registering(@RequestParam("inputLogin") String login,
                               @RequestParam("inputEmail") String email,
                               @RequestParam("inputPassword") String password,
-                              @RequestParam(value = "signMe",required = false)  String signMe,
-                              Model model) {
+                              @RequestParam(value = "signMe", required = false) String signMe,
+                              Model model,HttpServletRequest request) {
+
 
         User user = new User();
         user.setLogin(login);
@@ -50,12 +57,35 @@ public class SignUpController {
         user.setRoles(roles);
 
         usersDAO.createUser(user);
-        model.addAttribute("login",login);
-        model.addAttribute("email",email);
-        model.addAttribute("password",password);
-        model.addAttribute("signMe",signMe);
-        model.addAttribute("role",role);
-        return "signup";
+        if(signMe != null && signMe.length()>0) {
+            loginUser(user, request);
+        }
+        /*model.addAttribute("login", login);
+        model.addAttribute("email", email);
+        model.addAttribute("password", password);
+        model.addAttribute("signMe", signMe);
+        model.addAttribute("role", role);
+        return "signup";*/
+
+        model.addAttribute("active","main");
+        return "main";
     }
 
+    @Autowired
+    @Qualifier("authenticationManager")
+    protected AuthenticationManager authenticationManager;
+
+    private void loginUser(User user, HttpServletRequest request) {
+
+        String username = user.getLogin();
+        String password = user.getPassword();
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+
+        request.getSession();
+
+        /*token.setDetails(new WebAuthenticationDetails(request));*/
+        Authentication authenticatedUser = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+
+    }
 }
