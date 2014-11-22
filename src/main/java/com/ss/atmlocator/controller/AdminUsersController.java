@@ -2,6 +2,7 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.service.ValidateUsersFieldsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,12 +12,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Vasyl Danylyuk on 14.11.2014.
@@ -29,11 +36,17 @@ public class AdminUsersController {
     enum ResultResponse {
         ERROR,
         SUCCESS,
-        CANT_REMOVE_YOURSELF
+        CANT_REMOVE_YOURSELF,
+        INVALID_LOGIN,
+        INVALID_EMAIL,
+        INVALID_PASSWORD
     }
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ValidateUsersFieldsService validationService;
 
     @Autowired
     @Qualifier("jdbcUserService")
@@ -89,7 +102,9 @@ public class AdminUsersController {
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public  @ResponseBody
-    ResultResponse updateUser(HttpServletRequest request) {
+    EnumSet<ResultResponse> updateUser(HttpServletRequest request) {
+
+        EnumSet<ResultResponse> results = EnumSet.noneOf(ResultResponse.class);
 
         int id = Integer.parseInt(request.getParameter("id"));
         String newLogin = request.getParameter("login");
@@ -99,17 +114,42 @@ public class AdminUsersController {
 
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
-        try {
-            //get ID of loginned user before updating
-            int loginnedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-            userService.editUser(updatedUser);
-            //if admin want to change own profile relogin this user with new name
-            if(updatedUser.getId()== loginnedUserId){
-                doAutoLogin(updatedUser.getLogin());
+        MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
+        validationService.validate(updatedUser, errors);
+
+        if(! errors.hasErrors()) {
+            //if validation was successful try to save
+            try {
+                //get ID of logged user before updating
+                int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+                userService.editUser(updatedUser);
+                //if admin want to change own profile relogin this user with new name
+                if (updatedUser.getId() == loggedUserId) {
+                    doAutoLogin(updatedUser.getLogin());
+                }
+                results.add(ResultResponse.SUCCESS);
+                return results;
+            } catch (PersistenceException pe) {
+                results.add(ResultResponse.ERROR);
+                return results;
             }
-            return ResultResponse.SUCCESS;
-        } catch (PersistenceException pe) {
-            return ResultResponse.ERROR;
+        } else {
+            //if validation unsuccessful add all errors to response
+            for(ObjectError error: errors.getAllErrors()){
+                if(error.getCodes()[2].equals("INVALID_LOGIN")) {
+                    results.add(ResultResponse.INVALID_LOGIN);
+                    continue;
+                }
+                if(error.getCodes()[2].equals("INVALID_EMAIL")) {
+                    results.add(ResultResponse.INVALID_EMAIL);
+                    continue;
+                }
+                if(error.getCodes()[2].equals("INVALID_PASSWORD")) {
+                    results.add(ResultResponse.INVALID_PASSWORD);
+                    continue;
+                }
+            }
+            return results;
         }
     }
 

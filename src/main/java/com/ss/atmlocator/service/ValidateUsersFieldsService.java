@@ -19,14 +19,14 @@ public class ValidateUsersFieldsService implements Validator {
     private Properties validationPatterns;
 
     public ValidateUsersFieldsService() {
-        validationPatterns.setProperty("email", "^(([^<>()[\\]\\\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\\\"]+)*)" +
-                                                "|(\\\".+\\\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])" +
-                                                "|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
+        validationPatterns = new Properties();
+        validationPatterns.setProperty("email", "^\\w[\\w-]*(\\.(\\w[\\w-]*)+)*@([a-zA-Z0-9]" +
+                                                "([-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z][a-zA-Z]+$");
         validationPatterns.setProperty("login", "^(\\w){4,}$");
         validationPatterns.setProperty("passwordMinLength", "6");
-        validationPatterns.setProperty("passwordRequiredChar1", "[a-z]|[а-ї]");
-        validationPatterns.setProperty("passwordRequiredChar2", "[A-Z]|[Є-Я]");
-        validationPatterns.setProperty("passwordRequiredChar3", "[0-9]");
+        validationPatterns.setProperty("passwordRequiredChar1", ".*([a-z]|[а-я])+.*");
+        validationPatterns.setProperty("passwordRequiredChar2", ".*([A-Z]|[Є-Я])+.*");
+        validationPatterns.setProperty("passwordRequiredChar3", ".*[0-9]+.*");
     }
 
     @Override
@@ -37,25 +37,25 @@ public class ValidateUsersFieldsService implements Validator {
     @Override
     public void validate(Object object, Errors errors) {
 
-        if(! validateEmail(((User)object).getLogin())){
-            errors.rejectValue("login", ValidationResult.BAD_LOGIN.toString());
+        if(! validateLogin(((User)object).getLogin())){
+            errors.rejectValue("login", ValidationResult.INVALID_LOGIN.toString());
         };
 
         if(! validateEmail(((User)object).getEmail())){
-            errors.rejectValue("email", ValidationResult.BAD_EMAIL.toString());
+            errors.rejectValue("email", ValidationResult.INVALID_EMAIL.toString());
         };
 
-        if(! validateEmail(((User)object).getPassword())){
-            errors.rejectValue("password", ValidationResult.BAD_PASSWORD.toString());
+        if(! validatePassword(((User)object).getPassword())){
+            errors.rejectValue("password", ValidationResult.INVALID_PASSWORD.toString());
         };
     }
 
 
 
     enum ValidationResult{
-        BAD_LOGIN,
-        BAD_EMAIL,
-        BAD_PASSWORD
+        INVALID_LOGIN,
+        INVALID_EMAIL,
+        INVALID_PASSWORD
     }
 
 

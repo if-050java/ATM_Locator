@@ -145,7 +145,7 @@ function deleteUser(){
 
 function showModal(){
     response = JSON.parse(xmlhttp.responseText);
-    document.getElementById("ModalBody").innerHTML = response.result;
+    document.getElementById("ModalBody").innerHTML = response;
 
     var options = {
         "backdrop" : "static"
@@ -157,7 +157,7 @@ function showModal(){
 
 function updateUser(){
 
-    //checking login
+    /*//checking login
     if(! validateLogin($('#inputLogin').prop("value"))){
         $('#inputLogin').popover("show");
         return;
@@ -179,7 +179,7 @@ function updateUser(){
     if(! validatePasswordStrange($('#inputPassword').prop("value"))){
         $('#inputPassword').popover("show");
         return;
-    }
+    }*/
 
     //Об'єкт AJAX запиту
     xmlhttp=GetXmlHttpObject();
