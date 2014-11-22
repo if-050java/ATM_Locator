@@ -1,6 +1,5 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -27,16 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 public class AdminUsersController {
 
     //Клас для надсилання відповіді про успішність/неуспішність операції
-    class AJAXResponse {
-        private String result;
-
-        public String getResult() {
-            return result;
-        }
-
-        public void setResult(String result) {
-            this.result = result;
-        }
+    enum ResultResponse {
+        ERROR,
+        SUCCESS,
+        CANT_REMOVE_YOURSELF
     }
 
     @Autowired
@@ -52,17 +45,16 @@ public class AdminUsersController {
     User findUser(HttpServletRequest request) {
         String findBy = request.getParameter("findBy");
         String findValue = request.getParameter("findValue");
-        User response = null;
+        User response;
         try {
             if (findBy.equals("name")) {
                 response = userService.getUserByName(findValue);
             } else {
                 response = userService.getUserByEmail(findValue);
             }
-        } catch (NoResultException NRE) {
-            response = null;
-        } finally {
             return response;
+        } catch (PersistenceException pe) {
+            return null;
         }
     }
 
@@ -75,33 +67,29 @@ public class AdminUsersController {
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
     public
     @ResponseBody
-    AJAXResponse deleteUser(HttpServletRequest request) {
+    ResultResponse deleteUser(HttpServletRequest request) {
 
-        //get ID of loginned user before updating
-        int loginnedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+        //get ID of logged user before updating
+        int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
         //get ID of user for deleting
         int id = Integer.parseInt(request.getParameter("id"));
 
-        AJAXResponse response = new AJAXResponse();
-
         //User cant delete his own profile
-        if(id== loginnedUserId){
-            response.setResult("REMOVE_HIMSELF");
-            return response;
+        if(id== loggedUserId){
+            return ResultResponse.CANT_REMOVE_YOURSELF;
         }
 
         try {
             userService.deleteUser(id);
-            response.setResult("SUCCESS");
-            return response;
-        } catch (Exception HE) {
-            response.setResult("ERROR");
-            return response;
+            return ResultResponse.SUCCESS;
+        } catch (PersistenceException pe) {
+            return ResultResponse.ERROR;
         }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public  @ResponseBody AJAXResponse updateUser(HttpServletRequest request) {
+    public  @ResponseBody
+    ResultResponse updateUser(HttpServletRequest request) {
 
         int id = Integer.parseInt(request.getParameter("id"));
         String newLogin = request.getParameter("login");
@@ -109,14 +97,8 @@ public class AdminUsersController {
         String newPassword = request.getParameter("password");
         int enabled = Integer.parseInt(request.getParameter("enabled"));
 
-        User updatedUser = new User();
-        updatedUser.setId(id);
-        updatedUser.setLogin(newLogin);
-        updatedUser.setEmail(newEmail);
-        updatedUser.setPassword(newPassword);
-        updatedUser.setEnabled(enabled);
+        User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
-        AJAXResponse response = new AJAXResponse();
         try {
             //get ID of loginned user before updating
             int loginnedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
@@ -125,11 +107,9 @@ public class AdminUsersController {
             if(updatedUser.getId()== loginnedUserId){
                 doAutoLogin(updatedUser.getLogin());
             }
-            response.setResult("SUCCESS");
-        } catch (Exception HE) {
-            response.setResult("ERROR");
-        } finally {
-            return response;
+            return ResultResponse.SUCCESS;
+        } catch (PersistenceException pe) {
+            return ResultResponse.ERROR;
         }
     }
 

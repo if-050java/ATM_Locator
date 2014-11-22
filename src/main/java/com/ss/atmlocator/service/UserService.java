@@ -23,8 +23,29 @@ public class UserService {
         return usersDAO.getUserByEmail(email);
     }
 
+    public User getUserById(int id){
+        return usersDAO.getUserById(id);
+    }
+
     public void editUser(User user) {
-        usersDAO.updateUser(user);
+        User persistedUser = getUserById(user.getId());
+
+        if(user.getLogin() != null)
+            persistedUser.setLogin(user.getLogin());
+        if(user.getAvatar() != null)
+            persistedUser.setAvatar(user.getAvatar());
+        if(user.getEmail() != null)
+            persistedUser.setEmail(user.getEmail());
+        if(user.getPassword() != null)
+            persistedUser.setPassword(user.getPassword());
+        if(user.getRoles() != null)
+            persistedUser.setRoles(user.getRoles());
+        if(user.getAtmComments() != null)
+            persistedUser.setAtmComments(user.getAtmComments());
+        if(user.getAtmFavorites() != null)
+            persistedUser.setAtmFavorites(user.getAtmFavorites());
+
+        usersDAO.updateUser(persistedUser);
     }
 
     public void deleteUser(int id){
