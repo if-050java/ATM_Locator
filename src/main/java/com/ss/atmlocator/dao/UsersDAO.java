@@ -23,6 +23,11 @@ public class UsersDAO implements IUsersDAO {
         return user;
     }
 
+    @Override
+    public User getUserById(int id) {
+        return entityManager.find(User.class, id);
+    }
+
 
     @Override
     public User getUserByEmail(String email) {
@@ -44,25 +49,8 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void updateUser(User user) {
-        User persistedUser = entityManager.find(User.class, user.getId());
-
-        if(user.getLogin() != null)
-            persistedUser.setLogin(user.getLogin());
-        if(user.getAvatar() != null)
-            persistedUser.setAvatar(user.getAvatar());
-        if(user.getEmail() != null)
-            persistedUser.setEmail(user.getEmail());
-        if(user.getPassword() != null)
-            persistedUser.setPassword(user.getPassword());
-        if(user.getRoles() != null)
-            persistedUser.setRoles(user.getRoles());
-        if(user.getAtmComments() != null)
-            persistedUser.setAtmComments(user.getAtmComments());
-        if(user.getAtmFavorites() != null)
-            persistedUser.setAtmFavorites(user.getAtmFavorites());
-
-        //entityManager.merge(user);
-        entityManager.flush();
+        entityManager.merge(user);
+        //entityManager.flush();
     }
 
 

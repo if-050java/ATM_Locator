@@ -44,6 +44,17 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     private Set<AtmFavorite> atmFavorites;
 
+    public User(int id, String login, String email, String password, int enabled) {
+        this.id = id;
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+    }
+
+    public User() {
+    }
+
     public String getAvatar() {
         return avatar;
     }

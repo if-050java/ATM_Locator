@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -52,17 +53,16 @@ public class AdminUsersController {
     User findUser(HttpServletRequest request) {
         String findBy = request.getParameter("findBy");
         String findValue = request.getParameter("findValue");
-        User response = null;
+        User response;
         try {
             if (findBy.equals("name")) {
                 response = userService.getUserByName(findValue);
             } else {
                 response = userService.getUserByEmail(findValue);
             }
-        } catch (NoResultException NRE) {
-            response = null;
-        } finally {
             return response;
+        } catch (PersistenceException pe) {
+            return null;
         }
     }
 
@@ -77,16 +77,16 @@ public class AdminUsersController {
     @ResponseBody
     AJAXResponse deleteUser(HttpServletRequest request) {
 
-        //get ID of loginned user before updating
-        int loginnedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+        //get ID of logged user before updating
+        int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
         //get ID of user for deleting
         int id = Integer.parseInt(request.getParameter("id"));
 
         AJAXResponse response = new AJAXResponse();
 
         //User cant delete his own profile
-        if(id== loginnedUserId){
-            response.setResult("REMOVE_HIMSELF");
+        if(id== loggedUserId){
+            response.setResult("CAN'T_REMOVE_HIMSELF");
             return response;
         }
 
@@ -94,7 +94,7 @@ public class AdminUsersController {
             userService.deleteUser(id);
             response.setResult("SUCCESS");
             return response;
-        } catch (Exception HE) {
+        } catch (PersistenceException pe) {
             response.setResult("ERROR");
             return response;
         }
@@ -109,12 +109,7 @@ public class AdminUsersController {
         String newPassword = request.getParameter("password");
         int enabled = Integer.parseInt(request.getParameter("enabled"));
 
-        User updatedUser = new User();
-        updatedUser.setId(id);
-        updatedUser.setLogin(newLogin);
-        updatedUser.setEmail(newEmail);
-        updatedUser.setPassword(newPassword);
-        updatedUser.setEnabled(enabled);
+        User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
         AJAXResponse response = new AJAXResponse();
         try {
@@ -126,7 +121,7 @@ public class AdminUsersController {
                 doAutoLogin(updatedUser.getLogin());
             }
             response.setResult("SUCCESS");
-        } catch (Exception HE) {
+        } catch (PersistenceException pe) {
             response.setResult("ERROR");
         } finally {
             return response;
