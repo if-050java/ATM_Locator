@@ -157,8 +157,9 @@ function showModal(){
 
 function updateUser(){
 
-    /*//checking login
+    //checking login
     if(! validateLogin($('#inputLogin').prop("value"))){
+        $('#inputLogin').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
         $('#inputLogin').popover("show");
         return;
     }
@@ -171,6 +172,7 @@ function updateUser(){
 
     //checking confirmed password
     if(! validateConfirmPassword($('#inputPassword').prop("value"),$('#inputConfirmPassword').prop("value"))){
+        $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#inputConfirmPassword').popover("show");
         return;
     };
@@ -179,7 +181,7 @@ function updateUser(){
     if(! validatePasswordStrange($('#inputPassword').prop("value"))){
         $('#inputPassword').popover("show");
         return;
-    }*/
+    }
 
     //Об'єкт AJAX запиту
     xmlhttp=GetXmlHttpObject();
@@ -214,57 +216,6 @@ function updateUser(){
     };
     xmlhttp.send(null);
 };
-
-function validateEmail(email){
-    regExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regExp.test(email);
-};
-
-function validatePasswordStrange(password){
-    if(password.length > 6){
-        regExp = /[0-9]/;
-        if(regExp.test(password)){
-            regExp = /[a-z]|[а-ї]/;
-            if(regExp.test(password)){
-                regExp = /[A-Z]|[Є-Я]/
-                if(regExp.test(password)){
-                    return true;
-                }else{
-                    $('#inputPassword').attr("data-content", "Password must have a upper case letter");
-                    return false//must have a upper case letter data-content
-                }
-            }else{
-                $('#inputPassword').attr("data-content", "Password must have a low case letter");
-                return false;//must have a low case letter
-            }
-        }else{
-            $('#inputPassword').attr("data-content", "Password must have a upper case letter");
-            return false;//must have a number
-        }
-    }else{
-        $('#inputPassword').attr("data-content", "Password is too short. Min 6 characters");
-        return false;//too short
-    }
-}
-
-function validateConfirmPassword(password, confirm){
-    return password == confirm;
-}
-
-function validateLogin(login){
-    if(login.length >= 4){
-        regExp = /^(\w){4,}$/;
-        if(regExp.test(login)){
-            return true;
-        }else{
-            $('#inputLogin').attr("data-content", "Unsupported character in login");
-            return false;//Unsupported character in login
-        }
-    }else{
-        $('#inputLogin').attr("data-content", "Login is too short. Min 4 characters");
-        return false;//Login is too short
-    }
-}
 
 function hidePopover(element){
     $('#'+element).popover("destroy");

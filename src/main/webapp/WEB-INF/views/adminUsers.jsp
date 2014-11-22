@@ -11,6 +11,7 @@
 <html>
 <head>
     <script src="<c:url value="/resources"/>/scripts/AdminUsers.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/styles.css">
     <title>AdminUsers</title>
 </head>

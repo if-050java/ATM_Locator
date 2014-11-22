@@ -104,16 +104,18 @@ public class AdminUsersController {
     public  @ResponseBody
     EnumSet<ResultResponse> updateUser(HttpServletRequest request) {
 
+        //Set of results.
         EnumSet<ResultResponse> results = EnumSet.noneOf(ResultResponse.class);
 
+        //Creating updated user profile from form
         int id = Integer.parseInt(request.getParameter("id"));
         String newLogin = request.getParameter("login");
         String newEmail = request.getParameter("email");
         String newPassword = request.getParameter("password");
         int enabled = Integer.parseInt(request.getParameter("enabled"));
-
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
+        //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         validationService.validate(updatedUser, errors);
 
