@@ -34,7 +34,7 @@
                                        onchange="SelectFindType()"/>
                             </span>
                                 <input type="text" name="findName" id="findName" class="form-control"
-                                       placeholder="By name"/>
+                                       placeholder="By name" onclick="hidePopover('findBtn')"/>
                             </div>
                         </div>
                     </div>
@@ -46,10 +46,12 @@
                                        onchange="SelectFindType()"/>
                             </span>
                                 <input type="text" name="findEmail" disabled="true" id="findEmail" class="form-control"
-                                       placeholder="By e-mail"/>
+                                       placeholder="By e-mail" onclick="hidePopover('findBtn')"/>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-default" onclick="FindUser()">Find user</button>
+                        <button type="button" class="btn btn-default" onclick="FindUser()" id="findBtn" title=""
+                        data-content="" data-placement="left"
+                        data-toggle="popover" data-original-title="">Find user</button>
                     </div>
                 </form>
             </div>
