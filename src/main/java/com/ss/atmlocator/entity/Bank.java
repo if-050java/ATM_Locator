@@ -38,7 +38,7 @@ public class Bank {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
     private Set<AtmParser> atmParserSet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "network_id")
     private AtmNetwork network;
 
