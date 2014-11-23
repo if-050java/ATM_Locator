@@ -39,12 +39,33 @@ public class AdminBanksController {
     }
 
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
-    public String bankEdit(ModelMap modelMap, @RequestParam(value = "bank_id", required = true) int user_id) {
-        Bank bank = banksDAO.getBank(user_id);
+    public String bankEdit(ModelMap modelMap,
+                           @RequestParam(value = "bank", required = false) Bank bank,
+                           @RequestParam(value = "bank_id", required = true) int bank_id) {
+        List<AtmNetwork> networks = networksDAO.getNetworksList();
+        modelMap.addAttribute("networks", networks);
+        bank = banksDAO.getBank(bank_id);
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
 
         return "adminBankEdit";
     }
+
+    @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
+    public String bankSave(ModelMap modelMap,
+                           @RequestParam(value = "bank", required = true) Bank bank,
+                           @RequestParam(value = "network_id", required = true) int network_id)
+    {
+        AtmNetwork network = networksDAO.getNetwork(network_id);
+        bank.setNetwork(network);
+        Bank savedBank = banksDAO.saveBank(bank);
+
+        modelMap.addAttribute("bank", savedBank);
+        modelMap.addAttribute("bank_id", savedBank.getId());
+        modelMap.addAttribute("active","adminBanks");
+
+        return "redirect:adminBankEdit";
+    }
+
 
 }

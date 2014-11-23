@@ -18,6 +18,9 @@ public class Bank {
     private String name;
 
     @Column
+    private int mfoCode = 0;
+
+    @Column
     private String webSite;
 
     @Column
@@ -56,6 +59,22 @@ public class Bank {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getMfoCode() {
+        return mfoCode;
+    }
+
+    public void setMfoCode(int mfoCode) {
+        this.mfoCode = mfoCode;
+    }
+
+    public Set<AtmParser> getAtmParserSet() {
+        return atmParserSet;
+    }
+
+    public void setAtmParserSet(Set<AtmParser> atmParserSet) {
+        this.atmParserSet = atmParserSet;
     }
 
     public String getWebSite() {

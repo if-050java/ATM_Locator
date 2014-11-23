@@ -25,4 +25,9 @@ public class AtmNetworksDAO {
         return networks;
     }
 
+    public AtmNetwork getNetwork(int id){
+        AtmNetwork network = (AtmNetwork)entityManager.find(AtmNetwork.class, id);
+        return network;
+    }
+
 }
