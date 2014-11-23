@@ -6,12 +6,12 @@ var user;               //Instance of current loaded user
 
 //Установка полів вводу дозволеними/блокованими в залежності від вибору параметру пошуку
 function SelectFindType() {
-    if (document.getElementById("byName").checked == true) {
-        document.getElementById("findName").disabled = false;
-        document.getElementById("findEmail").disabled = true;
+    if ($("#byName").prop("checked") == true) {
+        $("#findName").prop("disabled", false);
+        $("#findEmail").prop("disabled", true);
     } else {
-        document.getElementById("findName").disabled = true;
-        document.getElementById("findEmail").disabled = false;
+        $("#findName").prop("disabled", true);
+        $("#findEmail").prop("disabled", false);
     }
 };
 
@@ -30,12 +30,12 @@ function FindUser(){
     var findValue;
 
     //Отримання параметрів запиту з форми
-    if(document.getElementById("byName").checked == true){
+    if($("#byName").prop("checked") == true){
         findBy = "name";
-        findValue = document.getElementById("findName").value;
+        findValue = $("#findName").val();
     } else {
         findBy = "email";
-        findValue = document.getElementById("findEmail").value;
+        findValue = $("#findEmail").val();
     }
 
     //Створення запиту
@@ -46,7 +46,7 @@ function FindUser(){
     xmlhttp.onreadystatechange = function() {
         if (xmlhttp.readyState == 4) {
             if(xmlhttp.status == 200) {
-                fillData();
+                showData();
             }
         }
     };
@@ -65,56 +65,66 @@ function GetXmlHttpObject(){
 }
 
 //Заповнення та демонстрація даних користувача
-function fillData(){
+function showData(){
     //Clear form before updating
     clearForm();
     //Отримуємо обєкт користувача з JSON
     try {
         user = JSON.parse(xmlhttp.responseText);
     }catch (Exception){
-        alert("Can't find user with this name or e-mail");
+       // alert("Can't find user with this name or e-mail");
+        $('#findBtn').attr("data-content", "Can't find user with this name or e-mail");
+        $('#findBtn').popover("show");
         user = null;
         return;
     }
+    fillFields();
+    //Відображаємо форму
+    $("#userData").show();
+};
+
+function fillFields(){
     //Заповнюємо всі поля
     //Аватар
-    document.getElementById("userAvatar").src = "/resources/images/"+user.avatar;//setAttribute("src", "/resources/images/"+user.avatar);
+    $("#userAvatar").attr("src", "/resources/images/"+user.avatar);//setAttribute("src", "/resources/images/"+user.avatar);
     //Ім'я
-    document.getElementById("inputLogin").value = user.login;//setAttribute("value", user.login);
+    $("#inputLogin").val(user.login);//setAttribute("value", user.login);
     //E-mail
-    document.getElementById("inputEmail").value = user.email;//setAttribute("value", user.email);
+    $("#inputEmail").val(user.email);//setAttribute("value", user.email);
     //Password
-    document.getElementById("inputPassword").value = user.password;//setAttribute("value", user.email);
+    $("#inputPassword").val(user.password);//setAttribute("value", user.email);
     //E-mail
-    document.getElementById("inputConfirmPassword").value = user.password;//setAttribute("value", user.email);
+    $("#inputConfirmPassword").val(user.password);//setAttribute("value", user.email);
     //Enabled
     if(user.enabled != 0){
-        document.getElementById("enabled").checked = true;//setAttribute("checked", "true");
+        $("#enabled").prop("checked" ,true);//setAttribute("checked", "true");
     } else {
-        document.getElementById("enabled").checked = false;//setAttribute("checked", "false");
+        $("#enabled").attr("checked",false);//setAttribute("checked", "false");
     }
-    //Відображаємо форму
-    document.getElementById("userData").style.display = "block";
-};
+}
+
 
 //Відміна дій адміністратора
 function clearForm(){
+    //hide form
+    $("#userData").hide();
     //Очищаємо всі поля
     //Аватар
-    document.getElementById("userAvatar").src = "";//setAttribute("src", "");
-    //Ім'я
-    document.getElementById("inputLogin").value = "";//setAttribute("value", "");
-    //E-mail
-    document.getElementById("inputEmail").value = "";//setAttribute("value", "");
-    //password
-    document.getElementById("inputPassword").value = "";//setAttribute("value", "");
-    //Confirm
-    document.getElementById("inputConfirmPassword").value = "";//setAttribute("value", "");
-    //Enabled
-    document.getElementById("enabled").checked = false;//setAttribute("checked", "false");
+    clearFields();
+}
 
-    //Приховуємо форму
-    document.getElementById("userData").style.display = "none";
+function clearFields(){
+    $("#userAvatar").attr("src","");//setAttribute("src", "");
+    //Ім'я
+    $("#inputLogin").val("");//setAttribute("value", "");
+    //E-mail
+    $("#inputEmail").val("");//setAttribute("value", "");
+    //password
+    $("#inputPassword").val("");//setAttribute("value", "");
+    //Confirm
+    $("#inputConfirmPassword").val("");//setAttribute("value", "");
+    //Enabled
+    $("#enabled").attr("checked",false);//setAttribute("checked", "false");
 }
 
 //Видалення користувача
@@ -137,6 +147,7 @@ function deleteUser(){
             if(xmlhttp.status == 200) {
                 document.getElementById("ModalLabel").innerHTML = "Deleting user";
                 showModal();
+                $("#userData").slideUp();
             }
         }
     };
@@ -172,13 +183,14 @@ function updateUser(){
 
     //checking confirmed password
     if(! validateConfirmPassword($('#inputPassword').prop("value"),$('#inputConfirmPassword').prop("value"))){
-        $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
+        $('#inputPassword').attr("data-content", "Password and confirm is different");
         $('#inputConfirmPassword').popover("show");
         return;
     };
 
     //checking password strange
     if(! validatePasswordStrange($('#inputPassword').prop("value"))){
+        $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#inputPassword').popover("show");
         return;
     }

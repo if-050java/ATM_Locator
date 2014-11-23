@@ -22,8 +22,6 @@ import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Vasyl Danylyuk on 14.11.2014.
@@ -40,7 +38,9 @@ public class AdminUsersController {
         INVALID_LOGIN,
         INVALID_EMAIL,
         INVALID_PASSWORD,
-        LOGIN_OR_EMAIL_ALREADY_EXISTING
+        EMAIL_ALREADY_EXIST,
+        LOGIN_ALREADY_EXIST,
+        NOTHING_TO_UPDATE
     }
 
     @Autowired
@@ -116,6 +116,16 @@ public class AdminUsersController {
         int enabled = Integer.parseInt(request.getParameter("enabled"));
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
+        //checking if nothing to update
+        if(
+        updatedUser.getLogin().equals(userService.getUserById(updatedUser.getId()).getLogin())       && //login didn't change
+        updatedUser.getEmail().equals(userService.getUserById(updatedUser.getId()).getEmail())       &&//email didn't change
+        updatedUser.getPassword().equals(userService.getUserById(updatedUser.getId()).getPassword()) &&//password didn't change
+        updatedUser.getEnabled() == userService.getUserById(updatedUser.getId()).getEnabled()          //enabled didn't change
+        ){
+            results.add(ResultResponse.NOTHING_TO_UPDATE);
+            return results;
+        }
         //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         validationService.validate(updatedUser, errors);
@@ -123,11 +133,18 @@ public class AdminUsersController {
         if(! errors.hasErrors()) {
             //if validation was successful try to save
             try {
-                //Check existing login and email in db
-                //dont check if it is this user
+                //Check existing login in database
+                //don't check if it is this user and login didn't change
                 if(! userService.getUserById(updatedUser.getId()).getLogin().equals(updatedUser.getLogin()))
-                    if((userService.checkExistLoginName(updatedUser.getLogin()) || userService.checkExistEmail(updatedUser.getEmail()))) { //if not exist
-                        results.add(ResultResponse.LOGIN_OR_EMAIL_ALREADY_EXISTING);
+                    if((userService.checkExistLoginName(updatedUser.getLogin()))) { //if login exist
+                        results.add(ResultResponse.LOGIN_ALREADY_EXIST);
+                        return results;
+                    }
+                //Check existing email in database
+                //don't check if it is this user and e-mail didn't change
+                if(! userService.getUserById(updatedUser.getId()).getEmail().equals(updatedUser.getEmail()))
+                    if(userService.checkExistEmail(updatedUser.getEmail())) { //if not exist
+                        results.add(ResultResponse.EMAIL_ALREADY_EXIST);
                         return results;
                     }
                 //get ID of logged user before updating

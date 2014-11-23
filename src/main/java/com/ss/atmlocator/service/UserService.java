@@ -30,6 +30,7 @@ public class UserService {
     public void editUser(User user) {
         User persistedUser = getUserById(user.getId());
 
+        persistedUser.setEnabled(user.getEnabled());
         if(user.getLogin() != null)
             persistedUser.setLogin(user.getLogin());
         if(user.getAvatar() != null)
