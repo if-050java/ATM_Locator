@@ -19,6 +19,8 @@
         <property name="locations">
             <list>
                 <value>/WEB-INF/spring/properties/jdbc.properties</value>
+                <value>/WEB-INF/spring/properties/email.properties</value>
+                <value>/WEB-INF/spring/properties/matcher.properties</value>
             </list>
         </property>
     </bean>
@@ -55,11 +57,12 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
+    <!-- SendMail -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com" />
         <property name="port" value="587" />
-        <property name="username" value="if050java" />
-        <property name="password" value="if-050java" />
+        <property name="username" value="${email.user}" />
+        <property name="password" value="${email.password}" />
 
         <property name="javaMailProperties">
             <props>
@@ -71,6 +74,13 @@
 
     <bean id="mail" class="com.ss.atmlocator.utils.SendMails" scope="singleton">
         <property name="mailSender" ref="mailSender" />
+    </bean>
+
+    <!-- User credentials validate -->
+    <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">
+        <constructor-arg name="mailRegExp" value="${email.pattern}"/>
+        <constructor-arg name="loginRegExp" value="${login.pattern}"/>
+        <constructor-arg name="passwordRegExp" value="${password.pattern}"/>
     </bean>
 
 </beans>

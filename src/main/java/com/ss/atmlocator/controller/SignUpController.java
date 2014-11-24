@@ -66,10 +66,11 @@ public class SignUpController {
             if (signMe != null && signMe.length() > 0) {
                 loginUser(user, request);
             }
+            sendMails.sendMail("if-050java","s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
             model.addAttribute("active", "main");
             return "main";
         }
-        /*sendMails.sendMail("if-050java","s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());*/
+
         else {
             model.addAttribute("login", login);
             model.addAttribute("email", email);
@@ -92,7 +93,6 @@ public class SignUpController {
 
         request.getSession();
 
-        /*token.setDetails(new WebAuthenticationDetails(request));*/
         Authentication authenticatedUser = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
 
