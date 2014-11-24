@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.service.ValidateUsersFieldsService;
+import com.ss.atmlocator.utils.UserControllersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,18 +31,9 @@ import java.util.HashMap;
 @Controller
 public class AdminUsersController {
 
-    //Клас для надсилання відповіді про успішність/неуспішність операції
-    enum ResultResponse {
-        ERROR,
-        SUCCESS,
-        CANT_REMOVE_YOURSELF,
-        INVALID_LOGIN,
-        INVALID_EMAIL,
-        INVALID_PASSWORD,
-        EMAIL_ALREADY_EXIST,
-        LOGIN_ALREADY_EXIST,
-        NOTHING_TO_UPDATE
-    }
+    //Request parameters for finding users
+    final String FIND_BY = "findBy";
+    final String FIND_VALUE = "findValue";
 
     @Autowired
     UserService userService;
@@ -57,16 +49,15 @@ public class AdminUsersController {
     public
     @ResponseBody
     User findUser(HttpServletRequest request) {
-        String findBy = request.getParameter("findBy");
-        String findValue = request.getParameter("findValue");
-        User response;
+        //Parameters for finding
+        String findBy = request.getParameter(FIND_BY);
+        String findValue = request.getParameter(FIND_VALUE);
         try {
             if (findBy.equals("name")) {
-                response = userService.getUserByName(findValue);
+                return userService.getUserByName(findValue);
             } else {
-                response = userService.getUserByEmail(findValue);
+                return userService.getUserByEmail(findValue);
             }
-            return response;
         } catch (PersistenceException pe) {
             return null;
         }
@@ -81,7 +72,7 @@ public class AdminUsersController {
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
     public
     @ResponseBody
-    ResultResponse deleteUser(HttpServletRequest request) {
+    UserControllersResponse deleteUser(HttpServletRequest request) {
 
         //get ID of logged user before updating
         int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
@@ -90,23 +81,23 @@ public class AdminUsersController {
 
         //User cant delete his own profile
         if(id== loggedUserId){
-            return ResultResponse.CANT_REMOVE_YOURSELF;
+            return UserControllersResponse.CANT_REMOVE_YOURSELF;
         }
 
         try {
             userService.deleteUser(id);
-            return ResultResponse.SUCCESS;
+            return UserControllersResponse.SUCCESS;
         } catch (PersistenceException pe) {
-            return ResultResponse.ERROR;
+            return UserControllersResponse.ERROR;
         }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public  @ResponseBody
-    EnumSet<ResultResponse> updateUser(HttpServletRequest request) {
+    EnumSet<UserControllersResponse> updateUser(HttpServletRequest request) {
 
         //Set of results.
-        EnumSet<ResultResponse> results = EnumSet.noneOf(ResultResponse.class);
+        EnumSet<UserControllersResponse> results = EnumSet.noneOf(UserControllersResponse.class);
 
         //Creating updated user profile from form
         int id = Integer.parseInt(request.getParameter("id"));
@@ -123,7 +114,7 @@ public class AdminUsersController {
         updatedUser.getPassword().equals(userService.getUserById(updatedUser.getId()).getPassword()) &&//password didn't change
         updatedUser.getEnabled() == userService.getUserById(updatedUser.getId()).getEnabled()          //enabled didn't change
         ){
-            results.add(ResultResponse.NOTHING_TO_UPDATE);
+            results.add(UserControllersResponse.NOTHING_TO_UPDATE);
             return results;
         }
         //validating user profile
@@ -137,14 +128,14 @@ public class AdminUsersController {
                 //don't check if it is this user and login didn't change
                 if(! userService.getUserById(updatedUser.getId()).getLogin().equals(updatedUser.getLogin()))
                     if((userService.checkExistLoginName(updatedUser.getLogin()))) { //if login exist
-                        results.add(ResultResponse.LOGIN_ALREADY_EXIST);
+                        results.add(UserControllersResponse.LOGIN_ALREADY_EXIST);
                         return results;
                     }
                 //Check existing email in database
                 //don't check if it is this user and e-mail didn't change
                 if(! userService.getUserById(updatedUser.getId()).getEmail().equals(updatedUser.getEmail()))
                     if(userService.checkExistEmail(updatedUser.getEmail())) { //if not exist
-                        results.add(ResultResponse.EMAIL_ALREADY_EXIST);
+                        results.add(UserControllersResponse.EMAIL_ALREADY_EXIST);
                         return results;
                     }
                 //get ID of logged user before updating
@@ -154,25 +145,25 @@ public class AdminUsersController {
                 if (updatedUser.getId() == loggedUserId) {
                     doAutoLogin(updatedUser.getLogin());
                 }
-                results.add(ResultResponse.SUCCESS);
+                results.add(UserControllersResponse.SUCCESS);
                 return results;
             } catch (PersistenceException pe) {
-                results.add(ResultResponse.ERROR);
+                results.add(UserControllersResponse.ERROR);
                 return results;
             }
         } else {
             //if validation unsuccessful add all errors to response
             for(ObjectError error: errors.getAllErrors()){
                 if(error.getCodes()[2].equals("INVALID_LOGIN")) {
-                    results.add(ResultResponse.INVALID_LOGIN);
+                    results.add(UserControllersResponse.INVALID_LOGIN);
                     continue;
                 }
                 if(error.getCodes()[2].equals("INVALID_EMAIL")) {
-                    results.add(ResultResponse.INVALID_EMAIL);
+                    results.add(UserControllersResponse.INVALID_EMAIL);
                     continue;
                 }
                 if(error.getCodes()[2].equals("INVALID_PASSWORD")) {
-                    results.add(ResultResponse.INVALID_PASSWORD);
+                    results.add(UserControllersResponse.INVALID_PASSWORD);
                     continue;
                 }
             }

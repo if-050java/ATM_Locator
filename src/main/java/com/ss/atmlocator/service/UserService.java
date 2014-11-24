@@ -3,6 +3,7 @@ package com.ss.atmlocator.service;
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.utils.UserConformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,24 +30,7 @@ public class UserService {
 
     public void editUser(User user) {
         User persistedUser = getUserById(user.getId());
-
-        persistedUser.setEnabled(user.getEnabled());
-        if(user.getLogin() != null)
-            persistedUser.setLogin(user.getLogin());
-        if(user.getAvatar() != null)
-            persistedUser.setAvatar(user.getAvatar());
-        if(user.getEmail() != null)
-            persistedUser.setEmail(user.getEmail());
-        if(user.getPassword() != null)
-            persistedUser.setPassword(user.getPassword());
-        if(user.getRoles() != null)
-            persistedUser.setRoles(user.getRoles());
-        if(user.getAtmComments() != null)
-            persistedUser.setAtmComments(user.getAtmComments());
-        if(user.getAtmFavorites() != null)
-            persistedUser.setAtmFavorites(user.getAtmFavorites());
-
-        usersDAO.updateUser(persistedUser);
+        usersDAO.updateUser(UserConformer.merge(user,persistedUser));
     }
 
     public void deleteUser(int id){
