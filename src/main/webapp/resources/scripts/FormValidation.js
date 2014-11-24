@@ -9,17 +9,17 @@ function validateEmail(email){
 
 function validatePasswordStrange(password){
     if(password.length > 6){
-        regExp = /[0-9]/;
-        if(regExp.test(password)){
-            regExp = /[a-z]|[а-ї]/;
-            if(regExp.test(password)){
-                regExp = /[A-Z]|[Є-Я]/
-                if(regExp.test(password)){
-                    return true;
-                }else{return false}//must have a upper case letter data-content
-            }else{return false}//must have a low case letter
-        }else{return false}//must have a number
-    }else{return false}//too short
+     regExp = /[0-9]/;
+     if(regExp.test(password)){
+     regExp = /[a-z]|[а-ї]/;
+     if(regExp.test(password)){
+     regExp = /[A-Z]|[Є-Я]/
+     if(regExp.test(password)){
+     return true;
+     }else{return false}//must have a upper case letter data-content
+     }else{return false}//must have a low case letter
+     }else{return false}//must have a number
+     }else{return false}//too short
 }
 
 function validateConfirmPassword(password, confirm){
