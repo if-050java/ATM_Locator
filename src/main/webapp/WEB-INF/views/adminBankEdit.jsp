@@ -11,7 +11,7 @@
         </h2>
       </div>
       <div class="panel-body">
-        <form:form method="post" modelAttribute="bank" cssClass="form-horizontal"
+        <form:form method="post" action="/adminBankEdit" modelAttribute="bank" cssClass="form-horizontal"
                    role="form" enctype="multipart/form-data">
           <div class="row">
             <div class="col-md-2">
@@ -23,12 +23,11 @@
               <div class="controls clearfix">
                   <span class="btn btn-success btn-file">
                       <i class="glyphicon glyphicon-picture"></i> <span>Load file</span>
-                      <input type="file" name="image" id="image"/>
+                      <input type="file" name="imageLogo" id="imageLogo"/>
+                      <form:hidden path="logo"/>
                   </span>
               </div>
             </div>
-
-
 
             <div class="col-md-8">
 
@@ -69,7 +68,7 @@
                     <form:input path="iconAtm" placeholder="iconAtm" cssClass="form-control"/>
                     <span class="input-group-btn btn-file">
                       <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-folder-open"></i></button>
-                      <input type="file" name="iconAtm" id="iconAtm"/>
+                      <input type="file" name="iconAtmFile" id="iconAtmFile"/>
                     </span>
                   </div>
                 </div>
@@ -83,11 +82,13 @@
                     <form:input path="iconOffice" placeholder="iconOffice" cssClass="form-control"/>
                     <span class="input-group-btn btn-file">
                       <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-folder-open"></i></button>
-                      <input type="file" name="iconOffice" id="iconOffice"/>
+                      <input type="file" name="iconOfficeFile" id="iconOfficeFile"/>
                     </span>
                   </div>
                 </div>
               </div>
+
+
 
               <div class="form-group">
                 <label for="networks_menu" class="col-sm-4 control-label">ATM network</label>
@@ -106,6 +107,13 @@
 
                 <input type="hidden" name="network_id" id="network_id" value="${bank.network.id}">
               </div>
+
+              <form:hidden path="lastUpdated"/>
+<%--
+              <form:hidden path="atmOfficeSet"/>
+              <form:hidden path="atmParserSet"/>
+--%>
+              <form:hidden path="network"/>
 
               <div class="form-group last">
                 <button type="submit" class="btn btn-success btn-primary">Save</button>

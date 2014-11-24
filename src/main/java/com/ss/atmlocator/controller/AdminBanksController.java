@@ -7,6 +7,7 @@ import com.ss.atmlocator.entity.Bank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,9 +40,10 @@ public class AdminBanksController {
     }
 
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
-    public String bankEdit(ModelMap modelMap,
-                           @RequestParam(value = "bank", required = false) Bank bank,
-                           @RequestParam(value = "bank_id", required = true) int bank_id) {
+    public String bankEdit(
+                           @ModelAttribute("bank") Bank bank,
+                           @RequestParam(value = "bank_id", required = true) int bank_id,
+                           ModelMap modelMap) {
         List<AtmNetwork> networks = networksDAO.getNetworksList();
         modelMap.addAttribute("networks", networks);
         bank = banksDAO.getBank(bank_id);
@@ -52,9 +54,10 @@ public class AdminBanksController {
     }
 
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
-    public String bankSave(ModelMap modelMap,
-                           @RequestParam(value = "bank", required = true) Bank bank,
-                           @RequestParam(value = "network_id", required = true) int network_id)
+    public String bankSave(
+                           Bank bank,
+                           @RequestParam(value = "network_id", required = true) int network_id,
+                           ModelMap modelMap)
     {
         AtmNetwork network = networksDAO.getNetwork(network_id);
         bank.setNetwork(network);
@@ -64,7 +67,7 @@ public class AdminBanksController {
         modelMap.addAttribute("bank_id", savedBank.getId());
         modelMap.addAttribute("active","adminBanks");
 
-        return "redirect:adminBankEdit";
+        return "adminBankEdit";
     }
 
 
