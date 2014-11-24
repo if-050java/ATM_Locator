@@ -1,11 +1,24 @@
 package com.ss.atmlocator.utils;
 
 import com.ss.atmlocator.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Vasyl Danylyuk on 24.11.2014.
  */
-public class UserConformer {
+@Service
+public class UserUtil {
+
+    @Autowired
+    @Qualifier("jdbcUserService")
+    public UserDetailsManager userDetailsManager;
 
     /**
      * Updating only noNull fields in old user profile
@@ -39,7 +52,14 @@ public class UserConformer {
         return mergedUser;
     }
 
-    public static boolean isCurrentLoggedUser(User user){
-
+    /**
+     * Autorelogin user after change own login(userName)
+     *
+     * @param username new name of loggined user
+     */
+    public void doAutoLogin(String username) {
+        UserDetails user = userDetailsManager.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

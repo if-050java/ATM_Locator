@@ -1,12 +1,10 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IUsersDAO;
-import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.utils.UserConformer;
+import com.ss.atmlocator.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by roman on 19.11.14.
@@ -30,7 +28,7 @@ public class UserService {
 
     public void editUser(User user) {
         User persistedUser = getUserById(user.getId());
-        usersDAO.updateUser(UserConformer.merge(user,persistedUser));
+        usersDAO.updateUser(UserUtil.merge(user,persistedUser));
     }
 
     public void deleteUser(int id){

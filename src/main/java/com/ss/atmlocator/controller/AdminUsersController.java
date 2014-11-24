@@ -3,14 +3,10 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.service.ValidateUsersFieldsService;
+import com.ss.atmlocator.utils.UserUtil;
 import com.ss.atmlocator.utils.UserControllersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.MapBindingResult;
@@ -39,11 +35,10 @@ public class AdminUsersController {
     UserService userService;
 
     @Autowired
-    ValidateUsersFieldsService validationService;
+    UserUtil userUtil;
 
     @Autowired
-    @Qualifier("jdbcUserService")
-    public UserDetailsManager userDetailsManager;
+    ValidateUsersFieldsService validationService;
 
     @RequestMapping(value = "/findUser", method = RequestMethod.GET)
     public
@@ -73,16 +68,13 @@ public class AdminUsersController {
     public
     @ResponseBody
     UserControllersResponse deleteUser(HttpServletRequest request) {
-
-        //get ID of logged user before updating
-        int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-        //get ID of user for deleting
+        //id of user will be deleted
         int id = Integer.parseInt(request.getParameter("id"));
-
-        //User cant delete his own profile
-        if(id== loggedUserId){
-            return UserControllersResponse.CANT_REMOVE_YOURSELF;
-        }
+        int currentLoggedUserId = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        //Check user want to remove himself
+        if(id == currentLoggedUserId){
+            return UserControllersResponse.CANT_REMOVE_YOURSELF; //User cant delete his own profile
+        };
 
         try {
             userService.deleteUser(id);
@@ -143,7 +135,7 @@ public class AdminUsersController {
                 userService.editUser(updatedUser);
                 //if admin want to change own profile relogin this user with new name
                 if (updatedUser.getId() == loggedUserId) {
-                    doAutoLogin(updatedUser.getLogin());
+                    userUtil.doAutoLogin(updatedUser.getLogin());
                 }
                 results.add(UserControllersResponse.SUCCESS);
                 return results;
@@ -169,12 +161,5 @@ public class AdminUsersController {
             }
             return results;
         }
-    }
-
-    private void doAutoLogin(String username) {
-        UserDetails user = userDetailsManager.loadUserByUsername(username);
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
     }
 }
