@@ -168,7 +168,7 @@ function showModal(){
 
 function updateUser(){
 
-    //checking login
+    /*//checking login
     if(! validateLogin($('#inputLogin').prop("value"))){
         $('#inputLogin').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
         $('#inputLogin').popover("show");
@@ -193,7 +193,7 @@ function updateUser(){
         $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#inputPassword').popover("show");
         return;
-    }
+    }*/
 
     //Об'єкт AJAX запиту
     xmlhttp=GetXmlHttpObject();

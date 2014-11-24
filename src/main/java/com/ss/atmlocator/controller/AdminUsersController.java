@@ -3,10 +3,13 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.service.ValidateUsersFieldsService;
-import com.ss.atmlocator.utils.UserUtil;
 import com.ss.atmlocator.utils.UserControllersResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.MapBindingResult;
@@ -19,6 +22,7 @@ import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.SplittableRandom;
 
 /**
  * Created by Vasyl Danylyuk on 14.11.2014.
@@ -30,12 +34,18 @@ public class AdminUsersController {
     //Request parameters for finding users
     final String FIND_BY = "findBy";
     final String FIND_VALUE = "findValue";
+    //Request parameters for user fields
+    final String USER_ID = "id";
+    final String USER_LOGIN = "login";
+    final String USER_EMAIL = "email";
+    final String USER_PASSWORD = "password";
+    final String USER_ENABLED = "enabled";
 
     @Autowired
     UserService userService;
 
     @Autowired
-    UserUtil userUtil;
+    UserDetailsManager userDetailsManager;
 
     @Autowired
     ValidateUsersFieldsService validationService;
@@ -67,20 +77,20 @@ public class AdminUsersController {
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
     public
     @ResponseBody
-    UserControllersResponse deleteUser(HttpServletRequest request) {
+    EnumSet<UserControllersResponse> deleteUser(HttpServletRequest request) {
         //id of user will be deleted
-        int id = Integer.parseInt(request.getParameter("id"));
+        int id = Integer.parseInt(request.getParameter(USER_ID));
         int currentLoggedUserId = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         //Check user want to remove himself
         if(id == currentLoggedUserId){
-            return UserControllersResponse.CANT_REMOVE_YOURSELF; //User cant delete his own profile
+            return EnumSet.of(UserControllersResponse.CANT_REMOVE_YOURSELF); //User cant delete his own profile
         };
 
         try {
             userService.deleteUser(id);
-            return UserControllersResponse.SUCCESS;
+            return EnumSet.of(UserControllersResponse.SUCCESS);
         } catch (PersistenceException pe) {
-            return UserControllersResponse.ERROR;
+            return EnumSet.of(UserControllersResponse.ERROR);
         }
     }
 
@@ -88,32 +98,30 @@ public class AdminUsersController {
     public  @ResponseBody
     EnumSet<UserControllersResponse> updateUser(HttpServletRequest request) {
 
-        //Set of results.
-        EnumSet<UserControllersResponse> results = EnumSet.noneOf(UserControllersResponse.class);
-
         //Creating updated user profile from form
-        int id = Integer.parseInt(request.getParameter("id"));
-        String newLogin = request.getParameter("login");
-        String newEmail = request.getParameter("email");
-        String newPassword = request.getParameter("password");
-        int enabled = Integer.parseInt(request.getParameter("enabled"));
+        int id = Integer.parseInt(request.getParameter(USER_ID));
+        String newLogin = request.getParameter(USER_LOGIN);
+        String newEmail = request.getParameter(USER_EMAIL);
+        String newPassword = request.getParameter(USER_PASSWORD);
+        int enabled = Integer.parseInt(request.getParameter(USER_ENABLED));
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
         //checking if nothing to update
-        if(
-        updatedUser.getLogin().equals(userService.getUserById(updatedUser.getId()).getLogin())       && //login didn't change
-        updatedUser.getEmail().equals(userService.getUserById(updatedUser.getId()).getEmail())       &&//email didn't change
-        updatedUser.getPassword().equals(userService.getUserById(updatedUser.getId()).getPassword()) &&//password didn't change
-        updatedUser.getEnabled() == userService.getUserById(updatedUser.getId()).getEnabled()          //enabled didn't change
-        ){
-            results.add(UserControllersResponse.NOTHING_TO_UPDATE);
-            return results;
-        }
+        if( ! userService.isModified(updatedUser)){
+            return EnumSet.of(UserControllersResponse.NOTHING_TO_UPDATE);
+        };
+
         //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         validationService.validate(updatedUser, errors);
+        if(errors.hasErrors()) {//if validation unsuccessful add all errors to response
+            EnumSet<UserControllersResponse> response = EnumSet.noneOf(UserControllersResponse.class);
+            for(ObjectError error: errors.getAllErrors()){
+                response.add(UserControllersResponse.valueOf(error.getCode()));
+            }
+            return response;
+        };
 
-        if(! errors.hasErrors()) {
             //if validation was successful try to save
             try {
                 //Check existing login in database
@@ -159,7 +167,17 @@ public class AdminUsersController {
                     continue;
                 }
             }
-            return results;
+            return null;
         }
+
+    /**
+     * Autorelogin user after change own login(userName)
+     *
+     * @param username new name of loggined user
+     */
+    public void doAutoLogin(String username) {
+        UserDetails user = userDetailsManager.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }
