@@ -70,7 +70,7 @@ public class AdminUsersController {
 
     @RequestMapping(value = "/adminUsers", method = RequestMethod.GET)
     public String adminUsers(ModelMap model) {
-        model.addAttribute("active","adminUsers");
+        model.addAttribute("active", "adminUsers");
         return "adminUsers";
     }
 
@@ -80,11 +80,12 @@ public class AdminUsersController {
     EnumSet<UserControllersResponse> deleteUser(HttpServletRequest request) {
         //id of user will be deleted
         int id = Integer.parseInt(request.getParameter(USER_ID));
-        int currentLoggedUserId = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        int currentLoggedUserId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         //Check user want to remove himself
-        if(id == currentLoggedUserId){
+        if (id == currentLoggedUserId) {
             return EnumSet.of(UserControllersResponse.CANT_REMOVE_YOURSELF); //User cant delete his own profile
-        };
+        }
+        ;
 
         try {
             userService.deleteUser(id);
@@ -95,7 +96,8 @@ public class AdminUsersController {
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public  @ResponseBody
+    public
+    @ResponseBody
     EnumSet<UserControllersResponse> updateUser(HttpServletRequest request) {
 
         //Creating updated user profile from form
@@ -107,23 +109,25 @@ public class AdminUsersController {
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
         //checking if nothing to update
-        if( ! userService.isModified(updatedUser)){
+        if (!userService.isModified(updatedUser)) {
             return EnumSet.of(UserControllersResponse.NOTHING_TO_UPDATE);
-        };
+        }
+        ;
 
         //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         validationService.validate(updatedUser, errors);
-        if(errors.hasErrors()) {//if validation unsuccessful add all errors to response
+        if (errors.hasErrors()) {//if validation unsuccessful add all errors to response
             EnumSet<UserControllersResponse> response = EnumSet.noneOf(UserControllersResponse.class);
-            for(ObjectError error: errors.getAllErrors()){
+            for (ObjectError error : errors.getAllErrors()) {
                 response.add(UserControllersResponse.valueOf(error.getCode()));
             }
             return response;
-        };
+        }
+        ;
 
-            //if validation was successful try to save
-            try {
+        //if validation was successful try to save
+            /*try {
                 //Check existing login in database
                 //don't check if it is this user and login didn't change
                 if(! userService.getUserById(updatedUser.getId()).getLogin().equals(updatedUser.getLogin()))
@@ -167,14 +171,16 @@ public class AdminUsersController {
                     continue;
                 }
             }
-            return null;
-        }
 
-    /**
+
+
+
      * Autorelogin user after change own login(userName)
      *
      * @param username new name of loggined user
      */
+return null;
+    }
     public void doAutoLogin(String username) {
         UserDetails user = userDetailsManager.loadUserByUsername(username);
         Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
