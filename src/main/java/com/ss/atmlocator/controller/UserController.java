@@ -84,15 +84,25 @@ public class UserController {
             @RequestParam String login,
             @RequestParam String email,
             @RequestParam String password,
-            @RequestParam(value = "avatar", required = false) MultipartFile avatar
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
     ) {
         ValidationResponse response = new ValidationResponse();
         User newUser = new User(id, login, email, password, 1);
-        newUser.setAvatar(avatar==null ? null : avatar.getOriginalFilename());
+        newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
 
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         validationService.validate(newUser, errors);
         if (!errors.hasErrors()) {
+            try {
+                userService.editUser(newUser);
+                saveImage(avatar, request);
+                doAutoLogin(newUser.getLogin());
+            } catch (IOException e) {
+                e.printStackTrace();
+                response.setStatus("ERROR");
+                return response;
+            }
+
             response.setStatus("SUCCESS");
             return response;
         }
@@ -100,9 +110,8 @@ public class UserController {
         List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
         for (FieldError objectError : allErrors) {
             errorMesages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
-            if(objectError.getField().equals("nothing")){
+            if (objectError.getField().equals("nothing")) {
                 response.setStatus("INFO");
-                response.setErrorMessageList(errorMesages);
                 return response;
             }
         }

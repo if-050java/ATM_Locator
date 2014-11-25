@@ -7,9 +7,7 @@
 <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
 <div class="container">
     <!-- Small modal window-->
-    <div class="alert" role="alert" style="display: none">
-        <strong>Success!</strong> <span id="message">Your data is saved successfully!!!</span>
-    </div>
+    <div class="alert" role="alert" style="display: none"></div>
     <div class="col-md-16" role="main" id="userData">
         <div class="panel panel-default">
             <div class="panel-heading">
