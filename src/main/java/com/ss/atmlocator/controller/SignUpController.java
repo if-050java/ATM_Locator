@@ -4,6 +4,7 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.service.ValidateUsersFieldsService;
 import com.ss.atmlocator.utils.SendMails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,11 +15,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,6 +40,9 @@ public class SignUpController {
     @Qualifier("mail")
     private SendMails sendMails;
 
+    @Autowired
+    private ValidateUsersFieldsService validateUserField;
+
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup() {
         return "signup";
@@ -49,36 +56,39 @@ public class SignUpController {
                               @RequestParam(value = "signMe", required = false) String signMe,
                               Model model,HttpServletRequest request) {
 
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setEmail(email);
 
-        if (usersDAO.checkExistEmail(email) == false && usersDAO.checkExistLoginName(login) == false) {
-            User user = new User();
-            user.setLogin(login);
-            user.setPassword(password);
-            user.setEmail(email);
-            user.setEnabled(ENABLED_USER_STATUS);
-            user.setAvatar(DEFAULT_USER_AVATAR);
-            Role role = usersDAO.getDefaultUserRole();
-            Set<Role> roles = new HashSet<Role>(0);
-            roles.add(role);
-            user.setRoles(roles);
+        MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), user.getClass().getName());
+        validateUserField.validate(user,errors);
 
-            usersDAO.createUser(user);
-            if (signMe != null && signMe.length() > 0) {
-                loginUser(user, request);
+
+        if(errors.hasErrors()) {
+            String errorCause = "";
+            for(ObjectError err : errors.getAllErrors()){
+                errorCause += err.getCode()+"; ";
             }
-            sendMails.sendMail("if-050java","s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
-            model.addAttribute("active", "main");
-            return "main";
-        }
-
-        else {
-            model.addAttribute("login", login);
-            model.addAttribute("email", email);
-            model.addAttribute("password", password);
-            model.addAttribute("signMe", signMe);
+            String errorMessage = "You entered invalid  parametrs: "+errorCause;
+            model.addAttribute("error", errorMessage);
             return "signup";
-
         }
+
+        user.setEnabled(ENABLED_USER_STATUS);
+        user.setAvatar(DEFAULT_USER_AVATAR);
+        Role role = usersDAO.getDefaultUserRole();
+        Set<Role> roles = new HashSet<Role>(0);
+        roles.add(role);
+        user.setRoles(roles);
+        usersDAO.createUser(user);
+        if (signMe != null && signMe.length() > 0) {
+           loginUser(user, request);
+        }
+
+        sendMails.sendMail("if-050java","s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
+        model.addAttribute("active", "main");
+        return "main";
     }
 
     @Autowired
@@ -97,4 +107,5 @@ public class SignUpController {
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
 
     }
+
 }

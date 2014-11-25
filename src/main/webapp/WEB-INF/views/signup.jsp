@@ -13,6 +13,12 @@
      <div class="panel-heading">
         <h3 class="panel-title">Register Page</h3>
     </div>
+     <c:if test="${not empty error}">
+         <div class="alert alert-warning alert-dismissible" role="alert">
+             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                 ${error}
+         </div>
+     </c:if>
 	<div class="container">
         <form class="form-horizontal" role="form" method="POST" action="<c:url value="/registering"/>">
             <div class="form-group">
@@ -54,19 +60,6 @@
                 </div>
             </div>
         </form>
-    </div>
-	<div class="panel-heading">
-        <h3 class="panel-title"><c:out value="${login}"/></h3>
-		<br/>
-		<h3 class="panel-title"><c:out value="${email}"/></h3>
-		<br/>
-		<h3 class="panel-title"><c:out value="${password}"/></h3>
-		<br/>
-		<h3 class="panel-title"><c:out value="${signMe}"/></h3>
-        <br/>
-        <h3 class="panel-title"><c:out value="${role.name}"/></h3>
-        <br/>
-        <h3 class="panel-title"><c:out value="${role.description}"/></h3>
     </div>
 </body>
 </html>
