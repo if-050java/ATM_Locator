@@ -8,7 +8,7 @@
               <div class="panel-heading">Banks list:</div>
 
             <!-- Search box Start -->
-            <form action="/BankEdit">
+            <form action="/adminBankEdit">
                 <div class="well carousel-search hidden-sm">
                     <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Select ATM network<span class="caret"></span></a>
                         <ul class="dropdown-menu" id="networks_menu">
