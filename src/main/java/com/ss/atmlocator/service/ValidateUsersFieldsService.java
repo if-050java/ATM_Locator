@@ -1,5 +1,6 @@
 package com.ss.atmlocator.service;
 
+import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.utils.UserCredMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationKey;
+import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationResult;
 
+/**
+ *  Service class for validating users cred with existing verification on server
+ */
 @Service
 public class ValidateUsersFieldsService implements Validator {
 
@@ -15,11 +21,8 @@ public class ValidateUsersFieldsService implements Validator {
     @Qualifier("usercredmatcher")
     private UserCredMatcher userCredMatcher;
 
-    enum ValidationResult{
-        INVALID_LOGIN,
-        INVALID_EMAIL,
-        INVALID_PASSWORD
-    }
+    @Autowired
+    private IUsersDAO usersDAO;
 
     @Override
     public boolean supports(Class<?> Clazz) {
@@ -29,27 +32,56 @@ public class ValidateUsersFieldsService implements Validator {
     @Override
     public void validate(Object object, Errors errors) {
 
-        if(! validateLogin(((User)object).getLogin())){
-            errors.rejectValue("login", ValidationResult.INVALID_LOGIN.toString());
-        };
-
-        if(! validateEmail(((User)object).getEmail())){
-            errors.rejectValue("email", ValidationResult.INVALID_EMAIL.toString());
-        };
-
-        if(! validatePassword(((User)object).getPassword())){
-            errors.rejectValue("password", ValidationResult.INVALID_PASSWORD.toString());
-        };
+        final String login = ((User)object).getLogin();
+        final String email = ((User)object).getEmail();
+        final String password = ((User)object).getPassword();
+        /* Login validation */
+        if(validateLogin(login)){
+            /*if(checkLogin(login)){
+                errors.rejectValue(ValidationKey.LOGIN.toString(),
+                    ValidationResult.LOGIN_ALREADY_REGISTERED.toString());
+            }*/
+        }
+        else{
+            errors.rejectValue(ValidationKey.LOGIN.toString(),
+                    ValidationResult.INVALID_LOGIN.toString());
+        }
+        /* Email validation*/
+        if(validateEmail(email)){
+           /* if(checkEmail(email)){
+                errors.rejectValue(ValidationKey.EMAIL.toString(),
+                        ValidationResult.EMAIL_ALREADY_REGISTERED.toString());
+            }*/
+        }
+        else{
+            errors.rejectValue(ValidationKey.EMAIL.toString(),
+                    ValidationResult.INVALID_EMAIL.toString());
+        }
+        /* Password validation */
+        if(!validatePassword(password)){
+            errors.rejectValue(ValidationKey.PASSWORD.toString(),
+                    ValidationResult.INVALID_PASSWORD.toString());
+        }
     }
 
 
     private boolean validateEmail(String email){
        return userCredMatcher.validateEmail(email);
     }
+
     private boolean validateLogin(String login){
        return userCredMatcher.validateLogin(login);
     }
+
     private boolean validatePassword(String password){
         return userCredMatcher.validatePassword(password);
+    }
+
+    private boolean checkEmail(String email){
+        return usersDAO.checkExistEmail(email);
+    }
+
+    private boolean checkLogin(String login){
+        return usersDAO.checkExistLoginName(login);
     }
 }

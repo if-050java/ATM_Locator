@@ -1,25 +1,15 @@
 /**
- * Created by Vasyl Danylyuk on 22.11.2014.
+ * Methods for validating credentials by regular expressions, wich user had entered.
  */
 
 function validateEmail(email){
-    regExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var regExp = /^[A-Za-z]([A-Za-z0-9])+([\.\-\_]?[A-Za-z0-9]+)*@([a-z0-9-])+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
     return regExp.test(email);
 };
 
 function validatePasswordStrange(password){
-    if(password.length > 6){
-     regExp = /[0-9]/;
-     if(regExp.test(password)){
-     regExp = /[a-z]|[а-ї]/;
-     if(regExp.test(password)){
-     regExp = /[A-Z]|[Є-Я]/
-     if(regExp.test(password)){
-     return true;
-     }else{return false}//must have a upper case letter data-content
-     }else{return false}//must have a low case letter
-     }else{return false}//must have a number
-     }else{return false}//too short
+    var regExp = /((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})/;
+    return regExp.test(password);
 }
 
 function validateConfirmPassword(password, confirm){
@@ -27,10 +17,6 @@ function validateConfirmPassword(password, confirm){
 }
 
 function validateLogin(login){
-    if(login.length >= 4){
-        regExp = /^(\w){4,}$/;
-        if(regExp.test(login)){
-            return true;
-        }else{return false}//Unsupported character in login
-    }else{return false}//Login is too short
+    var regExp = /^[A-Za-z](\w){3,}$/;
+    return regExp.test(login);
 }
