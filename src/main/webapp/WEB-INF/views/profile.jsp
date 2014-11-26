@@ -2,6 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link rel="stylesheet" href="<c:url value="/resources"/>/styles/user.css">
 <c:url value="/user/save" var="updateURL"/>
 <script src="<c:url value="/resources"/>/scripts/profile.js"></script>
 <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
@@ -20,13 +21,13 @@
                 <form:form method="post" action="${updateURL}" modelAttribute="user" cssClass="form-horizontal"
                            role="form" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 avablock">
                             <img src="/resources/images/${user.avatar}" class="img-responsive" alt="Responsive image"
                                  id="userAvatar">
 
                             <div class="controls clearfix">
                         <span class="btn btn-success btn-file" id="avatar" data-toggle="popover"
-                              data-placement="bottom" onclick="hidePopover('avatar')">
+                              data-placement="bottom" onshow="hidePopoveDelay('avatar')">
                             <i class="glyphicon glyphicon-camera"></i> <span>change avatar</span>
                             <input type="file" name="image" id="image"/>
                         </span>

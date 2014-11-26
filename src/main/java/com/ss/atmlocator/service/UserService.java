@@ -4,6 +4,12 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     @Autowired
     IUsersDAO usersDAO;
+
+    @Autowired
+    @Qualifier("jdbcUserService")
+    public UserDetailsManager userDetailsManager;
 
     public User getUserByName(String name) {
         return usersDAO.getUserByName(name);
@@ -60,4 +70,10 @@ public class UserService {
     public boolean checkExistEmail(String email){
         return usersDAO.checkExistEmail(email);
     };
+
+    public void doAutoLogin(String username) {
+        UserDetails user = userDetailsManager.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 }
