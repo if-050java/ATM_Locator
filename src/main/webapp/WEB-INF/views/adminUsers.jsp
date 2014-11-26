@@ -17,6 +17,7 @@
 </head>
 <body>
 <div class="container">
+    <!-- Find -->
     <div class="col-md-9" role="main">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -26,37 +27,50 @@
             </div>
             <div class="panel-body">
                 <form onsubmit="return FindUser()" action="" method="GET" class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <div class="input-group">
+                        <div class="form-group">
+                            <div class="col-md-9">
+                                <div class="input-group">
                             <span class="input-group-addon">
                                 <input type="radio" name="findBy" value="name" checked="true" id="byName"
                                        onchange="SelectFindType()"/>
                             </span>
-                                <input type="text" name="findName" id="findName" class="form-control"
-                                       placeholder="By name" onclick="hidePopover('findBtn')"/>
+                                    <input type="text" name="findName" id="findName" class="form-control"
+                                           placeholder="By name" onclick="hidePopover('findBtn')"/>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="radio" name="findBy" value="email" id="byEmail"
-                                       onchange="SelectFindType()"/>
-                            </span>
-                                <input type="text" name="findEmail" disabled="true" id="findEmail" class="form-control"
-                                       placeholder="By e-mail" onclick="hidePopover('findBtn')"/>
+
+                        <div class="form-group">
+                            <div class="col-md-9">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <input type="radio" name="findBy" value="email" id="byEmail"
+                                                onchange="SelectFindType()"/>
+                                    </span>
+                                        <input type="text" name="findEmail" disabled="true" id="findEmail"
+                                                class="form-control"
+                                                placeholder="By e-mail" onclick="hidePopover('findBtn')"/>
+                                </div>
                             </div>
+                            <button type="button" class="btn btn-default" onclick="FindUser()" id="findBtn" title=""
+                                    data-content="" data-placement="left"
+                                    data-toggle="popover" data-original-title="">Find user
+                            </button>
                         </div>
-                        <button type="button" class="btn btn-default" onclick="FindUser()" id="findBtn" title=""
-                        data-content="" data-placement="left"
-                        data-toggle="popover" data-original-title="">Find user</button>
-                    </div>
+
                 </form>
             </div>
         </div>
     </div>
+    <!--Result of operation -->
+    <div class="col-md-9">
+        <div class="alert alert-success alert-dismissible" role="alert" id="message" style="display: none">
+            <div type="button" class="close" onclick="hideAlert()"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></div>
+            <label id="resultDefinition"></label>
+        </div>
+    </div>
+    <!-- User profile-->
     <div class="col-md-9" role="main" id="userData">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -87,7 +101,8 @@
                                 <div class="col-md-10">
                                     <input type="text" class="form-control" id="inputEmail" placeholder="E-mail"
                                            title="" data-content="E-mail isn't valid" data-placement="left"
-                                           data-toggle="popover" data-original-title="" onclick="hidePopover('inputEmail')"/>
+                                           data-toggle="popover" data-original-title=""
+                                           onclick="hidePopover('inputEmail')"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -96,7 +111,8 @@
                                 <div class="col-md-10">
                                     <input type="password" class="form-control" id="inputPassword"
                                            placeholder="Password" title="" data-content="" data-placement="left"
-                                           data-toggle="popover" data-original-title="" onclick="hidePopover('inputPassword')"/>
+                                           data-toggle="popover" data-original-title=""
+                                           onclick="hidePopover('inputPassword')"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -106,7 +122,8 @@
                                     <input type="password" class="form-control" id="inputConfirmPassword"
                                            placeholder="Confirm password" title=""
                                            data-content="Password and confirm is different" data-placement="left"
-                                           data-toggle="popover" data-original-title="" onclick="hidePopover('inputConfirmPassword')"/>
+                                           data-toggle="popover" data-original-title=""
+                                           onclick="hidePopover('inputConfirmPassword')"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -121,10 +138,10 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2">
-                        <button type="button" class="btn btn-primary col-md-12">Send e-mail</button>
+                        <button type="button" onclick="sendEmail()" class="btn btn-primary col-md-12">Send e-mail</button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" onclick="deleteUser()" class="btn btn-danger col-md-12">Delete user
+                        <button type="button" onclick="askForDeleting()" class="btn btn-danger col-md-12">Delete user
                         </button>
                     </div>
                     <div class="col-md-6">
@@ -137,21 +154,16 @@
             </div>
         </div>
     </div>
-
-    <!--Modal window on deleting/updating -->
-    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- modal for request on deleting -->
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="questionModal">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="ModalLabel"/>
-                </div>
-                <div class="modal-body" id="ModalBody">
-
+                    <strong>You realy want to delete this user</strong>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" onclick="deleteUser()">Yes</button>
                 </div>
             </div>
         </div>

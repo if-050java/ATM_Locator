@@ -1,10 +1,6 @@
-/**
- * Created by Vasyl Danylyuk on 17.11.2014.
- */
-var xmlhttp;            //AJAX request
 var user;               //Instance of current loaded user
 
-//Установка полів вводу дозволеними/блокованими в залежності від вибору параметру пошуку
+//Enable/disable input fields by radio
 function SelectFindType() {
     if ($("#byName").prop("checked") == true) {
         $("#findName").prop("disabled", false);
@@ -15,159 +11,101 @@ function SelectFindType() {
     }
 };
 
-//Створення запиту на пошук користувача
+//Request to find user by name or email
 function FindUser(){
-    //Об'єкт AJAX запиту
-    xmlhttp=GetXmlHttpObject();
-    //Перевірка на підтримку AJAX браузером
-    if (xmlhttp==null){
-        alert ("Your browser does not support Ajax HTTP");
-        return;
+    //Request parameters
+    requestData = {
+        findBy : ($("#byName").prop("checked") == true) ? "login" : "email",
+        findValue : ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val()
     }
 
-    //Параметри запиту
-    var findBy;
-    var findValue;
-
-    //Отримання параметрів запиту з форми
-    if($("#byName").prop("checked") == true){
-        findBy = "name";
-        findValue = $("#findName").val();
-    } else {
-        findBy = "email";
-        findValue = $("#findEmail").val();
-    }
-
-    //Створення запиту
-    var url = "/findUser?findBy="+findBy+"&findValue="+findValue;
-
-    //Відправка запиту та очікування на відповідь
-    xmlhttp.open("GET", url, true);
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200) {
-                showData();
-            }
-        }
-    };
-    xmlhttp.send(null);
+   //Send request
+    $.ajax({
+        url: "/findUser",
+        type : "POST",
+        context: document.body,
+        data: requestData,
+        dataType: "json",
+        success : showData
+    })
 };
-
-//Creating GET HTTP request object
-function GetXmlHttpObject(){
-    if (window.XMLHttpRequest){
-        return new XMLHttpRequest();
-    }
-    if (window.ActiveXObject){
-        return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    return null;
-}
 
 //Заповнення та демонстрація даних користувача
-function showData(){
-    //Clear form before updating
-    clearForm();
-    //Отримуємо обєкт користувача з JSON
-    try {
-        user = JSON.parse(xmlhttp.responseText);
-    }catch (Exception){
-       // alert("Can't find user with this name or e-mail");
+function showData(response){
+    if(response.id < 0){
+        //show popover if user not found
         $('#findBtn').attr("data-content", "Can't find user with this name or e-mail");
         $('#findBtn').popover("show");
-        user = null;
+        //hide user form
+        $("#userData").slideUp();
         return;
     }
-    fillFields();
-    //Відображаємо форму
-    $("#userData").show();
+    user = response;
+    //fill fields in form by user data
+    fillFields(user);
+    //show form
+    $("#userData").slideDown();
 };
 
-function fillFields(){
-    //Заповнюємо всі поля
-    //Аватар
-    $("#userAvatar").attr("src", "/resources/images/"+user.avatar);//setAttribute("src", "/resources/images/"+user.avatar);
-    //Ім'я
-    $("#inputLogin").val(user.login);//setAttribute("value", user.login);
-    //E-mail
-    $("#inputEmail").val(user.email);//setAttribute("value", user.email);
-    //Password
-    $("#inputPassword").val(user.password);//setAttribute("value", user.email);
-    //E-mail
-    $("#inputConfirmPassword").val(user.password);//setAttribute("value", user.email);
-    //Enabled
-    if(user.enabled != 0){
-        $("#enabled").prop("checked" ,true);//setAttribute("checked", "true");
-    } else {
-        $("#enabled").attr("checked",false);//setAttribute("checked", "false");
-    }
+function fillFields(user){
+    $("#userAvatar").attr("src", "/resources/images/"+user.avatar);
+    $("#inputLogin").val(user.login);
+    $("#inputEmail").val(user.email);
+    $("#inputPassword").val(user.password);
+    $("#inputConfirmPassword").val(user.password);
+    $("#enabled").prop("checked" ,(user.enabled != 0) ? true : false);
 }
 
-
-//Відміна дій адміністратора
 function clearForm(){
     //hide form
-    $("#userData").hide();
-    //Очищаємо всі поля
-    //Аватар
-    clearFields();
+    $("#userData").slideUp();
 }
 
-function clearFields(){
-    $("#userAvatar").attr("src","");//setAttribute("src", "");
-    //Ім'я
-    $("#inputLogin").val("");//setAttribute("value", "");
-    //E-mail
-    $("#inputEmail").val("");//setAttribute("value", "");
-    //password
-    $("#inputPassword").val("");//setAttribute("value", "");
-    //Confirm
-    $("#inputConfirmPassword").val("");//setAttribute("value", "");
-    //Enabled
-    $("#enabled").attr("checked",false);//setAttribute("checked", "false");
+function askForDeleting(){
+    $("#questionModal").modal("show");
 }
-
-//Видалення користувача
+//Delete user from server
 function deleteUser(){
-    //Об'єкт AJAX запиту
-    xmlhttp=GetXmlHttpObject();
-    //Перевірка на підтримку AJAX браузером
-    if (xmlhttp==null){
-        alert ("Your browser does not support Ajax HTTP");
-        return;
-    }
-
-    //Створення запиту
-    var url = "/deleteUser?id="+user.id;
-
-    //Відправка запиту та очікування на відповідь
-    xmlhttp.open("POST", url, true);
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200) {
-                document.getElementById("ModalLabel").innerHTML = "Deleting user";
-                showModal();
-                $("#userData").slideUp();
-            }
-        }
-    };
-    xmlhttp.send(null);
+    //Send request
+    $.ajax({
+        url: "/deleteUser?id="+user.id,
+        type : "DELETE",
+        context: document.body,
+        dataType: "json",
+        success : showAlert
+    })
+    //hide user form
+    $("#questionModal").modal("hide");
+    $("#userData").slideUp();
 }
 
-function showModal(){
-    response = JSON.parse(xmlhttp.responseText);
-    document.getElementById("ModalBody").innerHTML = response;
-
-    var options = {
-        "backdrop" : "static"
+function showAlert(response){
+    $("#resultDefinition").text(response.message);
+    if(response.status == "ERROR"){
+        $("#message").removeClass("alert-success").addClass("alert-danger")
+    }else{
+        $("#message").removeClass("alert-danger").addClass("alert-success")
     }
-
-   // document.getElementById("resultModal").modal(options);
-    $('#resultModal').modal(options);
+    //show alert about result of operation
+    $("#message").show();
 };
+//hiding alert
+function hideAlert(){
+    $("#message").hide();
+}
+
+function getUserFromForm(){
+    updatedUser = {
+        id : user.id,
+        login : $("#inputLogin").val(),
+        email : $("#inputEmail").val(),
+        password : $("#inputPassword").val(),
+        enabled : $("#enabled").prop("checked") == true ? 1: 0
+    }
+    return updatedUser;
+}
 
 function updateUser(){
-
     //checking login
     if(! validateLogin($('#inputLogin').prop("value"))){
         $('#inputLogin').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
@@ -194,40 +132,26 @@ function updateUser(){
         $('#inputPassword').popover("show");
         return;
     }
-
-    //Об'єкт AJAX запиту
-    xmlhttp=GetXmlHttpObject();
-    //Перевірка на підтримку AJAX браузером
-    if (xmlhttp==null){
-        alert ("Your browser does not support Ajax HTTP");
-        return;
-    }
-
-    //Request params
-    var login = document.getElementById("inputLogin").value;
-    var email = document.getElementById("inputEmail").value;
-    var password = document.getElementById("inputPassword").value;
-    if(document.getElementById("enabled").checked == true){
-        var enabled = 1;
-    }else{
-        var enabled = 0;
-    };
-
-    //Створення запиту
-    var url = "/updateUser?id="+user.id+"&login="+login+"&email="+email+"&password="+password+"&enabled="+enabled;
-
-    //Відправка запиту та очікування на відповідь
-    xmlhttp.open("POST", url, true);
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4) {
-            if(xmlhttp.status == 200) {
-                document.getElementById("ModalLabel").innerHTML =  "Updating user";
-                showModal();
-            }
-        }
-    };
-    xmlhttp.send(null);
+    $.ajax({
+        url: "/updateUser",
+        type : "POST",
+        context: document.body,
+        data: getUserFromForm(),
+        dataType: "json",
+        success : showAlert
+    })
 };
+
+function sendEmail(){
+    //Send request
+    $.ajax({
+        url: "/sendEmail?id="+user.id,
+        type : "POST",
+        context: document.body,
+        dataType: "json",
+        success : showAlert
+    })
+}
 
 function hidePopover(element){
     $('#'+element).popover("destroy");

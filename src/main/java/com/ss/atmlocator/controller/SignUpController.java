@@ -87,7 +87,7 @@ public class SignUpController {
            loginUser(user, request);
         }
 
-        sendMails.sendMail("if-050java","s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
+        sendMails.sendMail("s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
         model.addAttribute("active", "main");
         return "main";
     }
