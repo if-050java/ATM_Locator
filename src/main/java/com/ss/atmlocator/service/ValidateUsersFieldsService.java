@@ -13,7 +13,7 @@ import org.springframework.validation.Validator;
 import java.util.Locale;
 
 import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationKey;
-import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationResult;
+
 
 /**
  *  Service class for validating users cred with existing verification on server
