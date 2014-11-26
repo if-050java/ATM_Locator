@@ -4,6 +4,7 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.service.NewUserValidatorService;
 import com.ss.atmlocator.service.ValidateUsersFieldsService;
 import com.ss.atmlocator.utils.SendMails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class SignUpController {
     private SendMails sendMails;
 
     @Autowired
-    private ValidateUsersFieldsService validateUserField;
+    private NewUserValidatorService validateUserField;
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup() {
