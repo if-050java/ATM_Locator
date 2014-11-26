@@ -132,7 +132,6 @@ public class AdminUsersController {
                     messages.getMessage(UserControllerResponseStatus.NOTHING_TO_UPDATE.toString(),
                             null, Locale.ENGLISH));
         }
-        ;
 
         //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
@@ -168,8 +167,12 @@ public class AdminUsersController {
         }
     }
 
-    /**
-     * Autorelogin user after change own login(userName)
+
+
+
+
+     /**
+     *Autorelogin user after change own login(userName)
      *
      * @param username new name of loggined user
      */
