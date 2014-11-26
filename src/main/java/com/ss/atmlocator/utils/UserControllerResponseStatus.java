@@ -3,7 +3,7 @@ package com.ss.atmlocator.utils;
 /**
  * Created by Vasyl Danylyuk on 24.11.2014.
  */
-public enum UserControllersResponse {
+public enum UserControllerResponseStatus {
     ERROR,
     SUCCESS,
     CANT_REMOVE_YOURSELF,
