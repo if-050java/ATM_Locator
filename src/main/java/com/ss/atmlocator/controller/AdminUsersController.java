@@ -3,8 +3,14 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.service.ValidateUsersFieldsService;
+import com.ss.atmlocator.utils.EmailCreator;
+import com.ss.atmlocator.utils.SendMails;
+import com.ss.atmlocator.utils.UserControllerResponse;
+import com.ss.atmlocator.utils.UserControllerResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,174 +22,159 @@ import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.PersistenceException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
- * Created by Vasyl Danylyuk on 14.11.2014.
+ * Class for processing requests from adminUsers page
  */
 
 @Controller
 public class AdminUsersController {
 
-    //Клас для надсилання відповіді про успішність/неуспішність операції
-    enum ResultResponse {
-        ERROR,
-        SUCCESS,
-        CANT_REMOVE_YOURSELF,
-        INVALID_LOGIN,
-        INVALID_EMAIL,
-        INVALID_PASSWORD,
-        EMAIL_ALREADY_EXIST,
-        LOGIN_ALREADY_EXIST,
-        NOTHING_TO_UPDATE
-    }
+    //Request parameters for finding users
+    final String FIND_BY = "findBy";
+    final String FIND_VALUE = "findValue";
+    //Request parameters for user fields
+    final String USER_ID = "id";
+    final String USER_LOGIN = "login";
+    final String USER_EMAIL = "email";
+    final String USER_PASSWORD = "password";
+    final String USER_ENABLED = "enabled";
+
+    final String EMAIL_SUBJECT = "ATM_Locator registration";
 
     @Autowired
     UserService userService;
 
     @Autowired
+    UserDetailsManager userDetailsManager;
+
+    @Autowired
     ValidateUsersFieldsService validationService;
 
     @Autowired
-    @Qualifier("jdbcUserService")
-    public UserDetailsManager userDetailsManager;
+    @Qualifier("mail")
+    private SendMails sendMails;
 
-    @RequestMapping(value = "/findUser", method = RequestMethod.GET)
+    @Autowired
+    private MessageSource messages;
+
+    @RequestMapping(value = "/findUser", method = RequestMethod.POST)
     public
     @ResponseBody
-    User findUser(HttpServletRequest request) {
-        String findBy = request.getParameter("findBy");
-        String findValue = request.getParameter("findValue");
-        User response;
+    User findUser(@RequestParam(FIND_BY) String findBy,
+                  @RequestParam(FIND_VALUE) String findValue) {
         try {
-            if (findBy.equals("name")) {
-                response = userService.getUserByName(findValue);
+            if (findBy.equals(USER_LOGIN)) {
+                return userService.getUserByName(findValue);
             } else {
-                response = userService.getUserByEmail(findValue);
+                return userService.getUserByEmail(findValue);
             }
-            return response;
         } catch (PersistenceException pe) {
-            return null;
+            //if user not found
+            User userNotFound = new User();
+            userNotFound.setId(-1);
+            return userNotFound;
         }
     }
 
     @RequestMapping(value = "/adminUsers", method = RequestMethod.GET)
     public String adminUsers(ModelMap model) {
-        model.addAttribute("active","adminUsers");
+        model.addAttribute("active", "adminUsers");
         return "adminUsers";
     }
 
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
     public
     @ResponseBody
-    ResultResponse deleteUser(HttpServletRequest request) {
-
-        //get ID of logged user before updating
-        int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-        //get ID of user for deleting
-        int id = Integer.parseInt(request.getParameter("id"));
-
-        //User cant delete his own profile
-        if(id== loggedUserId){
-            return ResultResponse.CANT_REMOVE_YOURSELF;
-        }
-
+    UserControllerResponse deleteUser(@RequestParam(USER_ID) int id) {
+        //id of user who want to delete
+        int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+        //Check user want to remove himself
+        if (id == currentLoggedUserId) {
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.CANT_REMOVE_YOURSELF.toString(),
+                            null, Locale.ENGLISH));
+        };
         try {
             userService.deleteUser(id);
-            return ResultResponse.SUCCESS;
+            return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
+                    messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
+                            null, Locale.ENGLISH));
         } catch (PersistenceException pe) {
-            return ResultResponse.ERROR;
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.ERROR.toString(),
+                            null, Locale.ENGLISH));
         }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public  @ResponseBody
-    EnumSet<ResultResponse> updateUser(HttpServletRequest request) {
+    public
+    @ResponseBody
+    UserControllerResponse
+    updateUser(@RequestParam(USER_ID) int id,
+               @RequestParam(USER_LOGIN) String newLogin,
+               @RequestParam(USER_EMAIL) String newEmail,
+               @RequestParam(USER_PASSWORD) String newPassword,
+               @RequestParam(USER_ENABLED) int enabled) {
 
-        //Set of results.
-        EnumSet<ResultResponse> results = EnumSet.noneOf(ResultResponse.class);
-
-        //Creating updated user profile from form
-        int id = Integer.parseInt(request.getParameter("id"));
-        String newLogin = request.getParameter("login");
-        String newEmail = request.getParameter("email");
-        String newPassword = request.getParameter("password");
-        int enabled = Integer.parseInt(request.getParameter("enabled"));
+        //Creating user from request parameters
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
         //checking if nothing to update
-        if(
-        updatedUser.getLogin().equals(userService.getUserById(updatedUser.getId()).getLogin())       && //login didn't change
-        updatedUser.getEmail().equals(userService.getUserById(updatedUser.getId()).getEmail())       &&//email didn't change
-        updatedUser.getPassword().equals(userService.getUserById(updatedUser.getId()).getPassword()) &&//password didn't change
-        updatedUser.getEnabled() == userService.getUserById(updatedUser.getId()).getEnabled()          //enabled didn't change
-        ){
-            results.add(ResultResponse.NOTHING_TO_UPDATE);
-            return results;
+        if (!userService.isModified(updatedUser)) {
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.NOTHING_TO_UPDATE.toString(),
+                            null, Locale.ENGLISH));
         }
+
         //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         validationService.validate(updatedUser, errors);
-
-        if(! errors.hasErrors()) {
-            //if validation was successful try to save
-            try {
-                //Check existing login in database
-                //don't check if it is this user and login didn't change
-                if(! userService.getUserById(updatedUser.getId()).getLogin().equals(updatedUser.getLogin()))
-                    if((userService.checkExistLoginName(updatedUser.getLogin()))) { //if login exist
-                        results.add(ResultResponse.LOGIN_ALREADY_EXIST);
-                        return results;
-                    }
-                //Check existing email in database
-                //don't check if it is this user and e-mail didn't change
-                if(! userService.getUserById(updatedUser.getId()).getEmail().equals(updatedUser.getEmail()))
-                    if(userService.checkExistEmail(updatedUser.getEmail())) { //if not exist
-                        results.add(ResultResponse.EMAIL_ALREADY_EXIST);
-                        return results;
-                    }
-                //get ID of logged user before updating
-                int loggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-                userService.editUser(updatedUser);
-                //if admin want to change own profile relogin this user with new name
-                if (updatedUser.getId() == loggedUserId) {
-                    doAutoLogin(updatedUser.getLogin());
-                }
-                results.add(ResultResponse.SUCCESS);
-                return results;
-            } catch (PersistenceException pe) {
-                results.add(ResultResponse.ERROR);
-                return results;
+        if (errors.hasErrors()) {//if validation unsuccessful add all errors to response
+            StringBuilder responseMessage=new StringBuilder();
+            for (ObjectError error : errors.getAllErrors()) {
+                responseMessage.append(error.getCode() + "; ");
             }
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,responseMessage.toString());
         } else {
-            //if validation unsuccessful add all errors to response
-            for(ObjectError error: errors.getAllErrors()){
-                if(error.getCodes()[2].equals("INVALID_LOGIN")) {
-                    results.add(ResultResponse.INVALID_LOGIN);
-                    continue;
-                }
-                if(error.getCodes()[2].equals("INVALID_EMAIL")) {
-                    results.add(ResultResponse.INVALID_EMAIL);
-                    continue;
-                }
-                if(error.getCodes()[2].equals("INVALID_PASSWORD")) {
-                    results.add(ResultResponse.INVALID_PASSWORD);
-                    continue;
-                }
-            }
-            return results;
+            userService.editUser(updatedUser);
+            return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
+                    messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
+                            null, Locale.ENGLISH));
         }
     }
 
-    private void doAutoLogin(String username) {
+    @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    UserControllerResponse sendEmail(@RequestParam(USER_ID) int id) {
+        User user = userService.getUserById(id);
+        try {
+            sendMails.sendMail(user.getEmail(), EMAIL_SUBJECT, EmailCreator.create(user));
+            return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
+                    messages.getMessage(UserControllerResponseStatus.EMAIL_SUCCESS.toString(),
+                            null, Locale.ENGLISH));
+        }catch (MailException me){
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.EMAIL_ERROR.toString(),
+                            null, Locale.ENGLISH));
+        }
+    }
+
+     /**
+     *Autorelogin user after change own login(userName)
+     *
+     * @param username new name of loggined user
+     */
+    public void doAutoLogin(String username) {
         UserDetails user = userDetailsManager.loadUserByUsername(username);
         Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
-
     }
 }
