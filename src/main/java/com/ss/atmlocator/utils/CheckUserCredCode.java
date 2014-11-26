@@ -2,16 +2,16 @@ package com.ss.atmlocator.utils;
 
 public class CheckUserCredCode {
 
-    private boolean exist;
+    private boolean canUse;
     private String cause;
 
-    public CheckUserCredCode(boolean exist, String cause) {
-        this.exist = exist;
+    public CheckUserCredCode(boolean canUse, String cause) {
+        this.canUse = canUse;
         this.cause = cause;
     }
 
-    public boolean isExist() {
-        return exist;
+    public boolean getCanUse() {
+        return canUse;
     }
 
     public String getCause() {
