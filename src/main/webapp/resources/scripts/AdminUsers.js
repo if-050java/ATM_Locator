@@ -176,20 +176,20 @@ function updateUser(){
     }
 
     //checking E-Mail
-    if(! validateEmail($('#inputEmail').prop("value"))){
+    if(!validateEmail($('#inputEmail').prop("value"))){
         $('#inputEmail').popover("show");
         return;
     };
 
     //checking confirmed password
-    if(! validateConfirmPassword($('#inputPassword').prop("value"),$('#inputConfirmPassword').prop("value"))){
+    if(!validateConfirmPassword($('#inputPassword').prop("value"),$('#inputConfirmPassword').prop("value"))){
         $('#inputPassword').attr("data-content", "Password and confirm is different");
         $('#inputConfirmPassword').popover("show");
         return;
     };
 
     //checking password strange
-    if(! validatePasswordStrange($('#inputPassword').prop("value"))){
+    if(!validatePasswordStrange($('#inputPassword').prop("value"))){
         $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#inputPassword').popover("show");
         return;

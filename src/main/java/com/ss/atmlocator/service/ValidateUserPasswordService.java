@@ -16,14 +16,12 @@ import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationKey;
 /**
  *
  */
-public class ValidateUserLoginService implements Validator {
+
+public class ValidateUserPasswordService implements Validator {
 
     @Autowired
     @Qualifier("usercredmatcher")
     private UserCredMatcher userCredMatcher;
-
-    @Autowired
-    private IUsersDAO usersDAO;
 
     @Autowired
     private MessageSource messages;
@@ -36,26 +34,18 @@ public class ValidateUserLoginService implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
-        final String login = (String)object;
-        if(validateLogin(login)){
-            if(checkLogin(login)){
-                errors.rejectValue(ValidationKey.LOGIN.toString(),
-                        messages.getMessage("login.exists", null, Locale.ENGLISH));
-            }
-        }
-        else{
+        final String password = (String)object;
+        if(!validatePassword(password)){
             errors.rejectValue(ValidationKey.LOGIN.toString(),
-                    messages.getMessage("invalid.login", null, Locale.ENGLISH));
+                    messages.getMessage("invalid.password", null, Locale.ENGLISH));
         }
     }
 
-    private boolean validateLogin(String login){
-        return userCredMatcher.validateLogin(login);
+    private boolean validatePassword(String password){
+        return userCredMatcher.validatePassword(password);
     }
 
-    private boolean checkLogin(String login){
-        return usersDAO.checkExistLoginName(login);
-    }
+
 
 
 }

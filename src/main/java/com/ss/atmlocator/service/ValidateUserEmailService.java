@@ -16,7 +16,7 @@ import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationKey;
 /**
  *
  */
-public class ValidateUserLoginService implements Validator {
+public class ValidateUserEmailService implements Validator {
 
     @Autowired
     @Qualifier("usercredmatcher")
@@ -28,7 +28,6 @@ public class ValidateUserLoginService implements Validator {
     @Autowired
     private MessageSource messages;
 
-
     @Override
     public boolean supports(Class<?> Clazz) {
         return String.class.isAssignableFrom(Clazz);
@@ -36,25 +35,25 @@ public class ValidateUserLoginService implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
-        final String login = (String)object;
-        if(validateLogin(login)){
-            if(checkLogin(login)){
-                errors.rejectValue(ValidationKey.LOGIN.toString(),
-                        messages.getMessage("login.exists", null, Locale.ENGLISH));
+        final String email = (String)object;
+        if(validateEmail(email)){
+            if(checkEmail(email)){
+                errors.rejectValue(ValidationKey.EMAIL.toString(),
+                        messages.getMessage("email.exists", null, Locale.ENGLISH));
             }
         }
         else{
-            errors.rejectValue(ValidationKey.LOGIN.toString(),
-                    messages.getMessage("invalid.login", null, Locale.ENGLISH));
+            errors.rejectValue(ValidationKey.EMAIL.toString(),
+                    messages.getMessage("invalid.email", null, Locale.ENGLISH));
         }
     }
 
-    private boolean validateLogin(String login){
-        return userCredMatcher.validateLogin(login);
+    private boolean validateEmail(String email){
+        return userCredMatcher.validateEmail(email);
     }
 
-    private boolean checkLogin(String login){
-        return usersDAO.checkExistLoginName(login);
+    private boolean checkEmail(String email){
+        return usersDAO.checkExistEmail(email);
     }
 
 

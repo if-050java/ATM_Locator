@@ -82,5 +82,19 @@
         <constructor-arg name="loginRegExp" value="${login.pattern}"/>
         <constructor-arg name="passwordRegExp" value="${password.pattern}"/>
     </bean>
+    <!-- Message source for validation-->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="basenames">
+            <list>
+        	    <value>/WEB-INF/spring/properties/messages</value>
+        	</list>
+        </property>
+    </bean>
+
+    <!-- User validator beans for login,password,mail validation -->
+    <bean id="loginvalidator" class="com.ss.atmlocator.service.ValidateUserLoginService"/>
+    <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
+    <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
 
 </beans>
