@@ -31,7 +31,7 @@ function FindUser(){
 
     //Отримання параметрів запиту з форми
     if($("#byName").prop("checked") == true){
-        findBy = "name";
+        findBy = "login";
         findValue = $("#findName").val();
     } else {
         findBy = "email";

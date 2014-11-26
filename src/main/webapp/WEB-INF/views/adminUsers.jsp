@@ -57,6 +57,11 @@
             </div>
         </div>
     </div>
+    <div class="alert alert-success alert-dismissible col-md-9" role="alert" id="message">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                class="sr-only">Close</span></button>
+        <strong id="result">Success!</strong><label id="resultDefinition"> Your data is saved successfully.</label>
+    </div>
     <div class="col-md-9" role="main" id="userData">
         <div class="panel panel-default">
             <div class="panel-heading">

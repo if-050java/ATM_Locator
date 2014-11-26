@@ -4,6 +4,7 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 /**
  * Created by roman on 19.11.14.
@@ -12,6 +13,15 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     IUsersDAO usersDAO;
+
+    @Autowired
+    ValidateUserLoginService loginValidator;
+
+    @Autowired
+    ValidateUserEmailService emailValidator;
+
+    @Autowired
+    ValidateUserPasswordService passwordValidator;
 
     public User getUserByName(String name) {
         return usersDAO.getUserByName(name);
@@ -47,6 +57,26 @@ public class UserService {
     }
 
     ;
+
+    public void checkUserProfile(User user, Errors errors){
+        User persistedUser = getUserById(user.getId());
+        //Checking login
+        if(! user.getLogin().equals(persistedUser.getLogin())){
+            loginValidator.validate(user.getLogin(),errors);
+        };
+        //Checking email
+        if(! user.getEmail().equals(persistedUser.getEmail())){
+            emailValidator.validate(user.getEmail(),errors);
+        };
+        //Checking password
+        if(! user.getPassword().equals(persistedUser.getPassword())){
+            passwordValidator.validate(user.getPassword(),errors);
+        }
+        //Checking enabled
+        if(user.getEnabled() == persistedUser.getEnabled()){
+
+        }
+    }
 
     /**
      * Updating only noNull fields in old user profile
