@@ -167,10 +167,6 @@ public class AdminUsersController {
         }
     }
 
-
-
-
-
      /**
      *Autorelogin user after change own login(userName)
      *
