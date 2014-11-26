@@ -25,7 +25,8 @@
                                  id="userAvatar">
 
                             <div class="controls clearfix">
-                        <span class="btn btn-success btn-file">
+                        <span class="btn btn-success btn-file" id="avatar" data-toggle="popover"
+                              data-placement="bottom" onclick="hidePopover('avatar')">
                             <i class="glyphicon glyphicon-camera"></i> <span>change avatar</span>
                             <input type="file" name="image" id="image"/>
                         </span>
@@ -76,18 +77,5 @@
     </div>
 </div>
 <script type='text/javascript'>
-    $(window).load(function () {
-        function changeImage(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#userAvatar').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        $("#image").change(function () {
-            changeImage(this);
-        });
-    });
+
 </script>

@@ -75,12 +75,6 @@
     <bean id="mail" class="com.ss.atmlocator.utils.SendMails" scope="singleton">
         <property name="mailSender" ref="mailSender" />
     </bean>
-    <bean id="messageSource"
-                class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="classpath:message" />
-        <property name="defaultEncoding" value="UTF-8" />
-    </bean>
-
     <!-- User credentials validate -->
     <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">
         <constructor-arg name="mailRegExp" value="${email.pattern}"/>

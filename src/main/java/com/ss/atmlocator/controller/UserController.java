@@ -2,7 +2,8 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.service.UserValidatorService;
+import com.ss.atmlocator.validator.ImageValidator;
+import com.ss.atmlocator.validator.UserValidator;
 import com.ss.atmlocator.utils.ErrorMessage;
 import com.ss.atmlocator.utils.ValidationResponse;
 import org.apache.commons.io.FileUtils;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.MapBindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -39,12 +39,19 @@ import java.util.List;
 public class UserController {
 
     public static final String RESOURCES_FOLDER = "\\resources\\images\\";
+    public static final String STATUS_SUCCESS = "SUCCESS";
+    public static final String STATUS_INFO = "INFO";
+    public static final String STATUS_ERROR = "ERROR";
+    public static  final String NOTHING_TO_UPDATE = "nothing";
 
     @Autowired
     UserService userService;
 
     @Autowired
-    UserValidatorService validationService;
+    UserValidator userValidator;
+
+    @Autowired
+    ImageValidator imageValidator;
 
     @Autowired
     @Qualifier("jdbcUserService")
@@ -87,11 +94,12 @@ public class UserController {
             @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
     ) {
         ValidationResponse response = new ValidationResponse();
+        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
         User newUser = new User(id, login, email, password, 1);
         newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
-
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
-        validationService.validate(newUser, errors);
+        userValidator.validate(newUser, errors);
+        imageValidator.validate(avatar,errors);
         if (!errors.hasErrors()) {
             try {
                 userService.editUser(newUser);
@@ -99,23 +107,20 @@ public class UserController {
                 doAutoLogin(newUser.getLogin());
             } catch (IOException e) {
                 e.printStackTrace();
-                response.setStatus("ERROR");
+                response.setStatus(STATUS_ERROR);
                 return response;
             }
-
-            response.setStatus("SUCCESS");
+            response.setStatus(STATUS_SUCCESS);
             return response;
         }
-        List<FieldError> allErrors = errors.getFieldErrors();
-        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
-        for (FieldError objectError : allErrors) {
+        for (FieldError objectError : errors.getFieldErrors()) {
             errorMesages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
-            if (objectError.getField().equals("nothing")) {
-                response.setStatus("INFO");
+            if (objectError.getField().equals(NOTHING_TO_UPDATE)) {
+                response.setStatus(STATUS_INFO);
                 return response;
             }
         }
-        response.setStatus("ERROR");
+        response.setStatus(STATUS_ERROR);
         response.setErrorMessageList(errorMesages);
         return response;
     }

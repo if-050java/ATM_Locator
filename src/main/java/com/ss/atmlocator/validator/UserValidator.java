@@ -1,7 +1,9 @@
-package com.ss.atmlocator.service;
+package com.ss.atmlocator.validator;
 
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UserCredMatcher;
+import com.ss.atmlocator.validator.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Service
-public class UserValidatorService implements Validator {
+public class UserValidator implements Validator {
 
     @Autowired
     @Qualifier("usercredmatcher")
@@ -17,15 +19,6 @@ public class UserValidatorService implements Validator {
 
     @Autowired
     UserService userService;
-
-    enum ValidationResult {
-        INVALID_LOGIN,
-        INVALID_EMAIL,
-        INVALID_PASSWORD,
-        LOGIN_ALREADY_EXIST,
-        EMAIL_ALREADY_EXIST,
-        NOTHING_TO_UPDATE
-    }
 
     @Override
     public boolean supports(Class<?> Clazz) {
@@ -38,23 +31,23 @@ public class UserValidatorService implements Validator {
 
         User oldUser = userService.getUserById(newUser.getId());
         if (checkChanges(newUser, oldUser)) {
-            errors.rejectValue("nothing", ValidationResult.NOTHING_TO_UPDATE.toString());
+            errors.rejectValue("nothing", ValidationResult.NOTHING_TO_UPDATE);
             return;
         }
         if (!validateLogin(newUser.getLogin())) {
-            errors.rejectValue("login", ValidationResult.INVALID_LOGIN.toString());
+            errors.rejectValue("login", ValidationResult.INVALID_LOGIN);
         }
         if (!validateEmail(newUser.getEmail())) {
-            errors.rejectValue("email", ValidationResult.INVALID_EMAIL.toString());
+            errors.rejectValue("email", ValidationResult.INVALID_EMAIL);
         }
         if (!newUser.getLogin().equals(oldUser.getLogin()) && userService.checkExistLoginName(newUser.getLogin())) {
-            errors.rejectValue("login", ValidationResult.LOGIN_ALREADY_EXIST.toString());
+            errors.rejectValue("login", ValidationResult.LOGIN_ALREADY_EXIST);
         }
         if (!newUser.getEmail().equals(oldUser.getEmail()) && userService.checkExistEmail(newUser.getEmail())) {
-            errors.rejectValue("email", ValidationResult.EMAIL_ALREADY_EXIST.toString());
+            errors.rejectValue("email", ValidationResult.EMAIL_ALREADY_EXIST);
         }
         if (!validatePassword(newUser.getPassword())) {
-            errors.rejectValue("password", ValidationResult.INVALID_PASSWORD.toString());
+            errors.rejectValue("password", ValidationResult.INVALID_PASSWORD);
         }
     }
 
