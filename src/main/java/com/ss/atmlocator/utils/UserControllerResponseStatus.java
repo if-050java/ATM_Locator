@@ -12,6 +12,8 @@ public enum UserControllerResponseStatus {
     INVALID_PASSWORD,
     EMAIL_ALREADY_EXIST,
     LOGIN_ALREADY_EXIST,
-    NOTHING_TO_UPDATE
+    NOTHING_TO_UPDATE,
+    EMAIL_SUCCESS,
+    EMAIL_ERROR
 }
 

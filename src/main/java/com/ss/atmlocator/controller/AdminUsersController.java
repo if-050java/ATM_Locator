@@ -1,10 +1,16 @@
 package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.service.NewUserValidatorService;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.utils.UserControllersResponse;
+import com.ss.atmlocator.service.ValidateUsersFieldsService;
+import com.ss.atmlocator.utils.EmailCreator;
+import com.ss.atmlocator.utils.SendMails;
+import com.ss.atmlocator.utils.UserControllerResponse;
+import com.ss.atmlocator.utils.UserControllerResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,12 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.PersistenceException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
- * Created by Vasyl Danylyuk on 14.11.2014.
+ * Class for processing requests from adminUsers page
  */
 
 @Controller
@@ -41,6 +46,8 @@ public class AdminUsersController {
     final String USER_PASSWORD = "password";
     final String USER_ENABLED = "enabled";
 
+    final String EMAIL_SUBJECT = "ATM_Locator registration";
+
     @Autowired
     UserService userService;
 
@@ -48,9 +55,16 @@ public class AdminUsersController {
     UserDetailsManager userDetailsManager;
 
     @Autowired
-    NewUserValidatorService validationService;
+    ValidateUsersFieldsService validationService;
 
-    @RequestMapping(value = "/findUser", method = RequestMethod.GET)
+    @Autowired
+    @Qualifier("mail")
+    private SendMails sendMails;
+
+    @Autowired
+    private MessageSource messages;
+
+    @RequestMapping(value = "/findUser", method = RequestMethod.POST)
     public
     @ResponseBody
     User findUser(@RequestParam(FIND_BY) String findBy,
@@ -62,39 +76,47 @@ public class AdminUsersController {
                 return userService.getUserByEmail(findValue);
             }
         } catch (PersistenceException pe) {
-            return null;
+            //if user not found
+            User userNotFound = new User();
+            userNotFound.setId(-1);
+            return userNotFound;
         }
     }
 
     @RequestMapping(value = "/adminUsers", method = RequestMethod.GET)
     public String adminUsers(ModelMap model) {
-        model.addAttribute("active","adminUsers");
+        model.addAttribute("active", "adminUsers");
         return "adminUsers";
     }
 
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
     public
     @ResponseBody
-    EnumSet deleteUser(HttpServletRequest request) {
-        //id of user will be deleted
-        int id = Integer.parseInt(request.getParameter(USER_ID));
+    UserControllerResponse deleteUser(@RequestParam(USER_ID) int id) {
         //id of user who want to delete
-        int currentLoggedUserId = ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
         //Check user want to remove himself
-        if(id == currentLoggedUserId){
-            return EnumSet.of(UserControllersResponse.CANT_REMOVE_YOURSELF); //User cant delete his own profile
+        if (id == currentLoggedUserId) {
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.CANT_REMOVE_YOURSELF.toString(),
+                            null, Locale.ENGLISH));
         };
-
         try {
             userService.deleteUser(id);
-            return EnumSet.of(UserControllersResponse.SUCCESS);
+            return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
+                    messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
+                            null, Locale.ENGLISH));
         } catch (PersistenceException pe) {
-            return EnumSet.of(UserControllersResponse.ERROR);
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.ERROR.toString(),
+                            null, Locale.ENGLISH));
         }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public  @ResponseBody EnumSet
+    public
+    @ResponseBody
+    UserControllerResponse
     updateUser(@RequestParam(USER_ID) int id,
                @RequestParam(USER_LOGIN) String newLogin,
                @RequestParam(USER_EMAIL) String newEmail,
@@ -106,21 +128,43 @@ public class AdminUsersController {
 
         //checking if nothing to update
         if (!userService.isModified(updatedUser)) {
-            return EnumSet.of(UserControllersResponse.NOTHING_TO_UPDATE);
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.NOTHING_TO_UPDATE.toString(),
+                            null, Locale.ENGLISH));
         }
         ;
 
         //validating user profile
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
-        userService.checkUserProfile(updatedUser, errors);
+        validationService.validate(updatedUser, errors);
         if (errors.hasErrors()) {//if validation unsuccessful add all errors to response
-            EnumSet<UserControllersResponse> response = EnumSet.noneOf(UserControllersResponse.class);
+            StringBuilder responseMessage=new StringBuilder();
             for (ObjectError error : errors.getAllErrors()) {
-                response.add(UserControllersResponse.valueOf(error.getCode()));
+                responseMessage.append(error.getCode() + "; ");
             }
-            return response;
-        }else {
-            return EnumSet.of(UserControllersResponse.SUCCESS);
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,responseMessage.toString());
+        } else {
+            userService.editUser(updatedUser);
+            return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
+                    messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
+                            null, Locale.ENGLISH));
+        }
+    }
+
+    @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    UserControllerResponse sendEmail(@RequestParam(USER_ID) int id) {
+        User user = userService.getUserById(id);
+        try {
+            sendMails.sendMail(user.getEmail(), EMAIL_SUBJECT, EmailCreator.create(user));
+            return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
+                    messages.getMessage(UserControllerResponseStatus.EMAIL_SUCCESS.toString(),
+                            null, Locale.ENGLISH));
+        }catch (MailException me){
+            return new UserControllerResponse(UserControllerResponseStatus.ERROR,
+                    messages.getMessage(UserControllerResponseStatus.EMAIL_ERROR.toString(),
+                            null, Locale.ENGLISH));
         }
     }
 

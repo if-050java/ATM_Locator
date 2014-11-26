@@ -21,7 +21,7 @@
             <strong>Error!</strong> Your data wasn't saved!!!
         </div>
     </c:if>
-    <div class="col-md-16" role="main" id="userData">
+    <div class="col-md-9" role="main" id="userData">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
