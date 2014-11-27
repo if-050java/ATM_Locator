@@ -1,11 +1,9 @@
 package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.dao.IUsersDAO;
-import com.ss.atmlocator.dao.UsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.NewUserValidatorService;
-import com.ss.atmlocator.service.ValidateUsersFieldsService;
 import com.ss.atmlocator.utils.SendMails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.MapBindingResult;
@@ -51,9 +48,9 @@ public class SignUpController {
 
 
     @RequestMapping(value = "/registering", method = RequestMethod.POST)
-    public String registering(@RequestParam("inputLogin") String login,
+    public String registering(@RequestParam(value = "inputLogin",required = false) String login,
                               @RequestParam("inputEmail") String email,
-                              @RequestParam("inputPassword") String password,
+                              @RequestParam(value = "inputPassword",required = false) String password,
                               @RequestParam(value = "signMe", required = false) String signMe,
                               Model model,HttpServletRequest request) {
 
