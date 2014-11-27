@@ -2,26 +2,14 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link rel="stylesheet" href="<c:url value="/resources"/>/styles/user.css">
 <c:url value="/user/save" var="updateURL"/>
 <script src="<c:url value="/resources"/>/scripts/profile.js"></script>
 <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
 <div class="container">
     <!-- Small modal window-->
-    <c:if test="${status=='OK'}">
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
-                    class="sr-only">Close</span></button>
-            <strong>Success!</strong> Your data is saved successfully!!!
-        </div>
-    </c:if>
-    <c:if test="${status=='ERROR'}">
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
-                    class="sr-only">Close</span></button>
-            <strong>Error!</strong> Your data wasn't saved!!!
-        </div>
-    </c:if>
-    <div class="col-md-9" role="main" id="userData">
+    <div class="alert" role="alert" style="display: none"></div>
+    <div class="col-md-16" role="main" id="userData">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -33,21 +21,20 @@
                 <form:form method="post" action="${updateURL}" modelAttribute="user" cssClass="form-horizontal"
                            role="form" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 avablock">
                             <img src="/resources/images/${user.avatar}" class="img-responsive" alt="Responsive image"
                                  id="userAvatar">
 
                             <div class="controls clearfix">
-                        <span class="btn btn-success btn-file">
+                        <span class="btn btn-success btn-file" id="avatar" data-toggle="popover"
+                              data-placement="bottom" onshow="hidePopoveDelay('avatar')">
                             <i class="glyphicon glyphicon-camera"></i> <span>change avatar</span>
                             <input type="file" name="image" id="image"/>
                         </span>
                             </div>
                         </div>
                         <div class="col-md-6">
-
                             <form:hidden path="id"/>
-
                             <div class="form-group">
                                 <label for="login" class="col-sm-2 control-label">NickName</label>
 
@@ -81,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="form-group last">
-                                <button type="submit" class="btn btn-success">Save</button>
+                                <button type="button" class="btn btn-success" id="save">Save</button>
                             </div>
                         </div>
                     </div>
@@ -91,18 +78,5 @@
     </div>
 </div>
 <script type='text/javascript'>
-    $(window).load(function () {
-        function changeImage(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#userAvatar').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-        $("#image").change(function () {
-            changeImage(this);
-        });
-    });
+
 </script>

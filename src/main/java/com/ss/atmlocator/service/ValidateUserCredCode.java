@@ -7,10 +7,12 @@ public final class ValidateUserCredCode {
 
     private ValidateUserCredCode(){}
 
-    public static enum ValidationKey{
+    public static enum ValidationKey {
         EMAIL,
         LOGIN,
-        PASSWORD
+        PASSWORD,
+        AVATAR,
+        NOTHING;
     }
 
 }

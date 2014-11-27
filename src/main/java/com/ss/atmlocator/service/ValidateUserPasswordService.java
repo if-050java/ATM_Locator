@@ -36,7 +36,7 @@ public class ValidateUserPasswordService implements Validator {
     public void validate(Object object, Errors errors) {
         final String password = (String)object;
         if(!validatePassword(password)){
-            errors.rejectValue(ValidationKey.LOGIN.toString(),
+            errors.rejectValue(ValidationKey.PASSWORD.toString(),
                     messages.getMessage("invalid.password", null, Locale.ENGLISH));
         }
     }
