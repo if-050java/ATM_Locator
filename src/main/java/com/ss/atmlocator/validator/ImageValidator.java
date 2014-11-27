@@ -1,5 +1,6 @@
 package com.ss.atmlocator.validator;
 
+import com.ss.atmlocator.service.ValidateUserCredCode;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Locale;
 
 @Service
 public class ImageValidator implements Validator {
@@ -26,13 +29,14 @@ public class ImageValidator implements Validator {
         MultipartFile image = (MultipartFile) object;
         if (null == image) return;
         if (image.getSize() > MAX_FILE_SIZE) {
-            errors.rejectValue("avatar", ValidationMessages.LIMIT_FILE_SIZE);
+            errors.rejectValue(ValidateUserCredCode.ValidationKey.AVATAR.toString(),
+                    messages.getMessage("file.size.limit", null, Locale.ENGLISH));
             return;
         } else if (!FilenameUtils.getExtension(image.getOriginalFilename()).equals("jpg") &&
                 !FilenameUtils.getExtension(image.getOriginalFilename()).equals("jpeg") &&
                 !FilenameUtils.getExtension(image.getOriginalFilename()).equals("png")) {
-            errors.rejectValue("avatar", ValidationMessages.INVALID_FILE_EXTENSION);
-            return;
+            errors.rejectValue(ValidateUserCredCode.ValidationKey.AVATAR.toString(),
+                    messages.getMessage("file.extension", null, Locale.ENGLISH));
         }
     }
 }

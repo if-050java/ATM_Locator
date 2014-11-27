@@ -2,70 +2,73 @@ package com.ss.atmlocator.validator;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.service.ValidateUserCredCode;
 import com.ss.atmlocator.utils.UserCredMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Locale;
 
 @Service
-public class UserProfileValidator implements Validator {
+public class UserProfileValidator {
 
     @Autowired
-    @Qualifier("usercredmatcher")
-    private UserCredMatcher userCredMatcher;
+    @Qualifier("loginvalidator")
+    private Validator loginValidator;
 
     @Autowired
-    UserService userService;
+    @Qualifier("passwordvalidator")
+    private Validator passwordValidator;
 
-    @Override
-    public boolean supports(Class<?> Clazz) {
-        return User.class.isAssignableFrom(Clazz);
-    }
+    @Autowired
+    @Qualifier("emailvalidator")
+    private Validator emailValidator;
 
-    @Override
-    public void validate(Object object, Errors errors) {
-        User newUser = ((User) object);
+    @Autowired
+    private Validator imageValidator;
+
+    @Autowired
+    private MessageSource messages;
+
+    @Autowired
+    private UserService userService;
+
+    public void validate(User newUser, MultipartFile image, Errors errors) {
 
         User oldUser = userService.getUserById(newUser.getId());
         if (checkChanges(newUser, oldUser)) {
-            errors.rejectValue("nothing", ValidationMessages.NOTHING_TO_UPDATE);
-            return;
-        }
-        if (!validateLogin(newUser.getLogin())) {
-            errors.rejectValue("login", ValidationMessages.INVALID_LOGIN);
-        }
-        if (!validateEmail(newUser.getEmail())) {
-            errors.rejectValue("email", ValidationMessages.INVALID_EMAIL);
-        }
-        if (!newUser.getLogin().equals(oldUser.getLogin()) && userService.checkExistLoginName(newUser.getLogin())) {
-            errors.rejectValue("login", ValidationMessages.LOGIN_ALREADY_EXIST);
-        }
-        if (!newUser.getEmail().equals(oldUser.getEmail()) && userService.checkExistEmail(newUser.getEmail())) {
-            errors.rejectValue("email", ValidationMessages.EMAIL_ALREADY_EXIST);
-        }
-        if (!validatePassword(newUser.getPassword())) {
-            errors.rejectValue("password", ValidationMessages.INVALID_PASSWORD);
+            errors.rejectValue(ValidateUserCredCode.ValidationKey.NOTHING.toString(),
+                    messages.getMessage("NOTHING_TO_UPDATE", null, Locale.ENGLISH));
+        } else {
+            User persistedUser = userService.getUserById(newUser.getId());
+            //Checking login
+            if(! newUser.getLogin().equals(persistedUser.getLogin())){
+                loginValidator.validate(newUser.getLogin(),errors);
+            };
+            //Checking email
+            if(! newUser.getEmail().equals(persistedUser.getEmail())){
+                emailValidator.validate(newUser.getEmail(),errors);
+            };
+            //Checking password
+            if(! newUser.getPassword().equals(persistedUser.getPassword())){
+                passwordValidator.validate(newUser.getPassword(),errors);
+            }
+            if(newUser.getAvatar() != null){
+                imageValidator.validate(image,errors);
+            }
+
         }
     }
 
     private boolean checkChanges(User newUser, User oldUser) {
         return newUser.getLogin().equals(oldUser.getLogin()) &&
-               newUser.getEmail().equals(oldUser.getEmail()) &&
-               newUser.getPassword().equals(oldUser.getPassword()) &&
-               newUser.getAvatar() == null;
-    }
-
-    private boolean validateEmail(String email) {
-        return userCredMatcher.validateEmail(email);
-    }
-
-    private boolean validateLogin(String login) {
-        return userCredMatcher.validateLogin(login);
-    }
-
-    private boolean validatePassword(String password) {
-        return userCredMatcher.validatePassword(password);
+                newUser.getEmail().equals(oldUser.getEmail()) &&
+                newUser.getPassword().equals(oldUser.getPassword()) &&
+                newUser.getAvatar() == null;
     }
 }

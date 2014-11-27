@@ -4,9 +4,9 @@ import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
 import com.ss.atmlocator.validator.ImageValidator;
-import com.ss.atmlocator.validator.UserProfileValidator;
 import com.ss.atmlocator.utils.ErrorMessage;
 import com.ss.atmlocator.utils.ValidationResponse;
+import com.ss.atmlocator.validator.UserProfileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,13 +34,13 @@ public class UserController {
     public static final String STATUS_SUCCESS = "SUCCESS";
     public static final String STATUS_INFO = "INFO";
     public static final String STATUS_ERROR = "ERROR";
-    public static final String NOTHING_TO_UPDATE = "nothing";
+    public static final String NOTHING_TO_UPDATE = "NOTHING";
 
     @Autowired
     UserService userService;
 
     @Autowired
-    UserProfileValidator userValidator;
+    UserProfileValidator userProfileValidator;
 
     @Autowired
     ImageValidator imageValidator;
@@ -87,8 +87,7 @@ public class UserController {
         User newUser = new User(id, login, email, password, 1);
         newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
-        userValidator.validate(newUser, errors);
-        imageValidator.validate(avatar, errors);
+        userProfileValidator.validate(newUser, avatar, errors);
         if (!errors.hasErrors()) {
             try {
                 userService.editUser(newUser);
@@ -104,7 +103,7 @@ public class UserController {
             return response;
         }
         for (FieldError objectError : errors.getFieldErrors()) {
-            errorMesages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
+            errorMesages.add(new ErrorMessage(objectError.getField().toLowerCase(), objectError.getCode()));
             if (objectError.getField().equals(NOTHING_TO_UPDATE)) {
                 response.setStatus(STATUS_INFO);
                 return response;
