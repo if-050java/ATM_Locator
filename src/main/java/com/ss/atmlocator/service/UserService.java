@@ -3,7 +3,14 @@ package com.ss.atmlocator.service;
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by roman on 19.11.14.
@@ -12,6 +19,10 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     IUsersDAO usersDAO;
+
+    @Autowired
+    @Qualifier("jdbcUserService")
+    public UserDetailsManager userDetailsManager;
 
     public User getUserByName(String name) {
         return usersDAO.getUserByName(name);
@@ -81,6 +92,18 @@ public class UserService {
             return true;
         }
     }
+    public void doAutoLogin(String username) {
+        UserDetails user = userDetailsManager.loadUserByUsername(username);
+        Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 
-
+    /* Verify existing of login in DB */
+    public boolean checkExistLoginName(String login){
+        return usersDAO.checkExistLoginName(login);
+    };
+    /* Verify existing of email address in DB */
+    public boolean checkExistEmail(String email){
+        return usersDAO.checkExistEmail(email);
+    };
 }

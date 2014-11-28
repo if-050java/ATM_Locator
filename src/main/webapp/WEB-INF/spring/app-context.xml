@@ -59,15 +59,13 @@
 
     <!-- SendMail -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="smtp.gmail.com" />
-        <property name="port" value="587" />
-        <property name="username" value="${email.user}" />
-        <property name="password" value="${email.password}" />
+        <property name="host" value="${mailserver.ip}" />
+        <property name="port" value="${mailserver.port}" />
 
         <property name="javaMailProperties">
             <props>
-                <prop key="mail.smtp.auth">true</prop>
-                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.auth">${smtp.auth}</prop>
+                <prop key="mail.smtp.starttls.enable">${smtp.tls}</prop>
             </props>
         </property>
     </bean>
@@ -76,7 +74,6 @@
         <property name="mailSender" ref="mailSender" />
         <property name="from" value="${email.from}" />
     </bean>
-
     <!-- User credentials validate -->
     <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">
         <constructor-arg name="mailRegExp" value="${email.pattern}"/>
@@ -97,5 +94,8 @@
     <bean id="loginvalidator" class="com.ss.atmlocator.service.ValidateUserLoginService"/>
     <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
     <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
+    <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
+    <bean id="loginValidator" class="com.ss.atmlocator.validator.LoginValidator"/>
+    <bean id="emailValidator" class="com.ss.atmlocator.validator.EmailValidator"/>
 
 </beans>

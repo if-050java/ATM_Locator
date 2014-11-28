@@ -14,8 +14,14 @@ div.last{
     margin-top: 20px;
 }
 #user .form-group {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+#user .form-group input {
+    height: 40px;
+}
+div.avablock {
+    margin-top: 15px;
 }
 .popover{
     min-width: 380px ! important;
