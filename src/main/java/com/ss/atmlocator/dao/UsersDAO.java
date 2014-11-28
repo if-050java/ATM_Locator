@@ -77,12 +77,33 @@ public class UsersDAO implements IUsersDAO {
         if (value == 0 ) return false;
         return true;
     }
+    @Override
+    public boolean checkExistLoginName(User user) {
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE login = :login and id != :id";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("id", user.getId());
+        query.setParameter("login", user.getLogin());
+        int value =  ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0 ) return false;
+        return true;
+    }
 
     @Override
     public boolean checkExistEmail(String email) {
         String sqlQuery = "SELECT COUNT(*) FROM users WHERE email = :email";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("email", email);
+        int value =  ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0 ) return false;
+        return true;
+    }
+
+    @Override
+    public boolean checkExistEmail(User user) {
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE email = :email and id != :id";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("id", user.getId());
+        query.setParameter("email", user.getEmail());
         int value =  ((BigInteger) query.getSingleResult()).intValue();
         if (value == 0 ) return false;
         return true;
