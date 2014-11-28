@@ -30,8 +30,9 @@
     <definition name="adminBankEdit" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/adminBankEdit.jsp"/>
     </definition>
-    <definition name="BankEdit" extends=".mainTemplate">
-        <put-attribute name="content" value="/WEB-INF/views/BankEdit.jsp"/>
+
+    <definition name="adminBankDeleted" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminBankDeleted.jsp"/>
     </definition>
 
     <definition name="signup" extends=".mainTemplate">

@@ -35,10 +35,10 @@
                         </ul>
                     </div>
                     <div class="btn-group">
-                        <button type="submit" formaction="/BankEdit" id="btnBankEdit" class="btn btn-primary">Edit</button>
+                        <button type="submit" formaction="/adminBankEdit" id="btnBankEdit" class="btn btn-primary">Edit</button>
                     </div>
                     <div class="btn-group">
-                        <button type="submit" formaction="/BankCreateNew" id="btnBankCreateNew" class="btn btn-primary">Create New</button>
+                        <button type="submit" formaction="/adminBankCreateNew" id="btnBankCreateNew" class="btn btn-primary">Create New</button>
                     </div>
                     <%--<input type="hidden" name="network_id" id="network_id">--%>
                     <input type="hidden" name="bank_id" id="bank_id">

@@ -32,6 +32,7 @@ public class BanksDAO {
         return banks;
     }
 
+    @Transactional
     public Bank newBank(){
         Bank bank = new Bank();
         bank.setId(0); // no ID for new Bank
@@ -51,6 +52,12 @@ public class BanksDAO {
     @Transactional
     public Bank saveBank(Bank bank){
         return (Bank)entityManager.merge(bank);
+    }
+
+    @Transactional
+    public void deleteBank(int bank_id){
+        Bank bank = (Bank)entityManager.find(Bank.class, bank_id);
+        entityManager.remove(bank);
     }
 
 }

@@ -47,7 +47,7 @@ public class AdminBanksController {
     /**
      *  Show Bank information page for edit
      */
-    @RequestMapping(value = "/BankEdit", method = RequestMethod.GET)
+    @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
     public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
                            @RequestParam(value = "bank_id", required = true) int bank_id,
                            ModelMap modelMap) {
@@ -58,13 +58,13 @@ public class AdminBanksController {
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
 
-        return "BankEdit";
+        return "adminBankEdit";
     }
 
     /**
      *  Show create Bank page for edit
      */
-    @RequestMapping(value = "/BankCreateNew", method = RequestMethod.GET)
+    @RequestMapping(value = "/adminBankCreateNew", method = RequestMethod.GET)
     public String bankCreateNew(ModelMap modelMap) {
         log.debug("AdminBanksController.bankCreateNew():GET");
         List<AtmNetwork> networks = networksDAO.getNetworksList();
@@ -73,13 +73,13 @@ public class AdminBanksController {
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
 
-        return "BankEdit";
+        return "adminBankEdit";
     }
 
     /**
      *  Update Bank information or create new entry if ID=0
      */
-    @RequestMapping(value = "/BankEdit", method = RequestMethod.POST)
+    @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
     public String bankSave(@ModelAttribute("bank") Bank bank,
                            @RequestParam(value = "network_id", required = true) int network_id,
                            ModelMap modelMap)
@@ -91,13 +91,37 @@ public class AdminBanksController {
         Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
 
         List<AtmNetwork> networks = networksDAO.getNetworksList();
-        //modelMap.addAttribute("networks", networks);
+        modelMap.addAttribute("networks", networks);
         //modelMap.addAttribute("bank", savedBank);
-        modelMap.addAttribute("bank_id", savedBank.getId());
+
+        // TODO: show status
+        // TODO: disable "delete" button in "create" mode before save
+        modelMap.addAttribute("bank", savedBank);
+        //modelMap.addAttribute("bank_id", savedBank.getId());
         modelMap.addAttribute("active","adminBanks");
 
-        return "BankEdit";
+        return "adminBankEdit";
     }
 
+
+    /**
+     *  Delete Bank
+     */
+    @RequestMapping(value = "/adminBankDelete", method = RequestMethod.POST)
+    public String bankDelete(@ModelAttribute("bank") Bank bank,
+                           /*@RequestParam(value = "network_id", required = true) int network_id,*/
+                           ModelMap modelMap)
+    {
+        log.debug("AdminBanksController.bankDelete():POST");
+
+        modelMap.addAttribute("bank_name", bank.getName());
+
+        banksDAO.deleteBank(bank.getId()); // TODO: check for error
+
+        modelMap.addAttribute("status","deleted");
+        modelMap.addAttribute("active","adminBanks");
+
+        return "adminBankDeleted";
+    }
 
 }
