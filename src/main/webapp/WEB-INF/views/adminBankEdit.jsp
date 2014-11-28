@@ -75,8 +75,8 @@
                             <form:input path="iconAtm" placeholder="iconAtm" cssClass="form-control"/>
                             <span class="input-group-btn btn-file">
                               <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-folder-open"></i></button>
-                              <input type="file" name="iconAtmFile" id="iconAtmFile"/>
                             </span>
+                            <input type="file" name="iconAtmFile" id="iconAtmFile">
                       </div>
                     </div>
                 </div>
@@ -88,11 +88,11 @@
                     </div>
                     <div class="col-md-5">
                       <div class="input-group">
-                          <form:input path="iconOffice" placeholder="iconOffice" cssClass="form-control"/>
+                            <form:input path="iconOffice" placeholder="iconOffice" cssClass="form-control"/>
                             <span class="input-group-btn btn-file">
                               <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-folder-open"></i></button>
-                              <input type="file" name="iconOfficeFile" id="iconOfficeFile"/>
                             </span>
+                            <input type="file" name="iconOfficeFile" id="iconOfficeFile"/>
                       </div>
                     </div>
                 </div>

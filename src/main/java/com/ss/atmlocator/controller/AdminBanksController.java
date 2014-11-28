@@ -4,6 +4,7 @@ import com.ss.atmlocator.dao.AtmNetworksDAO;
 import com.ss.atmlocator.dao.BanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.utils.UploadFileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -82,25 +86,59 @@ public class AdminBanksController {
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
     public String bankSave(@ModelAttribute("bank") Bank bank,
                            @RequestParam(value = "network_id", required = true) int network_id,
+                           @RequestParam(value = "imageLogo", required = false) MultipartFile imageLogo,
+                           @RequestParam(value = "iconAtmFile", required = false) MultipartFile iconAtmFile,
+                           @RequestParam(value = "iconOfficeFile", required = false) MultipartFile iconOfficeFile,
+                           HttpServletRequest request,
                            ModelMap modelMap)
     {
         log.debug("AdminBanksController.bankSave():POST");
 
         AtmNetwork network = networksDAO.getNetwork(network_id);
         bank.setNetwork(network);
+
+        String newname = null;
+
+        newname = SaveBankImage(imageLogo, "bank_logo", bank.getId(), request);
+        if(newname != null) bank.setLogo(newname);
+
+        newname = SaveBankImage(iconAtmFile, "bank_atm", bank.getId(), request);
+        if(newname != null) bank.setIconAtm(newname);
+
+        newname = SaveBankImage(iconOfficeFile, "bank_off", bank.getId(), request);
+        if(newname != null) bank.setIconOffice(newname);
+
         Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
 
         List<AtmNetwork> networks = networksDAO.getNetworksList();
         modelMap.addAttribute("networks", networks);
-        //modelMap.addAttribute("bank", savedBank);
-
+        modelMap.addAttribute("bank", savedBank);
+        modelMap.addAttribute("active","adminBanks");
         // TODO: show status
         // TODO: disable "delete" button in "create" mode before save
-        modelMap.addAttribute("bank", savedBank);
-        //modelMap.addAttribute("bank_id", savedBank.getId());
-        modelMap.addAttribute("active","adminBanks");
 
         return "adminBankEdit";
+    }
+
+    private String SaveBankImage(MultipartFile image, String prefix, int id, HttpServletRequest request){
+        String newname = null;
+        try{
+            if (image != null && !image.isEmpty()) {
+                newname = BuildBankImageFilename(image, prefix, id);
+                UploadFileUtils.save(image, newname, request);
+            }
+        } catch (IOException e) {
+            log.error("AdminBanksController.SaveBankImage(): IO error saving image "+prefix);
+            e.printStackTrace();
+        }
+        return newname;
+    }
+
+
+    private String BuildBankImageFilename(MultipartFile original, String prefix, int id){
+        String filename = original.getOriginalFilename();
+        String extension = filename.substring(filename.lastIndexOf('.'));
+        return prefix + id + extension;
     }
 
 
@@ -117,6 +155,7 @@ public class AdminBanksController {
         modelMap.addAttribute("bank_name", bank.getName());
 
         banksDAO.deleteBank(bank.getId()); // TODO: check for error
+        //TODO: delete associated image files
 
         modelMap.addAttribute("status","deleted");
         modelMap.addAttribute("active","adminBanks");
