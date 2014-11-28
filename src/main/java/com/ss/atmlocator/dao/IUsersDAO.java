@@ -22,6 +22,8 @@ public interface IUsersDAO {
     void createUser(User user);
     /* Verify existing of login in DB */
     boolean checkExistLoginName(String login);
+    boolean checkExistLoginName(User user);
     /* Verify existing of email address in DB */
     boolean checkExistEmail(String email);
+    boolean checkExistEmail(User user);
 }

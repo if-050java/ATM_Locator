@@ -85,18 +85,18 @@ $(document).ready(function () {
                             alert.removeClass();
                             alert.addClass("alert alert-success");
                             alert.html("<strong>Success!</strong> Your data is saved successfully!");
-                            alert.show().fadeOut(4000);
+                            alert.show().fadeOut(5000);
 
                         } else if (response.status == "INFO") {
                             alert.removeClass();
                             alert.addClass("alert alert-info");
                             alert.html("<strong>Warning!</strong> Nothing to update!");
-                            alert.show().fadeOut(4000);
+                            alert.show().fadeOut(5000);
                         } else {
                             alert.removeClass();
                             alert.addClass("alert alert-warning");
                             alert.html("<strong>Warning!</strong> See the validation rules!");
-                            alert.show().fadeOut(4000);
+                            alert.show().fadeOut(5000);
                             for (var i = 0; i < response.errorMessageList.length; i++) {
                                 var item = response.errorMessageList[i];
                                 $('#' + item.fieldName).attr("data-content", item.message);
@@ -108,7 +108,7 @@ $(document).ready(function () {
                         alert.removeClass();
                         alert.addClass("alert alert-danger");
                         alert.html("<strong>Error!</strong> Error saving data!");
-                        alert.show().fadeOut(4000);
+                        alert.show().fadeOut(5000);
                     }
                 })
             }

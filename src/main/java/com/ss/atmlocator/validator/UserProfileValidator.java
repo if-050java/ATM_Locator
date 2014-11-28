@@ -18,7 +18,7 @@ import java.util.Locale;
 public class UserProfileValidator {
 
     @Autowired
-    @Qualifier("loginvalidator")
+    @Qualifier("loginValidator")
     private Validator loginValidator;
 
     @Autowired
@@ -26,10 +26,11 @@ public class UserProfileValidator {
     private Validator passwordValidator;
 
     @Autowired
-    @Qualifier("emailvalidator")
+    @Qualifier("emailValidator")
     private Validator emailValidator;
 
     @Autowired
+    @Qualifier("imagevalidator")
     private Validator imageValidator;
 
     @Autowired
@@ -41,26 +42,15 @@ public class UserProfileValidator {
     public void validate(User newUser, MultipartFile image, Errors errors) {
 
         User oldUser = userService.getUserById(newUser.getId());
+
         if (checkChanges(newUser, oldUser)) {
             errors.rejectValue(ValidateUserCredCode.ValidationKey.NOTHING.toString(),
                     messages.getMessage("NOTHING_TO_UPDATE", null, Locale.ENGLISH));
         } else {
-            User persistedUser = userService.getUserById(newUser.getId());
-            //Checking login
-            if(! newUser.getLogin().equals(persistedUser.getLogin())){
-                loginValidator.validate(newUser.getLogin(),errors);
-            };
-            //Checking email
-            if(! newUser.getEmail().equals(persistedUser.getEmail())){
-                emailValidator.validate(newUser.getEmail(),errors);
-            };
-            //Checking password
-            if(! newUser.getPassword().equals(persistedUser.getPassword())){
+                loginValidator.validate(newUser,errors);
+                emailValidator.validate(newUser,errors);
                 passwordValidator.validate(newUser.getPassword(),errors);
-            }
-            if(newUser.getAvatar() != null){
                 imageValidator.validate(image,errors);
-            }
 
         }
     }
