@@ -5,6 +5,7 @@ import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.NewUserValidatorService;
 import com.ss.atmlocator.utils.SendMails;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,8 @@ import java.util.Set;
 
 @Controller
 public class SignUpController {
+
+    final Logger logger = Logger.getLogger(SignUpController.class.getName());
 
     private final int ENABLED_USER_STATUS = 1;
 
@@ -58,6 +61,11 @@ public class SignUpController {
         user.setLogin(login);
         user.setPassword(password);
         user.setEmail(email);
+
+        logger.info("POST parametr login: " +"{"+login+"}");
+        logger.info("POST parametr password: " +"{"+password+"}");
+        logger.info("POST parametr email: " +"{"+email+"}");
+
 
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), user.getClass().getName());
         validateUserField.validate(user,errors);

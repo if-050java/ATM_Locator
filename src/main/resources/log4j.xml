@@ -10,40 +10,66 @@
     </layout>
 </appender>
 
-<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="INFO" />
+<appender name="rootFileAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="FATAL" />
         <param name="MaxFileSize" value="512KB" />
         <param name="MaxBackupIndex" value="10" />
-        <param name="File" value="${webapp.root}/WEB-INF/logs/web_app.log"/>
+        <param name="File" value="../logs/web_app.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %-5p %c{1}:%L %m %n" />
         </layout>
 </appender>
 
-<!-- 3rdparty Loggers -->
-<logger name="org.springframework.core">
-    <level value="info" />
+    <appender name="smtpLogs" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="MaxFileSize" value="2048KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="File" value="../logs/smtp-logs.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="springLogs" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="MaxFileSize" value="2048KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="File" value="../logs/spring-logs.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="controllerLogs" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="MaxFileSize" value="2048KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="File" value="../logs/controller-logs.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%X{ip}] %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+
+<!-- Spring Log -->
+<logger name="org.springframework">
+    <level value="debug" />
+    <appender-ref ref="springLogs"/>
 </logger>
 
-<logger name="org.springframework.beans">
-    <level value="debug" />
+    <!-- SendMails Log -->
+<logger name="com.ss.atmlocator.utils.SendMails">
+    <level value="error"/>
+    <appender-ref ref="smtpLogs"/>
 </logger>
-
-<logger name="org.springframework.context">
-    <level value="debug" />
-</logger>
-
-<logger name="org.springframework.http">
-    <level value="debug" />
-</logger>
-    <!-- below alternate between debug and info -->
-<logger name="org.springframework.web">
-    <level value="debug" />
-</logger>
+    <!-- Controlers Logs -->
+    <logger name="com.ss.atmlocator.controller">
+        <level value="debug"/>
+        <appender-ref ref="controllerLogs"/>
+    </logger>
 
 <root>
         <priority value="info"></priority>
         <appender-ref ref="console"/>
-        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="rootFileAppender"/>
 </root>
 </log4j:configuration>

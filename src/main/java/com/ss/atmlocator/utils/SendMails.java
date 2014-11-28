@@ -1,10 +1,19 @@
 package com.ss.atmlocator.utils;
 
 
+
+
+import org.apache.log4j.Logger;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import static com.ss.atmlocator.utils.ExceptionParser.parseExceptions;
+
+
 
 public class SendMails {
+
+    final Logger logger = Logger.getLogger(SendMails.class.getName());
 
     private MailSender mailSender;
     private String from;
@@ -19,6 +28,7 @@ public class SendMails {
 
     public void sendMail(String to, String subject, String msg) {
 
+        try{
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setFrom(from);
@@ -28,6 +38,10 @@ public class SendMails {
 
         mailSender.send(message);
 
+        }
+        catch (MailException exp){
+            logger.error(parseExceptions(exp));
+        }
     }
 
 }
