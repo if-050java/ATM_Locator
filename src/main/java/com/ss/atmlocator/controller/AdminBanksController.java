@@ -28,9 +28,11 @@ public class AdminBanksController {
     @Autowired
     AtmNetworksDAO networksDAO;
 
+    /**
+     *  Show page with list of Banks and ATM Networks
+     */
     @RequestMapping(value = "/adminBanks")
     public String banksList(ModelMap modelMap) {
-
         log.debug("AdminBanksController.banksList()");
         List<AtmNetwork> networks = networksDAO.getNetworksList();
         modelMap.addAttribute("networks", networks);
@@ -42,20 +44,41 @@ public class AdminBanksController {
         return "adminBanks";
     }
 
+    /**
+     *  Show Bank information page for edit
+     */
     @RequestMapping(value = "/BankEdit", method = RequestMethod.GET)
-    public String bankEdit(@ModelAttribute("bank") Bank bank,
+    public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
                            @RequestParam(value = "bank_id", required = true) int bank_id,
                            ModelMap modelMap) {
         log.debug("AdminBanksController.bankEdit():GET");
         List<AtmNetwork> networks = networksDAO.getNetworksList();
         modelMap.addAttribute("networks", networks);
-        bank = banksDAO.getBank(bank_id);
+        Bank bank = banksDAO.getBank(bank_id);
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
 
         return "BankEdit";
     }
 
+    /**
+     *  Show create Bank page for edit
+     */
+    @RequestMapping(value = "/BankCreateNew", method = RequestMethod.GET)
+    public String bankCreateNew(ModelMap modelMap) {
+        log.debug("AdminBanksController.bankCreateNew():GET");
+        List<AtmNetwork> networks = networksDAO.getNetworksList();
+        modelMap.addAttribute("networks", networks);
+        Bank bank = banksDAO.newBank();
+        modelMap.addAttribute("bank", bank);
+        modelMap.addAttribute("active","adminBanks");
+
+        return "BankEdit";
+    }
+
+    /**
+     *  Update Bank information or create new entry if ID=0
+     */
     @RequestMapping(value = "/BankEdit", method = RequestMethod.POST)
     public String bankSave(@ModelAttribute("bank") Bank bank,
                            @RequestParam(value = "network_id", required = true) int network_id,
@@ -65,11 +88,11 @@ public class AdminBanksController {
 
         AtmNetwork network = networksDAO.getNetwork(network_id);
         bank.setNetwork(network);
-        Bank savedBank = banksDAO.saveBank(bank);
+        Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
 
         List<AtmNetwork> networks = networksDAO.getNetworksList();
-        modelMap.addAttribute("networks", networks);
-        modelMap.addAttribute("bank", savedBank);
+        //modelMap.addAttribute("networks", networks);
+        //modelMap.addAttribute("bank", savedBank);
         modelMap.addAttribute("bank_id", savedBank.getId());
         modelMap.addAttribute("active","adminBanks");
 

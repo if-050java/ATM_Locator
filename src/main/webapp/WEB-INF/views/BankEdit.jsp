@@ -18,16 +18,14 @@
     </div>
     <div class="panel-body">
 
-        <form:form method="post" action="/BankEdit" modelAttribute="bank" role="form" enctype="multipart/form-data" cssClass="form-horizontal">
+        <form:form method="post"  modelAttribute="bank" role="form" enctype="multipart/form-data" cssClass="form-horizontal">
           <%--<div class="row"> --%>
               <div class="col-md-2">
                 <form:hidden path="logo"/>
-                <div class="thumbnail">
-                  <img src="/resources/images/${bank.logo}" style="height: 256px; width: 256px; display: block;" class="img-thumbnail" alt="Bank logo" id="bankLogo">
-                </div>
+                <img src="/resources/images/${bank.logo}" style="height: 256px; width: 256px; display: block;" class="img-thumbnail" alt="Bank logo" id="bankLogo">
                 <div class="controls clearfix">
                       <span class="btn btn-success btn-file">
-                          <i class="glyphicon glyphicon-picture"></i> <span>Load file</span>
+                          <i class="glyphicon glyphicon-picture"></i> <span>Change logo</span>
                           <input type="file" name="imageLogo" id="imageLogo"/>
                       </span>
                 </div>
@@ -67,12 +65,6 @@
                     </div>
                 </div>
 
-                    <%-- <form:input path="name" placeholder="name" cssClass="form-control"/> --%>
-                    <%-- <form:input path="id" cssClass="form-control"/> --%>
-                    <%-- <form:input path="mfoCode" placeholder="mfoCode" cssClass="form-control"/> --%>
-                    <%-- <form:input path="webSite" placeholder="webSite" cssClass="form-control"/> --%>
-                    <%-- <form:input path="logo" placeholder="logo" cssClass="form-control"/> --%>
-
                 <div class="form-group">
                     <label for="iconAtm" class="col-sm-2 control-label">ATM Icon</label>
                     <div class="col-md-1">
@@ -105,7 +97,7 @@
                     </div>
                 </div>
 
-                <%-- Select ATM Network dropdown menu --%>
+<%-- Select ATM Network dropdown menu --%>
                 <div class="form-group">
                   <input type="hidden" name="network_id" id="network_id" value="${bank.network.id}" cssClass="form-control">
                   <label for="networks_menu" class="col-sm-2 control-label">ATM network</label>
@@ -116,20 +108,28 @@
                               <c:forEach items="${networks}" var="net">
                                   <li><a href="#" id="${net.id}">${net.name}</a></li>
                               </c:forEach>
-                              <li class="divider"></li>
-                              <li><a href="#" id="0"><span class="glyphicon glyphicon-question-sign"></span>Unknown</a></li>
+                                  <%--
+                                  <li class="divider"></li>
+                                  <li><a href="#" id="-1"><span class="glyphicon glyphicon-question-sign"></span>Unknown</a></li>
+                                  --%>
                           </ul>
                       </div>
                   </div>
 
-                  <div class="col-md-2">
-                      <button type="button" class="btn btn-primary"><span>ATMs and Office list </span><i class="glyphicon glyphicon-list"></i></button>
-                  </div>
-
                 </div>
 
-                <div class="form-group last">
-                    <button type="submit" class="btn btn-success btn-lg">Save</button>
+                <div class="form-group">
+                    <div class="col-md-6 col-md-offset-1">
+                        <button type="submit" formaction="/BankEdit" class="btn btn-success btn-lg">
+                            Save
+                        </button>
+                        <button type="submit" formaction="/adminBankDelete" class="btn btn-danger btn-lg">
+                            Delete bank
+                        </button>
+                        <button type="button" formaction="/adminBankAtmList" class="btn btn-primary btn-lg">
+                            <span>ATMs and Office list </span><i class="glyphicon glyphicon-list"></i>
+                        </button>
+                    </div>
                 </div>
               </div>
 
@@ -143,7 +143,7 @@
 /* On select item in ATM Network dropdown
 *  set dropdown title to name of the ATM Network
 * */
-var network_id = 0;
+var network_id = -1;
 $("#networks_menu li a").click(function(){
         var selText = $(this).text();
         $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');

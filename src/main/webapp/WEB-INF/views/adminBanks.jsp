@@ -8,32 +8,42 @@
               <div class="panel-heading">Banks list:</div>
 
             <!-- Search box Start -->
-            <form action="/BankEdit">
+<%-- Select ATM Network dropdown menu --%>
+            <%--<form>--%>
+            <form:form method="get" role="form" cssClass="form-horizontal">
                 <div class="well carousel-search hidden-sm">
                     <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Select ATM network<span class="caret"></span></a>
                         <ul class="dropdown-menu" id="networks_menu">
-                            <li><a href="#" id="isnet0"><span class="glyphicon glyphicon-star"></span>All networks</a></li>
+                            <li><a href="#" id="isnet_all"><span class="glyphicon glyphicon-star"></span>All networks</a></li>
                             <li class="divider"></li>
                             <c:forEach items="${networks}" var="net">
                                 <li><a href="#" id="isnet${net.id}">${net.name}</a></li>
                             </c:forEach>
-
+                            <%--
+                            <li class="divider"></li>
+                            <li><a href="#" id="isnet-1"><span class="glyphicon glyphicon-star"></span>Unassigned</a></li>
+                            --%>
                         </ul>
                     </div>
+
+<%-- Select Bank dropdown menu --%>
                     <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select2" data-toggle="dropdown" href="#">Select a Bank <span class="caret"></span></a>
                         <ul class="dropdown-menu" id="banks_menu">
                             <c:forEach items="${banks}" var="bank">
-                                <li class="atmnet isnet${bank.network.id}"><a href="#" id="${bank.id}">${bank.name}</a></li>
+                                <li class="bankitem isnet${bank.network.id}"><a href="#" id="${bank.id}">${bank.name}</a></li>
                             </c:forEach>
                         </ul>
                     </div>
                     <div class="btn-group">
-                        <button type="submit" id="btnSearch" class="btn btn-primary">Edit</button>
+                        <button type="submit" formaction="/BankEdit" id="btnBankEdit" class="btn btn-primary">Edit</button>
                     </div>
-                    <input type="hidden" name="network_id" id="network_id">
+                    <div class="btn-group">
+                        <button type="submit" formaction="/BankCreateNew" id="btnBankCreateNew" class="btn btn-primary">Create New</button>
+                    </div>
+                    <%--<input type="hidden" name="network_id" id="network_id">--%>
                     <input type="hidden" name="bank_id" id="bank_id">
                 </div>
-            </form>
+            </form:form>
             <!-- Search box End -->
 
           </div>
@@ -52,12 +62,12 @@
         network_id = $(this).attr("id");
         var banks_show = 0;
         var banks_hide = 0;
-        var netbanks = document.getElementsByClassName("atmnet");
+        var netbanks = document.getElementsByClassName("bankitem");
         for(i=0; i<netbanks.length; i++)
         {
             bankitem = netbanks[i];
             /* alert(bankitem.innerHTML); */
-            if(network_id==="isnet0" || $(bankitem).hasClass(network_id)){
+            if(network_id==="isnet_all" || $(bankitem).hasClass(network_id)){
                 bankitem.style.display = "block";
                 banks_show = banks_show + 1;
             } else {
