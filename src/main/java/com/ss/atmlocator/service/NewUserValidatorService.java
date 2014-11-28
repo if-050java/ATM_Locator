@@ -9,6 +9,9 @@ import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.Validator;
 import com.ss.atmlocator.entity.User;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.ss.atmlocator.utils.GenString.genString;
@@ -19,6 +22,10 @@ import static com.ss.atmlocator.utils.GenString.genString;
 
 @Service
 public class NewUserValidatorService {
+
+    private final int AMPERSAND_CODE = 64;
+    private final int USER_PASSWORD_LENGTH = 6;
+    private DateFormat dateFormat = new SimpleDateFormat("yyMMddHHmmss");
 
     @Autowired
     @Qualifier("loginvalidator")
@@ -32,7 +39,7 @@ public class NewUserValidatorService {
     @Qualifier("emailvalidator")
     private Validator emailValidator;
 
-    private final int USER_PASSWORD_LENGTH = 6;
+
 
     public void validate(User user, Errors errors){
         String email = user.getEmail();
@@ -44,24 +51,22 @@ public class NewUserValidatorService {
         /*Login validation*/
         if (login == null || login.length() ==0 ){
 
-            MapBindingResult errorLocal;
-            int index  = email.indexOf(64);
-
+            int index  = email.indexOf(AMPERSAND_CODE);
             login = email.substring(0,index);
 
-            errorLocal = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
+            MapBindingResult errorLocal = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
             loginValidator.validate(login,errorLocal);
 
+            String tempLogin = login;
+
             if (errorLocal.hasErrors()){
-                int i = 1;
                 do{
-                    login += i;
+                    tempLogin=login + dateFormat.format(new Date()) ;
                     errorLocal = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
-                    loginValidator.validate(login,errors);
-                    i++;
+                    loginValidator.validate(tempLogin,errors);
                 }while (errorLocal.hasErrors()==true);
             }
-            user.setLogin(login);
+            user.setLogin(tempLogin);
         }
         else{
             loginValidator.validate(login,errors);

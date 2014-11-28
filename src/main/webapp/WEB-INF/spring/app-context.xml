@@ -59,15 +59,13 @@
 
     <!-- SendMail -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="smtp.gmail.com" />
-        <property name="port" value="587" />
-        <property name="username" value="${email.user}" />
-        <property name="password" value="${email.password}" />
+        <property name="host" value="${mailserver.ip}" />
+        <property name="port" value="${mailserver.port}" />
 
         <property name="javaMailProperties">
             <props>
-                <prop key="mail.smtp.auth">true</prop>
-                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.auth">${smtp.auth}</prop>
+                <prop key="mail.smtp.starttls.enable">${smtp.tls}</prop>
             </props>
         </property>
     </bean>
