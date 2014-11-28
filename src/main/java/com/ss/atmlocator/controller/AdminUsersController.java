@@ -37,16 +37,16 @@ import java.util.Locale;
 public class AdminUsersController {
 
     //Request parameters for finding users
-    final String FIND_BY = "findBy";
-    final String FIND_VALUE = "findValue";
+    private final String FIND_BY = "findBy";
+    private final String FIND_VALUE = "findValue";
     //Request parameters for user fields
-    final String USER_ID = "id";
-    final String USER_LOGIN = "login";
-    final String USER_EMAIL = "email";
-    final String USER_PASSWORD = "password";
-    final String USER_ENABLED = "enabled";
+    private final String USER_ID = "id";
+    private final String USER_LOGIN = "login";
+    private final String USER_EMAIL = "email";
+    private final String USER_PASSWORD = "password";
+    private final String USER_ENABLED = "enabled";
 
-    final String EMAIL_SUBJECT = "ATM_Locator registration";
+    private final String EMAIL_SUBJECT = "ATM_Locator registration";
 
     @Autowired
     UserService userService;
@@ -64,11 +64,10 @@ public class AdminUsersController {
     @Autowired
     private MessageSource messages;
 
-    @RequestMapping(value = "/findUser", method = RequestMethod.POST)
-    public
+    @RequestMapping(value = "/findUser", method = RequestMethod.GET)
     @ResponseBody
-    User findUser(@RequestParam(FIND_BY) String findBy,
-                  @RequestParam(FIND_VALUE) String findValue) {
+    public User findUser(@RequestParam(FIND_BY) String findBy,
+                         @RequestParam(FIND_VALUE) String findValue) {
         try {
             if (findBy.equals(USER_LOGIN)) {
                 return userService.getUserByName(findValue);
@@ -98,30 +97,29 @@ public class AdminUsersController {
         //Check user want to remove himself
         if (id == currentLoggedUserId) {
             return new UserControllerResponse(UserControllerResponseStatus.ERROR,
-                    messages.getMessage(UserControllerResponseStatus.CANT_REMOVE_YOURSELF.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.CANT_REMOVE_YOURSELF.toString(),
+                                              null, Locale.ENGLISH));
         };
         try {
             userService.deleteUser(id);
+
             return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
-                    messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
+                                              null, Locale.ENGLISH));
         } catch (PersistenceException pe) {
             return new UserControllerResponse(UserControllerResponseStatus.ERROR,
-                    messages.getMessage(UserControllerResponseStatus.ERROR.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.ERROR.toString(),
+                                              null, Locale.ENGLISH));
         }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public
     @ResponseBody
-    UserControllerResponse
-    updateUser(@RequestParam(USER_ID) int id,
-               @RequestParam(USER_LOGIN) String newLogin,
-               @RequestParam(USER_EMAIL) String newEmail,
-               @RequestParam(USER_PASSWORD) String newPassword,
-               @RequestParam(USER_ENABLED) int enabled) {
+    public UserControllerResponse updateUser(@RequestParam(USER_ID) int id,
+                                             @RequestParam(USER_LOGIN) String newLogin,
+                                             @RequestParam(USER_EMAIL) String newEmail,
+                                             @RequestParam(USER_PASSWORD) String newPassword,
+                                             @RequestParam(USER_ENABLED) int enabled) {
 
         //Creating user from request parameters
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
@@ -129,8 +127,8 @@ public class AdminUsersController {
         //checking if nothing to update
         if (!userService.isModified(updatedUser)) {
             return new UserControllerResponse(UserControllerResponseStatus.ERROR,
-                    messages.getMessage(UserControllerResponseStatus.NOTHING_TO_UPDATE.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.NOTHING_TO_UPDATE.toString(),
+                                              null, Locale.ENGLISH));
         }
 
         //validating user profile
@@ -145,25 +143,24 @@ public class AdminUsersController {
         } else {
             userService.editUser(updatedUser);
             return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
-                    messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.SUCCESS.toString(),
+                                              null, Locale.ENGLISH));
         }
     }
 
     @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
-    public
     @ResponseBody
-    UserControllerResponse sendEmail(@RequestParam(USER_ID) int id) {
+    public UserControllerResponse sendEmail(@RequestParam(USER_ID) int id) {
         User user = userService.getUserById(id);
         try {
             sendMails.sendMail(user.getEmail(), EMAIL_SUBJECT, EmailCreator.create(user));
             return new UserControllerResponse(UserControllerResponseStatus.SUCCESS,
-                    messages.getMessage(UserControllerResponseStatus.EMAIL_SUCCESS.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.EMAIL_SUCCESS.toString(),
+                                              null, Locale.ENGLISH));
         }catch (MailException me){
             return new UserControllerResponse(UserControllerResponseStatus.ERROR,
-                    messages.getMessage(UserControllerResponseStatus.EMAIL_ERROR.toString(),
-                            null, Locale.ENGLISH));
+                                              messages.getMessage(UserControllerResponseStatus.EMAIL_ERROR.toString(),
+                                              null, Locale.ENGLISH));
         }
     }
 

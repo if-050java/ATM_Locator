@@ -14,17 +14,14 @@ function SelectFindType() {
 //Request to find user by name or email
 function FindUser(){
     //Request parameters
-    requestData = {
-        findBy : ($("#byName").prop("checked") == true) ? "login" : "email",
-        findValue : ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val()
-    }
+    var findBy = ($("#byName").prop("checked") == true) ? "login" : "email";
+    var findValue = ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val();
 
    //Send request
     $.ajax({
-        url: "/findUser",
-        type : "POST",
+        url: "/findUser?findBy="+findBy+"&findValue="+findValue,
+        type : "GET",
         context: document.body,
-        data: requestData,
         dataType: "json",
         success : showData
     })
@@ -53,7 +50,11 @@ function fillFields(user){
     $("#inputEmail").val(user.email);
     $("#inputPassword").val(user.password);
     $("#inputConfirmPassword").val(user.password);
-    $("#enabled").prop("checked" ,(user.enabled != 0) ? true : false);
+    if(user.enabled != 0){
+        $("#enabled").prop("checked" ,true).change();
+    } else {
+        $("#enabled").prop("checked" ,false).change();
+    }
 }
 
 function clearForm(){
