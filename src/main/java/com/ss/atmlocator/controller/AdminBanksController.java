@@ -4,9 +4,11 @@ import com.ss.atmlocator.dao.AtmNetworksDAO;
 import com.ss.atmlocator.dao.BanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,15 +21,19 @@ import java.util.List;
  */
 @Controller
 public class AdminBanksController {
+    private static org.apache.log4j.Logger log = Logger.getLogger(AdminBanksController.class);
 
     @Autowired
     BanksDAO banksDAO;
     @Autowired
     AtmNetworksDAO networksDAO;
 
+    /**
+     *  Show page with list of Banks and ATM Networks
+     */
     @RequestMapping(value = "/adminBanks")
     public String banksList(ModelMap modelMap) {
-
+        log.debug("AdminBanksController.banksList()");
         List<AtmNetwork> networks = networksDAO.getNetworksList();
         modelMap.addAttribute("networks", networks);
 
@@ -38,34 +44,84 @@ public class AdminBanksController {
         return "adminBanks";
     }
 
+    /**
+     *  Show Bank information page for edit
+     */
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
-    public String bankEdit(ModelMap modelMap,
-                           @RequestParam(value = "bank", required = false) Bank bank,
-                           @RequestParam(value = "bank_id", required = true) int bank_id) {
+    public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
+                           @RequestParam(value = "bank_id", required = true) int bank_id,
+                           ModelMap modelMap) {
+        log.debug("AdminBanksController.bankEdit():GET");
         List<AtmNetwork> networks = networksDAO.getNetworksList();
         modelMap.addAttribute("networks", networks);
-        bank = banksDAO.getBank(bank_id);
+        Bank bank = banksDAO.getBank(bank_id);
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
 
         return "adminBankEdit";
     }
 
-    @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
-    public String bankSave(ModelMap modelMap,
-                           @RequestParam(value = "bank", required = true) Bank bank,
-                           @RequestParam(value = "network_id", required = true) int network_id)
-    {
-        AtmNetwork network = networksDAO.getNetwork(network_id);
-        bank.setNetwork(network);
-        Bank savedBank = banksDAO.saveBank(bank);
-
-        modelMap.addAttribute("bank", savedBank);
-        modelMap.addAttribute("bank_id", savedBank.getId());
+    /**
+     *  Show create Bank page for edit
+     */
+    @RequestMapping(value = "/adminBankCreateNew", method = RequestMethod.GET)
+    public String bankCreateNew(ModelMap modelMap) {
+        log.debug("AdminBanksController.bankCreateNew():GET");
+        List<AtmNetwork> networks = networksDAO.getNetworksList();
+        modelMap.addAttribute("networks", networks);
+        Bank bank = banksDAO.newBank();
+        modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
 
-        return "redirect:adminBankEdit";
+        return "adminBankEdit";
     }
 
+    /**
+     *  Update Bank information or create new entry if ID=0
+     */
+    @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
+    public String bankSave(@ModelAttribute("bank") Bank bank,
+                           @RequestParam(value = "network_id", required = true) int network_id,
+                           ModelMap modelMap)
+    {
+        log.debug("AdminBanksController.bankSave():POST");
+
+        AtmNetwork network = networksDAO.getNetwork(network_id);
+        bank.setNetwork(network);
+        Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
+
+        List<AtmNetwork> networks = networksDAO.getNetworksList();
+        modelMap.addAttribute("networks", networks);
+        //modelMap.addAttribute("bank", savedBank);
+
+        // TODO: show status
+        // TODO: disable "delete" button in "create" mode before save
+        modelMap.addAttribute("bank", savedBank);
+        //modelMap.addAttribute("bank_id", savedBank.getId());
+        modelMap.addAttribute("active","adminBanks");
+
+        return "adminBankEdit";
+    }
+
+
+    /**
+     *  Delete Bank
+     */
+    @RequestMapping(value = "/adminBankDelete", method = RequestMethod.POST)
+    public String bankDelete(@ModelAttribute("bank") Bank bank,
+                           /*@RequestParam(value = "network_id", required = true) int network_id,*/
+                           ModelMap modelMap)
+    {
+        log.debug("AdminBanksController.bankDelete():POST");
+
+        modelMap.addAttribute("bank_name", bank.getName());
+
+        banksDAO.deleteBank(bank.getId()); // TODO: check for error
+
+        modelMap.addAttribute("status","deleted");
+        modelMap.addAttribute("active","adminBanks");
+
+        return "adminBankDeleted";
+    }
 
 }
