@@ -4,6 +4,7 @@ import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.service.ValidateUserCredCode;
 import com.ss.atmlocator.utils.UserCredMatcher;
+import com.ss.atmlocator.utils.UtilEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -44,7 +45,7 @@ public class UserProfileValidator {
         User oldUser = userService.getUserById(newUser.getId());
 
         if (checkChanges(newUser, oldUser)) {
-            errors.rejectValue(ValidateUserCredCode.ValidationKey.NOTHING.toString(),
+            errors.rejectValue(UtilEnums.UserResponseStatus.NOTHING.toString(),
                     messages.getMessage("NOTHING_TO_UPDATE", null, Locale.ENGLISH));
         } else {
                 loginValidator.validate(newUser,errors);

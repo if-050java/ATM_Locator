@@ -3,8 +3,8 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
-import com.ss.atmlocator.utils.ValidateUserFields;
-import com.ss.atmlocator.utils.ValidationOutMessage;
+import com.ss.atmlocator.utils.ErrorMessage;
+import com.ss.atmlocator.utils.OutResponse;
 import com.ss.atmlocator.validator.ImageValidator;
 import com.ss.atmlocator.validator.UserProfileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,15 +74,15 @@ public class UserController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public ValidationOutMessage update(
+    public OutResponse update(
             @RequestParam int id,
             @RequestParam String login,
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
     ) {
-        ValidationOutMessage response = new ValidationOutMessage();
-        List<ValidateUserFields> errorMesages = new ArrayList<ValidateUserFields>();
+        OutResponse response = new OutResponse();
+        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
 
         User newUser = new User(id, login, email, password, 1);
         newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
@@ -103,14 +103,14 @@ public class UserController {
             return response;
         }
         for (FieldError objectError : errors.getFieldErrors()) {
-            errorMesages.add(new ValidateUserFields(objectError.getField().toLowerCase(), objectError.getCode()));
+            errorMesages.add(new ErrorMessage(objectError.getField().toLowerCase(), objectError.getCode()));
             if (objectError.getField().equals(NOTHING_TO_UPDATE)) {
                 response.setStatus(STATUS_INFO);
                 return response;
             }
         }
         response.setStatus(STATUS_ERROR);
-        response.setValidateUserFieldsList(errorMesages);
+        response.setErrorMessageList(errorMesages);
         return response;
     }
 }

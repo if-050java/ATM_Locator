@@ -2,6 +2,7 @@ package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.utils.UserCredMatcher;
+import com.ss.atmlocator.utils.UtilEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -9,8 +10,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Locale;
-
-import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationKey;
 
 
 /**
@@ -36,7 +35,7 @@ public class ValidateUserPasswordService implements Validator {
     public void validate(Object object, Errors errors) {
         final String password = (String)object;
         if(!validatePassword(password)){
-            errors.rejectValue(ValidationKey.PASSWORD.toString(),
+            errors.rejectValue(UtilEnums.UserResponseField.PASSWORD.toString(),
                     messages.getMessage("invalid.password", null, Locale.ENGLISH));
         }
     }

@@ -81,12 +81,20 @@ function deleteUser(){
 }
 
 function showAlert(response){
-    $("#resultDefinition").text(response.message);
+    var text = "";
+    for(i = 0; i < response.responseMessageList.length; i++) {
+        text = text + response.responseMessageList[i].message+"; "
+    }
+
+    $("#resultDefinition").text(text);
+
     if(response.status == "ERROR"){
         $("#message").removeClass("alert-success").addClass("alert-danger")
-    }else{
+    }else if(response.status == "INFO") {
+        $("#message").removeClass("alert-danger").addClass("alert-info")
+    }else {
         $("#message").removeClass("alert-danger").addClass("alert-success")
-    }
+    };
     //show alert about result of operation
     $("#message").show();
 };
