@@ -95,7 +95,7 @@ public class AdminUsersController {
             //Filling and sending response
             response.setStatus(Constants.INFO);
             errorMessageList.add(new ErrorMessage(Constants.DELETE,
-                                                        messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
+                                                  messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
             return response;
         };
         try {
@@ -118,10 +118,10 @@ public class AdminUsersController {
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     @ResponseBody
     public OutResponse updateUser(@RequestParam(Constants.USER_ID) int id,
-                                             @RequestParam(Constants.USER_LOGIN) String newLogin,
-                                             @RequestParam(Constants.USER_EMAIL) String newEmail,
-                                             @RequestParam(Constants.USER_PASSWORD) String newPassword,
-                                             @RequestParam(Constants.USER_ENABLED) int enabled) throws IOException {
+                                  @RequestParam(Constants.USER_LOGIN) String newLogin,
+                                  @RequestParam(Constants.USER_EMAIL) String newEmail,
+                                  @RequestParam(Constants.USER_PASSWORD) String newPassword,
+                                  @RequestParam(Constants.USER_ENABLED) int enabled) throws IOException {
 
         //variables for sending response about result of operation
         OutResponse response = new OutResponse();
@@ -136,7 +136,7 @@ public class AdminUsersController {
             //Filling and sending response
             response.setStatus(Constants.INFO);
             errorMessageList.add(new ErrorMessage(Constants.UPDATE,
-                                                        messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH)));
+                                                  messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH)));
             return response;
         }
 
@@ -159,22 +159,29 @@ public class AdminUsersController {
             //try to send e-mail about changes to user
             sendMails.sendMail(updatedUser.getEmail(), "asdrgf", emailCreator.toUser(updatedUser, updatedUser.getPassword()));
 
+            //id of user who is logged
+            int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+            //relogin if change yourself
+            if (updatedUser.getId() == currentLoggedUserId) {
+                doAutoLogin(updatedUser.getLogin());
+            };
+
             //Filling and sending response
             response.setStatus(Constants.SUCCESS);
             errorMessageList.add(new ErrorMessage(Constants.UPDATE,
-                                                        messages.getMessage("operation.success", null, Locale.ENGLISH)));
+                                                  messages.getMessage("operation.success", null, Locale.ENGLISH)));
             return response;
         }catch (PersistenceException pe){
             //Filling and sending response
             response.setStatus(Constants.ERROR);
             errorMessageList.add(new ErrorMessage(Constants.UPDATE,
-                                                        messages.getMessage("operation.error", null, Locale.ENGLISH)));
+                                                  messages.getMessage("operation.error", null, Locale.ENGLISH)));
             return response;
         } catch(MailException me){
             //Filling and sending response
             response.setStatus(Constants.ERROR);
             errorMessageList.add(new ErrorMessage(Constants.SEND_EMAIL,
-                                                        messages.getMessage("email.error", null, Locale.ENGLISH)));
+                                                  messages.getMessage("email.error", null, Locale.ENGLISH)));
             return response;
         }
     }

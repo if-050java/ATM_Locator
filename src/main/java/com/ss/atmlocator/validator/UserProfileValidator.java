@@ -46,7 +46,7 @@ public class UserProfileValidator {
 
         if (checkChanges(newUser, oldUser)) {
             errors.rejectValue(UtilEnums.UserResponseStatus.NOTHING.toString(),
-                    messages.getMessage("NOTHING_TO_UPDATE", null, Locale.ENGLISH));
+                    messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH));
         } else {
                 loginValidator.validate(newUser,errors);
                 emailValidator.validate(newUser,errors);
@@ -60,6 +60,7 @@ public class UserProfileValidator {
         return newUser.getLogin().equals(oldUser.getLogin()) &&
                 newUser.getEmail().equals(oldUser.getEmail()) &&
                 newUser.getPassword().equals(oldUser.getPassword()) &&
+                newUser.getEnabled() == oldUser.getEnabled() &&
                 newUser.getAvatar() == null;
     }
 }

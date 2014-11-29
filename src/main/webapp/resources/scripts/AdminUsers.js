@@ -82,18 +82,18 @@ function deleteUser(){
 
 function showAlert(response){
     var text = "";
-    for(i = 0; i < response.responseMessageList.length; i++) {
-        text = text + response.responseMessageList[i].message+"; "
+    for(i = 0; i < response.errorMessageList.length; i++) {
+        text = text + response.errorMessageList[i].message+"; "
     }
 
     $("#resultDefinition").text(text);
 
     if(response.status == "ERROR"){
-        $("#message").removeClass("alert-success").addClass("alert-danger")
+        $("#message").removeClass("alert-success alert-info").addClass("alert-danger")
     }else if(response.status == "INFO") {
-        $("#message").removeClass("alert-danger").addClass("alert-info")
+        $("#message").removeClass("alert-danger alert-success").addClass("alert-info")
     }else {
-        $("#message").removeClass("alert-danger").addClass("alert-success")
+        $("#message").removeClass("alert-danger alert-info").addClass("alert-success")
     };
     //show alert about result of operation
     $("#message").show();

@@ -43,7 +43,7 @@ public class LoginValidator implements Validator {
         if(validateEmail(user.getEmail())){
             if(checkEmail(user)){
                 errors.rejectValue(UtilEnums.UserResponseField.LOGIN.toString(),
-                        messages.getMessage("email.exists", null, Locale.ENGLISH));
+                        messages.getMessage("login.exists", null, Locale.ENGLISH));
             }
         }
         else{
@@ -53,11 +53,11 @@ public class LoginValidator implements Validator {
     }
 
     private boolean validateEmail(String email){
-        return userCredMatcher.validateEmail(email);
+        return userCredMatcher.validateLogin(email);
     }
 
     private boolean checkEmail(User user){
-        return usersDAO.checkExistEmail(user);
+        return usersDAO.checkExistLoginName(user);
     }
 
 
