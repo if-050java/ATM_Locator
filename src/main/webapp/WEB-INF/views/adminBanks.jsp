@@ -8,34 +8,37 @@
               <div class="panel-heading">Banks list:</div>
 
             <!-- Search box Start -->
-<%-- Select ATM Network dropdown menu --%>
             <%--<form>--%>
             <form:form method="get" role="form" cssClass="form-horizontal">
                 <div class="well carousel-search hidden-sm">
+                <%-- Select ATM Network dropdown menu --%>
                     <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Select ATM network<span class="caret"></span></a>
                         <ul class="dropdown-menu" id="networks_menu">
                             <li><a href="#" id="isnet_all"><span class="glyphicon glyphicon-star"></span>All networks</a></li>
                             <li class="divider"></li>
                             <c:forEach items="${networks}" var="net">
-                                <li><a href="#" id="isnet${net.id}">${net.name}</a></li>
+                                <c:if test="${net.id > 0}">
+                                    <li><a href="#" id="isnet${net.id}">${net.name}</a></li>
+                                </c:if>
                             </c:forEach>
-                            <%--
                             <li class="divider"></li>
-                            <li><a href="#" id="isnet-1"><span class="glyphicon glyphicon-star"></span>Unassigned</a></li>
-                            --%>
+                            <li><a href="#" id="isnet-1"><span class="glyphicon glyphicon-question-sign"></span> Unassigned</a></li>
                         </ul>
                     </div>
+                <%-- Select ATM Network dropdown menu --%>
 
-<%-- Select Bank dropdown menu --%>
-                    <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select2" data-toggle="dropdown" href="#">Select a Bank <span class="caret"></span></a>
+                <%-- Select Bank dropdown menu --%>
+                    <div class="btn-group"> <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Select a Bank <span class="caret"></span></a>
                         <ul class="dropdown-menu" id="banks_menu">
                             <c:forEach items="${banks}" var="bank">
                                 <li class="bankitem isnet${bank.network.id}"><a href="#" id="${bank.id}">${bank.name}</a></li>
                             </c:forEach>
                         </ul>
                     </div>
+                <%-- Select Bank dropdown menu --%>
+
                     <div class="btn-group">
-                        <button type="submit" formaction="/adminBankEdit" id="btnBankEdit" class="btn btn-primary">Edit</button>
+                        <button type="submit" formaction="/adminBankEdit" id="btnBankEdit" class="btn btn-primary" disabled="true">Edit</button>
                     </div>
                     <div class="btn-group">
                         <button type="submit" formaction="/adminBankCreateNew" id="btnBankCreateNew" class="btn btn-primary">Create New</button>
@@ -66,7 +69,6 @@
         for(i=0; i<netbanks.length; i++)
         {
             bankitem = netbanks[i];
-            /* alert(bankitem.innerHTML); */
             if(network_id==="isnet_all" || $(bankitem).hasClass(network_id)){
                 bankitem.style.display = "block";
                 banks_show = banks_show + 1;
@@ -87,6 +89,7 @@
         $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
         bank_id = $(this).attr("id");
         document.getElementById("bank_id").value = bank_id;
+        $("#btnBankEdit").removeAttr('disabled');
     });
 
 </script>
