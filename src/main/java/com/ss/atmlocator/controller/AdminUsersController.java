@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.PersistenceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,7 +121,7 @@ public class AdminUsersController {
                                              @RequestParam(Constants.USER_LOGIN) String newLogin,
                                              @RequestParam(Constants.USER_EMAIL) String newEmail,
                                              @RequestParam(Constants.USER_PASSWORD) String newPassword,
-                                             @RequestParam(Constants.USER_ENABLED) int enabled) {
+                                             @RequestParam(Constants.USER_ENABLED) int enabled) throws IOException {
 
         //variables for sending response about result of operation
         OutResponse response = new OutResponse();
@@ -156,7 +157,7 @@ public class AdminUsersController {
             //try to update user in database
             userService.editUser(updatedUser);
             //try to send e-mail about changes to user
-          //  sendMails.sendMail(updatedUser.getEmail(), EMAIL_SUBJECT, emailCreator.toUser(updatedUser, updatedUser.getPassword()));
+            sendMails.sendMail(updatedUser.getEmail(), "asdrgf", emailCreator.toUser(updatedUser, updatedUser.getPassword()));
 
             //Filling and sending response
             response.setStatus(Constants.SUCCESS);
