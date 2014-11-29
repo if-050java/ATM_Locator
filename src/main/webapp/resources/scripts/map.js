@@ -42,6 +42,7 @@ function setLocationByAddress(){
     }
     return false;
 };
+
 //Seting user position by google geocoder
 function setMapByGeocode(data, status){
     if(status == google.maps.GeocoderStatus.OK){//if google found this address
@@ -63,4 +64,44 @@ function deleteMarker(marker){
     if(marker != null){
         marker.setMap(null);
     };
+}
+
+//Get ATMs from server by filter
+function updateFilter(){
+    $.ajax({
+        url: "/getBank?id=1",
+        type : "GET",
+        context: document.body,
+        dataType: "json",
+        success : showAtms
+    })
+}
+
+//Receiving data about markers from server and adding marker to map
+function showAtms(data) {
+    var ATMs = data.atmOfficeSet;
+    for (var i = 0; i < ATMs.length; i++) {
+        var atmPosition = ATMs[i].geoPosition;
+        var atmDescription = data.name + "\n"+ATMs[i].address;
+        addMarker({"lat" : atmPosition.latitude, "lng" : atmPosition.longitude}, atmDescription);
+    }
+};
+
+//Adding marker to map
+function addMarker(position, title){
+    var	marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        title: title
+    });
+    marker.setMap(map);
+  //  marker.setIcon("views/savedMarker.png");
+  //  markers.push(marker);
+    //Removing marker from map and sending request for removing to server
+    google.maps.event.addListener(marker, 'click', function removeMarker() {
+        if(window.confirm("Are you sure?")){//If this marker not in current position marker then remove
+            marker.setMap(null);
+         //   removeReq(marker.getPosition());
+        }
+    });
 }

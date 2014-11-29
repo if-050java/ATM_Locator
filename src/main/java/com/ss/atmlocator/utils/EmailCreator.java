@@ -1,7 +1,6 @@
 package com.ss.atmlocator.utils;
 
 import com.ss.atmlocator.entity.User;
-import org.stringtemplate.v4.*;
 
 import java.io.File;
 
@@ -9,7 +8,6 @@ import java.io.File;
  * Created by Vasyl Danylyuk on 27.11.2014.
  */
 public class EmailCreator {
-    ST messageTemplate = new ST();
     public static String create(User user){
         StringBuilder message = new StringBuilder();
         message.append("Dear, "+user.getLogin()+"! \n");

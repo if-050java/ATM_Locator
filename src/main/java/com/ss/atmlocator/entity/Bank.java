@@ -35,10 +35,10 @@ public class Bank {
     @Column
     private Timestamp lastUpdated;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
     private Set<AtmOffice> atmOfficeSet;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
     private Set<AtmParser> atmParserSet;
 
     @ManyToOne(fetch = FetchType.EAGER)
