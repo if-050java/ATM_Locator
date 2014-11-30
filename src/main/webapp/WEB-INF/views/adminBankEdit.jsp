@@ -31,7 +31,7 @@
               <%--<div class="row"> --%>
                   <div class="col-md-4">
                         <form:hidden path="logo"/>
-                        <img src="/resources/images/${bank.logo}" class="img-thumbnail" alt="Bank logo" id="bankLogo">
+                        <img src="<c:url value="/resources/images/${bank.logo}" />" class="img-thumbnail" alt="Bank logo" id="bankLogo">
                         <div class="controls clearfix">
                               <span class="btn btn-default btn-file">
                                   <i class="glyphicon glyphicon-picture"></i> <span>Change logo</span>
@@ -77,7 +77,7 @@
                     <div class="form-group">
                         <label for="iconAtm" class="col-sm-3 control-label">ATM Icon</label>
                         <div class="col-md-2">
-                            <img src="/resources/images/${bank.iconAtm}" class="img-thumbnail">
+                            <img src="<c:url value="/resources/images/${bank.iconAtm}" />" class="img-thumbnail">
                         </div>
                         <div class="col-md-7">
                           <div class="input-group">
@@ -93,7 +93,7 @@
                     <div class="form-group">
                         <label for="iconOffice" class="col-sm-3 control-label">Office Icon</label>
                         <div class="col-md-2">
-                            <img src="/resources/images/${bank.iconOffice}" class="img-thumbnail">
+                            <img src="<c:url value="/resources/images/${bank.iconOffice}" />" class="img-thumbnail">
                         </div>
                         <div class="col-md-7">
                           <div class="input-group">
@@ -124,18 +124,19 @@
                     </div>
                   </div>
            </div>
+           <input type="hidden" name="bank_id" id="bank_id" value="${bank_id}" cssClass="form-control">
 
     <%-- Submit buttons --%>
            <div class="panel-footer">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <button type="submit" formaction="/adminBankEdit" class="btn btn-success btn-lg col-md-2 col-md-offset-1">
+                            <button type="submit" formaction="<c:url value="/adminBankEdit" />" class="btn btn-success btn-lg col-md-2 col-md-offset-1">
                                 Save
                             </button>
-                            <button type="submit" formaction="/adminBankDelete" class="btn btn-danger btn-lg col-md-3 col-md-offset-1">
+                            <button type="submit" formaction="<c:url value="/adminBankDelete" />" class="btn btn-danger btn-lg col-md-3 col-md-offset-1">
                                 Delete bank
                             </button>
-                            <button type="button" formaction="/adminBankAtmList" class="btn btn-primary btn-lg col-md-4 col-md-offset-1">
+                            <button type="submit" formaction="<c:url value="/adminBankAtmList" />" class="btn btn-primary btn-lg col-md-4 col-md-offset-1">
                                 <span>ATMs and Office list </span><i class="glyphicon glyphicon-list"></i>
                             </button>
                         </div>

@@ -6,19 +6,50 @@
  *  also set dropdown title to name of the ATM Network
  * */
 var network_id = 0;
+var bankslist;
 
 $(document).ready(loadBanks());
 
 function loadBanks() {
-    $.get("/banksListAjax", function(bankslist){
-        var ul_banks = $("#bankslist");
-        $.each(bankslist, function(i){
-            var li = $('<li/>').attr('role', 'presentation').appendTo(ul_banks);
-            var aaa = $('<a/>').attr('href','#').text(bankslist[i].name).appendTo(li);
-        });
-
+    $.get("/banksListAjax", function(banks){
+        bankslist=banks;
+        showBanks(0);
     });
 }
+
+function showBanks(network) {
+    var bankslist_net;
+    if (network == 0) {
+        bankslist_net = bankslist;
+    } else {
+        bankslist_net = jQuery.grep(bankslist, function (nbank) {
+            return nbank.network.id == network;
+        });
+    }
+
+    var column=1;
+    var row = 1;
+    var ul_banks = $("#bankslist"+column);
+    var max_rows = Math.ceil(bankslist_net.length/3);
+    $("#bankslist1").empty();
+    $("#bankslist2").empty();
+    $("#bankslist3").empty();
+    for(i = 0; i < bankslist_net.length; i++){
+        var li = $('<li/>').attr('role', 'presentation').appendTo(ul_banks);
+
+        var aaa = $('<a/>').attr('href',"/adminBankEdit?bank_id="+bankslist_net[i].id)
+                           .attr("id",bankslist_net[i].id)
+                           .text(bankslist_net[i].name)
+                           .appendTo(li);
+        row++;
+        if(row>max_rows){
+            row=1; column++;
+            ul_banks = $("#bankslist"+column);
+        }
+    }
+
+}
+
 
 $("#networks_menu li a").click(function(){
     var selText = $(this).text();
@@ -28,12 +59,14 @@ $("#networks_menu li a").click(function(){
     for(i=0; i<netbanks.length; i++)
     {
         bankitem = netbanks[i];
-        if(network_id==="isnet_all" || $(bankitem).hasClass(network_id)){
+        if(network_id==="isnet0" || $(bankitem).hasClass(network_id)){
             bankitem.style.display = "block";
         } else {
             bankitem.style.display = "none";
         }
     }
+    network_number = network_id.substr(5);
+    showBanks(network_number);
 
 });
 

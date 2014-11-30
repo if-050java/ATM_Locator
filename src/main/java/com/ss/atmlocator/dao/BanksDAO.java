@@ -60,6 +60,7 @@ public class BanksDAO {
 
     public Bank getBank(int id){
         Bank bank = (Bank)entityManager.find(Bank.class, id);
+        //TODO: if bank logo or icons are empty, should we provide default images?
         return bank;
     }
 

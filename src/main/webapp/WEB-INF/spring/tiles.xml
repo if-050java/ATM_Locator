@@ -35,6 +35,10 @@
         <put-attribute name="content" value="/WEB-INF/views/adminBankDeleted.jsp"/>
     </definition>
 
+    <definition name="adminBankAtmList" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminBankAtmList.jsp"/>
+    </definition>
+
     <definition name="signup" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/signup_template.jsp"/>
     </definition>
