@@ -52,18 +52,18 @@
 
 <!-- Spring Log -->
 <logger name="org.springframework">
-    <level value="debug" />
+    <level value="info" />
     <appender-ref ref="springLogs"/>
 </logger>
 
     <!-- SendMails Log -->
 <logger name="com.ss.atmlocator.utils.SendMails">
-    <level value="error"/>
+    <level value="info"/>
     <appender-ref ref="smtpLogs"/>
 </logger>
     <!-- Controlers Logs -->
     <logger name="com.ss.atmlocator.controller">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="controllerLogs"/>
     </logger>
 

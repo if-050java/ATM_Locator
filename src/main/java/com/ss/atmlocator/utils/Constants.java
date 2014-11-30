@@ -16,9 +16,14 @@ public class Constants {
     //Operation names
     public static final String DELETE = "delete";
     public static final String UPDATE = "update";
-    public static final String SEND_EMAIL = "email";
+    public static final String SEND_EMAIL = "email_templates";
     //Results
     public static final String SUCCESS = "SUCCESS";
     public static final String INFO = "INFO";
     public static final String ERROR = "ERROR";
+    //Parameters for sending emails
+    public static final String EMAIL_SUBJECT = "Change user credentials";
+    //Template names for creating email messages
+    public static final String FULL_UPDATE_TEMPLATE = "full_update_template";
+    public static final String UPDATE_TEMPLATE_WITHOUT_PASSWORD = "update_template_without_password";
 }

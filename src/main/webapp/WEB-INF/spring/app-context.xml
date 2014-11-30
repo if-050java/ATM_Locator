@@ -76,7 +76,7 @@
     </bean>
 
     <bean id="emailcreator" class="com.ss.atmlocator.utils.EmailCreator">
-        <constructor-arg name="path" value="email"/>
+        <constructor-arg name="path" value="email_templates"/>
     </bean>
     <!-- User credentials validate -->
     <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">

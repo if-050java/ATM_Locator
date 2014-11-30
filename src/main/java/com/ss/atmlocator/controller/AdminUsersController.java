@@ -61,7 +61,7 @@ public class AdminUsersController {
     public User findUser(@RequestParam(Constants.FIND_BY) String findBy,
                          @RequestParam(Constants.FIND_VALUE) String findValue) {
         try {
-            if (findBy.equals(Constants.USER_LOGIN)) {
+            if (Constants.USER_LOGIN.equals(findBy)) {
                 return userService.getUserByName(findValue);
             } else {
                 return userService.getUserByEmail(findValue);
@@ -95,7 +95,7 @@ public class AdminUsersController {
             //Filling and sending response
             response.setStatus(Constants.INFO);
             errorMessageList.add(new ErrorMessage(Constants.DELETE,
-                                                  messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
+                    messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
             return response;
         };
         try {
@@ -121,7 +121,7 @@ public class AdminUsersController {
                                   @RequestParam(Constants.USER_LOGIN) String newLogin,
                                   @RequestParam(Constants.USER_EMAIL) String newEmail,
                                   @RequestParam(Constants.USER_PASSWORD) String newPassword,
-                                  @RequestParam(Constants.USER_ENABLED) int enabled) throws IOException {
+                                  @RequestParam(Constants.USER_ENABLED) int enabled){
 
         //variables for sending response about result of operation
         OutResponse response = new OutResponse();
@@ -154,11 +154,18 @@ public class AdminUsersController {
         };
 
         try {
+            String oldPassword = userService.getUserById(updatedUser.getId()).getPassword();
+
             //try to update user in database
             userService.editUser(updatedUser);
-            //try to send e-mail about changes to user
-            sendMails.sendMail(updatedUser.getEmail(), "asdrgf", emailCreator.toUser(updatedUser, updatedUser.getPassword()));
 
+            //try to send e-mail about changes to user
+            //if password was changed send message with new password
+            if(! oldPassword.equals(updatedUser.getPassword())){
+                sendMails.sendMail(updatedUser.getEmail(), Constants.EMAIL_SUBJECT, emailCreator.create(Constants.FULL_UPDATE_TEMPLATE, updatedUser));
+            }else {
+                sendMails.sendMail(updatedUser.getEmail(), Constants.EMAIL_SUBJECT, emailCreator.create(Constants.UPDATE_TEMPLATE_WITHOUT_PASSWORD, updatedUser));
+            };
             //id of user who is logged
             int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
             //relogin if change yourself
@@ -189,7 +196,7 @@ public class AdminUsersController {
      /**
      *Autorelogin user after change own login(userName)
      *
-     * @param username new name of loggined user
+     * @param username new name of logged user
      */
     public void doAutoLogin(String username) {
         UserDetails user = userDetailsManager.loadUserByUsername(username);
