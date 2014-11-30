@@ -23,31 +23,38 @@ function getUser() {
     };
     return user;
 }
-function validateForm() {
+function validateForm(persistedUser) {
     var result = true;
-    //return result;
     var user = getUser();
-    if (!validateLogin(user.login)) {
+    if (user.login == persistedUser.login &&
+        user.email == persistedUser.email &&
+        user.password == persistedUser.password &&
+        user.confirmPassword == persistedUser.confirmPassword &&
+        user.avatar == persistedUser.avatar) {
+        showAlert("alert alert-info", INFO_MESSAGE);
+        return false;
+    }
+    if (user.login != persistedUser.login && !validateLogin(user.login)) {
         $('#login').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
         $('#login').popover("show");
         result = false;
     }
-    if (!validateEmail(user.email)) {
+    if (user.email != persistedUser.email && !validateEmail(user.email)) {
         $('#email').attr("data-content", "Your email not valid (example: someone@somedomain.com)");
         $('#email').popover("show");
         result = false;
     }
-    if (!validatePasswordStrange(user.password)) {
+    if (user.password != persistedUser.password && !validatePasswordStrange(user.password)) {
         $('#password').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#password').popover("show");
         result = false;
     }
-    if (!validateConfirmPassword(user.password, user.confirmPassword)) {
+    if (user.confirmPassword != persistedUser.confirmPassword && !validateConfirmPassword(user.password, user.confirmPassword)) {
         $('#confirmPassword').attr("data-content", "Password and confirm password are different");
         $('#confirmPassword').popover("show");
         result = false;
     }
-    if(!result){
+    if (!result) {
         showAlert("alert alert-warning", WARNING_MESSAGE);
     }
     return result;
@@ -63,6 +70,8 @@ function showAlert(className, html) {
 }
 
 $(document).ready(function () {
+    var persistedUser = getUser();
+
     function changeImage(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -79,7 +88,7 @@ $(document).ready(function () {
 
     $("#save").click(function () {
 
-            if (validateForm()) {
+            if (validateForm(persistedUser)) {
                 var user = getUser();
                 var fd = new FormData();
                 fd.append("id", user.id);
