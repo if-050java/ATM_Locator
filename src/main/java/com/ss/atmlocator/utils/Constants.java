@@ -13,6 +13,7 @@ public class Constants {
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
     public static final String USER_ENABLED = "enabled";
+    public static final String USER_AVATAR = "avatar";
     //Operation names
     public static final String DELETE = "delete";
     public static final String UPDATE = "update";
@@ -22,4 +23,5 @@ public class Constants {
     public static final String INFO = "INFO";
     public static final String ERROR = "ERROR";
     public static final String WARNING = "WARNING";
+
 }
