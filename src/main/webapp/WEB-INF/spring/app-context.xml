@@ -99,7 +99,5 @@
     <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
     <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
     <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
-    <bean id="loginValidator" class="com.ss.atmlocator.validator.LoginValidator"/>
-    <bean id="emailValidator" class="com.ss.atmlocator.validator.EmailValidator"/>
 
 </beans>

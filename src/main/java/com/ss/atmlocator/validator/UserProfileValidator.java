@@ -2,9 +2,6 @@ package com.ss.atmlocator.validator;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.service.ValidateUserCredCode;
-import com.ss.atmlocator.utils.UserCredMatcher;
-import com.ss.atmlocator.utils.UtilEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -19,7 +16,7 @@ import java.util.Locale;
 public class UserProfileValidator {
 
     @Autowired
-    @Qualifier("loginValidator")
+    @Qualifier("loginvalidator")
     private Validator loginValidator;
 
     @Autowired
@@ -27,7 +24,7 @@ public class UserProfileValidator {
     private Validator passwordValidator;
 
     @Autowired
-    @Qualifier("emailValidator")
+    @Qualifier("emailvalidator")
     private Validator emailValidator;
 
     @Autowired
@@ -40,27 +37,23 @@ public class UserProfileValidator {
     @Autowired
     private UserService userService;
 
-    public void validate(User newUser, MultipartFile image, Errors errors) {
+    public void validate(User updatedUser, MultipartFile image, Errors errors) {
+        User persistedUser = userService.getUserById(updatedUser.getId());
 
-        User oldUser = userService.getUserById(newUser.getId());
-
-        if (checkChanges(newUser, oldUser)) {
-            errors.rejectValue(UtilEnums.UserResponseStatus.NOTHING.toString(),
-                    messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH));
-        } else {
-                loginValidator.validate(newUser,errors);
-                emailValidator.validate(newUser,errors);
-                passwordValidator.validate(newUser.getPassword(),errors);
-                imageValidator.validate(image,errors);
-
+        if (!updatedUser.getLogin().equals(persistedUser.getLogin())) {
+            loginValidator.validate(updatedUser.getLogin(), errors);
         }
-    }
+        if (!updatedUser.getEmail().equals(persistedUser.getEmail())) {
+            emailValidator.validate(updatedUser.getEmail(), errors);
+        }
+        if (!updatedUser.getPassword().equals(persistedUser.getPassword())) {
+            passwordValidator.validate(updatedUser.getPassword(), errors);
+        }
+        System.out.println(updatedUser.getAvatar());
+        System.out.println(persistedUser.getAvatar());
+        if (updatedUser.getAvatar() != null && !updatedUser.getAvatar().equals(persistedUser.getAvatar())) {
 
-    private boolean checkChanges(User newUser, User oldUser) {
-        return newUser.getLogin().equals(oldUser.getLogin()) &&
-                newUser.getEmail().equals(oldUser.getEmail()) &&
-                newUser.getPassword().equals(oldUser.getPassword()) &&
-                newUser.getEnabled() == oldUser.getEnabled() &&
-                newUser.getAvatar() == null;
+            imageValidator.validate(image, errors);
+        }
     }
 }

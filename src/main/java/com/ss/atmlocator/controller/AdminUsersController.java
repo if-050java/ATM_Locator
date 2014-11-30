@@ -95,7 +95,7 @@ public class AdminUsersController {
             //Filling and sending response
             response.setStatus(Constants.INFO);
             errorMessageList.add(new ErrorMessage(Constants.DELETE,
-                                                  messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
+                    messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
             return response;
         };
         try {
@@ -132,7 +132,7 @@ public class AdminUsersController {
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
         //checking if nothing to update
-        if (!userService.isModified(updatedUser)) {
+        if (userService.isNotModified(updatedUser)) {
             //Filling and sending response
             response.setStatus(Constants.INFO);
             errorMessageList.add(new ErrorMessage(Constants.UPDATE,

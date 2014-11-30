@@ -2,11 +2,10 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.utils.UploadFileUtils;
-import com.ss.atmlocator.utils.ErrorMessage;
-import com.ss.atmlocator.utils.OutResponse;
+import com.ss.atmlocator.utils.*;
 import com.ss.atmlocator.validator.ImageValidator;
 import com.ss.atmlocator.validator.UserProfileValidator;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,11 +29,7 @@ import java.util.List;
 @SessionAttributes("user")
 public class UserController {
 
-
-    public static final String STATUS_SUCCESS = "SUCCESS";
-    public static final String STATUS_INFO = "INFO";
-    public static final String STATUS_ERROR = "ERROR";
-    public static final String NOTHING_TO_UPDATE = "NOTHING";
+    final Logger logger = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     UserService userService;
@@ -53,25 +48,6 @@ public class UserController {
         return "profile";
     }
 
-//    @RequestMapping(value = "/save", method = RequestMethod.POST)
-//    public String saveUser(User user, @RequestParam(value = "image", required = false) MultipartFile image, HttpServletRequest request, ModelMap model, final RedirectAttributes redirectAttributes) {
-//
-//        try {
-//            if (!image.isEmpty()) {
-//                user.setAvatar(image.getOriginalFilename());
-//                saveImage(image, request);
-//            }
-//            userService.editUser(user);
-//            doAutoLogin(user.getLogin());
-//            redirectAttributes.addFlashAttribute("status", "OK");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            redirectAttributes.addFlashAttribute("status", "ERROR");
-//        }
-//
-//        return "redirect:profile";
-//    }
-
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public OutResponse update(
@@ -87,29 +63,29 @@ public class UserController {
         User newUser = new User(id, login, email, password, 1);
         newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
+        if (userService.isNotModified(newUser)) {
+            response.setStatus(Constants.INFO);
+            return response;
+        }
         userProfileValidator.validate(newUser, avatar, errors);
         if (!errors.hasErrors()) {
             try {
+                if (avatar != null)
+                    UploadFileUtils.save(avatar, newUser.getId() + avatar.getOriginalFilename(), request);
                 userService.editUser(newUser);
-                if (avatar != null) UploadFileUtils.save(avatar, avatar.getOriginalFilename(), request);
                 userService.doAutoLogin(newUser.getLogin());
             } catch (IOException e) {
-                e.printStackTrace();
-                //TODO logging
-                response.setStatus(STATUS_ERROR);
+                logger.error(ExceptionParser.parseExceptions(e));
+                response.setStatus(Constants.ERROR);
                 return response;
             }
-            response.setStatus(STATUS_SUCCESS);
+            response.setStatus(Constants.SUCCESS);
             return response;
         }
         for (FieldError objectError : errors.getFieldErrors()) {
-            errorMesages.add(new ErrorMessage(objectError.getField().toLowerCase(), objectError.getCode()));
-            if (objectError.getField().equals(NOTHING_TO_UPDATE)) {
-                response.setStatus(STATUS_INFO);
-                return response;
-            }
+            errorMesages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
         }
-        response.setStatus(STATUS_ERROR);
+        response.setStatus(Constants.WARNING);
         response.setErrorMessageList(errorMesages);
         return response;
     }
