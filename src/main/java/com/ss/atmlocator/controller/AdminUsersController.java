@@ -132,7 +132,7 @@ public class AdminUsersController {
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
 
         //checking if nothing to update
-        if (!userService.isModified(updatedUser)) {
+        if (userService.isNotModified(updatedUser)) {
             //Filling and sending response
             response.setStatus(Constants.INFO);
             errorMessageList.add(new ErrorMessage(Constants.UPDATE,

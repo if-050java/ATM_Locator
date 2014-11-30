@@ -1,3 +1,8 @@
+var SUCCESS_MESSAGE = "<strong>Success!</strong> <span>Your data is saved successfully!</span>";
+var INFO_MESSAGE = "<strong>Info!</strong> <span>Nothing to update!</span>";
+var ERROR_MESSAGE = "<strong>Error!</strong> <span>Error saving data!</span>";
+var WARNING_MESSAGE = "<strong>Warning!</strong> <span>See the validation rules!</span>";
+
 function hidePopover(element) {
     $('#' + element).popover("destroy");
 }
@@ -18,9 +23,9 @@ function getUser() {
     };
     return user;
 }
-
 function validateForm() {
     var result = true;
+    //return result;
     var user = getUser();
     if (!validateLogin(user.login)) {
         $('#login').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
@@ -28,7 +33,7 @@ function validateForm() {
         result = false;
     }
     if (!validateEmail(user.email)) {
-        $('#email').attr("data-content", "Email is not valid");
+        $('#email').attr("data-content", "Your email not valid (example: someone@somedomain.com)");
         $('#email').popover("show");
         result = false;
     }
@@ -38,15 +43,27 @@ function validateForm() {
         result = false;
     }
     if (!validateConfirmPassword(user.password, user.confirmPassword)) {
-        $('#confirmPassword').attr("data-content", "Password and confirm is different");
+        $('#confirmPassword').attr("data-content", "Password and confirm password are different");
         $('#confirmPassword').popover("show");
         result = false;
     }
+    if(!result){
+        showAlert("alert alert-warning", WARNING_MESSAGE);
+    }
     return result;
 }
+
+function showAlert(className, html) {
+    var element = $("div.alert");
+    element.removeClass();
+    element.addClass(className);
+    element.children(".close").nextAll().remove();
+    element.append(html);
+    element.show();
+}
+
 $(document).ready(function () {
     function changeImage(input) {
-        var MAX_FILE_SIZE = 716800; //700kb
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
@@ -61,6 +78,7 @@ $(document).ready(function () {
     });
 
     $("#save").click(function () {
+
             if (validateForm()) {
                 var user = getUser();
                 var fd = new FormData();
@@ -70,8 +88,6 @@ $(document).ready(function () {
                 fd.append("password", user.password);
                 fd.append("confirmPassword", user.confirmPassword);
                 fd.append("avatar", user.avatar);
-
-                var alert = $("div.alert");
                 $.ajax({
                     url: "/user/update",
                     type: "POST",
@@ -82,33 +98,22 @@ $(document).ready(function () {
                         console.log(response);
 
                         if (response.status == 'SUCCESS') {
-                            alert.removeClass();
-                            alert.addClass("alert alert-success");
-                            alert.html("<strong>Success!</strong> Your data is saved successfully!");
-                            alert.show().fadeOut(5000);
-
+                            showAlert("alert alert-success", SUCCESS_MESSAGE);
                         } else if (response.status == "INFO") {
-                            alert.removeClass();
-                            alert.addClass("alert alert-info");
-                            alert.html("<strong>Warning!</strong> Nothing to update!");
-                            alert.show().fadeOut(5000);
+                            showAlert("alert alert-info", INFO_MESSAGE);
+                        } else if (response.status == "ERROR") {
+                            showAlert("alert alert-danger", ERROR_MESSAGE);
                         } else {
-                            alert.removeClass();
-                            alert.addClass("alert alert-warning");
-                            alert.html("<strong>Warning!</strong> See the validation rules!");
-                            alert.show().fadeOut(5000);
+                            showAlert("alert alert-warning", WARNING_MESSAGE);
                             for (var i = 0; i < response.errorMessageList.length; i++) {
                                 var item = response.errorMessageList[i];
-                                $('#' + item.fieldName).attr("data-content", item.message);
-                                $('#' + item.fieldName).popover("show");
+                                $('#' + item.cause).attr("data-content", item.message);
+                                $('#' + item.cause).popover("show");
                             }
                         }
                     },
-                    error: function (response) {
-                        alert.removeClass();
-                        alert.addClass("alert alert-danger");
-                        alert.html("<strong>Error!</strong> Error saving data!");
-                        alert.show().fadeOut(5000);
+                    error: function () {
+                        showAlert("alert alert-danger", ERROR_MESSAGE);
                     }
                 })
             }
