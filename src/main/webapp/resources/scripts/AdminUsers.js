@@ -27,10 +27,6 @@ function FindUser(){
     })
 };
 
-function getURL(){
-    return $(location).attr('host');
-}
-
 //Show user profile
 function showData(response){
     if(response.id < 0){
@@ -49,7 +45,7 @@ function showData(response){
 };
 //Fill user profile
 function fillFields(user){
-    $("#userAvatar").attr("src", getURL()+"/resources/images/"+user.avatar);
+    $("#userAvatar").attr("src","/resources/images/"+user.avatar);
     $("#inputLogin").val(user.login);
     $("#inputEmail").val(user.email);
     $("#inputPassword").val(user.password);
@@ -72,7 +68,7 @@ function askForDeleting(){
 function deleteUser(){
     //Send request
     $.ajax({
-        url: "/deleteUser?id="+user.id,
+        url:"/deleteUser?id="+user.id,
         type : "DELETE",
         context: document.body,
         dataType: "json",
@@ -145,7 +141,7 @@ function updateUser(){
         return;
     }
     $.ajax({
-        url: "/updateUser",
+        url:"/updateUser",
         type : "POST",
         context: document.body,
         data: getUserFromForm(),
