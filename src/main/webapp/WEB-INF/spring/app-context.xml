@@ -74,6 +74,10 @@
         <property name="mailSender" ref="mailSender" />
         <property name="from" value="${email.from}" />
     </bean>
+
+    <bean id="emailcreator" class="com.ss.atmlocator.utils.EmailCreator">
+        <constructor-arg name="path" value="email"/>
+    </bean>
     <!-- User credentials validate -->
     <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">
         <constructor-arg name="mailRegExp" value="${email.pattern}"/>

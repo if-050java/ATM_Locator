@@ -3,9 +3,9 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
-import com.ss.atmlocator.validator.ImageValidator;
 import com.ss.atmlocator.utils.ErrorMessage;
-import com.ss.atmlocator.utils.ValidationResponse;
+import com.ss.atmlocator.utils.OutResponse;
+import com.ss.atmlocator.validator.ImageValidator;
 import com.ss.atmlocator.validator.UserProfileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -74,14 +74,14 @@ public class UserController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public ValidationResponse update(
+    public OutResponse update(
             @RequestParam int id,
             @RequestParam String login,
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
     ) {
-        ValidationResponse response = new ValidationResponse();
+        OutResponse response = new OutResponse();
         List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
 
         User newUser = new User(id, login, email, password, 1);
