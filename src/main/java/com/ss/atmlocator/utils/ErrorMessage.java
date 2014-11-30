@@ -5,15 +5,15 @@ package com.ss.atmlocator.utils;
  */
 public class ErrorMessage {
 
-    private String fieldName;
+    private String cause;
     private String message;
 
-    public ErrorMessage(String fieldName, String message) {
-        this.fieldName = fieldName;
+    public ErrorMessage(String cause, String message) {
+        this.cause = cause;
         this.message = message;
     }
-    public String getFieldName() {
-        return fieldName;
+    public String getCause() {
+        return cause;
     }
     public String getMessage() {
         return message;

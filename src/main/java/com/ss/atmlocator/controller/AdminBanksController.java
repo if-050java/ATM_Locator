@@ -62,7 +62,7 @@ public class AdminBanksController {
     }
 
     /**
-     *  Show create Bank page for edit
+     *  Show toUser Bank page for edit
      */
     @RequestMapping(value = "/adminBankCreateNew", method = RequestMethod.GET)
     public String bankCreateNew(ModelMap modelMap) {
@@ -77,7 +77,7 @@ public class AdminBanksController {
     }
 
     /**
-     *  Update Bank information or create new entry if ID=0
+     *  Update Bank information or toUser new entry if ID=0
      */
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
     public String bankSave(@ModelAttribute("bank") Bank bank,
@@ -95,7 +95,7 @@ public class AdminBanksController {
         //modelMap.addAttribute("bank", savedBank);
 
         // TODO: show status
-        // TODO: disable "delete" button in "create" mode before save
+        // TODO: disable "delete" button in "toUser" mode before save
         modelMap.addAttribute("bank", savedBank);
         //modelMap.addAttribute("bank_id", savedBank.getId());
         modelMap.addAttribute("active","adminBanks");

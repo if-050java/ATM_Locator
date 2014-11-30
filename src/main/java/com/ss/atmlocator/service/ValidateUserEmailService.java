@@ -1,6 +1,7 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IUsersDAO;
+import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.UserCredMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,8 +10,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.Locale;
-
-import static com.ss.atmlocator.service.ValidateUserCredCode.ValidationKey;
 
 
 /**
@@ -38,12 +37,12 @@ public class ValidateUserEmailService implements Validator {
         final String email = (String)object;
         if(validateEmail(email)){
             if(checkEmail(email)){
-                errors.rejectValue(ValidationKey.EMAIL.toString(),
+                errors.rejectValue(Constants.USER_EMAIL,
                         messages.getMessage("email.exists", null, Locale.ENGLISH));
             }
         }
         else{
-            errors.rejectValue(ValidationKey.EMAIL.toString(),
+            errors.rejectValue(Constants.USER_EMAIL,
                     messages.getMessage("invalid.email", null, Locale.ENGLISH));
         }
     }
