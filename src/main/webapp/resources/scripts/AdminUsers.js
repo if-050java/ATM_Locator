@@ -27,7 +27,11 @@ function FindUser(){
     })
 };
 
-//Заповнення та демонстрація даних користувача
+function getURL(){
+    return $(location).attr('host');
+}
+
+//Show user profile
 function showData(response){
     if(response.id < 0){
         //show popover if user not found
@@ -43,9 +47,9 @@ function showData(response){
     //show form
     $("#userData").slideDown();
 };
-
+//Fill user profile
 function fillFields(user){
-    $("#userAvatar").attr("src", "/resources/images/"+user.avatar);
+    $("#userAvatar").attr("src", getURL()+"/resources/images/"+user.avatar);
     $("#inputLogin").val(user.login);
     $("#inputEmail").val(user.email);
     $("#inputPassword").val(user.password);
@@ -56,9 +60,8 @@ function fillFields(user){
         $("#enabled").prop("checked" ,false).change();
     }
 }
-
+//hide form
 function clearForm(){
-    //hide form
     $("#userData").slideUp();
 }
 
@@ -150,17 +153,6 @@ function updateUser(){
         success : showAlert
     })
 };
-
-function sendEmail(){
-    //Send request
-    $.ajax({
-        url: "/sendEmail?id="+user.id,
-        type : "POST",
-        context: document.body,
-        dataType: "json",
-        success : showAlert
-    })
-}
 
 function hidePopover(element){
     $('#'+element).popover("destroy");

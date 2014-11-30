@@ -40,8 +40,8 @@ public class LoginValidator implements Validator {
     @Override
     public void validate(Object object, Errors errors) {
         final User user = (User)object;
-        if(validateEmail(user.getEmail())){
-            if(checkEmail(user)){
+        if(validateLogin(user.getLogin())){
+            if(checkLogin(user)){
                 errors.rejectValue(UtilEnums.UserResponseField.LOGIN.toString(),
                         messages.getMessage("login.exists", null, Locale.ENGLISH));
             }
@@ -52,11 +52,11 @@ public class LoginValidator implements Validator {
         }
     }
 
-    private boolean validateEmail(String email){
+    private boolean validateLogin(String email){
         return userCredMatcher.validateLogin(email);
     }
 
-    private boolean checkEmail(User user){
+    private boolean checkLogin(User user){
         return usersDAO.checkExistLoginName(user);
     }
 
