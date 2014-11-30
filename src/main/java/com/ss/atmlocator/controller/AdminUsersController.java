@@ -128,7 +128,7 @@ public class AdminUsersController {
 
         //variables for sending response about result of operation
         OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMessageList = new ArrayList<ErrorMessage>(1);
+        List<ErrorMessage> errorMessageList = new ArrayList<ErrorMessage>();
         response.setErrorMessageList(errorMessageList);
 
         //Creating user from request parameters

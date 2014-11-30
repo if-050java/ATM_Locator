@@ -132,8 +132,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="enabled" class="col-md-2 control-label">Log in</label>
-                                <div class="col-md-10">
-                                    <input id="enabled" checked data-toggle="toggle" data-on="allowed" data-off="prohibited" data-onstyle="success" data-offstyle="danger" type="checkbox" >
+                                <div class="col-md-3">
+                                    <style>
+                                        .toggle.btn {
+                                            min-width: 100px;
+                                        }
+                                    </style>
+                                    <input id="enabled" data-style="width" data-toggle="toggle" checked data-on="allowed" data-off="prohibited" data-onstyle="success" data-offstyle="danger" type="checkbox">
                                 </div>
                             </div>
                         </form>
@@ -156,7 +161,7 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <strong>You realy want to delete this user</strong>
+                    <strong>Do You realy want to delete this user</strong>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
