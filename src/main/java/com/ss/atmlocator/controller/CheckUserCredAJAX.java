@@ -1,6 +1,5 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.utils.CheckUserCredCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,7 +51,7 @@ public class CheckUserCredAJAX {
     }
 
     @RequestMapping(value = "/usercredemail", method = RequestMethod.GET)
-    public @ResponseBody CheckUserCredCode checkEmail(@RequestParam(value = "email") String email) {
+    public @ResponseBody CheckUserCredCode checkEmail(@RequestParam(value = "email_templates") String email) {
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
 
         emailValidator.validate(email,errors);

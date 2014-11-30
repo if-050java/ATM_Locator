@@ -135,11 +135,15 @@ function updateUser(){
     };
 
     //checking password strange
-    if(!validatePasswordStrange($('#inputPassword').prop("value"))){
-        $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
-        $('#inputPassword').popover("show");
-        return;
+    //don'tvalidate if password didn't change
+    if($('#inputPassword').prop("value") != user.password){
+        if(!validatePasswordStrange($('#inputPassword').prop("value"))){
+            $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
+            $('#inputPassword').popover("show");
+            return;
+        }
     }
+
     $.ajax({
         url:"/updateUser",
         type : "POST",
