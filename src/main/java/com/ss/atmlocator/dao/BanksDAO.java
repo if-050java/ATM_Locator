@@ -26,7 +26,7 @@ public class BanksDAO {
 
     public List<Bank> getBanksList(){
         List<Bank> banks;
-        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b",Bank.class);
+        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b ORDER BY b.name",Bank.class);
         banks = query.getResultList();
 
         /* Preventing error

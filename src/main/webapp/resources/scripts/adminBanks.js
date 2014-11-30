@@ -55,6 +55,7 @@ $("#networks_menu li a").click(function(){
     var selText = $(this).text();
     $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
     network_id = $(this).attr("id");
+/*
     var netbanks = document.getElementsByClassName("bankitem");
     for(i=0; i<netbanks.length; i++)
     {
@@ -65,6 +66,7 @@ $("#networks_menu li a").click(function(){
             bankitem.style.display = "none";
         }
     }
+*/
     network_number = network_id.substr(5);
     showBanks(network_number);
 
@@ -73,6 +75,7 @@ $("#networks_menu li a").click(function(){
 /*  set bank_id variable to further edit
  *   set Banks dropdown title to name of the bank
  * */
+/*
 var bank_id = 0;
 $("#banks_menu li a").click(function(){
     var selText = $(this).text();
@@ -81,3 +84,4 @@ $("#banks_menu li a").click(function(){
     document.getElementById("bank_id").value = bank_id;
     $("#btnBankEdit").removeAttr('disabled');
 });
+*/
