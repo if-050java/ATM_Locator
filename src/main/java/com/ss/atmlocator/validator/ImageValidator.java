@@ -1,7 +1,6 @@
 package com.ss.atmlocator.validator;
 
-import com.ss.atmlocator.service.ValidateUserCredCode;
-import com.ss.atmlocator.utils.UtilEnums;
+import com.ss.atmlocator.utils.Constants;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,13 +29,13 @@ public class ImageValidator implements Validator {
         MultipartFile image = (MultipartFile) object;
         if (null == image) return;
         if (image.getSize() > MAX_FILE_SIZE) {
-            errors.rejectValue(UtilEnums.UserResponseField.AVATAR.toString(),
+            errors.rejectValue(Constants.USER_AVATAR,
                     messages.getMessage("file.size.limit", null, Locale.ENGLISH));
             return;
         } else if (!FilenameUtils.getExtension(image.getOriginalFilename()).equals("jpg") &&
                 !FilenameUtils.getExtension(image.getOriginalFilename()).equals("jpeg") &&
                 !FilenameUtils.getExtension(image.getOriginalFilename()).equals("png")) {
-            errors.rejectValue(UtilEnums.UserResponseField.AVATAR.toString(),
+            errors.rejectValue(Constants.USER_AVATAR,
                     messages.getMessage("file.extension", null, Locale.ENGLISH));
         }
     }
