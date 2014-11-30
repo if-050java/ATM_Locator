@@ -25,13 +25,15 @@ function getUser() {
 }
 function validateForm(persistedUser) {
     var result = true;
-    var user = getUser();
+    var user =  getUser();
     if (user.login == persistedUser.login &&
         user.email == persistedUser.email &&
         user.password == persistedUser.password &&
         user.confirmPassword == persistedUser.confirmPassword &&
         user.avatar == persistedUser.avatar) {
         showAlert("alert alert-info", INFO_MESSAGE);
+        console.log(persistedUser);
+        console.log(user);
         return false;
     }
     if (user.login != persistedUser.login && !validateLogin(user.login)) {
