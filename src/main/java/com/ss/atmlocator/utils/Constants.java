@@ -17,7 +17,7 @@ public class Constants {
     //Operation names
     public static final String DELETE = "delete";
     public static final String UPDATE = "update";
-    public static final String SEND_EMAIL = "email_templates";
+    public static final String SEND_EMAIL = "email";
     //Results
     public static final String SUCCESS = "SUCCESS";
     public static final String INFO = "INFO";
