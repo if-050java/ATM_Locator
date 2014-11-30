@@ -5,6 +5,7 @@ import com.ss.atmlocator.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,9 @@ public class UserService {
     IUsersDAO usersDAO;
 
     @Autowired
+    private Md5PasswordEncoder passwordEncoder;
+
+    @Autowired
     @Qualifier("jdbcUserService")
     public UserDetailsManager userDetailsManager;
 
@@ -34,6 +38,11 @@ public class UserService {
 
     public User getUserById(int id) {
         return usersDAO.getUserById(id);
+    }
+
+    public void createUser(User user){
+        user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
+        usersDAO.createUser(user);
     }
 
     public void editUser(User user) {
@@ -65,8 +74,8 @@ public class UserService {
         mergedUser.setEmail(updatedUser.getEmail() == null ? persistedUser.getEmail() : updatedUser.getEmail());
         //Avatar
         mergedUser.setAvatar(updatedUser.getAvatar() == null ? persistedUser.getAvatar() : updatedUser.getAvatar());
-        //Password
-        mergedUser.setPassword(updatedUser.getPassword() == null ? persistedUser.getPassword() : updatedUser.getPassword());
+        //Password user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
+        mergedUser.setPassword(updatedUser.getPassword().equals(persistedUser.getPassword()) ? persistedUser.getPassword() : passwordEncoder.encodePassword(updatedUser.getPassword(), null));
         //Roles
         mergedUser.setRoles(updatedUser.getRoles() == null ? persistedUser.getRoles() : updatedUser.getRoles());
         //Comments

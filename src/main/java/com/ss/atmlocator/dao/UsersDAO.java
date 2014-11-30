@@ -3,9 +3,7 @@ package com.ss.atmlocator.dao;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +14,6 @@ import java.math.BigInteger;
 public class UsersDAO implements IUsersDAO {
 
     private final String DEFAULT_USER_ROLE = "USER";
-
-    @Autowired
-    private Md5PasswordEncoder passwordEncoder;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -57,9 +52,8 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void updateUser(User user) {
-        user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
+        //user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
         entityManager.merge(user);
-        //entityManager.flush();
     }
 
     @Override
@@ -73,7 +67,6 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void createUser(User user) {
-        user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
         entityManager.persist(user);
     }
 
