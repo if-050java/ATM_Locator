@@ -1,5 +1,6 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.util.Set;
 
@@ -16,8 +17,11 @@ public class AtmNetwork {
     @Column
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "network")
+/*
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "network", fetch = FetchType.LAZY)
     private Set<Bank> Banks;
+*/
 
     public int getId() {
         return Id;
@@ -35,6 +39,7 @@ public class AtmNetwork {
         this.name = name;
     }
 
+/*
     public Set<Bank> getBanks() {
         return Banks;
     }
@@ -42,4 +47,5 @@ public class AtmNetwork {
     public void setBanks(Set<Bank> banks) {
         Banks = banks;
     }
+*/
 }

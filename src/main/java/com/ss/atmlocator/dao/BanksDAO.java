@@ -29,6 +29,20 @@ public class BanksDAO {
         TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b",Bank.class);
         banks = query.getResultList();
 
+        /* Preventing error
+            org.springframework.http.converter.HttpMessageNotWritableException:
+            Could not write JSON: failed to lazily initialize a collection of role:
+            com.ss.atmlocator.entity.AtmNetwork.Banks, could not initialize proxy - no Session
+            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"]);
+            nested exception is org.codehaus.jackson.map.JsonMappingException:
+            failed to lazily initialize a collection of role: com.ss.atmlocator.entity.AtmNetwork.Banks, could not initialize proxy - no Session
+            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"])
+        */
+/*
+        for(Bank bank : banks){
+            bank.getNetwork().setBanks(null);
+        }
+*/
         return banks;
     }
 

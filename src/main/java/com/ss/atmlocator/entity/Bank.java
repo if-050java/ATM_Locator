@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -35,9 +37,11 @@ public class Bank {
     @Column
     private Timestamp lastUpdated;
 
+    @JsonIgnore //Ignoring this field in JSON serializing
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
     private Set<AtmOffice> atmOfficeSet;
 
+    @JsonIgnore //Ignoring this field in JSON serializing
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
     private Set<AtmParser> atmParserSet;
 
