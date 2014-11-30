@@ -51,7 +51,7 @@ public class CheckUserCredAJAX {
     }
 
     @RequestMapping(value = "/usercredemail", method = RequestMethod.GET)
-    public @ResponseBody CheckUserCredCode checkEmail(@RequestParam(value = "email_templates") String email) {
+    public @ResponseBody CheckUserCredCode checkEmail(@RequestParam(value = "email") String email) {
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
 
         emailValidator.validate(email,errors);
