@@ -3,7 +3,6 @@ package com.ss.atmlocator.service;
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.UserCredMatcher;
-import com.ss.atmlocator.utils.UtilEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;

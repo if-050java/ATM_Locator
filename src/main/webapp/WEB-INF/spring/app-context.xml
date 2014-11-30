@@ -100,4 +100,7 @@
     <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
     <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
 
+    <bean id="passwordEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
 </beans>

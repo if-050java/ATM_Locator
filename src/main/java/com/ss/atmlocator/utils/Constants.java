@@ -13,6 +13,7 @@ public class Constants {
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
     public static final String USER_ENABLED = "enabled";
+    public static final String USER_AVATAR = "avatar";
     //Operation names
     public static final String DELETE = "delete";
     public static final String UPDATE = "update";
@@ -22,12 +23,9 @@ public class Constants {
     public static final String INFO = "INFO";
     public static final String ERROR = "ERROR";
     public static final String WARNING = "WARNING";
-    //Parameters for sending emails
-    public static final String EMAIL_SUBJECT = "Change user credentials";
     //Template names for creating email messages
     public static final String FULL_UPDATE_TEMPLATE = "full_update_template";
     public static final String UPDATE_TEMPLATE_WITHOUT_PASSWORD = "update_template_without_password";
-
 
 
 }

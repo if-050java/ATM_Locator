@@ -56,6 +56,9 @@ public class AdminUsersController {
     @Autowired
     private MessageSource messages;
 
+
+    public static final String EMAIL_SUBJECT = "Change user credentials";
+
     @RequestMapping(value = "/findUser", method = RequestMethod.GET)
     @ResponseBody
     public User findUser(@RequestParam(Constants.FIND_BY) String findBy,
@@ -161,10 +164,11 @@ public class AdminUsersController {
 
             //try to send e-mail about changes to user
             //if password was changed send message with new password
+
             if(! oldPassword.equals(updatedUser.getPassword())){
-                sendMails.sendMail(updatedUser.getEmail(), Constants.EMAIL_SUBJECT, emailCreator.create(Constants.FULL_UPDATE_TEMPLATE, updatedUser));
+                sendMails.sendMail(updatedUser.getEmail(), EMAIL_SUBJECT, emailCreator.create(Constants.FULL_UPDATE_TEMPLATE, updatedUser));
             }else {
-                sendMails.sendMail(updatedUser.getEmail(), Constants.EMAIL_SUBJECT, emailCreator.create(Constants.UPDATE_TEMPLATE_WITHOUT_PASSWORD, updatedUser));
+                sendMails.sendMail(updatedUser.getEmail(), EMAIL_SUBJECT, emailCreator.create(Constants.UPDATE_TEMPLATE_WITHOUT_PASSWORD, updatedUser));
             };
             //id of user who is logged
             int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
