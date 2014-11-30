@@ -68,6 +68,9 @@ function deleteMarker(marker){
 
 //Get ATMs from server by filter
 function updateFilter(){
+    $.cookie("position", "234");
+    console.log($.cookie("position"));
+
     $.ajax({
         url: "/getBank?id=1",
         type : "GET",
