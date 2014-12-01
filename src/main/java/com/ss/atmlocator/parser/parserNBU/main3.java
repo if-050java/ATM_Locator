@@ -1,10 +1,10 @@
 package com.ss.atmlocator.parser.parserNBU;
 
+import com.ss.atmlocator.entity.enums.Bank;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by maks on 19.11.2014.
@@ -17,7 +17,7 @@ public class main3 {
             }
             System.out.println(i);
         }
-        List<com.ss.atmlocator.entity.Bank> bankList = null;
+        List<Bank> bankList = null;
         Map<String, String> par = new HashMap<String, String>();
         par.put("url", "http://www.bank.gov.ua/control/bankdict/banks?type=369&sort=name&cPage=0&startIndx=1");
         par.put("NAMEXPATH" , "table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a");
@@ -25,10 +25,10 @@ public class main3 {
 
 //        System.out.println(getName("Gfn \"aaaadfdf\"asdf "));
         NbuParser parser = new NbuParser();
-        parser.setParametr(par);
+        parser.setParameter(par);
 
         bankList = parser.parce();
-        for(com.ss.atmlocator.entity.Bank bank: bankList){
+        for(Bank bank: bankList){
             System.out.println(bank);
         }
         bankList.size();

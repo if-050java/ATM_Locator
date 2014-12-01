@@ -1,13 +1,11 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.Bank;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

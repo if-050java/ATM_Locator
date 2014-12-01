@@ -3,7 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.dao.AtmNetworksDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.entity.enums.Bank;
 
 import com.ss.atmlocator.service.ParserService;
 
@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 /**

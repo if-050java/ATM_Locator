@@ -1,23 +1,21 @@
 package com.ss.atmlocator.parser.parserNBU;
 
-import com.ss.atmlocator.parser.Parser;
+import com.ss.atmlocator.parser.IParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.entity.enums.Bank;
 
 /**
  * Created by maks on 18.11.2014.
  */
-public class NbuParser implements Parser {
+public class NbuParser implements IParser {
 
     private List<Bank> banks = new ArrayList<Bank>();// Is it may by Set?
     private String url;
@@ -32,7 +30,7 @@ public class NbuParser implements Parser {
     }
 
     @Override
-    public void setParametr(Map<String, String> parameters) {
+    public void setParameter(Map<String, String> parameters) {
         if(parameters.containsKey("url")){
             url =parameters.get("url");
         }if(parameters.containsKey("NAMEXPATH")){
@@ -52,6 +50,7 @@ public class NbuParser implements Parser {
 //        for(Bank bank: banks){
 //            System.out.println(bank);
 //        }
+
         return banks;
     }
 
@@ -69,7 +68,7 @@ public class NbuParser implements Parser {
 //                String name = getName(ElementsNames.get(i).text());
 //                banks.add(new Bank(ElementsNames.get(i).text() ,ElementsMFO.get(i).text() ));  // filling a list of banks
                 Bank bank = new Bank();
-                int a ="asdf".lastIndexOf("\"");
+//                int a ="asdf".lastIndexOf("\"");
 //                bank.setName(ElementsNames.get(i).text());
                 bank.setName(deleteLastChar(getName(ElementsNames.get(i).text())));
                 bank.setMfoCode(Integer.parseInt(ElementsMFO.get(i).text()));

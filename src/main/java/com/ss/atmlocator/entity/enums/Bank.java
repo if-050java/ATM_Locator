@@ -1,4 +1,8 @@
-package com.ss.atmlocator.entity;
+package com.ss.atmlocator.entity.enums;
+
+import com.ss.atmlocator.entity.AtmNetwork;
+import com.ss.atmlocator.entity.AtmParser;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -9,13 +13,18 @@ import java.util.Set;
  */
 @Entity
 @Table(name="banks")
-public class Bank implements Comparable<Bank>{
+public class Bank implements Comparable<Bank> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int Id;
 
     @Column
     private String name;
+
+
+
+    @Transient
+    private String url;
 
     @Column
     private int mfoCode = 0;
@@ -35,10 +44,12 @@ public class Bank implements Comparable<Bank>{
     @Column
     private Timestamp lastUpdated;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
     private Set<AtmOffice> atmOfficeSet;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
     private Set<AtmParser> atmParserSet;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -125,23 +136,6 @@ public class Bank implements Comparable<Bank>{
         this.atmOfficeSet = atmOfficeSet;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Bank bank = (Bank) o;
-
-        if (Id != bank.Id) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Id;
-    }
-
     public AtmNetwork getNetwork() {
         return network;
     }
@@ -149,15 +143,36 @@ public class Bank implements Comparable<Bank>{
     public void setNetwork(AtmNetwork network) {
         this.network = network;
     }
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Bank(String url, String name) {
+        this.url = url;
+        this.name = name;
+    }
 
     public Bank() {
     }
 
-    public Bank(String name, String webSite) {
-        this.name = name;
-        this.webSite = webSite;
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
+                ", mfoCode=" + mfoCode +
+                ", webSite='" + webSite + '\'' +
+                ", logo='" + logo + '\'' +
+                ", iconAtm='" + iconAtm + '\'' +
+                ", iconOffice='" + iconOffice + '\'' +
+                ", lastUpdated=" + lastUpdated +
+                ", network=" + network +
+                '}';
     }
-
     @Override
     public int compareTo(Bank other){
         return this.getName().compareTo(other.getName());

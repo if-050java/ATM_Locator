@@ -1,5 +1,10 @@
-package com.ss.atmlocator.entity;
+package com.ss.atmlocator.entity.enums;
 
+
+import com.ss.atmlocator.entity.AtmComment;
+import com.ss.atmlocator.entity.AtmFavorite;
+import com.ss.atmlocator.entity.GeoPosition;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -8,7 +13,6 @@ import java.util.Set;
 /**
  * Created by Olavin on 17.11.2014.
  */
-
 @Entity
 @Table(name="atm")
 public class AtmOffice implements Comparable<AtmOffice> {
@@ -25,48 +29,37 @@ public class AtmOffice implements Comparable<AtmOffice> {
     @Column
     private int state; //todo: substitute with enum
 
-    @Enumerated(EnumType.ORDINAL)
-    private AtmType type;
+//    @Enumerated(EnumType.ORDINAL)
+//    private AtmType type;
 
-    public enum AtmType { IS_ATM, IS_OFFICE, IS_ATM_OFIICE }
-
-
+//    public enum AtmType { IS_ATM, IS_OFFICE }
     @Column
     private boolean isAtm;
 
+
+
+    public boolean isAtm() {
+        return isAtm;
+    }
+
+    public void setAtm(boolean isAtm) {
+        this.isAtm = isAtm;
+    }
+
     @Column
+
     private boolean isBankOffice;
 
     @Column
     private Timestamp lastUpdated;
 
     @Column
-    private String atmCity;
-
-    @Column
     private String photo;  // filename of real street photo
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
     Bank bank;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice")
-    private Set<AtmComment> atmComments;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice")
-    private Set<AtmFavorite> atmFavorites;
-
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -79,10 +72,35 @@ public class AtmOffice implements Comparable<AtmOffice> {
 
         return true;
     }
+    public boolean isBankOffice() {
+        return isBankOffice;
+    }
+
+    public void setBankOffice(boolean isBankOffice) {
+        this.isBankOffice = isBankOffice;
+    }
 
     @Override
     public int hashCode() {
         return Id;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    private Set<AtmComment> atmComments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    private Set<AtmFavorite> atmFavorites;
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public void setAddress(String address) {
@@ -105,13 +123,13 @@ public class AtmOffice implements Comparable<AtmOffice> {
         this.state = state;
     }
 
-    public AtmType getType() {
-        return type;
-    }
-
-    public void setType(AtmType type) {
-        this.type = type;
-    }
+//    public AtmType getType() {
+//        return type;
+//    }
+//
+//    public void setType(AtmType type) {
+//        this.type = type;
+//    }
 
     public Timestamp getLastUpdated() {
         return lastUpdated;
@@ -143,41 +161,6 @@ public class AtmOffice implements Comparable<AtmOffice> {
 
     public void setBank(Bank bank) {
         this.bank = bank;
-    }
-
-    public boolean isAtm() {
-        return isAtm;
-    }
-
-    public void setAtm(boolean isAtm) {
-        this.isAtm = isAtm;
-    }
-
-    public boolean isBankOffice() {
-        return isBankOffice;
-    }
-
-    public void setBankOffice(boolean isBankOffice) {
-        this.isBankOffice = isBankOffice;
-    }
-
-    public String getAtmCity() {
-        return atmCity;
-    }
-
-    public void setAtmCity(String atmCity) {
-        this.atmCity = atmCity;
-    }
-
-    public AtmOffice() {
-    }
-
-    public AtmOffice(Bank bank, String atmCity, String address, boolean isAtm, boolean isBankOffice) {
-        this.bank = bank;
-        this.atmCity = atmCity;
-        this.address = address;
-        this.isAtm = isAtm;
-        this.isBankOffice = isBankOffice;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.entity.enums.Bank;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +32,10 @@ public class BanksDAO implements IBanksDAO {
             org.springframework.http.converter.HttpMessageNotWritableException:
             Could not write JSON: failed to lazily initialize a collection of role:
             com.ss.atmlocator.entity.AtmNetwork.Banks, could not initialize proxy - no Session
-            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"]);
+            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.enums.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"]);
             nested exception is org.codehaus.jackson.map.JsonMappingException:
             failed to lazily initialize a collection of role: com.ss.atmlocator.entity.AtmNetwork.Banks, could not initialize proxy - no Session
-            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"])
+            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.enums.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"])
         */
 /*
         for(Bank bank : banks){

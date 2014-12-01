@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import com.ss.atmlocator.entity.enums.AtmOffice;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
