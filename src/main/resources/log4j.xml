@@ -10,15 +10,20 @@
     </layout>
 </appender>
 
-<appender name="rootFileAppender" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="FATAL" />
+
+
+
+<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="INFO" />
         <param name="MaxFileSize" value="512KB" />
         <param name="MaxBackupIndex" value="10" />
-        <param name="File" value="../logs/web_app.log"/>
+        <param name="File" value="${webapp.root}/WEB-INF/logs/web_app.log"/>
+
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %-5p %c{1}:%L %m %n" />
         </layout>
 </appender>
+
 
     <appender name="smtpLogs" class="org.apache.log4j.RollingFileAppender">
         <param name="Threshold" value="DEBUG" />
@@ -67,9 +72,33 @@
         <appender-ref ref="controllerLogs"/>
     </logger>
 
+<!-- 3rdparty Loggers -->
+<logger name="org.springframework.core">
+    <level value="info" />
+</logger>
+
+<logger name="org.springframework.beans">
+    <level value="debug" />
+</logger>
+
+<logger name="org.springframework.context">
+    <level value="debug" />
+</logger>
+
+<logger name="org.springframework.http">
+    <level value="debug" />
+</logger>
+    <!-- below alternate between debug and info -->
+<logger name="org.springframework.web">
+    <level value="debug" />
+</logger>
+
+
 <root>
         <priority value="info"></priority>
         <appender-ref ref="console"/>
+
         <appender-ref ref="rootFileAppender"/>
+
 </root>
 </log4j:configuration>
