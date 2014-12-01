@@ -46,7 +46,7 @@ public class UserProfileValidator {
         if (!updatedUser.getEmail().equals(persistedUser.getEmail())) {
             emailValidator.validate(updatedUser.getEmail(), errors);
         }
-        if (!updatedUser.getPassword().equals(persistedUser.getPassword())) {
+        if (updatedUser.getPassword() != null) {
             passwordValidator.validate(updatedUser.getPassword(), errors);
         }
         if (updatedUser.getAvatar() != null && !updatedUser.getAvatar().equals(persistedUser.getAvatar())) {

@@ -2,13 +2,8 @@ var user;               //Instance of current loaded user
 
 //Enable/disable input fields by radio
 function SelectFindType() {
-    if ($("#byName").prop("checked") == true) {
-        $("#findName").prop("disabled", false);
-        $("#findEmail").prop("disabled", true);
-    } else {
-        $("#findName").prop("disabled", true);
-        $("#findEmail").prop("disabled", false);
-    }
+    $("#findName").prop("disabled",$("#byName").prop("checked") ? true : false);
+    $("#findEmail").prop("disabled",$("#byName").prop("checked") ? false : true);
 };
 
 //Request to find user by name or email
@@ -19,7 +14,7 @@ function FindUser(){
 
    //Send request
     $.ajax({
-        url: "/findUser?findBy="+findBy+"&findValue="+findValue,
+        url: getHome()+"findUser?findBy="+findBy+"&findValue="+findValue,
         type : "GET",
         context: document.body,
         dataType: "json",
@@ -45,7 +40,7 @@ function showData(response){
 };
 //Fill user profile
 function fillFields(user){
-    $("#userAvatar").attr("src","/resources/images/"+user.avatar);
+    $("#userAvatar").attr("src",getHome()+"resources/images/"+user.avatar);
     $("#inputLogin").val(user.login);
     $("#inputEmail").val(user.email);
     $("#inputPassword").val(user.password);
@@ -68,7 +63,7 @@ function askForDeleting(){
 function deleteUser(){
     //Send request
     $.ajax({
-        url:"/deleteUser?id="+user.id,
+        url:getHome()+"deleteUser?id="+user.id,
         type : "DELETE",
         context: document.body,
         dataType: "json",
@@ -110,6 +105,10 @@ function getUserFromForm(){
         password : $("#inputPassword").val(),
         enabled : $("#enabled").prop("checked") == true ? 1: 0
     }
+
+    if (updatedUser.password == "") {
+        delete updatedUser.password;
+    }
     return updatedUser;
 }
 
@@ -136,7 +135,7 @@ function updateUser(){
 
     //checking password strange
     //don'tvalidate if password didn't change
-    if($('#inputPassword').prop("value") != user.password){
+    if($('#inputPassword').prop("value") != ""){
         if(!validatePasswordStrange($('#inputPassword').prop("value"))){
             $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
             $('#inputPassword').popover("show");
@@ -145,11 +144,11 @@ function updateUser(){
     }
 
     $.ajax({
-        url:"/updateUser",
+        url : getHome()+"updateUser",
         type : "POST",
-        context: document.body,
-        data: getUserFromForm(),
-        dataType: "json",
+        context : document.body,
+        data : getUserFromForm(),
+        dataType : "json",
         success : showAlert
     })
 };

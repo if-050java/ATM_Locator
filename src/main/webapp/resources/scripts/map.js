@@ -85,7 +85,7 @@ function deleteMarker(marker){
 //Get ATMs from server by filter
 function updateFilter(){
     $.ajax({
-        url: "/getBank?id=1",
+        url: getHome()+"getBank?id=1",
         type : "GET",
         context: document.body,
         dataType: "json",

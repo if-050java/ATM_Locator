@@ -75,7 +75,7 @@ public class UserService {
         //Avatar
         mergedUser.setAvatar(updatedUser.getAvatar() == null ? persistedUser.getAvatar() : updatedUser.getAvatar());
         //Password user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
-        mergedUser.setPassword(updatedUser.getPassword().equals(persistedUser.getPassword()) ? persistedUser.getPassword() : passwordEncoder.encodePassword(updatedUser.getPassword(), null));
+        mergedUser.setPassword(updatedUser.getPassword() != null ? passwordEncoder.encodePassword(updatedUser.getPassword(), null) : persistedUser.getPassword() );
         //Roles
         mergedUser.setRoles(updatedUser.getRoles() == null ? persistedUser.getRoles() : updatedUser.getRoles());
         //Comments
@@ -94,7 +94,7 @@ public class UserService {
         User persistedUser = getUserById(updatedUser.getId());
         return updatedUser.getLogin().equals(persistedUser.getLogin()) &&  //login didn't change
                 updatedUser.getEmail().equals(persistedUser.getEmail()) &&  //email didn't change
-                updatedUser.getPassword().equals(persistedUser.getPassword()) &&  //password didn't change
+                null == updatedUser.getPassword()  &&  //password didn't change
                 updatedUser.getEnabled() == persistedUser.getEnabled() && //enabled didn't change
                 updatedUser.getAvatar() == null;  // avatar didn't change
     }
