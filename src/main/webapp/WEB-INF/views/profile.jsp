@@ -24,7 +24,7 @@
                            role="form" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="row">
                         <div class="col-md-2 avablock">
-                            <img src="/resources/images/${user.avatar}" class="img-thumbnail" alt="avatar"
+                            <img src="<c:url value="/resources"/>/images/${user.avatar}" class="img-thumbnail" alt="avatar"
                                  id="userAvatar">
 
                             <div class="controls clearfix">
@@ -85,6 +85,3 @@
         </div>
     </div>
 </div>
-<script type='text/javascript'>
-
-</script>
