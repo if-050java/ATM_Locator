@@ -49,10 +49,7 @@ public class UserProfileValidator {
         if (!updatedUser.getPassword().equals(persistedUser.getPassword())) {
             passwordValidator.validate(updatedUser.getPassword(), errors);
         }
-        System.out.println(updatedUser.getAvatar());
-        System.out.println(persistedUser.getAvatar());
         if (updatedUser.getAvatar() != null && !updatedUser.getAvatar().equals(persistedUser.getAvatar())) {
-
             imageValidator.validate(image, errors);
         }
     }
