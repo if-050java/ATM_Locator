@@ -26,9 +26,23 @@ public class BanksDAO {
 
     public List<Bank> getBanksList(){
         List<Bank> banks;
-        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b",Bank.class);
+        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b ORDER BY b.name",Bank.class);
         banks = query.getResultList();
 
+        /* Preventing error
+            org.springframework.http.converter.HttpMessageNotWritableException:
+            Could not write JSON: failed to lazily initialize a collection of role:
+            com.ss.atmlocator.entity.AtmNetwork.Banks, could not initialize proxy - no Session
+            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"]);
+            nested exception is org.codehaus.jackson.map.JsonMappingException:
+            failed to lazily initialize a collection of role: com.ss.atmlocator.entity.AtmNetwork.Banks, could not initialize proxy - no Session
+            (through reference chain: java.util.ArrayList[0]->com.ss.atmlocator.entity.Bank["network"]->com.ss.atmlocator.entity.AtmNetwork["banks"])
+        */
+/*
+        for(Bank bank : banks){
+            bank.getNetwork().setBanks(null);
+        }
+*/
         return banks;
     }
 
@@ -46,6 +60,7 @@ public class BanksDAO {
 
     public Bank getBank(int id){
         Bank bank = (Bank)entityManager.find(Bank.class, id);
+        //TODO: if bank logo or icons are empty, should we provide default images?
         return bank;
     }
 
