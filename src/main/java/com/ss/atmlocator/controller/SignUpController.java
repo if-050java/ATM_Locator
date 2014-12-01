@@ -9,6 +9,7 @@ import com.ss.atmlocator.utils.SendMails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -96,9 +97,15 @@ public class SignUpController {
             userService.doAutoLogin(user.getLogin());
         }
 
-        sendMails.sendMail("s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
-        model.addAttribute("active", "main");
-        return "main";
+        try{
+            sendMails.sendMail(user.getEmail(),
+                    "User Created",
+                    "You create user: "+user.getLogin()+"; with password:"+user.getPassword());
+        }
+        catch (MailException exp){
+            /*NOP This type of exception is already logged*/
+        }
+            return "redirect:/";
     }
 
     @Autowired

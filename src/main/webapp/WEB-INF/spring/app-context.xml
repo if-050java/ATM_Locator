@@ -11,7 +11,9 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:component-scan base-package="com.ss.atmlocator"/>
+    <context:component-scan base-package="com.ss.atmlocator">
+        <context:exclude-filter type="regex" expression="com\.ss\.atmlocator\.controller.*"/>
+    </context:component-scan>
     <context:annotation-config/>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
@@ -102,5 +104,9 @@
 
     <bean id="passwordEncoder"
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
+
+    <!--Listener for log in -->
+    <bean id="authlogging" class="com.ss.atmlocator.utils.AuthLogging"/>
 
 </beans>
