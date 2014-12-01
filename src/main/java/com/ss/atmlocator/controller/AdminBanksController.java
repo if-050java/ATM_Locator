@@ -178,11 +178,14 @@ public class AdminBanksController {
 
         return "adminBankDeleted";
     }
-    @RequestMapping(value ="/setBanksFromNbu")
+    /**
+     * update all banks (name and mfo) from NBU site
+     * */
+    @RequestMapping(value ="/updateBanksFromNbu")
     public String saveAllBank(){
         parserService.updateAllBanks();
 
-        return "main";
+        return "adminBanks";
     }
 
     /**
