@@ -14,7 +14,7 @@ function FindUser(){
 
    //Send request
     $.ajax({
-        url: getHome()+"findUser?findBy="+findBy+"&findValue="+findValue,
+        url: getHomeUrl()+"findUser?findBy="+findBy+"&findValue="+findValue,
         type : "GET",
         context: document.body,
         dataType: "json",
@@ -40,7 +40,7 @@ function showData(response){
 };
 //Fill user profile
 function fillFields(user){
-    $("#userAvatar").attr("src",getHome()+"resources/images/"+user.avatar);
+    $("#userAvatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
     $("#inputLogin").val(user.login);
     $("#inputEmail").val(user.email);
     $("#inputPassword").val(user.password);
@@ -63,7 +63,7 @@ function askForDeleting(){
 function deleteUser(){
     //Send request
     $.ajax({
-        url:getHome()+"deleteUser?id="+user.id,
+        url:getHomeUrl()+"deleteUser?id="+user.id,
         type : "DELETE",
         context: document.body,
         dataType: "json",
@@ -144,7 +144,7 @@ function updateUser(){
     }
 
     $.ajax({
-        url : getHome()+"updateUser",
+        url : getHomeUrl()+"updateUser",
         type : "POST",
         context : document.body,
         data : getUserFromForm(),

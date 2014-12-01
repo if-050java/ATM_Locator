@@ -4,11 +4,6 @@
 <!Doctype html>
 <html>
 <head>
-    <script>
-        function getHome(){
-            return "<c:url value="/"/>";
-        }
-    </script>
     <script src="<c:url value="/resources"/>/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="<c:url value="/resources"/>/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<c:url value="/resources"/>/bootstrap/css/bootstrap-theme.min.css">

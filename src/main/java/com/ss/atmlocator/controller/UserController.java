@@ -71,7 +71,7 @@ public class UserController {
         if (!errors.hasErrors()) {
             try {
                 if (avatar != null)
-                    UploadFileUtils.save(avatar, newUser.getId() + avatar.getOriginalFilename(), request);
+                    UploadFileUtils.save(avatar, avatar.getOriginalFilename(), request);
                 userService.editUser(newUser);
                 userService.doAutoLogin(newUser.getLogin());
             } catch (IOException e) {

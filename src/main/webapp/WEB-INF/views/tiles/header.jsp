@@ -1,6 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
+    function getHomeUrl(){
+        return '<c:url value="/"/>';
+    }
     <c:if test="${not empty active}">
     $(document).ready(function () {
         $('.${active}').addClass('active');
@@ -15,7 +18,8 @@
             </div>
             <div>
                 <ul class="nav navbar-nav">
-                    <li class="main"><a href="<c:url value="/" />">Home</a></li>
+
+                    <li class="main"><a href="<c:url value="/"/>">Home</a></li>
                     <sec:authorize access="isAnonymous()">
                         <li class="login"><a href="<c:url value="/login"/>">Login</a></li>
                         <li class="signup"><a href="<c:url value="/signup"/>">Sign up</a></li>
