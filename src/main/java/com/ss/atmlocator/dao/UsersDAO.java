@@ -2,6 +2,8 @@ package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +52,8 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void updateUser(User user) {
+        //user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
         entityManager.merge(user);
-        //entityManager.flush();
     }
 
     @Override
@@ -77,12 +79,33 @@ public class UsersDAO implements IUsersDAO {
         if (value == 0 ) return false;
         return true;
     }
+    @Override
+    public boolean checkExistLoginName(User user) {
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE login = :login and id != :id";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("id", user.getId());
+        query.setParameter("login", user.getLogin());
+        int value =  ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0 ) return false;
+        return true;
+    }
 
     @Override
     public boolean checkExistEmail(String email) {
         String sqlQuery = "SELECT COUNT(*) FROM users WHERE email = :email";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("email", email);
+        int value =  ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0 ) return false;
+        return true;
+    }
+
+    @Override
+    public boolean checkExistEmail(User user) {
+        String sqlQuery = "SELECT COUNT(*) FROM users WHERE email = :email and id != :id";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("id", user.getId());
+        query.setParameter("email", user.getEmail());
         int value =  ((BigInteger) query.getSingleResult()).intValue();
         if (value == 0 ) return false;
         return true;

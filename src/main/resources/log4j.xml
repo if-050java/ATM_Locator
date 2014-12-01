@@ -50,6 +50,7 @@
         </layout>
     </appender>
 
+
     <appender name="logInLogs" class="org.apache.log4j.RollingFileAppender">
         <param name="Threshold" value="DEBUG" />
         <param name="MaxFileSize" value="2048KB" />
@@ -62,7 +63,7 @@
 
     <!-- Spring Log -->
     <logger name="org.springframework">
-        <level value="debug" />
+        <level value="info" />
         <appender-ref ref="springLogs"/>
     </logger>
 
@@ -71,9 +72,10 @@
         <level value="error"/>
         <appender-ref ref="smtpLogs"/>
     </logger>
+
     <!-- Controlers Logs -->
     <logger name="com.ss.atmlocator.controller">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="controllerLogs"/>
     </logger>
     <!-- LogIn Logs -->

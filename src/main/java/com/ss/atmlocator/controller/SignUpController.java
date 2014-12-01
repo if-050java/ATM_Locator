@@ -4,6 +4,7 @@ import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.NewUserValidatorService;
+import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.SendMails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class SignUpController {
 
     @Autowired
     private IUsersDAO usersDAO;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     @Qualifier("mail")
@@ -88,9 +92,9 @@ public class SignUpController {
         Set<Role> roles = new HashSet<Role>(0);
         roles.add(role);
         user.setRoles(roles);
-        usersDAO.createUser(user);
+        userService.createUser(user);
         if (signMe != null && signMe.length() > 0) {
-           loginUser(user, request);
+            userService.doAutoLogin(user.getLogin());
         }
 
         try{

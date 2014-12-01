@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -35,10 +37,12 @@ public class Bank {
     @Column
     private Timestamp lastUpdated;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
     private Set<AtmOffice> atmOfficeSet;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
     private Set<AtmParser> atmParserSet;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -131,5 +135,20 @@ public class Bank {
 
     public void setNetwork(AtmNetwork network) {
         this.network = network;
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
+                ", mfoCode=" + mfoCode +
+                ", webSite='" + webSite + '\'' +
+                ", logo='" + logo + '\'' +
+                ", iconAtm='" + iconAtm + '\'' +
+                ", iconOffice='" + iconOffice + '\'' +
+                ", lastUpdated=" + lastUpdated +
+                ", network=" + network +
+                '}';
     }
 }
