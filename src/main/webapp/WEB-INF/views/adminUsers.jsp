@@ -114,7 +114,7 @@
 
                                 <div class="col-md-10">
                                     <input type="password" class="form-control" id="inputPassword"
-                                           placeholder="Password" title="" data-content="" data-placement="left"
+                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" title="" data-content="" data-placement="left"
                                            data-toggle="popover" data-original-title=""
                                            onclick="hidePopover('inputPassword')"/>
                                 </div>
@@ -124,7 +124,7 @@
 
                                 <div class="col-md-10">
                                     <input type="password" class="form-control" id="inputConfirmPassword"
-                                           placeholder="Confirm password" title=""
+                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" title=""
                                            data-content="Password and confirm is different" data-placement="left"
                                            data-toggle="popover" data-original-title=""
                                            onclick="hidePopover('inputConfirmPassword')"/>
@@ -133,6 +133,7 @@
                             <div class="form-group">
                                 <label for="enabled" class="col-md-2 control-label">Log in</label>
                                 <div class="col-md-3">
+                                    <!-- custom style to set width of switch -->
                                     <style>
                                         .toggle.btn {
                                             min-width: 100px;

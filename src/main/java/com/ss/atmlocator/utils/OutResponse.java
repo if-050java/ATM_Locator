@@ -4,6 +4,7 @@ package com.ss.atmlocator.utils;
  * Created by us8610 on 11/25/2014.
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OutResponse {
@@ -25,5 +26,14 @@ public class OutResponse {
 
     public void setErrorMessageList(List<ErrorMessage> errorMessageList) {
         this.errorMessageList = errorMessageList;
+    }
+
+    public OutResponse(String status, ErrorMessage errorMessage) {
+        this.status = status;
+        this.errorMessageList = new ArrayList<ErrorMessage>(1);
+        this.errorMessageList.add(errorMessage);
+    }
+
+    public OutResponse() {
     }
 }
