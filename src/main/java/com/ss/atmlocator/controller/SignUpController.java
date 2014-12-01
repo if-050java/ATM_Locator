@@ -93,7 +93,7 @@ public class SignUpController {
         user.setRoles(roles);
         userService.createUser(user);
         if (signMe != null && signMe.length() > 0) {
-           loginUser(user, request);
+            userService.doAutoLogin(user.getLogin());
         }
 
         sendMails.sendMail("s.vertepniy@gmail.com","User Created","You create user"+user.getLogin());
