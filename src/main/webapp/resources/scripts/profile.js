@@ -100,7 +100,7 @@ $(document).ready(function () {
                 fd.append("confirmPassword", user.confirmPassword);
                 fd.append("avatar", user.avatar);
                 $.ajax({
-                    url: "../user/update",
+                    url: getHomeUrl() + "user/update",
                     type: "POST",
                     data: fd,
                     processData: false,
