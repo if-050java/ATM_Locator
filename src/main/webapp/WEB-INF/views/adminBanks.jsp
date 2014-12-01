@@ -51,19 +51,7 @@ Go to Edit Bank page
                     <%--<input type="hidden" name="network_id" id="network_id">--%>
                     <input type="hidden" name="bank_id" id="bank_id">
                 </form:form>
-                    <%-- update all banks from nbu--%>
-                <form:form>
-                    <form class="form-horizontal" action="/updateBanksFromNbu">
 
-                            <!-- Button -->
-                            <div class="control-group">
-                                <label class="control-label" for="singlebutton"></label>
-                                <div class="controls">
-                                    <button id="singlebutton" name="singlebutton" class="btn btn-warning">update all banks</button>
-                                </div>
-                            </div>
-
-                </form:form>
 
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -78,6 +66,21 @@ Go to Edit Bank page
                         </div>
                     </div>
                 </div>
+
+                    <%-- update all banks from nbu--%>
+
+                    <form class="form-horizontal" action="/updateBanksFromNbu">
+
+                        <!-- Button -->
+                        <div class="control-group">
+                            <label class="control-label" for="singlebutton"></label>
+                            <div class="controls">
+                                <button id="singlebutton" name="singlebutton" class="btn btn-warning">update all banks</button>
+                            </div>
+                        </div>
+
+                        </form>
+
             </div>
         </div>
 
