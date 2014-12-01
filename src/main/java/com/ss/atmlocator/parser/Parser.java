@@ -1,0 +1,16 @@
+package com.ss.atmlocator.parser;
+
+
+
+import com.ss.atmlocator.entity.Bank;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by maks on 19.11.2014.
+ */
+public interface Parser {
+    public void setParametr(Map<String, String> parameters);
+    public List<Bank> parce();
+}

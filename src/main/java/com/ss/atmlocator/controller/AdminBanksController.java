@@ -1,9 +1,10 @@
 package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.dao.AtmNetworksDAO;
-import com.ss.atmlocator.dao.BanksDAO;
+import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.service.ParserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
 import java.util.List;
 
 /**
@@ -24,9 +24,11 @@ public class AdminBanksController {
     private static org.apache.log4j.Logger log = Logger.getLogger(AdminBanksController.class);
 
     @Autowired
-    BanksDAO banksDAO;
+    IBanksDAO banksDAO;
     @Autowired
     AtmNetworksDAO networksDAO;
+    @Autowired
+    ParserService parserService;
 
     /**
      *  Show page with list of Banks and ATM Networks
@@ -122,6 +124,12 @@ public class AdminBanksController {
         modelMap.addAttribute("active","adminBanks");
 
         return "adminBankDeleted";
+    }
+    @RequestMapping(value ="/setBanksFromNbu")
+    public String saveAllBank(){
+        parserService.updateAllBanks();
+
+        return "main";
     }
 
 }
