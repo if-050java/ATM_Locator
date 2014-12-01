@@ -136,4 +136,19 @@ public class Bank {
     public void setNetwork(AtmNetwork network) {
         this.network = network;
     }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
+                ", mfoCode=" + mfoCode +
+                ", webSite='" + webSite + '\'' +
+                ", logo='" + logo + '\'' +
+                ", iconAtm='" + iconAtm + '\'' +
+                ", iconOffice='" + iconOffice + '\'' +
+                ", lastUpdated=" + lastUpdated +
+                ", network=" + network +
+                '}';
+    }
 }
