@@ -46,25 +46,40 @@
         <param name="MaxBackupIndex" value="10" />
         <param name="File" value="../logs/controller-logs.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%X{ip}] %-5p %c{1}:%L - %m%n" />
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
         </layout>
     </appender>
 
-<!-- Spring Log -->
-<logger name="org.springframework">
-    <level value="debug" />
-    <appender-ref ref="springLogs"/>
-</logger>
+    <appender name="logInLogs" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="MaxFileSize" value="2048KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="File" value="../logs/login-logs.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
 
-    <!-- SendMails Log -->
-<logger name="com.ss.atmlocator.utils.SendMails">
-    <level value="error"/>
-    <appender-ref ref="smtpLogs"/>
-</logger>
+    <!-- Spring Log -->
+    <logger name="org.springframework">
+        <level value="debug" />
+        <appender-ref ref="springLogs"/>
+    </logger>
+
+        <!-- SendMails Log -->
+    <logger name="com.ss.atmlocator.utils.SendMails">
+        <level value="error"/>
+        <appender-ref ref="smtpLogs"/>
+    </logger>
     <!-- Controlers Logs -->
     <logger name="com.ss.atmlocator.controller">
         <level value="debug"/>
         <appender-ref ref="controllerLogs"/>
+    </logger>
+    <!-- LogIn Logs -->
+    <logger name="com.ss.atmlocator.utils.AuthLogging">
+        <level value="debug"/>
+        <appender-ref ref="logInLogs"/>
     </logger>
 
 <root>

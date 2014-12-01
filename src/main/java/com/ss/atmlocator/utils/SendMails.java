@@ -26,7 +26,7 @@ public class SendMails {
         this.mailSender = mailSender;
     }
 
-    public void sendMail(String to, String subject, String msg) {
+    public void sendMail(String to, String subject, String msg) throws MailException  {
 
         try{
         SimpleMailMessage message = new SimpleMailMessage();
@@ -41,6 +41,7 @@ public class SendMails {
         }
         catch (MailException exp){
             logger.error(parseExceptions(exp));
+            throw exp;
         }
     }
 

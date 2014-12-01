@@ -49,7 +49,7 @@ public class NewUserValidatorService {
         emailValidator.validate(email,errors);
         if(errors.hasErrors()) return;
         /*Login validation*/
-        if (login == null || login.length() ==0 ){
+        if (login.isEmpty()){
 
             int index  = email.indexOf(AMPERSAND_CODE);
             login = email.substring(0,index);
@@ -63,7 +63,7 @@ public class NewUserValidatorService {
                 do{
                     tempLogin=login + dateFormat.format(new Date()) ;
                     errorLocal = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
-                    loginValidator.validate(tempLogin,errors);
+                    loginValidator.validate(tempLogin,errorLocal);
                 }while (errorLocal.hasErrors()==true);
             }
             user.setLogin(tempLogin);
@@ -72,12 +72,12 @@ public class NewUserValidatorService {
             loginValidator.validate(login,errors);
         }
         /*Password validation*/
-        if (password == null || password.length()==0){
+        if (password.isEmpty()){
             MapBindingResult errorLocal;
             do{
                 password = genString(USER_PASSWORD_LENGTH);
                 errorLocal = new MapBindingResult(new HashMap<String, String>(), this.getClass().getName());
-                passwordValidator.validate(password,errors);
+                passwordValidator.validate(password,errorLocal);
             } while (errorLocal.hasErrors()==true);
             user.setPassword(password);
         }
