@@ -1,7 +1,6 @@
 package com.ss.atmlocator.entity;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Set;
 
