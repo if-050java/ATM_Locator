@@ -74,7 +74,7 @@ public class UserService {
         mergedUser.setEmail(updatedUser.getEmail() == null ? persistedUser.getEmail() : updatedUser.getEmail());
         //Avatar
         mergedUser.setAvatar(updatedUser.getAvatar() == null ? persistedUser.getAvatar() : updatedUser.getAvatar());
-        //Password user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
+        //Password
         mergedUser.setPassword(updatedUser.getPassword() != null ? passwordEncoder.encodePassword(updatedUser.getPassword(), null) : persistedUser.getPassword() );
         //Roles
         mergedUser.setRoles(updatedUser.getRoles() == null ? persistedUser.getRoles() : updatedUser.getRoles());

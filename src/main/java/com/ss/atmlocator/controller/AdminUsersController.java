@@ -95,26 +95,19 @@ public class AdminUsersController {
         int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
         //Check user want to remove himself
         if (id == currentLoggedUserId) {
-            //Filling and sending response
-            response.setStatus(Constants.INFO);
-            errorMessageList.add(new ErrorMessage(Constants.DELETE,
+            return new OutResponse(Constants.INFO, new ErrorMessage(Constants.DELETE,
                     messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
-            return response;
         };
+
         try {
             userService.deleteUser(id);
-            //Filling and sending response
-            response.setStatus(Constants.SUCCESS);
-            errorMessageList.add(new ErrorMessage(Constants.DELETE,
+
+            return new OutResponse(Constants.SUCCESS, new ErrorMessage(Constants.DELETE,
                     messages.getMessage("operation.success", null, Locale.ENGLISH)));
-            return response;
 
         } catch (PersistenceException pe) {
-            //Filling and sending response
-            response.setStatus(Constants.ERROR);
-            errorMessageList.add(new ErrorMessage(Constants.DELETE,
+            return new OutResponse(Constants.ERROR, new ErrorMessage(Constants.DELETE,
                     messages.getMessage("operation.error", null, Locale.ENGLISH)));
-            return response;
         }
     }
 
@@ -131,7 +124,6 @@ public class AdminUsersController {
 
         //checking if nothing to update
         if (userService.isNotModified(updatedUser)) {
-            //Filling and sending response
             return new OutResponse(Constants.INFO, new ErrorMessage(Constants.UPDATE,
                     messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH)));
         }
@@ -141,10 +133,9 @@ public class AdminUsersController {
         validationService.validate(updatedUser, null, errors);
 
         if (errors.hasErrors()) {//if validation unsuccessful add all errors to response
-            //Filling and sending response
             OutResponse response = new OutResponse(Constants.ERROR,null);
             for (FieldError error : errors.getFieldErrors()) {
-                response.getErrorMessageList().add(new ErrorMessage(error.getField().toLowerCase(), error.getCode()));
+                response.getErrorMessageList().add(new ErrorMessage(error.getField(), error.getCode()));
             }
             return response;
         };
