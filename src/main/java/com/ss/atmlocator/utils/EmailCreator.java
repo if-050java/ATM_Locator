@@ -1,18 +1,52 @@
 package com.ss.atmlocator.utils;
 
 import com.ss.atmlocator.entity.User;
+import org.springframework.core.io.ClassPathResource;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupDir;
+import org.stringtemplate.v4.STRawGroupDir;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import org.apache.log4j.Logger;
 
 /**
- * Created by Vasyl Danylyuk on 27.11.2014.
+ * Class for creating e-mail messages from templates
  */
 public class EmailCreator {
-    public static String create(User user){
-        StringBuilder message = new StringBuilder();
-        message.append("Dear, "+user.getLogin()+"! \n");
-        message.append("We are pleased that You are using our service. \n");
-        message.append("It's your credential for login to our service: \n");
-        message.append("\t login : "+user.getLogin()+" \n");
-        message.append("\t password : "+user.getPassword()+" \n");
-        return message.toString();
+
+    private final Logger logger = Logger.getLogger(EmailCreator.class.getName());
+
+    private String dirPath;
+    private STGroup stGroup;
+
+    private final char TEMPLATE_DELIMITER = '#';
+
+    public EmailCreator(String path) throws IOException {
+        //creating template group  from files in dir
+        try {
+            dirPath = new ClassPathResource(path).getURI().getPath();
+            logger.info("Loading StringTemplateGroup from dir "+dirPath);
+            stGroup = new STRawGroupDir(dirPath, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+        }catch (IOException ioe){
+            logger.fatal("Can't load StringTemplateGroup from dir " + dirPath);
+            throw ioe;
+        }
+
+    }
+
+    //Method for creating e-mail message to user if password was changed
+    public String create(String templateName, User user) {
+        ST template = stGroup.getInstanceOf(templateName);
+        if(template == null){
+            logger.error("Can't load StringTemplate from file "+templateName+".st");
+            return null;
+        }
+        template.add(Constants.USER_LOGIN, user.getLogin());
+        template.add(Constants.USER_EMAIL, user.getEmail());
+        template.add(Constants.USER_PASSWORD, user.getPassword());
+        return template.render();
     }
 }

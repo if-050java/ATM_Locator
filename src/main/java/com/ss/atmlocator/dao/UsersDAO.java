@@ -2,6 +2,8 @@ package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +52,8 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void updateUser(User user) {
+        //user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
         entityManager.merge(user);
-        //entityManager.flush();
     }
 
     @Override

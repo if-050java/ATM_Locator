@@ -15,7 +15,7 @@
 
                       <div class="form-group">
                           <div class="col-md-6">
-                            <button type="submit" formaction="/adminBanks" class="btn btn-success btn-lg">
+                            <button type="submit" formaction="<c:url value="/adminBanks" />" class="btn btn-success btn-lg">
                               <span class="sr-only">Close</span>
                               Bank <strong>${bank_name}</strong> deleted.
                             </button>
@@ -26,7 +26,7 @@
 
                   <c:if test="${status=='error'}">
                       <div class="alert alert-danger alert-dismissible" role="alert">
-                          <button type="submit" formaction="/adminBanks" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                          <button type="submit" formaction="<c:url value="/adminBanks" />" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
                                   class="sr-only">Close</span></button>
                           <strong>Error!</strong> Bank is not deleted.
                       </div>

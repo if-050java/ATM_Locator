@@ -1,6 +1,8 @@
 package com.ss.atmlocator.entity;
 
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -35,14 +37,32 @@ public class AtmOffice {
     @Column
     private String photo;  // filename of real street photo
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
     Bank bank;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice")
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AtmOffice atmOffice = (AtmOffice) o;
+
+        if (Id != atmOffice.Id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Id;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
     private Set<AtmComment> atmComments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
     private Set<AtmFavorite> atmFavorites;
 
     public int getId() {

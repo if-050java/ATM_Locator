@@ -14,23 +14,20 @@ function SelectFindType() {
 //Request to find user by name or email
 function FindUser(){
     //Request parameters
-    requestData = {
-        findBy : ($("#byName").prop("checked") == true) ? "login" : "email",
-        findValue : ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val()
-    }
+    var findBy = ($("#byName").prop("checked") == true) ? "login" : "email";
+    var findValue = ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val();
 
    //Send request
     $.ajax({
-        url: "/findUser",
-        type : "POST",
+        url: "/findUser?findBy="+findBy+"&findValue="+findValue,
+        type : "GET",
         context: document.body,
-        data: requestData,
         dataType: "json",
         success : showData
     })
 };
 
-//Заповнення та демонстрація даних користувача
+//Show user profile
 function showData(response){
     if(response.id < 0){
         //show popover if user not found
@@ -46,18 +43,21 @@ function showData(response){
     //show form
     $("#userData").slideDown();
 };
-
+//Fill user profile
 function fillFields(user){
-    $("#userAvatar").attr("src", "/resources/images/"+user.avatar);
+    $("#userAvatar").attr("src","/resources/images/"+user.avatar);
     $("#inputLogin").val(user.login);
     $("#inputEmail").val(user.email);
     $("#inputPassword").val(user.password);
     $("#inputConfirmPassword").val(user.password);
-    $("#enabled").prop("checked" ,(user.enabled != 0) ? true : false);
+    if(user.enabled != 0){
+        $("#enabled").prop("checked" ,true).change();
+    } else {
+        $("#enabled").prop("checked" ,false).change();
+    }
 }
-
+//hide form
 function clearForm(){
-    //hide form
     $("#userData").slideUp();
 }
 
@@ -68,7 +68,7 @@ function askForDeleting(){
 function deleteUser(){
     //Send request
     $.ajax({
-        url: "/deleteUser?id="+user.id,
+        url:"/deleteUser?id="+user.id,
         type : "DELETE",
         context: document.body,
         dataType: "json",
@@ -80,12 +80,20 @@ function deleteUser(){
 }
 
 function showAlert(response){
-    $("#resultDefinition").text(response.message);
-    if(response.status == "ERROR"){
-        $("#message").removeClass("alert-success").addClass("alert-danger")
-    }else{
-        $("#message").removeClass("alert-danger").addClass("alert-success")
+    var text = "";
+    for(i = 0; i < response.errorMessageList.length; i++) {
+        text = text + response.errorMessageList[i].message+"; "
     }
+
+    $("#resultDefinition").text(text);
+
+    if(response.status == "ERROR"){
+        $("#message").removeClass("alert-success alert-info").addClass("alert-danger")
+    }else if(response.status == "INFO") {
+        $("#message").removeClass("alert-danger alert-success").addClass("alert-info")
+    }else {
+        $("#message").removeClass("alert-danger alert-info").addClass("alert-success")
+    };
     //show alert about result of operation
     $("#message").show();
 };
@@ -127,13 +135,17 @@ function updateUser(){
     };
 
     //checking password strange
-    if(!validatePasswordStrange($('#inputPassword').prop("value"))){
-        $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
-        $('#inputPassword').popover("show");
-        return;
+    //don'tvalidate if password didn't change
+    if($('#inputPassword').prop("value") != user.password){
+        if(!validatePasswordStrange($('#inputPassword').prop("value"))){
+            $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
+            $('#inputPassword').popover("show");
+            return;
+        }
     }
+
     $.ajax({
-        url: "/updateUser",
+        url:"/updateUser",
         type : "POST",
         context: document.body,
         data: getUserFromForm(),
@@ -141,17 +153,6 @@ function updateUser(){
         success : showAlert
     })
 };
-
-function sendEmail(){
-    //Send request
-    $.ajax({
-        url: "/sendEmail?id="+user.id,
-        type : "POST",
-        context: document.body,
-        dataType: "json",
-        success : showAlert
-    })
-}
 
 function hidePopover(element){
     $('#'+element).popover("destroy");

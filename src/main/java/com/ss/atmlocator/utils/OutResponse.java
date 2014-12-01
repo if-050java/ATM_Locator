@@ -6,7 +6,7 @@ package com.ss.atmlocator.utils;
 
 import java.util.List;
 
-public class ValidationResponse {
+public class OutResponse {
 
     private String status;
     private List<ErrorMessage> errorMessageList;

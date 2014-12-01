@@ -1,6 +1,5 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.utils.CheckUserCredCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

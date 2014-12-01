@@ -74,6 +74,10 @@
         <property name="mailSender" ref="mailSender" />
         <property name="from" value="${email.from}" />
     </bean>
+
+    <bean id="emailcreator" class="com.ss.atmlocator.utils.EmailCreator">
+        <constructor-arg name="path" value="email_templates"/>
+    </bean>
     <!-- User credentials validate -->
     <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">
         <constructor-arg name="mailRegExp" value="${email.pattern}"/>
@@ -95,7 +99,8 @@
     <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
     <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
     <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
-    <bean id="loginValidator" class="com.ss.atmlocator.validator.LoginValidator"/>
-    <bean id="emailValidator" class="com.ss.atmlocator.validator.EmailValidator"/>
+
+    <bean id="passwordEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
 </beans>

@@ -8,7 +8,9 @@
 <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
 <div class="container">
     <!-- Small modal window-->
-    <div class="alert" role="alert" style="display: none"></div>
+    <div class="alert" role="alert" style="display: none">
+        <a class="close" onclick="$('.alert').hide()">&times;</a>
+    </div>
     <div class="col-md-16" role="main" id="userData">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -22,7 +24,7 @@
                            role="form" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="row">
                         <div class="col-md-2 avablock">
-                            <img src="/resources/images/${user.avatar}" class="img-responsive" alt="Responsive image"
+                            <img src="/resources/images/${user.avatar}" class="img-thumbnail" alt="avatar"
                                  id="userAvatar">
 
                             <div class="controls clearfix">
@@ -35,23 +37,28 @@
                         </div>
                         <div class="col-md-6">
                             <form:hidden path="id"/>
+                            <form:hidden path="enabled"/>
                             <div class="form-group">
                                 <label for="login" class="col-sm-2 control-label">NickName</label>
 
                                 <div class="col-md-10">
-                                    <form:input path="login" placeholder="login" cssClass="form-control" data-toggle="popover"
+                                    <form:input path="login" placeholder="login" cssClass="form-control"
+                                                data-toggle="popover"
                                                 data-placement="right" onclick="hidePopover('login')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="col-sm-2 control-label">E-mail</label>
+
                                 <div class="col-md-10">
-                                    <form:input path="email" placeholder="email" cssClass="form-control" data-toggle="popover"
+                                    <form:input path="email" placeholder="email" cssClass="form-control"
+                                                data-toggle="popover"
                                                 data-placement="right" onclick="hidePopover('email')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="password" class="col-sm-2 control-label">Password</label>
+
                                 <div class="col-md-10">
                                     <form:password path="password" value="${user.password}" placeholder="password"
                                                    cssClass="form-control" data-toggle="popover"
@@ -64,7 +71,8 @@
                                 <div class="col-md-10">
                                     <input type="password" id="confirmPassword" value="${user.password}"
                                            placeholder="repeat password" class="form-control"
-                                           data-toggle="popover" data-placement="right" onclick="hidePopover('confirmPassword')"/>
+                                           data-toggle="popover" data-placement="right"
+                                           onclick="hidePopover('confirmPassword')"/>
                                 </div>
                             </div>
                             <div class="form-group last">
