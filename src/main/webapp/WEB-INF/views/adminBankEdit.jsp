@@ -16,6 +16,7 @@
 </style>
 --%>
 <link rel="stylesheet" href="<c:url value="/resources"/>/styles/bankedit.css">
+<script src="<c:url value="/resources"/>/scripts/adminBankEdit.js"></script>
 
 <div class="col-md-12" role="main" id="bankData">
   <div class="container">
@@ -77,7 +78,7 @@
                     <div class="form-group">
                         <label for="iconAtm" class="col-sm-3 control-label">ATM Icon</label>
                         <div class="col-md-2">
-                            <img src="<c:url value="/resources/images/${bank.iconAtm}" />" class="img-thumbnail">
+                            <img src="<c:url value="/resources/images/${bank.iconAtm}" />" class="img-thumbnail"  id="bankAtmFile">
                         </div>
                         <div class="col-md-7">
                           <div class="input-group">
@@ -93,7 +94,7 @@
                     <div class="form-group">
                         <label for="iconOffice" class="col-sm-3 control-label">Office Icon</label>
                         <div class="col-md-2">
-                            <img src="<c:url value="/resources/images/${bank.iconOffice}" />" class="img-thumbnail">
+                            <img src="<c:url value="/resources/images/${bank.iconOffice}" />" class="img-thumbnail" id="bankOffice">
                         </div>
                         <div class="col-md-7">
                           <div class="input-group">
@@ -125,6 +126,10 @@
                   </div>
            </div>
            <input type="hidden" name="bank_id" id="bank_id" value="${bank_id}" cssClass="form-control">
+
+            <div class="alert" role="alert">
+                <a class="close" onclick="$('.alert').hide()">&times;</a>
+            </div>
 
     <%-- Submit buttons --%>
            <div class="panel-footer">
