@@ -7,41 +7,72 @@ $(document).ready(function(){
         if (validateEmail($this.val())){
             $.ajax({
                 url: "/usercredemail?email="+$this.val(),
-                async: false,
+                async: true,
                 type: 'GET',
                 dataType: 'json',
                 success : function(data)
                 {
-
                     if(data.canUse){
-                        $this.tooltip('destroy');
+                        $this.popover("destroy");
+                        $this.removeClass('error');
+                        return;
                     }
                     else{
-                        $this.tooltip('destroy');
-                        $this.attr('title', data.cause);
-                        $this.tooltip({placement : 'right', trigger: 'manual'});
-                        $this.on({
-                            blur: function() {
-                                $(this).tooltip('show');
-                            }
-                        });
-                        $('.email-wrapper .tooltip.right .tooltip-inner').css('background', 'red').addClass('error');
-                        $('.email-wrapper .tooltip.right .tooltip-arrow').css('border-right-color', 'red');
+                        $this.attr("data-content", data.cause);
+                        $this.popover("show");
+                        $this.addClass('error');
+                        return;
                     }
                 }
             })
         }
         else{
-            $this.tooltip('destroy');
-            $this.attr('title', 'Your email is not valid');
-            $this.tooltip({placement : 'right', trigger: 'manual'});
-            $this.on({
-                blur: function() {
-                    $(this).tooltip('show');
+            $this.attr("data-content", "Your email is not valid");
+            $this.popover("show");
+            $this.addClass('error');
+            return;
+        }
+    });
+
+    $(document).on('blur', '[name="inputLogin"]', function(){
+        var $this = $(this);
+        if ($this.val().length < 1){
+            $this.removeClass('error');
+            return;
+        }
+        if (validateLogin($this.val())){
+            $.ajax({
+                url: "/usercredlogin?login="+$this.val(),
+                async: true,
+                type: 'GET',
+                dataType: 'json',
+                success : function(data)
+                {
+                    if(data.canUse){
+                        $this.popover("destroy");
+                        $this.removeClass('error');
+                        return;
+                    }
+                    else{
+                        $this.attr("data-content", data.cause);
+                        $this.popover("show");
+                        $this.addClass('error');
+                        return;
+                    }
                 }
-            });
-            $('.email-wrapper .tooltip.right .tooltip-inner').css('background', 'red').addClass('error');
-            $('.email-wrapper .tooltip.right .tooltip-arrow').css('border-right-color', 'red');
+            })
+        }
+        else{
+            $this.attr("data-content", "Your Login is not valid");
+            $this.popover("show");
+            $this.addClass('error');
+            return;
+        }
+    });
+
+    $(document).on('submit', 'form', function (e) {
+        if($('.error').length > 0){
+            e.preventDefault();
         }
     });
 
