@@ -3,6 +3,7 @@ package com.ss.atmlocator.dao;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +20,12 @@ import java.util.List;
 @Repository
 public class BanksDAO implements IBanksDAO {
     private static final int UNASSIGNED_NETWORK = -1;
+    private final org.apache.log4j.Logger log = Logger.getLogger(BanksDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Override
     public List<Bank> getBanksList() {
         List<Bank> banks;
         TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b ORDER BY b.name",Bank.class);
@@ -30,6 +33,7 @@ public class BanksDAO implements IBanksDAO {
         return banks;
     }
 
+    @Override
     @Transactional
     public Bank newBank() {
         Bank bank = new Bank();
@@ -43,20 +47,28 @@ public class BanksDAO implements IBanksDAO {
         return bank;
     }
 
+    @Override
     public Bank getBank(int id) {
         Bank bank = (Bank) entityManager.find(Bank.class, id);
-
         return bank;
     }
 
+    @Override
+    @Transactional
     public Bank saveBank(Bank bank) {
         bank.setLastUpdated(TimeUtil.currentTimestamp());
-        return (Bank) entityManager.merge(bank);
+        Bank saved = (Bank) entityManager.merge(bank);
+        log.debug("Saved Bank '"+saved.getName()+"' #"+saved.getId());
+        return saved;
     }
 
+    @Override
+    @Transactional
     public void deleteBank(int bank_id) {
         Bank bank = (Bank) entityManager.find(Bank.class, bank_id);
+        String delName = bank.getName(); //get name before it will be deleted
         entityManager.remove(bank);
+        log.debug("Deleted Bank '"+delName+"' #"+bank_id);
     }
 
     /*'*/

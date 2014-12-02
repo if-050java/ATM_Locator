@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Controller
 public class AdminBanksController {
-    private org.apache.log4j.Logger log = Logger.getLogger(AdminBanksController.class);
+    private final org.apache.log4j.Logger log = Logger.getLogger(AdminBanksController.class);
 
     @Autowired
     IBanksDAO banksDAO;
