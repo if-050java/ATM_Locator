@@ -26,4 +26,6 @@ public interface IUsersDAO {
     /* Verify existing of email address in DB */
     boolean checkExistEmail(String email);
     boolean checkExistEmail(User user);
+
+    public void writeLoginTime(String userName);
 }

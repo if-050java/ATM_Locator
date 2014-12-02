@@ -2,6 +2,7 @@ package com.ss.atmlocator.entity;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -26,6 +27,9 @@ public class User {
 
     @Column
     private int enabled;
+
+    @Column
+    private Date lastLoging;
 
     @JsonIgnore //Ignoring this field in JSON serializing
     @ManyToMany(fetch = FetchType.EAGER)
