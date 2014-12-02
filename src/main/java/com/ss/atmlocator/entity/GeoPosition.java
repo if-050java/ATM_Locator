@@ -40,4 +40,12 @@ public class GeoPosition {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
+    public double getLatInRad(){
+        return latitude/180*Math.PI;
+    }
+
+    public double getLngInRad(){
+        return longitude/180*Math.PI;
+    }
 }
