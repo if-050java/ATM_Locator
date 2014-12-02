@@ -25,15 +25,14 @@ function getUser() {
 }
 function validateForm(persistedUser) {
     var result = true;
+    //return result;
     var user =  getUser();
     if (user.login == persistedUser.login &&
         user.email == persistedUser.email &&
-        user.password == persistedUser.password &&
-        user.confirmPassword == persistedUser.confirmPassword &&
+        user.password.length == 0 &&
+        user.confirmPassword == 0 &&
         user.avatar == persistedUser.avatar) {
         showAlert("alert alert-info", INFO_MESSAGE);
-        console.log(persistedUser);
-        console.log(user);
         return false;
     }
     if (user.login != persistedUser.login && !validateLogin(user.login)) {
@@ -46,12 +45,12 @@ function validateForm(persistedUser) {
         $('#email').popover("show");
         result = false;
     }
-    if (user.password != persistedUser.password && !validatePasswordStrange(user.password)) {
+    if (user.password.length!=0 && !validatePasswordStrange(user.password)) {
         $('#password').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#password').popover("show");
         result = false;
     }
-    if (user.confirmPassword != persistedUser.confirmPassword && !validateConfirmPassword(user.password, user.confirmPassword)) {
+    if (!validateConfirmPassword(user.password, user.confirmPassword)) {
         $('#confirmPassword').attr("data-content", "Password and confirm password are different");
         $('#confirmPassword').popover("show");
         result = false;
