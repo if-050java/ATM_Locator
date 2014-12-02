@@ -1,11 +1,13 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.BanksDAO;
+import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.entity.GeoPosition;
 import com.ss.atmlocator.utils.GeoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,11 +17,11 @@ import java.util.List;
  * Created by Vasyl Danylyuk on 02.12.2014.
  */
 
-
+@Service
 public class ATMService {
 
     @Autowired
-    private BanksDAO banksDAO;
+    private IBanksDAO banksDAO;
 
     /**
      * Add ATMs that is in circle of a given radius from banks with given IDs

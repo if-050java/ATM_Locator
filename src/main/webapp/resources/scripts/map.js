@@ -85,7 +85,7 @@ function deleteMarker(marker){
 //Get ATMs from server by filter
 function updateFilter(){
     $.ajax({
-        url: getHome()+"getBank?id=1",
+        url: getHomeUrl()+"getATMs?id=594&userLat="+userPosition.lat+"&userLng="+userPosition.lng+"&radius="+$("#distance").val(),
         type : "GET",
         context: document.body,
         dataType: "json",
@@ -95,7 +95,7 @@ function updateFilter(){
 
 //Receiving data about markers from server and adding marker to map
 function showAtms(data) {
-    var ATMs = data.atmOfficeSet;
+    var ATMs = data;
     for (var i = 0; i < ATMs.length; i++) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n"+ATMs[i].address;
@@ -114,12 +114,14 @@ function addMarker(position, title){
   //  marker.setIcon("views/savedMarker.png");
   //  markers.push(marker);
     //Removing marker from map and sending request for removing to server
-    google.maps.event.addListener(marker, 'click', function removeMarker() {
-        if(window.confirm("Are you sure?")){//If this marker not in current position marker then remove
-            marker.setMap(null);
-         //   removeReq(marker.getPosition());
-        }
+    google.maps.event.addListener(marker, 'rightclick', markerMenu);
+}
+
+function markerMenu(){
+    var menu = new google.maps.InfoWindow({
+        content: '<div class="list-group"><a href="#" class="list-group-item disabled">Cras</a><a href="#" class="list-group-item">Dapibus</a><a href="#" class="list-group-item">Morbi</a><a href="#" class="list-group-item">Porta</a><a href="#" class="list-group-item">Vestibulum</a></div>'
     });
+    menu.open(map, this);
 }
 
 function hidePopover(element){
