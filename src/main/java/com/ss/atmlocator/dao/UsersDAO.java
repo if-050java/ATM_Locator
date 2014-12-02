@@ -53,7 +53,6 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void updateUser(User user) {
-        //user.setPassword(passwordEncoder.encodePassword(user.getPassword(),null));
         entityManager.merge(user);
     }
 
