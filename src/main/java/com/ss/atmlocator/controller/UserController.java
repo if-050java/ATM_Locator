@@ -54,7 +54,7 @@ public class UserController {
             @RequestParam int id,
             @RequestParam String login,
             @RequestParam String email,
-            @RequestParam String password,
+            @RequestParam(required = false) String password,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
     ) {
         OutResponse response = new OutResponse();

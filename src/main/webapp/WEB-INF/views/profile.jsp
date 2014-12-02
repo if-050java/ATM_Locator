@@ -59,7 +59,7 @@
                             <div class="form-group">
                                 <label for="password" class="col-sm-2 control-label">Password</label>
                                 <div class="col-md-10">
-                                    <input type="password" id="password"  placeholder="******"
+                                    <input type="password" id="password"  placeholder="&#149;&#149;&#149;&#149;&#149;&#149;"
                                                    class="form-control" data-toggle="popover"
                                                    data-placement="right" onclick="hidePopover('password')"/>
                                 </div>
@@ -69,7 +69,7 @@
 
                                 <div class="col-md-10">
                                     <input type="password" id="confirmPassword"
-                                           placeholder="******" class="form-control"
+                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" class="form-control"
                                            data-toggle="popover" data-placement="right"
                                            onclick="hidePopover('confirmPassword')"/>
                                 </div>
