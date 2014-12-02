@@ -106,7 +106,7 @@
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
 
-    <!--Listener for log in -->
+    <!--Listener for log  loging process -->
     <bean id="authlogging" class="com.ss.atmlocator.utils.AuthLogging"/>
 
 </beans>
