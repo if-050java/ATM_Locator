@@ -25,15 +25,13 @@ function getUser() {
 }
 function validateForm(persistedUser) {
     var result = true;
-    var user =  getUser();
+    var user = getUser();
     if (user.login == persistedUser.login &&
         user.email == persistedUser.email &&
-        user.password == persistedUser.password &&
-        user.confirmPassword == persistedUser.confirmPassword &&
+        user.password.length == 0 &&
+        user.confirmPassword == 0 &&
         user.avatar == persistedUser.avatar) {
         showAlert("alert alert-info", INFO_MESSAGE);
-        console.log(persistedUser);
-        console.log(user);
         return false;
     }
     if (user.login != persistedUser.login && !validateLogin(user.login)) {
@@ -42,16 +40,16 @@ function validateForm(persistedUser) {
         result = false;
     }
     if (user.email != persistedUser.email && !validateEmail(user.email)) {
-        $('#email').attr("data-content", "Your email not valid (example: someone@somedomain.com)");
+        $('#email').attr("data-content", "Email isn't valid (example: someone@domain.com)");
         $('#email').popover("show");
         result = false;
     }
-    if (user.password != persistedUser.password && !validatePasswordStrange(user.password)) {
+    if (user.password.length != 0 && !validatePasswordStrange(user.password)) {
         $('#password').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
         $('#password').popover("show");
         result = false;
     }
-    if (user.confirmPassword != persistedUser.confirmPassword && !validateConfirmPassword(user.password, user.confirmPassword)) {
+    if (!validateConfirmPassword(user.password, user.confirmPassword)) {
         $('#confirmPassword').attr("data-content", "Password and confirm password are different");
         $('#confirmPassword').popover("show");
         result = false;
@@ -96,9 +94,12 @@ $(document).ready(function () {
                 fd.append("id", user.id);
                 fd.append("login", user.login);
                 fd.append("email", user.email);
-                fd.append("password", user.password);
                 fd.append("confirmPassword", user.confirmPassword);
                 fd.append("avatar", user.avatar);
+               //check if password is changed
+                if (user.password.length != 0){
+                    fd.append("password", user.password);
+                }
                 $.ajax({
                     url: getHomeUrl() + "user/update",
                     type: "POST",

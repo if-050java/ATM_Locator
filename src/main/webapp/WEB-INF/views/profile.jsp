@@ -58,10 +58,9 @@
                             </div>
                             <div class="form-group">
                                 <label for="password" class="col-sm-2 control-label">Password</label>
-
                                 <div class="col-md-10">
-                                    <form:password path="password" value="${user.password}" placeholder="password"
-                                                   cssClass="form-control" data-toggle="popover"
+                                    <input type="password" id="password"  placeholder="&#149;&#149;&#149;&#149;&#149;&#149;"
+                                                   class="form-control" data-toggle="popover"
                                                    data-placement="right" onclick="hidePopover('password')"/>
                                 </div>
                             </div>
@@ -69,8 +68,8 @@
                                 <label for="confirmPassword" class="col-sm-2 control-label">Confirm</label>
 
                                 <div class="col-md-10">
-                                    <input type="password" id="confirmPassword" value="${user.password}"
-                                           placeholder="repeat password" class="form-control"
+                                    <input type="password" id="confirmPassword"
+                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" class="form-control"
                                            data-toggle="popover" data-placement="right"
                                            onclick="hidePopover('confirmPassword')"/>
                                 </div>
