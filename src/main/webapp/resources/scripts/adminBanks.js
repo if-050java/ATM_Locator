@@ -11,7 +11,7 @@ var bankslist;
 $(document).ready(loadBanks());
 
 function loadBanks() {
-    $.get("/banksListAjax", function(banks){
+    $.get(getHomeUrl()+"banksListAjax", function(banks){
         bankslist=banks;
         showBanks(0);
     });
@@ -37,7 +37,7 @@ function showBanks(network) {
     for(i = 0; i < bankslist_net.length; i++){
         var li = $('<li/>').attr('role', 'presentation').appendTo(ul_banks);
 
-        var aaa = $('<a/>').attr('href',"/adminBankEdit?bank_id="+bankslist_net[i].id)
+        var aaa = $('<a/>').attr('href',getHomeUrl()+"adminBankEdit?bank_id="+bankslist_net[i].id)
                            .attr("id",bankslist_net[i].id)
                            .text(bankslist_net[i].name)
                            .appendTo(li);

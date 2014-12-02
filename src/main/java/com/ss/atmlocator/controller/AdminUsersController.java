@@ -120,16 +120,11 @@ public class AdminUsersController {
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     @ResponseBody
-    public OutResponse updateUser(@RequestParam(Constants.USER_ID) int id,
-                                  @RequestParam(Constants.USER_LOGIN) String newLogin,
-                                  @RequestParam(Constants.USER_EMAIL) String newEmail,
-                                  @RequestParam(Constants.USER_PASSWORD) String newPassword,
-                                  @RequestParam(Constants.USER_ENABLED) int enabled){
-
-        //variables for sending response about result of operation
-        OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMessageList = new ArrayList<ErrorMessage>();
-        response.setErrorMessageList(errorMessageList);
+    public OutResponse updateUser(@RequestParam(value=Constants.USER_ID) int id,
+                                  @RequestParam(value=Constants.USER_LOGIN) String newLogin,
+                                  @RequestParam(value=Constants.USER_EMAIL) String newEmail,
+                                  @RequestParam(value=Constants.USER_PASSWORD, required = false) String newPassword,
+                                  @RequestParam(value=Constants.USER_ENABLED) int enabled){
 
         //Creating user from request parameters
         User updatedUser = new User(id, newLogin, newEmail, newPassword, enabled);
@@ -137,10 +132,8 @@ public class AdminUsersController {
         //checking if nothing to update
         if (userService.isNotModified(updatedUser)) {
             //Filling and sending response
-            response.setStatus(Constants.INFO);
-            errorMessageList.add(new ErrorMessage(Constants.UPDATE,
-                                                  messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH)));
-            return response;
+            return new OutResponse(Constants.INFO, new ErrorMessage(Constants.UPDATE,
+                    messages.getMessage("user.nothing_to_update", null, Locale.ENGLISH)));
         }
 
         //validating user profile
@@ -149,62 +142,39 @@ public class AdminUsersController {
 
         if (errors.hasErrors()) {//if validation unsuccessful add all errors to response
             //Filling and sending response
-            response.setStatus(Constants.ERROR);
+            OutResponse response = new OutResponse(Constants.ERROR,null);
             for (FieldError error : errors.getFieldErrors()) {
-                errorMessageList.add(new ErrorMessage(error.getField().toLowerCase(), error.getCode()));
+                response.getErrorMessageList().add(new ErrorMessage(error.getField().toLowerCase(), error.getCode()));
             }
             return response;
         };
 
         try {
-            String oldPassword = userService.getUserById(updatedUser.getId()).getPassword();
-
-            //try to update user in database
+             //try to update user in database
             userService.editUser(updatedUser);
 
             //try to send e-mail about changes to user
             //if password was changed send message with new password
+            sendMails.sendMail(updatedUser.getEmail(), EMAIL_SUBJECT, emailCreator.create(Constants.UPDATE_TEMPLATE, updatedUser));
 
-            if(! oldPassword.equals(updatedUser.getPassword())){
-                sendMails.sendMail(updatedUser.getEmail(), EMAIL_SUBJECT, emailCreator.create(Constants.FULL_UPDATE_TEMPLATE, updatedUser));
-            }else {
-                sendMails.sendMail(updatedUser.getEmail(), EMAIL_SUBJECT, emailCreator.create(Constants.UPDATE_TEMPLATE_WITHOUT_PASSWORD, updatedUser));
-            };
             //id of user who is logged
             int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
             //relogin if change yourself
             if (updatedUser.getId() == currentLoggedUserId) {
-                doAutoLogin(updatedUser.getLogin());
+                userService.doAutoLogin(updatedUser.getLogin());
             };
 
-            //Filling and sending response
-            response.setStatus(Constants.SUCCESS);
-            errorMessageList.add(new ErrorMessage(Constants.UPDATE,
-                                                  messages.getMessage("operation.success", null, Locale.ENGLISH)));
-            return response;
+            //Return SUCCESS
+            return new OutResponse(Constants.SUCCESS, new ErrorMessage(Constants.UPDATE,
+                    messages.getMessage("operation.success", null, Locale.ENGLISH)));
         }catch (PersistenceException pe){
-            //Filling and sending response
-            response.setStatus(Constants.ERROR);
-            errorMessageList.add(new ErrorMessage(Constants.UPDATE,
-                                                  messages.getMessage("operation.error", null, Locale.ENGLISH)));
-            return response;
+            //Return PERSISTENCE_ERROR
+            return new OutResponse(Constants.ERROR, new ErrorMessage(Constants.UPDATE,
+                    messages.getMessage("operation.error", null, Locale.ENGLISH)));
         } catch(MailException me){
-            //Filling and sending response
-            response.setStatus(Constants.ERROR);
-            errorMessageList.add(new ErrorMessage(Constants.SEND_EMAIL,
-                                                  messages.getMessage("email.error", null, Locale.ENGLISH)));
-            return response;
+            //Return EMAIL_ERROR
+            return new OutResponse(Constants.ERROR, new ErrorMessage(Constants.SEND_EMAIL,
+                    messages.getMessage("email.error", null, Locale.ENGLISH)));
         }
-    }
-
-     /**
-     *Autorelogin user after change own login(userName)
-     *
-     * @param username new name of logged user
-     */
-    public void doAutoLogin(String username) {
-        UserDetails user = userDetailsManager.loadUserByUsername(username);
-        Authentication auth = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

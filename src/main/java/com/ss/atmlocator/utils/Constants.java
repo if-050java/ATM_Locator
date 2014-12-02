@@ -24,8 +24,7 @@ public class Constants {
     public static final String ERROR = "ERROR";
     public static final String WARNING = "WARNING";
     //Template names for creating email messages
-    public static final String FULL_UPDATE_TEMPLATE = "full_update_template";
-    public static final String UPDATE_TEMPLATE_WITHOUT_PASSWORD = "update_template_without_password";
+    public static final String UPDATE_TEMPLATE = "update_template";
 
 
 }

@@ -40,7 +40,7 @@ Select Bank dropdown menu
 
 Go to Edit Bank page
                     <div class="btn-group">
-                        <button type="submit" formaction="<c:url value="/adminBankEdit" />" id="btnBankEdit" class="btn btn-primary" disabled="true">Edit</button>
+                        <button type="submit" formaction="<c:url value="./adminBankEdit" />" id="btnBankEdit" class="btn btn-primary" disabled="true">Edit</button>
                     </div>
 Go to Edit Bank page
 --%>
@@ -48,11 +48,17 @@ Go to Edit Bank page
                     <div class="btn-group">
                         <button type="submit" formaction="<c:url value="/adminBankCreateNew" />" id="btnBankCreateNew" class="btn btn-primary">Add new bank</button>
                     </div>
-                    <%--<input type="hidden" name="network_id" id="network_id">--%>
+                                    <%--<input type="hidden" name="network_id" id="network_id">--%>
                     <input type="hidden" name="bank_id" id="bank_id">
+
+                    <%-- update all banks from nbu--%>
+                    <div class="btn-group">
+                        <button id="singlebutton" formaction="<c:url value="/updateBanksFromNbu" />" name="singlebutton" class="btn btn-primary">Update banks list from NBU</button>
+                    </div>
+
                 </form:form>
 
-
+                <%-- List of Banks generated dynamically in Javascript function showBanks(network_id) --%>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="col-md-4">
@@ -66,20 +72,7 @@ Go to Edit Bank page
                         </div>
                     </div>
                 </div>
-
-                    <%-- update all banks from nbu--%>
-
-                    <form class="form-horizontal" action="/updateBanksFromNbu">
-
-                        <!-- Button -->
-                        <div class="control-group">
-                            <label class="control-label" for="singlebutton"></label>
-                            <div class="controls">
-                                <button id="singlebutton" name="singlebutton" class="btn btn-warning">update all banks</button>
-                            </div>
-                        </div>
-
-                        </form>
+                <%-- List of Banks --%>
 
             </div>
         </div>

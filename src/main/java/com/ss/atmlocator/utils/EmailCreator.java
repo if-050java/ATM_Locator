@@ -24,7 +24,7 @@ public class EmailCreator {
 
     private final char TEMPLATE_DELIMITER = '#';
 
-    public EmailCreator(String path) throws IOException {
+    public EmailCreator(String path){
         //creating template group  from files in dir
         try {
             dirPath = new ClassPathResource(path).getURI().getPath();
@@ -32,7 +32,6 @@ public class EmailCreator {
             stGroup = new STRawGroupDir(dirPath, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
         }catch (IOException ioe){
             logger.fatal("Can't load StringTemplateGroup from dir " + dirPath);
-            throw ioe;
         }
 
     }
@@ -46,7 +45,7 @@ public class EmailCreator {
         }
         template.add(Constants.USER_LOGIN, user.getLogin());
         template.add(Constants.USER_EMAIL, user.getEmail());
-        template.add(Constants.USER_PASSWORD, user.getPassword());
+        template.add(Constants.USER_PASSWORD, user.getPassword() != null ? user.getPassword() : "Password didn't change.");
         return template.render();
     }
 }

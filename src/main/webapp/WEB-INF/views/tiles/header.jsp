@@ -18,6 +18,7 @@
             </div>
             <div>
                 <ul class="nav navbar-nav">
+
                     <li class="main"><a href="<c:url value="/"/>">Home</a></li>
                     <sec:authorize access="isAnonymous()">
                         <li class="login"><a href="<c:url value="/login"/>">Login</a></li>
