@@ -17,7 +17,12 @@
 <c:if test="${not empty error}">
     <div class="alert alert-warning alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        ${error}
+
+        <div style="text-align: center">
+            ${error}
+            <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+        </div>
+
     </div>
 </c:if>
 <div class="container">
