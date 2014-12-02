@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -75,6 +76,7 @@ public class SignUpController {
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), user.getClass().getName());
         validateUserField.validate(user,errors);
 
+        password = user.getPassword();
 
         if(errors.hasErrors()) {
             String errorCause = "";
@@ -93,33 +95,31 @@ public class SignUpController {
         roles.add(role);
         user.setRoles(roles);
         userService.createUser(user);
-        if (signMe != null && signMe.length() > 0) {
-            userService.doAutoLogin(user.getLogin());
-        }
 
         try{
             sendMails.sendMail(user.getEmail(),
                     "User Created",
-                    "You create user: "+user.getLogin()+"; with password:"+user.getPassword());
+                    "You create user: "+user.getLogin()+"; with password:"+password);
         }
         catch (MailException exp){
             /*NOP This type of exception is already logged*/
         }
-            return "redirect:/";
+
+        if (signMe != null && signMe.length() > 0) {
+            loginUser(user.getLogin(),password, request);
+        }
+
+        return "redirect:/";
     }
 
     @Autowired
     @Qualifier("authenticationManager")
     protected AuthenticationManager authenticationManager;
 
-    private void loginUser(User user, HttpServletRequest request) {
+    private void loginUser(String login, String password, HttpServletRequest request) {
 
-        String username = user.getLogin();
-        String password = user.getPassword();
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
         request.getSession();
-
         Authentication authenticatedUser = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
 

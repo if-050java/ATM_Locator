@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.util.Calendar;
 
 @Repository
 public class UsersDAO implements IUsersDAO {
@@ -108,6 +109,21 @@ public class UsersDAO implements IUsersDAO {
         int value =  ((BigInteger) query.getSingleResult()).intValue();
         if (value == 0 ) return false;
         return true;
+    }
+
+    @Override
+    @Transactional
+    public void writeLoginTime(String userName){
+
+        java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+
+        String sqlQuery = "UPDATE users SET lastLoging = :timestamp WHERE login = :username";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+
+        query.setParameter("timestamp", currentTimestamp);
+        query.setParameter("username", userName);
+
+        query.executeUpdate();
     }
 
 
