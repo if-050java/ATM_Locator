@@ -54,6 +54,14 @@ public class BanksDAO implements IBanksDAO {
     }
 
     @Override
+    public List<Bank> getBanksByNetworkId(int network_id) {
+        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b " +
+                "where b.network.id=:network_id ORDER BY b.name",Bank.class);
+        query.setParameter("network_id", network_id);
+        return query.getResultList();
+    }
+
+    @Override
     @Transactional
     public Bank saveBank(Bank bank) {
         bank.setLastUpdated(TimeUtil.currentTimestamp());

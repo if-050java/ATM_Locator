@@ -7,6 +7,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY"></script>
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
 </head>
 <body>
 <div class="container">
@@ -40,32 +41,29 @@
                     <form action="" method="get" onsubmit="updateFilter()" class="form">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Network">
+                                <input type="text" class="form-control" placeholder="Network" id="networksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu" id="networksDropdown">
                                         <c:forEach items="${networks}" var="network">
-                                            <li><a href="#${network.id}">${network.name}</a></li>
+                                            <li><a href="${network.id}">${network.name}</a></li>
                                         </c:forEach>
-
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control " placeholder="Bank">
+                                <input type="text" class="form-control " placeholder="Bank" id="banksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a href="#">Privatbank</a></li>
-                                    </ul>
+                                    <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                                 </div>
                             </div>
                         </div>

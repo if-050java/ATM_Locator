@@ -7,34 +7,34 @@ var USER_MARKER_TITLE = "My position"
 google.maps.event.addDomListener(window, 'load', initializeMap);
 function initializeMap() {
     var defaultMapOptions = {
-        center: {lat : 48.9501, lng : 24.701},
+        center: {lat: 48.9501, lng: 24.701},
         zoom: 14
     };
     map = new google.maps.Map(document.getElementById('map_container'), defaultMapOptions);
 
     //if user has cookies with his position set map to this position else get position from browser
-    if($.cookie("position")){
+    if ($.cookie("position")) {
         setLocationByLatLng(JSON.parse($.cookie("position")));
-    }else {
+    } else {
         getLocation();
     }
 }
 
 //Getting location from browser
-function getLocation(){
-    if(navigator.geolocation){
+function getLocation() {
+    if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(setLocation);
     }
 };
 
 //Setting current location to position received from browser
-function setLocation(position){
+function setLocation(position) {
     userPosition = { lat: position.coords.latitude, lng: position.coords.longitude};
     setLocationByLatLng(userPosition);
 };
 
 //seting current location to position defined by LatLng value
-function setLocationByLatLng(position){
+function setLocationByLatLng(position) {
     userPosition = position;
     deleteMarker(userPositionMarker);
     userPositionMarker = new google.maps.Marker({
@@ -48,20 +48,20 @@ function setLocationByLatLng(position){
 }
 
 //Seting user position by address
-function setLocationByAddress(){
+function setLocationByAddress() {
     var userAddress = $("#userAddress").val();
-    if(userAddress != ""){
+    if (userAddress != "") {
         var geocoder = new google.maps.Geocoder();
-        geocoder.geocode({'address' : userAddress}, setMapByGeocode)
+        geocoder.geocode({'address': userAddress}, setMapByGeocode)
     }
     return false;
 };
 
 //Seting user position by google geocoder
-function setMapByGeocode(data, status){
-    if(status == google.maps.GeocoderStatus.OK){//if google found this address
+function setMapByGeocode(data, status) {
+    if (status == google.maps.GeocoderStatus.OK) {//if google found this address
         deleteMarker(userPositionMarker);
-        userPosition = {lat : data[0].geometry.location.lat(), lng : data[0].geometry.location.lng()};
+        userPosition = {lat: data[0].geometry.location.lat(), lng: data[0].geometry.location.lng()};
         userPositionMarker = new google.maps.Marker({
             position: userPosition,
             map: map,
@@ -76,20 +76,21 @@ function setMapByGeocode(data, status){
     }
 }
 //Deleting marker from map
-function deleteMarker(marker){
-    if(marker != null){
+function deleteMarker(marker) {
+    if (marker != null) {
         marker.setMap(null);
-    };
+    }
+    ;
 }
 
 //Get ATMs from server by filter
-function updateFilter(){
+function updateFilter() {
     $.ajax({
-        url: getHome()+"getBank?id=1",
-        type : "GET",
+        url: getHomeUrl() + "map/getBank?id=1",
+        type: "GET",
         context: document.body,
         dataType: "json",
-        success : showAtms
+        success: showAtms
     })
 }
 
@@ -98,34 +99,54 @@ function showAtms(data) {
     var ATMs = data.atmOfficeSet;
     for (var i = 0; i < ATMs.length; i++) {
         var atmPosition = ATMs[i].geoPosition;
-        var atmDescription = data.name + "\n"+ATMs[i].address;
-        addMarker({"lat" : atmPosition.latitude, "lng" : atmPosition.longitude}, atmDescription);
+        var atmDescription = data.name + "\n" + ATMs[i].address;
+        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
     }
 };
 
 //Adding marker to map
-function addMarker(position, title){
-    var	marker = new google.maps.Marker({
+function addMarker(position, title) {
+    var marker = new google.maps.Marker({
         position: position,
         map: map,
         title: title
     });
     marker.setMap(map);
-  //  marker.setIcon("views/savedMarker.png");
-  //  markers.push(marker);
+    //  marker.setIcon("views/savedMarker.png");
+    //  markers.push(marker);
     //Removing marker from map and sending request for removing to server
     google.maps.event.addListener(marker, 'click', function removeMarker() {
-        if(window.confirm("Are you sure?")){//If this marker not in current position marker then remove
+        if (window.confirm("Are you sure?")) {//If this marker not in current position marker then remove
             marker.setMap(null);
-         //   removeReq(marker.getPosition());
+            //   removeReq(marker.getPosition());
         }
     });
 }
 
-function hidePopover(element){
-    $('#'+element).popover("destroy");
+function hidePopover(element) {
+    $('#' + element).popover("destroy");
 }
 
-function setPositionCookies(){
+function setPositionCookies() {
     $.cookie("position", JSON.stringify(userPosition));
 }
+//change filters by network and bank
+$(document).ready(function () {
+    $('#networksDropdown li a').click(function (e) {
+        e.preventDefault();
+        $("#networksDropdownInput").val($(this).text());
+        var network_id = $(this).attr('href');
+        $.getJSON(getHomeUrl() + "map/getBanksByNetwork", {network_id: network_id }, function (banks) {
+                $("#banksDropdown").empty();
+                $("#banksDropdownInput").val(banks[0].name);
+                $.each(banks, function (i, bank) {
+                    $("#banksDropdown").append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
+                });
+            }
+        );
+    });
+});
+$(document).on('click', '#banksDropdown li a', function (e) {
+    e.preventDefault();
+    $("#banksDropdownInput").val($(this).text());
+});

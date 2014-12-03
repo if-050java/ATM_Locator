@@ -58,7 +58,7 @@ public class UserController {
             @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
     ) {
         OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
+        List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
         User newUser = new User(id, login, email, password, 1);
         newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
@@ -70,8 +70,9 @@ public class UserController {
         userProfileValidator.validate(newUser, avatar, errors);
         if (!errors.hasErrors()) {
             try {
-                if (avatar != null)
+                if (avatar != null) {
                     UploadFileUtils.save(avatar, avatar.getOriginalFilename(), request);
+                }
                 userService.editUser(newUser);
                 userService.doAutoLogin(newUser.getLogin());
             } catch (IOException e) {
@@ -83,10 +84,10 @@ public class UserController {
             return response;
         }
         for (FieldError objectError : errors.getFieldErrors()) {
-            errorMesages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
+            errorMessages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
         }
         response.setStatus(Constants.WARNING);
-        response.setErrorMessageList(errorMesages);
+        response.setErrorMessageList(errorMessages);
         return response;
     }
 }
