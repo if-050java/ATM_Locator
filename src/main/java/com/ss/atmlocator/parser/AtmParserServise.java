@@ -20,8 +20,8 @@ public class AtmParserServise {
     protected String listSelector;
     protected Bank bank;
     protected Set<AtmOffice> atmsList;
-    private AtmType atmType;
-    protected int bankOfficceOrAtm;
+    private  AtmOffice.AtmType atmType;
+
 
     public AtmParserServise() {
     }
@@ -43,9 +43,9 @@ public class AtmParserServise {
 
        //System.out.println(listSelector);
         if (listSelector.equals("branch")) {    // selector for bank office
-           atmType=AtmType.IS_OFFICE;
+           atmType=AtmOffice.AtmType.IS_OFFICE;
         } else if (listSelector.equals("atm")) {    // selector for atm
-            atmType=AtmType.IS_ATM;
+            atmType= AtmOffice.AtmType.IS_ATM;
         }
         Document doc = null;
         try {
