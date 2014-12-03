@@ -47,7 +47,10 @@
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a href="#">Atmosfera</a></li>
+                                        <c:forEach items="${networks}" var="network">
+                                            <li><a href="#${network.id}">${network.name}</a></li>
+                                        </c:forEach>
+
                                     </ul>
                                 </div>
                             </div>

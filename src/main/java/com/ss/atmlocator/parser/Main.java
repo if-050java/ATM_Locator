@@ -1,5 +1,6 @@
-ackage com.ss.atmlocator.parser;
 
+
+package com.ss.atmlocator.parser;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 

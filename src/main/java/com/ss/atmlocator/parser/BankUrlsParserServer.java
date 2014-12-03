@@ -2,7 +2,6 @@ package com.ss.atmlocator.parser;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.parsers.IParserServise;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
