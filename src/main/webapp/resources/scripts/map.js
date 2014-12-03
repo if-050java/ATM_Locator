@@ -3,6 +3,8 @@ var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
 
+var s = '<div class="popup-menu"><div class="popup-menu-item">Add to favorites</div><div class="popup-menu-item">Add comment</div></div>';
+
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 function initializeMap() {
@@ -104,24 +106,30 @@ function showAtms(data) {
 };
 
 //Adding marker to map
-function addMarker(position, title){
-    var	marker = new google.maps.Marker({
+function addMarker(position, title) {
+    var marker = new google.maps.Marker({
         position: position,
         map: map,
         title: title
     });
     marker.setMap(map);
-  //  marker.setIcon("views/savedMarker.png");
-  //  markers.push(marker);
+
+    google.maps.event.addListener(marker, 'rightclick', function(event){
+        var x = event.pageX;
+        var y = event.pageY;
+        markerMenu(x,y);
+    });
+
+
+    //  marker.setIcon("views/savedMarker.png");
+    //  markers.push(marker);
     //Removing marker from map and sending request for removing to server
-    google.maps.event.addListener(marker, 'rightclick', markerMenu);
 }
 
-function markerMenu(){
-    var menu = new google.maps.InfoWindow({
-        content: '<div class="list-group"><a href="#" class="list-group-item disabled">Cras</a><a href="#" class="list-group-item">Dapibus</a><a href="#" class="list-group-item">Morbi</a><a href="#" class="list-group-item">Porta</a><a href="#" class="list-group-item">Vestibulum</a></div>'
-    });
-    menu.open(map, this);
+function markerMenu(x,y){
+
+    $(s).appendTo("body")
+        .css({top: x + "px", left: y + "px"});
 }
 
 function hidePopover(element){
@@ -131,3 +139,4 @@ function hidePopover(element){
 function setPositionCookies(){
     $.cookie("position", JSON.stringify(userPosition));
 }
+
