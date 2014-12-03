@@ -140,6 +140,46 @@ public class AdminBanksController {
 
 
     /**
+     *  Update Bank information or create new entry if ID=0 by AJAX POST
+     */
+    @RequestMapping(value = "/adminBankSaveAjax", method = RequestMethod.POST)
+    @ResponseBody
+    public OutResponse bankSaveAjax(@ModelAttribute("bank") Bank bank,
+                           @RequestParam(value = "network_id", required = true) int network_id,
+                           @RequestParam(value = "imageLogo", required = false) MultipartFile imageLogo,
+                           @RequestParam(value = "iconAtmFile", required = false) MultipartFile iconAtmFile,
+                           @RequestParam(value = "iconOfficeFile", required = false) MultipartFile iconOfficeFile,
+                           HttpServletRequest request,
+                           ModelMap modelMap)
+    {
+        log.debug("AJAX: save bank "+bank.getName()+" #"+bank.getId());
+        OutResponse response = new OutResponse();
+        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
+
+        AtmNetwork network = networksDAO.getNetwork(network_id);
+        bank.setNetwork(network);
+
+        String newname = null;
+        newname = UploadFileUtils.saveBankImage(imageLogo, "bank_logo", bank.getId(), request);
+        if(newname != null) bank.setLogo(newname);
+        newname = UploadFileUtils.saveBankImage(iconAtmFile, "bank_atm", bank.getId(), request);
+        if(newname != null) bank.setIconAtm(newname);
+        newname = UploadFileUtils.saveBankImage(iconOfficeFile, "bank_off", bank.getId(), request);
+        if(newname != null) bank.setIconOffice(newname);
+
+        Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
+        if (savedBank != null && savedBank.getId() > 0){
+            response.setStatus(Constants.SUCCESS);
+        } else {
+            response.setStatus(Constants.ERROR);
+        }
+
+        // TODO: disable "delete" button in "create" mode before save
+        response.setErrorMessageList(errorMesages);
+        return response;
+    }
+
+    /**
      *  Delete Bank
      */
     @RequestMapping(value = "/adminBankDelete", method = RequestMethod.POST)
@@ -169,7 +209,7 @@ public class AdminBanksController {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
 
-        log.debug("POST: delete bank #"+bank_id);
+        log.debug("AJAX: delete bank #"+bank_id);
 
         //MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
 

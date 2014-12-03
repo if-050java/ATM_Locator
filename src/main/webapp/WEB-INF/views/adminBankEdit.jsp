@@ -15,7 +15,7 @@
           </h2>
         </div>
 
-        <form:form method="post"  modelAttribute="bank" role="form" enctype="multipart/form-data" cssClass="form-horizontal">
+        <form:form method="post" id="formBank" modelAttribute="bank" role="form" enctype="multipart/form-data" cssClass="form-horizontal">
            <div class="panel-body">
               <%--<div class="row"> --%>
                   <div class="col-md-4">
@@ -115,7 +115,7 @@
            </div>
            <input type="hidden" name="bank_id" id="bank_id" value="${bank.id}" cssClass="form-control">
 
-           <div class="alert" role="alert">
+           <div class="alert" role="alert" style="display: none">
                <a class="close" onclick="$('.alert').hide()">&times;</a>
            </div>
 
@@ -123,7 +123,7 @@
            <div class="panel-footer">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <button type="submit" id="adminBankEdit" formaction="<c:url value="/adminBankEdit" />" class="btn btn-success btn-lg col-md-2 col-md-offset-1">
+                            <button type="button" id="adminBankEdit" formaction="<c:url value="/adminBankEdit" />" class="btn btn-success btn-lg col-md-2 col-md-offset-1">
                                 Save
                             </button>
                             <button type="button" id="adminBankDelete" formaction="<c:url value="/adminBankDelete" />" class="btn btn-danger btn-lg col-md-3 col-md-offset-1">

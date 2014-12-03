@@ -15,9 +15,35 @@ function showAlert(className, html) {
     element.show();
 }
 
+// get uploaded file from input control
+function getFile(input) {
+    return ($(input)[0].files[0] != undefined) ? $(input)[0].files[0] : null;
+}
+
+function addFormData(fd, input){
+    fd.append(input,$("#"+input).val());
+}
+
+function bankFormData(){
+    var fd = new FormData();
+    addFormData(fd,"id");
+    addFormData(fd,"name");
+    addFormData(fd,"logo");
+    addFormData(fd,"mfoCode");
+    addFormData(fd,"webSite");
+    addFormData(fd,"iconAtm");
+    addFormData(fd,"iconOffice");
+    addFormData(fd,"network_id");
+    fd.append("imageLogo",getFile("#imageLogo"));
+    fd.append("iconAtmFile",getFile("#iconAtmFile"));
+    fd.append("iconOfficeFile",getFile("#iconOfficeFile"));
+    return fd;
+}
+
+
 $(document).ready(function () {
 
-    showAlert("alert alert-info", INFO_MESSAGE);
+    //showAlert("alert alert-info", INFO_MESSAGE);
 
     function changeImage(input, image) {
         if (input.files && input.files[0]) {
@@ -51,6 +77,42 @@ $(document).ready(function () {
         network_id = $(this).attr("id");
         document.getElementById("network_id").value = network_id;
     });
+
+    $("#adminBankEdit").click(function () {
+        var fd = bankFormData();
+
+        if (fd == undefined) {
+            alert("Can't save bank - no formdata");
+        } else {
+            $.ajax({
+                url: getHomeUrl() + "adminBankSaveAjax",
+                type: "POST",
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.status == 'SUCCESS') {
+                        showAlert("alert alert-success", SUCCESS_MESSAGE);
+                    } else if (response.status == "ERROR") {
+                        showAlert("alert alert-danger", ERROR_MESSAGE);
+                    } else {
+                        showAlert("alert alert-warning", WARNING_MESSAGE);
+                        for (var i = 0; i < response.errorMessageList.length; i++) {
+                            var item = response.errorMessageList[i];
+                            $('#' + item.cause).attr("data-content", item.message);
+                            $('#' + item.cause).popover("show");
+                        }
+                    }
+                },
+                error: function () {
+                    showAlert("alert alert-danger", ERROR_MESSAGE);
+                }
+            });
+        }
+    });
+
 
     $("#adminBankDelete").click(function () {
         var fd = new FormData();
