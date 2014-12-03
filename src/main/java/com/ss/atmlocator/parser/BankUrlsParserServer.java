@@ -20,8 +20,7 @@ public class BankUrlsParserServer implements Parser {
     protected String bankName;
     protected List<Bank> bankList;
     protected String bankUrl;
-    protected int bankOfficceOrAtm;
-    private AtmType atmType;
+    
 
     public BankUrlsParserServer() {
     }
