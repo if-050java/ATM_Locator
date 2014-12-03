@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Created by Ivanna Terletska on 11/19/2014.
  */
-public class BankUrlsParserServer implements IParserServise {
+public class BankUrlsParserServer implements Parser {
     protected String url;
     protected String listSelector = "spoiler";
     protected String bankName;
@@ -30,13 +30,13 @@ public class BankUrlsParserServer implements IParserServise {
         this.url = url;
     }
 
-    public void setParam(Map<String, String> params) {
+    public void setParametr(Map<String, String> parameters) {
 
-        this.url = params.get("url");
+        this.url = parameters.get("url");
        
     }
 
-    public List<Bank> parse() {
+    public List<Bank> parce() {
         bankList = new ArrayList<Bank>();
         Document doc = null;
         try {
