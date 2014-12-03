@@ -5,20 +5,25 @@ import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
 
+import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.ParserService;
 
-import com.ss.atmlocator.utils.UploadFileUtils;
+import com.ss.atmlocator.utils.*;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.MapBindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -154,6 +159,30 @@ public class AdminBanksController {
 
         return "adminBankDeleted";
     }
+
+    /**
+     *  Delete Bank by Ajax request
+     */
+    @RequestMapping(value = "/adminBankDeleteAjax", method = RequestMethod.POST)
+    @ResponseBody
+    public OutResponse bankDeleteAjax(@RequestParam int bank_id, HttpServletRequest request) {
+        OutResponse response = new OutResponse();
+        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
+
+        log.debug("POST: delete bank #"+bank_id);
+
+        //MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
+
+        if (banksDAO.deleteBank(bank_id)){
+            response.setStatus(Constants.SUCCESS);
+        } else {
+            response.setStatus(Constants.ERROR);
+        }
+        response.setErrorMessageList(errorMesages);
+        return response;
+    }
+
+
     /**
      * update all banks (name and mfo) from NBU site
      * */

@@ -113,23 +113,23 @@
                     </div>
                   </div>
            </div>
-           <input type="hidden" name="bank_id" id="bank_id" value="${bank_id}" cssClass="form-control">
+           <input type="hidden" name="bank_id" id="bank_id" value="${bank.id}" cssClass="form-control">
 
-            <div class="alert" role="alert">
-                <a class="close" onclick="$('.alert').hide()">&times;</a>
-            </div>
+           <div class="alert" role="alert">
+               <a class="close" onclick="$('.alert').hide()">&times;</a>
+           </div>
 
     <%-- Submit buttons --%>
            <div class="panel-footer">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <button type="submit" formaction="<c:url value="/adminBankEdit" />" class="btn btn-success btn-lg col-md-2 col-md-offset-1">
+                            <button type="submit" id="adminBankEdit" formaction="<c:url value="/adminBankEdit" />" class="btn btn-success btn-lg col-md-2 col-md-offset-1">
                                 Save
                             </button>
-                            <button type="submit" formaction="<c:url value="/adminBankDelete" />" class="btn btn-danger btn-lg col-md-3 col-md-offset-1">
+                            <button type="button" id="adminBankDelete" formaction="<c:url value="/adminBankDelete" />" class="btn btn-danger btn-lg col-md-3 col-md-offset-1">
                                 Delete bank
                             </button>
-                            <button type="submit" formaction="<c:url value="/adminBankAtmList" />" class="btn btn-primary btn-lg col-md-4 col-md-offset-1">
+                            <button type="submit" id="adminBankAtmList" formaction="<c:url value="/adminBankAtmList" />" class="btn btn-primary btn-lg col-md-4 col-md-offset-1">
                                 <span>ATMs and Office list </span><i class="glyphicon glyphicon-list"></i>
                             </button>
                         </div>
