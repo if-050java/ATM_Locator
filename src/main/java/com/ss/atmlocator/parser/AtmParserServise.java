@@ -62,10 +62,10 @@ public class AtmParserServise {
                 Elements cols = row.select("td");
                 if (url.equals("http://ubanks.com.ua/adr/privatbank/branches/ivano-frankivska/ivano-frankivsk.php")) {    // in PrivatBank another structure
                     atmCity = "Івано-Франківськ";
-                    atmStreet = cols.get(0).text();
+                    atmStreet = cols.get(0).children().text();
                 } else {
                     atmCity = cols.get(0).text();
-                    atmStreet = cols.get(2).text();
+                    atmStreet = cols.get(2).children().text();
                 }
                 String atmAdress=atmCity+", "+atmStreet;
               //  System.out.println(atmType.toString());
