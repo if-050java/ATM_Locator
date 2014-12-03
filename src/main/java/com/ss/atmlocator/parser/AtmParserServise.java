@@ -1,5 +1,7 @@
 package com.ss.atmlocator.parser;
 
+import static com.ss.atmlocator.entity.AtmOffice.*;
+
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import org.jsoup.Jsoup;
