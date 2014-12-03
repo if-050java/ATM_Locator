@@ -42,3 +42,14 @@ $(document).ready(function () {
     });
 
 });
+
+/* On select item in ATM Network dropdown
+ *  set dropdown title to name of the ATM Network
+ * */
+var network_id = -1;
+$("#networks_menu li a").click(function(){
+    var selText = $(this).text();
+    $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+    network_id = $(this).attr("id");
+    document.getElementById("network_id").value = network_id;
+});

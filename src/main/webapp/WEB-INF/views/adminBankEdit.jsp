@@ -2,19 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: d18-antoshkiv
-  Date: 25.11.2014
-  Time: 10:55
---%>
 
-<%--
-<style type="text/css">
-    .btn-file { position: relative; overflow: hidden; margin-right: 4px; }
-    .btn-file input { position: absolute; top: 0; right: 0; margin: 0; opacity: 0; filter: alpha(opacity=0); }
-</style>
---%>
 <link rel="stylesheet" href="<c:url value="/resources"/>/styles/bankedit.css">
 <script src="<c:url value="/resources"/>/scripts/adminBankEdit.js"></script>
 
@@ -152,17 +140,3 @@
       </div>
   </div>
 </div>
-
-<script type='text/javascript'>
-/* On select item in ATM Network dropdown
-*  set dropdown title to name of the ATM Network
-* */
-var network_id = -1;
-$("#networks_menu li a").click(function(){
-        var selText = $(this).text();
-        $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-        network_id = $(this).attr("id");
-        document.getElementById("network_id").value = network_id;
-});
-
-</script>
