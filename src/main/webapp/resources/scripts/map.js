@@ -2,9 +2,6 @@ var map;                //Map element
 var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
-//mouse coordinates on click
-var mousPositionOnClickX;
-var mousPositionOnClickY;
 
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
@@ -12,8 +9,8 @@ document.onclick = hideMenu;
 
 //get mouse position in window on click
 function getMousePos(mouseEvent){
-    mousPositionOnClickX = window.event.pageX;
-    mousPositionOnClickY = window.event
+    var mousPositionOnClickX = window.event.pageX;
+    var mousPositionOnClickY = window.event
 	.pageY;
     $("#userAddress").val(mousPositionOnClickX);
 	return {x:mousPositionOnClickX, y:mousPositionOnClickY};
