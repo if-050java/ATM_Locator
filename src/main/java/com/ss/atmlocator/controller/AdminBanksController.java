@@ -4,26 +4,16 @@ import com.ss.atmlocator.dao.AtmNetworksDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
-
-import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.ParserService;
-
 import com.ss.atmlocator.utils.*;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.MapBindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -99,47 +89,6 @@ public class AdminBanksController {
     }
 
     /**
-     *  Update Bank information or create new entry if ID=0
-     */
-    @RequestMapping(value = "/adminBankEdit", method = RequestMethod.POST)
-    public String bankSave(@ModelAttribute("bank") Bank bank,
-                           @RequestParam(value = "network_id", required = true) int network_id,
-                           @RequestParam(value = "imageLogo", required = false) MultipartFile imageLogo,
-                           @RequestParam(value = "iconAtmFile", required = false) MultipartFile iconAtmFile,
-                           @RequestParam(value = "iconOfficeFile", required = false) MultipartFile iconOfficeFile,
-                           HttpServletRequest request,
-                           ModelMap modelMap)
-    {
-        log.debug("POST: save bank "+bank.getName()+" #"+bank.getId());
-
-        AtmNetwork network = networksDAO.getNetwork(network_id);
-        bank.setNetwork(network);
-
-        String newname = null;
-
-        newname = UploadFileUtils.saveBankImage(imageLogo, "bank_logo", bank.getId(), request);
-        if(newname != null) bank.setLogo(newname);
-
-        newname = UploadFileUtils.saveBankImage(iconAtmFile, "bank_atm", bank.getId(), request);
-        if(newname != null) bank.setIconAtm(newname);
-
-        newname = UploadFileUtils.saveBankImage(iconOfficeFile, "bank_off", bank.getId(), request);
-        if(newname != null) bank.setIconOffice(newname);
-
-        Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
-
-        List<AtmNetwork> networks = networksDAO.getNetworksList();
-        modelMap.addAttribute("networks", networks);
-        modelMap.addAttribute("bank", savedBank);
-        modelMap.addAttribute("active","adminBanks");
-        // TODO: show status
-        // TODO: disable "delete" button in "create" mode before save
-
-        return "adminBankEdit";
-    }
-
-
-    /**
      *  Update Bank information or create new entry if ID=0 by AJAX POST
      */
     @RequestMapping(value = "/adminBankSaveAjax", method = RequestMethod.POST)
@@ -174,30 +123,8 @@ public class AdminBanksController {
             response.setStatus(Constants.ERROR);
         }
 
-        // TODO: disable "delete" button in "create" mode before save
         response.setErrorMessageList(errorMesages);
         return response;
-    }
-
-    /**
-     *  Delete Bank
-     */
-    @RequestMapping(value = "/adminBankDelete", method = RequestMethod.POST)
-    public String bankDelete(@ModelAttribute("bank") Bank bank,
-                           ModelMap modelMap)
-    {
-        log.debug("POST: delete bank #"+bank.getId());
-
-        modelMap.addAttribute("bank_name", bank.getName());
-
-        if (banksDAO.deleteBank(bank.getId())){
-            modelMap.addAttribute("status","deleted");
-        } else {
-            modelMap.addAttribute("status","error");
-        }
-        modelMap.addAttribute("active","adminBanks");
-
-        return "adminBankDeleted";
     }
 
     /**
@@ -210,8 +137,6 @@ public class AdminBanksController {
         List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
 
         log.debug("AJAX: delete bank #"+bank_id);
-
-        //MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
 
         if (banksDAO.deleteBank(bank_id)){
             response.setStatus(Constants.SUCCESS);
