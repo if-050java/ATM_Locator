@@ -126,5 +126,9 @@
         </div>
     </div>
 </div>
+<div class="popup-menu" style = "display:none">
+	<div class="popup-menu-item">Add to favorites</div>
+	<div class="popup-menu-item">Add comment</div>
+</div>
 </body>
 </html>

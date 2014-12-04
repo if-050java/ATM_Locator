@@ -2,11 +2,24 @@ var map;                //Map element
 var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
-
-var s = '<div class="popup-menu"><div class="popup-menu-item">Add to favorites</div><div class="popup-menu-item">Add comment</div></div>';
+//mouse coordinates on click
+var mousPositionOnClickX;
+var mousPositionOnClickY;
 
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
+document.onclick = hideMenu;
+
+//get mouse position in window on click
+function getMousePos(mouseEvent){
+    mousPositionOnClickX = window.event.pageX;
+    mousPositionOnClickY = window.event
+	.pageY;
+    $("#userAddress").val(mousPositionOnClickX);
+	return {x:mousPositionOnClickX, y:mousPositionOnClickY};
+}
+
+//add map to page and set to default position
 function initializeMap() {
     var defaultMapOptions = {
         center: {lat : 48.9501, lng : 24.701},
@@ -77,6 +90,7 @@ function setMapByGeocode(data, status){
         $('#userAddress').popover("show");
     }
 }
+
 //Deleting marker from map
 function deleteMarker(marker){
     if(marker != null){
@@ -87,7 +101,7 @@ function deleteMarker(marker){
 //Get ATMs from server by filter
 function updateFilter(){
     $.ajax({
-        url: getHomeUrl()+"getATMs?id=594&userLat="+userPosition.lat+"&userLng="+userPosition.lng+"&radius="+$("#distance").val(),
+        url: getHomeUrl()+"getATMs?id=288&userLat="+userPosition.lat+"&userLng="+userPosition.lng+"&radius="+$("#distance").val(),
         type : "GET",
         context: document.body,
         dataType: "json",
@@ -115,27 +129,29 @@ function addMarker(position, title) {
     marker.setMap(map);
 
     google.maps.event.addListener(marker, 'rightclick', function(event){
-        var x = event.pageX;
-        var y = event.pageY;
-        markerMenu(x,y);
+		var pos = getMousePos(event);
+        markerMenu(pos.x,pos.y);
     });
-
-
-    //  marker.setIcon("views/savedMarker.png");
-    //  markers.push(marker);
-    //Removing marker from map and sending request for removing to server
 }
 
+//add marker menu in position x, y
 function markerMenu(x,y){
-
-    $(s).appendTo("body")
-        .css({top: x + "px", left: y + "px"});
+    $(".popup-menu")
+        .css({top: y + "px", left: x + "px"})
+		.show();
 }
 
+//hide marker menu
+function hideMenu(){
+	$(".popup-menu").hide();
+}
+
+//hide popower about finding address
 function hidePopover(element){
     $('#'+element).popover("destroy");
 }
 
+//add cookies about user position(lat lng)
 function setPositionCookies(){
     $.cookie("position", JSON.stringify(userPosition));
 }
