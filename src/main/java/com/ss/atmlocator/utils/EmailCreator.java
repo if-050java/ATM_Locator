@@ -38,6 +38,7 @@ public class EmailCreator {
 
     //Method for creating e-mail message to user if password was changed
     public String create(String templateName, User user) {
+        logger.info("Loading email message template from file" + templateName + ".st");
         ST template = stGroup.getInstanceOf(templateName);
         if(template == null){
             logger.error("Can't load StringTemplate from file "+templateName+".st");
@@ -45,7 +46,7 @@ public class EmailCreator {
         }
         template.add(Constants.USER_LOGIN, user.getLogin());
         template.add(Constants.USER_EMAIL, user.getEmail());
-        template.add(Constants.USER_PASSWORD, user.getPassword() != null ? user.getPassword() : "Password didn't change.");
+        template.add(Constants.USER_PASSWORD, user.getPassword() != null ? user.getPassword() : "Password didn't change");
         return template.render();
     }
 }

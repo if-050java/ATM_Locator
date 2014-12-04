@@ -2,9 +2,22 @@ var map;                //Map element
 var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
+var markers = [];
 
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
+document.onclick = hideMenu;
+
+//get mouse position in window on click
+function getMousePos(event){
+    event = event || window.event;
+    var mousPositionOnClickX = event.pageX;
+    var mousPositionOnClickY = event.pageY;
+    $("#userAddress").val(mousPositionOnClickX);
+	return {x:mousPositionOnClickX, y:mousPositionOnClickY};
+}
+
+//add map to page and set to default position
 function initializeMap() {
     var defaultMapOptions = {
         center: {lat: 48.9501, lng: 24.701},
@@ -75,6 +88,7 @@ function setMapByGeocode(data, status) {
         $('#userAddress').popover("show");
     }
 }
+
 //Deleting marker from map
 function deleteMarker(marker) {
     if (marker != null) {
@@ -85,9 +99,10 @@ function deleteMarker(marker) {
 
 //Get ATMs from server by filter
 function updateFilter() {
+    var bankId = $("#banksDropdownInput").prop("bankId");
     $.ajax({
-        url: getHomeUrl() + "map/getBank?id=1",
-        type: "GET",
+        url: getHomeUrl()+"map/getATMs?id="+bankId+"&userLat="+userPosition.lat+"&userLng="+userPosition.lng+"&radius="+$("#distance").val(),
+        type : "GET",
         context: document.body,
         dataType: "json",
         success: showAtms
@@ -96,7 +111,8 @@ function updateFilter() {
 
 //Receiving data about markers from server and adding marker to map
 function showAtms(data) {
-    var ATMs = data.atmOfficeSet;
+    deleteMarkers();
+    var ATMs = data;
     for (var i = 0; i < ATMs.length; i++) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n" + ATMs[i].address;
@@ -109,12 +125,45 @@ function addMarker(position, title) {
     var marker = new google.maps.Marker({
         position: position,
         map: map,
-        title: title
+        title: title,
+        icon: getHomeUrl()+"resources/images/privat_icon.jpg"
     });
     marker.setMap(map);
-    //  marker.setIcon("views/savedMarker.png");
-    //  markers.push(marker);
-    //Removing marker from map and sending request for removing to server
+
+/*    google.maps.event.addListener(marker, 'rightclick', function(event){
+		var pos = getMousePos(event);
+        markerMenu(pos.x,pos.y);
+    });*/
+
+    markers.push(marker);
+}
+
+function deleteMarkers(){
+    for(i = 0; i < markers.length; i++){
+        markers[i].setMap(null);
+    }
+}
+
+//add marker menu in position x, y
+function markerMenu(x,y){
+    $(".popup-menu")
+        .css({top: y + "px", left: x + "px"})
+		.show();
+}
+
+//hide marker menu
+function hideMenu(){
+	$(".popup-menu").hide();
+}
+
+//hide popower about finding address
+function hidePopover(element){
+    $('#'+element).popover("destroy");
+}
+
+//add cookies about user position(lat lng)
+function setPositionCookies(){
+    $.cookie("position", JSON.stringify(userPosition));
     google.maps.event.addListener(marker, 'click', function removeMarker() {
         if (window.confirm("Are you sure?")) {//If this marker not in current position marker then remove
             marker.setMap(null);
@@ -139,6 +188,7 @@ $(document).ready(function () {
         $.getJSON(getHomeUrl() + "map/getBanksByNetwork", {network_id: network_id }, function (banks) {
                 $("#banksDropdown").empty();
                 $("#banksDropdownInput").val(banks[0].name);
+                $("#banksDropdownInput").prop("bankId", banks[0].id);
                 $.each(banks, function (i, bank) {
                     $("#banksDropdown").append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
                 });
@@ -149,4 +199,6 @@ $(document).ready(function () {
 $(document).on('click', '#banksDropdown li a', function (e) {
     e.preventDefault();
     $("#banksDropdownInput").val($(this).text());
+    $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
 });
+

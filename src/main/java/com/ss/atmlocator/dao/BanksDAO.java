@@ -6,9 +6,11 @@ import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;;
 import javax.persistence.*;
-;
 import java.sql.Timestamp;
 import java.util.List;
 
