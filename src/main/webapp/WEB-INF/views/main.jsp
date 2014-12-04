@@ -81,7 +81,8 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control " placeholder="Bank" id="banksDropdownInput">
+                                <input type="text" class="form-control " placeholder="Bank"
+                                       id="banksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
