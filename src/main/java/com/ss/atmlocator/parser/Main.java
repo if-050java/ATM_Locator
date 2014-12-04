@@ -1,9 +1,7 @@
-
-
 package com.ss.atmlocator.parser;
+
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,7 @@ public class Main {
             System.out.println(bank.getName());
             Set<AtmOffice> atmSet = bank.getAtmOfficeSet();
             for (AtmOffice atm : atmSet) {
-                System.out.println(" - "  + "  " + atm.getAddress() + " " + atm.getType());
+                System.out.println(" - "  +atm.getBank().getName() + "  " + atm.getAddress() + " " + atm.getType());
             }
             System.out.println();
         }
