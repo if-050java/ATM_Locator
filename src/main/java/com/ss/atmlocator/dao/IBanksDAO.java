@@ -12,9 +12,10 @@ import java.util.List;
 @Repository
 public interface IBanksDAO {
     public List<Bank> getBanksList();
+    public List<Bank> getBanksByNetworkId(int network_id);
     public Bank newBank();
     public Bank getBank(int id);
     public Bank saveBank(Bank bank);
-    public void deleteBank(int bank_id);
+    public boolean deleteBank(int bank_id);
     public void saveAllBankNBU(List<Bank> banks);
 }

@@ -6,13 +6,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
+import static org.apache.commons.lang.ObjectUtils.*;
 
 /**
  * Created by Olavin on 17.11.2014.
  */
 @Entity
 @Table(name="atm")
-public class AtmOffice {
+public class AtmOffice implements Comparable<AtmOffice>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int Id;
@@ -29,7 +30,7 @@ public class AtmOffice {
     @Enumerated(EnumType.ORDINAL)
     private AtmType type;
 
-    public enum AtmType { IS_ATM, IS_OFFICE }
+    public enum AtmType { IS_ATM, IS_OFFICE, IS_ATM_OFFICE }
 
     @Column
     private Timestamp lastUpdated;
@@ -102,7 +103,13 @@ public class AtmOffice {
     }
 
     public void setType(AtmType type) {
-        this.type = type;
+        if (this.type==null){
+            this.type = type;
+        }else if (this.type==type){
+            this.type = type;
+        }else{
+            this.type = AtmType.IS_ATM_OFFICE;
+        }
     }
 
     public Timestamp getLastUpdated() {
@@ -135,6 +142,11 @@ public class AtmOffice {
 
     public void setBank(Bank bank) {
         this.bank = bank;
+    }
+    
+    @Override
+    public int compareTo(AtmOffice other){
+        return this.getAddress().compareTo(other.getAddress());
     }
 }
 

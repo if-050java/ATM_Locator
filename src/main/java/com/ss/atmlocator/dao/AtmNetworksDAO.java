@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Olavin on 22.11.2014.
  */
 @Repository
-public class AtmNetworksDAO {
+public class AtmNetworksDAO implements IAtmNetworksDAO {
     @PersistenceContext
     private EntityManager entityManager;
 

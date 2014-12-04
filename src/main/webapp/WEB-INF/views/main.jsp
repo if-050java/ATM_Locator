@@ -31,6 +31,7 @@
             background-color: #c4e3f3;
         }
     </style>
+    <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
 </head>
 <body>
 <div class="container">
@@ -64,29 +65,29 @@
                     <form action="" method="get" onsubmit="updateFilter()" class="form">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Network">
+                                <input type="text" class="form-control" placeholder="Network" id="networksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a href="#">Atmosfera</a></li>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu" id="networksDropdown">
+                                        <c:forEach items="${networks}" var="network">
+                                            <li><a href="${network.id}">${network.name}</a></li>
+                                        </c:forEach>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control " placeholder="Bank">
+                                <input type="text" class="form-control " placeholder="Bank" id="banksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a href="#">Privatbank</a></li>
-                                    </ul>
+                                    <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                                 </div>
                             </div>
                         </div>

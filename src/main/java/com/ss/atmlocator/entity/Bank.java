@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name="banks")
-public class Bank {
+public class Bank  implements Comparable<Bank> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int Id;
@@ -135,6 +135,11 @@ public class Bank {
 
     public void setNetwork(AtmNetwork network) {
         this.network = network;
+    }
+    
+    @Override
+    public int compareTo(Bank other){
+        return this.getName().compareTo(other.getName());
     }
 
     @Override

@@ -6,12 +6,12 @@ import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.entity.GeoPosition;
 import com.ss.atmlocator.service.ATMService;
+import com.ss.atmlocator.service.BanksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,9 +21,13 @@ import java.util.List;
  */
 
 @Controller
+@RequestMapping("/map")
 public class mapController {
     @Autowired
     ATMService atmService;
+    @Autowired
+    private BanksService banksService;
+
 
 
     @RequestMapping(value = "/getATMs")
@@ -32,10 +36,17 @@ public class mapController {
                                          @RequestParam double userLat,
                                          @RequestParam double userLng,
                                          @RequestParam int radius
-                                         ){
+                                         ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
         List<Integer> banks = new ArrayList<Integer>();
         banks.add(id);
         return atmService.getATMs(banks, userPosition, radius);
+    }
+
+
+    @RequestMapping(value = "/getBanksByNetwork")
+    @ResponseBody
+    public List<Bank> getBanksByNetwork(@RequestParam Integer network_id) {
+        return banksService.getBanksByNetworkId(network_id);
     }
 }
