@@ -75,7 +75,7 @@
 
     <!-- Controlers Logs -->
     <logger name="com.ss.atmlocator.controller">
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="controllerLogs"/>
     </logger>
     <!-- LogIn Logs -->
