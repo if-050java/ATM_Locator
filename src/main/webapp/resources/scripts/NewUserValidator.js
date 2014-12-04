@@ -6,7 +6,7 @@ $(document).ready(function(){
         var $this = $(this);
         if (validateEmail($this.val())){
             $.ajax({
-                url: "/usercredemail?email="+$this.val(),
+                url: "./usercredemail?email="+$this.val(),
                 async: true,
                 type: 'GET',
                 dataType: 'json',
@@ -42,7 +42,7 @@ $(document).ready(function(){
         }
         if (validateLogin($this.val())){
             $.ajax({
-                url: "/usercredlogin?login="+$this.val(),
+                url: "./usercredlogin?login="+$this.val(),
                 async: true,
                 type: 'GET',
                 dataType: 'json',
@@ -70,11 +70,46 @@ $(document).ready(function(){
         }
     });
 
+    $(document).on('blur', '[name="inputPassword"]', function(){
+        var $this = $(this);
+        if ($this.val().length < 1){
+            $this.removeClass('error');
+            return;
+        }
+        if (validatePasswordStrange($this.val())){
+            $this.removeClass('error');
+            return;
+        }
+        else{
+            $this.attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
+            $this.popover("show");
+            $this.addClass('error');
+            return;
+        }
+    });
+
+    $(document).on('blur', '[id="confirmPassword"]', function(){
+        var $this = $(this);
+        if ($this.val().length < 1){
+            $this.removeClass('error');
+            return;
+        }
+        if (validateConfirmPassword($('#inputPassword').prop("value"),$this.val())){
+            $this.removeClass('error');
+            return;
+        }
+        else{
+            $this.attr("data-content", "Password and confirm is different");
+            $this.popover("show");
+            $this.addClass('error');
+            return;
+        }
+    });
+
     $(document).on('submit', 'form', function (e) {
         if($('.error').length > 0){
             e.preventDefault();
         }
     });
-
 
 });
