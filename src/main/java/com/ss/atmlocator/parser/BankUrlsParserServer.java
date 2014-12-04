@@ -36,25 +36,21 @@ public class BankUrlsParserServer implements Parser {
 
     public List<Bank> parce() {
         bankList = new ArrayList<Bank>();
+        AtmParserServise parser = new AtmParserServise();
+        Map<String, Object> map = new HashMap<String, Object>();
+
         Document doc = null;
         try {
             doc = Jsoup.connect(url).get();
-
             Elements banks = doc.getElementsByClass(listSelector);
-            AtmParserServise parser = new AtmParserServise();
-            Map<String, String> map = new HashMap<String, String>();
 
             for (Element element : banks) {
-
                 bankName = element.ownText();
-
                // System.out.println(bankName);
+                Elements urls = element.select("div>a");
 
-                Elements divs = element.select("div");
-                for (Element div : divs) {
-                    Elements urls = div.select("a");
+                for (Element url : urls) {
 
-                    for (Element url : urls) {
                         if (url.text().equals("відділення")) {
                             listSelector = "branch";
 
@@ -64,17 +60,18 @@ public class BankUrlsParserServer implements Parser {
                         }
                         bankUrl = url.absUrl("href");
 
+                        Bank bank = new Bank();
+                        bank.setName(bankName);
+
                         map.clear();
                         map.put("url", bankUrl);
                         map.put("listSelector", listSelector);
+                        map.put("bank", bank);
                         parser.setParam(map);
-                        Bank bank = new Bank();
-                        bank.setName(bankName);
 
                         Set<AtmOffice> AtmOfficeSetTmp = new TreeSet<AtmOffice>();
                         AtmOfficeSetTmp.addAll(parser.getItems());
 
-                       
                         for (int i=0;i<bankList.size();i++) {
                              if (bankList.get(i).getName().equals(bankName)) {
                                 AtmOfficeSetTmp.addAll(bankList.get(i).getAtmOfficeSet());
@@ -90,7 +87,6 @@ public class BankUrlsParserServer implements Parser {
                         //System.out.println(bankUrls.getBankUrl());
                         //System.out.println(bankUrls.getBankOfficceOrAtm());
 
-                    }
 
                 }
             }
