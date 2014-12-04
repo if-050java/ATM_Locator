@@ -1,6 +1,5 @@
 package com.ss.atmlocator.parser;
 
-import static com.ss.atmlocator.entity.AtmOffice.*;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
@@ -23,17 +22,18 @@ public class AtmParserServise {
     private  AtmOffice.AtmType atmType;
 
 
-    public AtmParserServise() {
-    }
 
-    
 // method fot seting parameters
-// url / ww fdjasfkl;
+//    url / ww fdjasfkl;
 //    listselector "atm" or "branch"
-    public void setParam(Map<String, String> params) {
-        this.url = params.get("url");
-        this.listSelector = params.get("listSelector");
+public void setParam(Map<String, Object> params) {
+    if (params.containsKey("url")) {
+        url = params.get("url").toString();
+        this.listSelector = params.get("listSelector").toString();
+        this.bank=(Bank)params.get("bank");
+
     }
+}
 
 
     public Set<AtmOffice> getItems() {
@@ -62,14 +62,15 @@ public class AtmParserServise {
                 Elements cols = row.select("td");
                 if (url.equals("http://ubanks.com.ua/adr/privatbank/branches/ivano-frankivska/ivano-frankivsk.php")) {    // in PrivatBank another structure
                     atmCity = "Івано-Франківськ";
-                    atmStreet = cols.get(0).children().text();
+                    atmStreet = cols.get(0).children().text().trim();
                 } else {
-                    atmCity = cols.get(0).text();
-                    atmStreet = cols.get(2).children().text();
+                    atmCity = cols.get(0).text().trim();
+                    atmStreet = cols.get(2).children().text().trim();
                 }
                 String atmAdress=atmCity+", "+atmStreet;
               //  System.out.println(atmType.toString());
               //  System.out.println(atmAdress);
+
                 AtmOffice atm = new AtmOffice();
                 atm.setBank(bank);
                 atm.setAddress(atmAdress);
