@@ -2,8 +2,8 @@ var user;               //Instance of current loaded user
 
 //Enable/disable input fields by radio
 function SelectFindType() {
-    $("#findName").prop("disabled",$("#byName").prop("checked") ? true : false);
-    $("#findEmail").prop("disabled",$("#byName").prop("checked") ? false : true);
+    $("#findName").prop("disabled",$("#byName").prop("checked") ? false : true);
+    $("#findEmail").prop("disabled",$("#byName").prop("checked") ? true : false);
 };
 
 //Request to find user by name or email
