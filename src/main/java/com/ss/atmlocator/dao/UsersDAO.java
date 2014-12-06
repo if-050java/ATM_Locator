@@ -21,7 +21,7 @@ public class UsersDAO implements IUsersDAO {
 
     @Override
     public User getUserByName(String name) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name", User.class);
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name OR u.email=:name", User.class);
         query.setParameter("name", name);
         User user = query.getSingleResult();
         return user;

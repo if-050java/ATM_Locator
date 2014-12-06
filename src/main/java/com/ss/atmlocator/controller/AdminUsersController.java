@@ -7,6 +7,8 @@ import com.ss.atmlocator.validator.UserProfileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,11 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.MapBindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ import java.util.Locale;
  */
 
 @Controller
+@RequestMapping("users")
 public class AdminUsersController {
 
     @Autowired
@@ -59,55 +60,38 @@ public class AdminUsersController {
 
     public static final String EMAIL_SUBJECT = "Change user credentials";
 
-    @RequestMapping(value = "/findUser", method = RequestMethod.GET)
-    @ResponseBody
-    public User findUser(@RequestParam(Constants.FIND_BY) String findBy,
-                         @RequestParam(Constants.FIND_VALUE) String findValue) {
+    @RequestMapping(value = "/{value}", method = RequestMethod.GET)
+    public ResponseEntity<User> findUser(@PathVariable("value")String value) {
         try {
-            if (Constants.USER_LOGIN.equals(findBy)) {
-                return userService.getUserByName(findValue);
-            } else {
-                return userService.getUserByEmail(findValue);
-            }
+            value = value.replace('*','.');
+            return new ResponseEntity<User>(userService.getUserByName(value), HttpStatus.OK);
         } catch (PersistenceException pe) {
-            //if user not found
-            User userNotFound = new User();
-            userNotFound.setId(-1);
-            return userNotFound;
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @RequestMapping(value = "/adminUsers", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public String adminUsers(ModelMap model) {
         model.addAttribute("active", "adminUsers");
         return "adminUsers";
     }
 
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public OutResponse deleteUser(@RequestParam(Constants.USER_ID) int id) {
-        //variables for sending response about result of operation
-        OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMessageList = new ArrayList<ErrorMessage>(1);
-        response.setErrorMessageList(errorMessageList);
-
-        //id of user who want to delete
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
+        //id of current logged user
         int currentLoggedUserId =  userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
         //Check user want to remove himself
         if (id == currentLoggedUserId) {
-            return new OutResponse(Constants.INFO, new ErrorMessage(Constants.DELETE,
-                    messages.getMessage("user.removing_yourself", null, Locale.ENGLISH)));
+            return new ResponseEntity<Void>(HttpStatus.NOT_ACCEPTABLE);
         };
-
         try {
             userService.deleteUser(id);
-
-            return new OutResponse(Constants.SUCCESS, new ErrorMessage(Constants.DELETE,
-                    messages.getMessage("operation.success", null, Locale.ENGLISH)));
-
-        } catch (PersistenceException pe) {
-            return new OutResponse(Constants.ERROR, new ErrorMessage(Constants.DELETE,
-                    messages.getMessage("operation.error", null, Locale.ENGLISH)));
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (EntityNotFoundException enfe) {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }catch (PersistenceException pe) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

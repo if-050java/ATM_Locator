@@ -30,36 +30,22 @@
             </div>
             <div class="panel-body">
                 <form onsubmit="return FindUser()" action="" method="GET" class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <div class="col-md-9">
-                                <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="radio" name="findBy" value="name" checked="true" id="byName"
-                                       onchange="SelectFindType()"/>
-                            </span>
-                                    <input type="text" name="findName" id="findName" class="form-control"
-                                           placeholder="By name" onclick="hidePopover('findBtn')"/>
-                                </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <input type="text" name="findName" id="findName" class="form-control"
+                                       placeholder="Enter login or e-mail" onclick="hidePopover('findBtn')"
+                                       title=""
+                                       data-content="" data-placement="bottom"
+                                       data-toggle="popover" data-original-title=""/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" onclick="FindUser()" id="findBtn">
+                                        Find user
+                                    </button>
+                                </span>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <div class="col-md-9">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="radio" name="findBy" value="email" id="byEmail"
-                                                onchange="SelectFindType()"/>
-                                    </span>
-                                        <input type="text" name="findEmail" disabled="true" id="findEmail"
-                                                class="form-control"
-                                                placeholder="By e-mail" onclick="hidePopover('findBtn')"/>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-default col-md-2" onclick="FindUser()" id="findBtn" title=""
-                                    data-content="" data-placement="left"
-                                    data-toggle="popover" data-original-title="">Find user
-                            </button>
-                        </div>
+                    </div>
 
                 </form>
             </div>
@@ -86,7 +72,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="" class="img-thumbnail"  id="userAvatar">
+                        <img src="" class="img-thumbnail" id="userAvatar">
                     </div>
                     <div class="col-md-8">
                         <form action="" method="post" class="form-horizontal" role="form">
@@ -114,7 +100,8 @@
 
                                 <div class="col-md-10">
                                     <input type="password" class="form-control" id="inputPassword"
-                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" title="" data-content="" data-placement="left"
+                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" title="" data-content=""
+                                           data-placement="left"
                                            data-toggle="popover" data-original-title=""
                                            onclick="hidePopover('inputPassword')"/>
                                 </div>
@@ -132,6 +119,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="enabled" class="col-md-2 control-label">Log in</label>
+
                                 <div class="col-md-3">
                                     <!-- custom style to set width of switch -->
                                     <style>
@@ -139,7 +127,9 @@
                                             min-width: 100px;
                                         }
                                     </style>
-                                    <input id="enabled" data-style="width" data-toggle="toggle" checked data-on="allowed" data-off="prohibited" data-onstyle="success" data-offstyle="danger" type="checkbox">
+                                    <input id="enabled" data-style="width" data-toggle="toggle" checked
+                                           data-on="allowed" data-off="prohibited" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
                             </div>
                         </form>
@@ -158,7 +148,8 @@
         </div>
     </div>
     <!-- modal for request on deleting -->
-    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="questionModal">
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+         aria-hidden="true" id="questionModal">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">

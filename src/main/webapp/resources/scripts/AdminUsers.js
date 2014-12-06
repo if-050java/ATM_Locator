@@ -8,30 +8,31 @@ function SelectFindType() {
 
 //Request to find user by name or email
 function FindUser(){
-    //Request parameters
-    var findBy = ($("#byName").prop("checked") == true) ? "login" : "email";
-    var findValue = ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val();
+    var findValue = $("#findName").val().replace('.','*');
 
    //Send request
     $.ajax({
-        url: getHomeUrl()+"findUser?findBy="+findBy+"&findValue="+findValue,
+        url: getHomeUrl()+"users/"+findValue,
         type : "GET",
         context: document.body,
         dataType: "json",
-        success : showData
+        statusCode: {
+            200: showData,
+            404: couldNotFind
+        }
     })
 };
 
-//Show user profile
-function showData(response){
-    if(response.id < 0){
+function couldNotFind(){
         //show popover if user not found
-        $('#findBtn').attr("data-content", "Can't find user with this name or e-mail");
-        $('#findBtn').popover("show");
+        $('#findName').attr("data-content", "Can't find user with this name or e-mail");
+        $('#findName').popover("show");
         //hide user form
         $("#userData").slideUp();
-        return;
-    }
+}
+
+//Show user profile
+function showData(response){
     user = response;
     //fill fields in form by user data
     fillFields(user);

@@ -13,6 +13,8 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaUpdate;
+
 /**
  * Created by roman on 19.11.14.
  */
@@ -46,6 +48,7 @@ public class UserService {
     }
 
     public void editUser(User user) {
+        CriteriaUpdate<User> cu= null;
         User persistedUser = getUserById(user.getId());
         usersDAO.updateUser(merge(user, persistedUser));
     }
