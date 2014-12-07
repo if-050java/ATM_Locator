@@ -27,7 +27,7 @@
                     <sec:authorize access="hasRole('ADMIN')">
                         <li class="adminBanks"><a href="<c:url value="/adminBanks" />">Banks</a></li>
                         <li class="admin"><a href="<c:url value="/admin" />">Parsers</a></li>
-                        <li class="adminUsers"><a href="<c:url value="/users" />">Users</a></li>
+                        <li class="adminUsers"><a href="<c:url value="/adminUsers" />">Users</a></li>
                     </sec:authorize>
                     <sec:authorize access="isAuthenticated()">
                         <li class="profile"><a href="<c:url value="/user/profile" />">Profile</a></li>

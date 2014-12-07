@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.entity.UserStatus;
 import com.ss.atmlocator.service.NewUserValidatorService;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.SendMails;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,8 +34,6 @@ import java.util.Set;
 public class SignUpController {
 
     final Logger logger = Logger.getLogger(SignUpController.class.getName());
-
-    private final int ENABLED_USER_STATUS = 1;
 
     private final String DEFAULT_USER_AVATAR = "defaultUserAvatar.jpg";
 
@@ -88,7 +88,7 @@ public class SignUpController {
             return "signup";
         }
 
-        user.setEnabled(ENABLED_USER_STATUS);
+        user.setEnabled(UserStatus.ENABLED);
         user.setAvatar(DEFAULT_USER_AVATAR);
         Role role = usersDAO.getDefaultUserRole();
         Set<Role> roles = new HashSet<Role>(0);
@@ -100,9 +100,8 @@ public class SignUpController {
             sendMails.sendMail(user.getEmail(),
                     "User Created",
                     "You create user: "+user.getLogin()+"; with password:"+password);
-        }
-        catch (MailException exp){
-            /*NOP This type of exception is already logged*/
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
 
         if (signMe != null && signMe.length() > 0) {

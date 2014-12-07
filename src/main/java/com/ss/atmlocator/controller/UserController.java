@@ -1,6 +1,8 @@
 package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.entity.UserStatus;
+import com.ss.atmlocator.exception.NotValidException;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.*;
 import com.ss.atmlocator.validator.ImageValidator;
@@ -40,6 +42,8 @@ public class UserController {
     @Autowired
     ImageValidator imageValidator;
 
+    private static final boolean AUTO_GEN_PASSWORD = false;
+
     @RequestMapping(value = "/profile")
     public String profile(ModelMap model, Principal principal) {
         String userName = principal.getName();
@@ -56,11 +60,11 @@ public class UserController {
             @RequestParam String email,
             @RequestParam(required = false) String password,
             @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
-    ) {
+    ) throws NotValidException {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-        User newUser = new User(id, login, email, password, 1);
+        User newUser = new User(id, login, email, password, UserStatus.ENABLED);
         newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
         MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
         if (userService.isNotModified(newUser)) {
@@ -73,7 +77,7 @@ public class UserController {
                 if (avatar != null) {
                     UploadFileUtils.save(avatar, avatar.getOriginalFilename(), request);
                 }
-                userService.editUser(newUser);
+                userService.editUser(newUser, AUTO_GEN_PASSWORD);
                 userService.doAutoLogin(newUser.getLogin());
             } catch (IOException e) {
                 logger.error(ExceptionParser.parseExceptions(e));
