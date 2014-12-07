@@ -3,8 +3,6 @@ package com.ss.atmlocator.parser.parserNBU;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by maks on 19.11.2014.
@@ -25,9 +23,9 @@ public class main3 {
 
 //        System.out.println(getName("Gfn \"aaaadfdf\"asdf "));
         NbuParser parser = new NbuParser();
-        parser.setParametr(par);
+        parser.setParameter(par);
 
-        bankList = parser.parce();
+        bankList = parser.parse();
         for(com.ss.atmlocator.entity.Bank bank: bankList){
             System.out.println(bank);
         }
