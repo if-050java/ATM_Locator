@@ -6,6 +6,8 @@
     <!-- custom scripts and css  -->
     <script src="<c:url value="/resources"/>/scripts/AdminUsers.js"></script>
     <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
+    <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
+    <link href="<c:url value="/resources"/>/styles/adminUsers.css" rel="stylesheet">
     <!-- Checkbox like iPhone -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.0.0/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.0.0/js/bootstrap-toggle.min.js"></script>
@@ -21,7 +23,7 @@
                     <div class="input-group">
                         <input type="text" name="findName" id="findName" class="form-control"
                                placeholder="Enter login or e-mail" onclick="hidePopover('findName')"
-                               title=""
+                               onload="onload()" title="" autocomplete="off"
                                data-content="" data-placement="bottom"
                                data-toggle="popover" data-original-title=""/>
                         <span class="input-group-btn">
