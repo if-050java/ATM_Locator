@@ -15,7 +15,8 @@ function FindUser(){
             404: couldNotFind
         }
     })
-};
+}
+
 //Show popover if cant find such user
 function couldNotFind(message){
         //show popover if user not found
@@ -32,7 +33,7 @@ function showData(response){
     fillFields(user);
     //show form
     $("#userData").slideDown();
-};
+}
 //Fill user profile
 function fillFields(user){
     $("#userAvatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
@@ -55,6 +56,7 @@ function clearForm(){
 function askForDeleting(){
     $("#questionModal").modal("show");
 }
+
 //Delete user from server
 function deleteUser(){
     //Send request
@@ -147,51 +149,33 @@ function updateUser(){
             200: function(){ showAlert("alert alert-success", "Operation successfully processed")},
             304: function(){ showAlert("alert alert-info", "Nothing to update")},
             406: function(){ showAlert("alert alert-warning", "Not valid field")},
-            500: function(){ showAlert("alert alert-danger", result)}
+            500: function(){ showAlert("alert alert-danger", "kuhf")}
         }
     })
-};
+}
 
 function hidePopover(element){
     $('#'+element).popover("destroy");
 }
 
 function setModified(){
-    $("#save").prop('disabled', false);
+    if(JSON.stringify(getUpdatedFields()) !== "{}") {
+        $("#save").prop('disabled', false);
+    }else{
+        $("#save").prop('disabled', true);
+    }
 }
 
  window.onload = function() {
     jQuery("#findName").autocomplete({
         serviceUrl: getHomeUrl() + "users",
         minChars: 2,
-        deferRequestBy: 300,
-        maxHeight: 400,
+        deferRequestBy: 200,
         delimiter: /(,|;)\s*/,
-        zIndex: 9999
+        zIndex: 1000
     })
 }
 
-/*function nameAutoComplete(){
-    //Send request
-    if(jQuery("#findName").val().length >= 2) {
-        jQuery.ajax({
-            url: getHomeUrl() + "users?autoComplete="+jQuery("#findName").val(),
-            type: "GET",
-            context: document.body,
-            dataType: "json",
-            statusCode: {
-                200: function () {
-                    jQuery("#findName").autocomplete({
-                        serviceUrl: getHomeUrl() + "users",
-                        minChars: 2,
-                        deferRequestBy: 300,
-                        maxHeight: 400
-                    })
-                }
-            }
-        })
-    }
-}*/
 
 
 
