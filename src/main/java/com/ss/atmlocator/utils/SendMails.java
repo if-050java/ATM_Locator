@@ -5,6 +5,7 @@ package com.ss.atmlocator.utils;
 
 import org.apache.log4j.Logger;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -33,7 +34,7 @@ public class SendMails {
         this.mailSender = mailSender;
     }
 
-    public void sendMail(String to, String subject, String msg) throws MessagingException {
+    public void sendMail(String to, String subject, String msg) throws MessagingException,MailSendException {
 
         try{
             MimeMessage message = mailSender.createMimeMessage();
@@ -46,10 +47,15 @@ public class SendMails {
         mailSender.send(message);
 
         }
-        catch (MessagingException exp){
-            logger.error(parseExceptions(exp));
+        catch (MailSendException exp){
+            logger.error(exp.getMessage(), exp);
             throw exp;
         }
+        catch (MessagingException exp){
+            logger.error(exp.getMessage(), exp);
+            throw exp;
+        }
+
     }
 
 }
