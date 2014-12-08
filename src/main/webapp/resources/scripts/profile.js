@@ -95,7 +95,10 @@ $(document).ready(function () {
                 var user = getUser();
                 var fd = new FormData();
                 for(prop in user){
-                    fd.append(prop, user[prop]);
+                    if(user[prop]!=null){
+                        fd.append(prop, user[prop]);
+                    }
+
                 }
                 $.ajax({
                     url: getHomeUrl() + "user/update",
@@ -105,17 +108,19 @@ $(document).ready(function () {
                     contentType: false,
                     statusCode: {
                         200: function (response) {
-                            console.log(response[0]);
                             showAlert("alert alert-success", SUCCESS_MESSAGE);
                         },
-                        304: function () {
-                            showAlert("alert alert-info", "Nothing to update")
-                        },
-                        406: function () {
-                            showAlert("alert alert-warning", "Not valid field")
-                        },
                         500: function () {
-                            showAlert("alert alert-danger", result)
+                            showAlert("alert alert-danger", ERROR_MESSAGE)
+                        },
+                        406: function (response) {
+                            console.log(response);
+                            showAlert("alert alert-warning", WARNING_MESSAGE);
+                            for (var i = 0; i < response.responseJSON.length; i++) {
+                                var item = response.responseJSON[i];
+                                $('#' + item.field).attr("data-content", item.code);
+                                $('#' + item.field).popover("show");
+                            }
                         }
                     },
                     /*success: function (response) {
