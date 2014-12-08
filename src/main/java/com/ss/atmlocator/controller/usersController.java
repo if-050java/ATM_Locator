@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.exception.NotValidException;
 import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
 import com.ss.atmlocator.validator.UserProfileValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
-
-/**
- * Created by Vasyl Danylyuk on 06.12.2014.
- */
 
 @Controller
 @RequestMapping("users")
@@ -41,9 +38,14 @@ public class usersController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<String>> getUserNames(@RequestParam(value = "autoComplete")String autoComplete ){
+    public ResponseEntity<jQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query ){
+        List<String> list = userService.setNames(query);
 
-        return null;
+        jQueryAutoCompleteResponse nameResponse = new jQueryAutoCompleteResponse();
+        nameResponse.setQuery(query);
+        nameResponse.setSuggestions(list);
+
+        return new ResponseEntity<jQueryAutoCompleteResponse>(nameResponse, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

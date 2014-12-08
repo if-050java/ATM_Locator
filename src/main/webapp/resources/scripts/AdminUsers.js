@@ -160,6 +160,38 @@ function setModified(){
     $("#save").prop('disabled', false);
 }
 
+ window.onload = function() {
+    jQuery("#findName").autocomplete({
+        serviceUrl: getHomeUrl() + "users",
+        minChars: 2,
+        deferRequestBy: 300,
+        maxHeight: 400,
+        delimiter: /(,|;)\s*/,
+        zIndex: 9999
+    })
+}
+
+/*function nameAutoComplete(){
+    //Send request
+    if(jQuery("#findName").val().length >= 2) {
+        jQuery.ajax({
+            url: getHomeUrl() + "users?autoComplete="+jQuery("#findName").val(),
+            type: "GET",
+            context: document.body,
+            dataType: "json",
+            statusCode: {
+                200: function () {
+                    jQuery("#findName").autocomplete({
+                        serviceUrl: getHomeUrl() + "users",
+                        minChars: 2,
+                        deferRequestBy: 300,
+                        maxHeight: 400
+                    })
+                }
+            }
+        })
+    }
+}*/
 
 
 
