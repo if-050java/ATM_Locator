@@ -12,7 +12,7 @@ public class Constants {
     public static final String USER_LOGIN = "login";
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
-    public static final String USER_ENABLED = "enabled";
+    public static final String USER_NAME = "name";
     public static final String USER_AVATAR = "avatar";
     //Operation names
     public static final String DELETE = "delete";
@@ -24,7 +24,8 @@ public class Constants {
     public static final String ERROR = "ERROR";
     public static final String WARNING = "WARNING";
     //Template names for creating email messages
-    public static final String UPDATE_TEMPLATE = "update_template";
+    public static final String UPDATE_TEMPLATE_ENABLED_USER = "update_template";
+    public static final String UPDATE_TEMPLATE_DISABLED_USER = "update_template_disabled";
 
 
 }

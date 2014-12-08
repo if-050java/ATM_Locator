@@ -1,37 +1,32 @@
 var user;               //Instance of current loaded user
 
-//Enable/disable input fields by radio
-function SelectFindType() {
-    $("#findName").prop("disabled",$("#byName").prop("checked") ? true : false);
-    $("#findEmail").prop("disabled",$("#byName").prop("checked") ? false : true);
-};
-
 //Request to find user by name or email
 function FindUser(){
-    //Request parameters
-    var findBy = ($("#byName").prop("checked") == true) ? "login" : "email";
-    var findValue = ($("#byName").prop("checked") == true) ? $("#findName").val() : $("#findEmail").val();
+    var findValue = $("#findName").val().replace('.','*');
 
    //Send request
     $.ajax({
-        url: getHomeUrl()+"findUser?findBy="+findBy+"&findValue="+findValue,
+        url: getHomeUrl()+"users/"+findValue,
         type : "GET",
         context: document.body,
         dataType: "json",
-        success : showData
+        statusCode: {
+            200: showData,
+            404: couldNotFind
+        }
     })
 };
+//Show popover if cant find such user
+function couldNotFind(message){
+        //show popover if user not found
+        $('#findName').attr("data-content", "Can't find user with this name or e-mail");
+        $('#findName').popover("show");
+        //hide user form
+        $("#userData").slideUp();
+}
 
 //Show user profile
 function showData(response){
-    if(response.id < 0){
-        //show popover if user not found
-        $('#findBtn').attr("data-content", "Can't find user with this name or e-mail");
-        $('#findBtn').popover("show");
-        //hide user form
-        $("#userData").slideUp();
-        return;
-    }
     user = response;
     //fill fields in form by user data
     fillFields(user);
@@ -42,14 +37,15 @@ function showData(response){
 function fillFields(user){
     $("#userAvatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
     $("#inputLogin").val(user.login);
+    $("#inputName").val(user.name);
     $("#inputEmail").val(user.email);
-    $("#inputPassword").val(user.password);
-    $("#inputConfirmPassword").val(user.password);
+    $("#genPassword").prop("checked" ,false).change();
     if(user.enabled != 0){
         $("#enabled").prop("checked" ,true).change();
     } else {
         $("#enabled").prop("checked" ,false).change();
     }
+    $("#save").prop('disabled', true);
 }
 //hide form
 function clearForm(){
@@ -63,52 +59,59 @@ function askForDeleting(){
 function deleteUser(){
     //Send request
     $.ajax({
-        url:getHomeUrl()+"deleteUser?id="+user.id,
+        url:getHomeUrl()+"users/"+user.id,
         type : "DELETE",
         context: document.body,
         dataType: "json",
-        success : showAlert
+        statusCode: {
+            200: showAlert,
+            404: showAlert,
+            406: showAlert
+        }
     })
     //hide user form
     $("#questionModal").modal("hide");
-    $("#userData").slideUp();
+ //   $("#userData").slideUp();
 }
 
-function showAlert(response){
-    var text = "";
-    for(i = 0; i < response.errorMessageList.length; i++) {
-        text = text + response.errorMessageList[i].message+"; "
-    }
+function showAlert(className, html) {
+    $("#message").removeClass();
+    $("#message").addClass(className);
+    $("#resultDefinition").empty();
+    $("#resultDefinition").append(html);
+    $("#message").slideDown(500);
+  //  setTimeout(hideAlert, 10000)
+}
 
-    $("#resultDefinition").text(text);
-
-    if(response.status == "ERROR"){
-        $("#message").removeClass("alert-success alert-info").addClass("alert-danger")
-    }else if(response.status == "INFO") {
-        $("#message").removeClass("alert-danger alert-success").addClass("alert-info")
-    }else {
-        $("#message").removeClass("alert-danger alert-info").addClass("alert-success")
-    };
-    //show alert about result of operation
-    $("#message").show();
-};
-//hiding alert
 function hideAlert(){
-    $("#message").hide();
+
+    $("#message").slideUp(500);
 }
 
-function getUserFromForm(){
+function getUpdatedFields(){
     updatedUser = {
-        id : user.id,
         login : $("#inputLogin").val(),
+        name : $("#inputName").val(),
         email : $("#inputEmail").val(),
-        password : $("#inputPassword").val(),
-        enabled : $("#enabled").prop("checked") == true ? 1: 0
+        enabled : $("#enabled").prop("checked") == true ? 1 : 0
     }
 
-    if (updatedUser.password == "") {
-        delete updatedUser.password;
+    if(updatedUser.login === user.login){
+        delete updatedUser.login;
     }
+
+    if(updatedUser.name === user.name){
+        delete updatedUser.name;
+    }
+
+    if(updatedUser.email === user.email){
+        delete updatedUser.email;
+    }
+
+    if(updatedUser.enabled === user.enabled){
+        delete updatedUser.enabled;
+    }
+
     return updatedUser;
 }
 
@@ -126,36 +129,37 @@ function updateUser(){
         return;
     };
 
-    //checking confirmed password
-    if(!validateConfirmPassword($('#inputPassword').prop("value"),$('#inputConfirmPassword').prop("value"))){
-        $('#inputPassword').attr("data-content", "Password and confirm is different");
-        $('#inputConfirmPassword').popover("show");
+
+    var data = JSON.stringify(getUpdatedFields());
+    if (data === "{}" && $("#genPassword").prop("checked") == false){
+        showAlert("alert alert-info", "Nothing to update");
         return;
     };
-
-    //checking password strange
-    //don'tvalidate if password didn't change
-    if($('#inputPassword').prop("value") != ""){
-        if(!validatePasswordStrange($('#inputPassword').prop("value"))){
-            $('#inputPassword').attr("data-content", "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit");
-            $('#inputPassword').popover("show");
-            return;
-        }
-    }
-
+    var url =getHomeUrl()+"users/"+user.id+"?generatePassword="+($("#genPassword").prop("checked") == true ? true : false);
     $.ajax({
-        url : getHomeUrl()+"updateUser",
-        type : "POST",
+        url : url,
+        type : "PATCH",
         context : document.body,
-        data : getUserFromForm(),
+        contentType: "application/json; charset=utf-8",
+        data : data,
         dataType : "json",
-        success : showAlert
+        statusCode: {
+            200: function(){ showAlert("alert alert-success", "Operation successfully processed")},
+            304: function(){ showAlert("alert alert-info", "Nothing to update")},
+            406: function(){ showAlert("alert alert-warning", "Not valid field")},
+            500: function(){ showAlert("alert alert-danger", result)}
+        }
     })
 };
 
 function hidePopover(element){
     $('#'+element).popover("destroy");
 }
+
+function setModified(){
+    $("#save").prop('disabled', false);
+}
+
 
 
 

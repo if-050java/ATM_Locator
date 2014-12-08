@@ -31,25 +31,19 @@ public class UserProfileValidator {
     @Qualifier("imagevalidator")
     private Validator imageValidator;
 
-    @Autowired
-    private MessageSource messages;
-
-    @Autowired
-    private UserService userService;
 
     public void validate(User updatedUser, MultipartFile image, Errors errors) {
-        User persistedUser = userService.getUserById(updatedUser.getId());
 
-        if (!updatedUser.getLogin().equals(persistedUser.getLogin())) {
+        if (updatedUser.getLogin() != null) {
             loginValidator.validate(updatedUser.getLogin(), errors);
         }
-        if (!updatedUser.getEmail().equals(persistedUser.getEmail())) {
+        if (updatedUser.getEmail() != null) {
             emailValidator.validate(updatedUser.getEmail(), errors);
         }
         if (updatedUser.getPassword() != null) {
             passwordValidator.validate(updatedUser.getPassword(), errors);
         }
-        if (updatedUser.getAvatar() != null && !updatedUser.getAvatar().equals(persistedUser.getAvatar())) {
+        if (updatedUser.getAvatar() != null) {
             imageValidator.validate(image, errors);
         }
     }

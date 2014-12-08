@@ -2,14 +2,14 @@ package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Repository
 public class UsersDAO implements IUsersDAO {
@@ -21,7 +21,7 @@ public class UsersDAO implements IUsersDAO {
 
     @Override
     public User getUserByName(String name) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name", User.class);
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name OR u.email=:name", User.class);
         query.setParameter("name", name);
         User user = query.getSingleResult();
         return user;
@@ -112,6 +112,16 @@ public class UsersDAO implements IUsersDAO {
     }
 
     @Override
+    public List<String> getNames(String partial) {
+        List<String> result = new ArrayList<String>();
+        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial OR email LIKE :partial";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("partial", "%"+partial+"%");
+        result.addAll(query.getResultList());
+        return null;
+    }
+
+    @Override
     @Transactional
     public void writeLoginTime(String userName){
 
@@ -125,7 +135,5 @@ public class UsersDAO implements IUsersDAO {
 
         query.executeUpdate();
     }
-
-
 
 }

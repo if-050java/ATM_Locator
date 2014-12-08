@@ -15,10 +15,13 @@ public class User {
     @Column(unique=true)
     private String login;
 
+    @Column
+    private String name;
+
     @Column(unique=true)
     private String email;
 
-    @JsonIgnore //Ignoring this field in JSON serializing
+  //  @JsonIgnore //Ignoring this field in JSON serializing
     @Column
     private String password;
 
@@ -26,7 +29,7 @@ public class User {
     private String avatar;
 
     @Column
-    private int enabled;
+    private UserStatus enabled;
 
     @Column
     private Date lastLoging;
@@ -45,7 +48,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
     private Set<AtmFavorite> atmFavorites;
 
-    public User(int id, String login, String email, String password, int enabled) {
+    public User(int id, String login, String email, String password, UserStatus enabled) {
         this.id = id;
         this.login = login;
         this.email = email;
@@ -72,7 +75,7 @@ public class User {
         this.roles = roles;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -104,11 +107,11 @@ public class User {
         this.password = password;
     }
 
-    public int getEnabled() {
+    public UserStatus getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(int enabled) {
+    public void setEnabled(UserStatus enabled) {
         this.enabled = enabled;
     }
 
@@ -126,6 +129,22 @@ public class User {
 
     public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
         this.atmFavorites = atmFavorites;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getLastLoging() {
+        return lastLoging;
+    }
+
+    public void setLastLoging(Date lastLoging) {
+        this.lastLoging = lastLoging;
     }
 
     @Override

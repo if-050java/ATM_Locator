@@ -63,7 +63,6 @@
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="${mailserver.ip}" />
         <property name="port" value="${mailserver.port}" />
-
         <property name="javaMailProperties">
             <props>
                 <prop key="mail.smtp.auth">${smtp.auth}</prop>

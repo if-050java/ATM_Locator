@@ -11,20 +11,23 @@ function hidePopoveDelay(element) {
         $('#' + element).popover("destroy");
     }, 2000);
 };
-
+function isNotEmptyField(field) {
+    return (field.length > 0);
+}
 function getUser() {
-    var user = {
-        id: $("#id").val(),
-        login: $("#login").val(),
-        email: $("#email").val(),
-        password: $("#password").val(),
-        confirmPassword: $("#confirmPassword").val(),
-        avatar: ($("#image")[0].files[0] != undefined) ? $("#image")[0].files[0] : null
-    };
+    var form = $("#user").serializeArray();
+    var user = {};
+    $.each(form, function (i, field) {
+        isNotEmptyField(field.value) ? user[field.name] = field.value : user[field.name] = null;
+    });
+    user["avatar"] = ($("#image")[0].files[0] != undefined) ? $("#image").val().split('\\').pop() : null;
+    user["file"] = ($("#image")[0].files[0] != undefined) ? $("#image")[0].files[0] : null;
+    console.log(user);
     return user;
 }
 function validateForm(persistedUser) {
     var result = true;
+    return result;
     var user = getUser();
     if (user.login == persistedUser.login &&
         user.email == persistedUser.email &&
@@ -91,14 +94,8 @@ $(document).ready(function () {
             if (validateForm(persistedUser)) {
                 var user = getUser();
                 var fd = new FormData();
-                fd.append("id", user.id);
-                fd.append("login", user.login);
-                fd.append("email", user.email);
-                fd.append("confirmPassword", user.confirmPassword);
-                fd.append("avatar", user.avatar);
-               //check if password is changed
-                if (user.password.length != 0){
-                    fd.append("password", user.password);
+                for(prop in user){
+                    fd.append(prop, user[prop]);
                 }
                 $.ajax({
                     url: getHomeUrl() + "user/update",
@@ -106,24 +103,39 @@ $(document).ready(function () {
                     data: fd,
                     processData: false,
                     contentType: false,
-                    success: function (response) {
-                        console.log(response);
-
-                        if (response.status == 'SUCCESS') {
+                    statusCode: {
+                        200: function (response) {
+                            console.log(response[0]);
                             showAlert("alert alert-success", SUCCESS_MESSAGE);
-                        } else if (response.status == "INFO") {
-                            showAlert("alert alert-info", INFO_MESSAGE);
-                        } else if (response.status == "ERROR") {
-                            showAlert("alert alert-danger", ERROR_MESSAGE);
-                        } else {
-                            showAlert("alert alert-warning", WARNING_MESSAGE);
-                            for (var i = 0; i < response.errorMessageList.length; i++) {
-                                var item = response.errorMessageList[i];
-                                $('#' + item.cause).attr("data-content", item.message);
-                                $('#' + item.cause).popover("show");
-                            }
+                        },
+                        304: function () {
+                            showAlert("alert alert-info", "Nothing to update")
+                        },
+                        406: function () {
+                            showAlert("alert alert-warning", "Not valid field")
+                        },
+                        500: function () {
+                            showAlert("alert alert-danger", result)
                         }
                     },
+                    /*success: function (response) {
+                     console.log(response);
+
+                     if (response.status == 'SUCCESS') {
+                     showAlert("alert alert-success", SUCCESS_MESSAGE);
+                     } else if (response.status == "INFO") {
+                     showAlert("alert alert-info", INFO_MESSAGE);
+                     } else if (response.status == "ERROR") {
+                     showAlert("alert alert-danger", ERROR_MESSAGE);
+                     } else {
+                     showAlert("alert alert-warning", WARNING_MESSAGE);
+                     for (var i = 0; i < response.errorMessageList.length; i++) {
+                     var item = response.errorMessageList[i];
+                     $('#' + item.cause).attr("data-content", item.message);
+                     $('#' + item.cause).popover("show");
+                     }
+                     }
+                     },*/
                     error: function () {
                         showAlert("alert alert-danger", ERROR_MESSAGE);
                     }

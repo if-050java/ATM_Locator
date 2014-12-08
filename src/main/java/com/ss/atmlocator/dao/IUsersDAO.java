@@ -4,6 +4,8 @@ import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface IUsersDAO {
     /* Select User from DB by Login*/
@@ -26,6 +28,8 @@ public interface IUsersDAO {
     /* Verify existing of email address in DB */
     boolean checkExistEmail(String email);
     boolean checkExistEmail(User user);
+    /* Get user names and emails*/
+    List<String> getNames (String partial);
 
     public void writeLoginTime(String userName);
 }

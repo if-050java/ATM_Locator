@@ -7,6 +7,13 @@ import org.apache.log4j.Logger;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import static com.ss.atmlocator.utils.ExceptionParser.parseExceptions;
 
 
@@ -15,31 +22,31 @@ public class SendMails {
 
     final Logger logger = Logger.getLogger(SendMails.class.getName());
 
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
     private String from;
 
     public void setFrom(String from) {
         this.from = from;
     }
 
-    public void setMailSender(MailSender mailSender) {
+    public void setMailSender(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    public void sendMail(String to, String subject, String msg) throws MailException  {
+    public void sendMail(String to, String subject, String msg) throws MessagingException {
 
         try{
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setFrom(from);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(msg);
+            MimeMessage message = mailSender.createMimeMessage();
+            message.setText(msg, "UTF-8");
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+            messageHelper.setFrom(from);
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
 
         mailSender.send(message);
 
         }
-        catch (MailException exp){
+        catch (MessagingException exp){
             logger.error(parseExceptions(exp));
             throw exp;
         }
