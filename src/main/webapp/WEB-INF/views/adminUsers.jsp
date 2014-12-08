@@ -60,7 +60,7 @@
                                     <input type="text" class="form-control" id="inputLogin" placeholder="login"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
                                            data-original-title="" onclick="hidePopover('inputLogin')"
-                                           onchange="setModified()"/>
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -70,7 +70,7 @@
                                     <input type="text" class="form-control" id="inputName" placeholder="NickName"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
                                            data-original-title="" onclick="hidePopover('inputName')"
-                                           onchange="setModified()"/>
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -80,7 +80,7 @@
                                     <input type="text" class="form-control" id="inputEmail" placeholder="E-mail"
                                            title="" data-content="E-mail isn't valid" data-placement="left"
                                            data-toggle="popover" data-original-title=""
-                                           onclick="hidePopover('inputEmail')" onchange="setModified()"/>
+                                           onclick="hidePopover('inputEmail')" onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
