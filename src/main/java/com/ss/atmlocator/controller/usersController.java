@@ -2,6 +2,7 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.utils.ErrorMessage;
 import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
 import com.ss.atmlocator.validator.ImageValidator;
 import com.ss.atmlocator.validator.UserValidator;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,14 +17,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
-import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -94,12 +95,7 @@ public class usersController {
             @PathVariable("id") int id,
             @Validated @RequestBody User updatedUser,
             @RequestParam(value = "generatePassword", required = false, defaultValue = "false") boolean genPassword,
-            Principal principal,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            System.out.println("----------------------------");
-            return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
-        }
+            Principal principal) {
         updatedUser.setId(id);
         try {
             //id of user who is logged
@@ -116,5 +112,14 @@ public class usersController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
+    }
+    
+    @ExceptionHandler({ MethodArgumentNotValidException.class })
+    protected ResponseEntity<List<ErrorMessage>> handleInvalidRequest(MethodArgumentNotValidException  e) {
+        List<ErrorMessage> errorMessages = new ArrayList<>();
+        for(FieldError fieldError : e.getBindingResult().getFieldErrors()){
+            errorMessages.add(new ErrorMessage(fieldError.getField(), fieldError.getCode()));
+        }
+        return new ResponseEntity<>(errorMessages, HttpStatus.NOT_ACCEPTABLE);
     }
 }
