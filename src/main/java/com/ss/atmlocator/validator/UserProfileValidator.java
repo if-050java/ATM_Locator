@@ -31,13 +31,10 @@ public class UserProfileValidator {
     @Qualifier("imagevalidator")
     private Validator imageValidator;
 
-    @Autowired
-    private UserService userService;
 
     public void validate(User updatedUser, MultipartFile image, Errors errors) {
-        User persistedUser = userService.getUserById(updatedUser.getId());
 
-        if ( updatedUser.getLogin() != null) {
+        if (updatedUser.getLogin() != null) {
             loginValidator.validate(updatedUser.getLogin(), errors);
         }
         if (updatedUser.getEmail() != null) {
