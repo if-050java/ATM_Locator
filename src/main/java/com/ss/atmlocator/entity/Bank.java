@@ -14,7 +14,7 @@ import java.util.Set;
 public class Bank  implements Comparable<Bank> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String name;
@@ -50,11 +50,11 @@ public class Bank  implements Comparable<Bank> {
     private AtmNetwork network;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getName() {
@@ -145,7 +145,7 @@ public class Bank  implements Comparable<Bank> {
     @Override
     public String toString() {
         return "Bank{" +
-                "Id=" + Id +
+                "Id=" + id +
                 ", name='" + name + '\'' +
                 ", mfoCode=" + mfoCode +
                 ", webSite='" + webSite + '\'' +

@@ -22,22 +22,23 @@ public class UploadFileUtils {
         FileUtils.writeByteArrayToFile(file, image.getBytes());
     }
 
-    /**
-     *  Save bank logo or icon image with new filename based on bank_id
-     *  to avoid possibility of the same files for different banks
-     */
+/**
+ *  Save bank logo or icon image with new filename based on bank_id
+ *  to avoid possibility of the same files for different banks
+ *  (Created by Oleg)
+ */
     public static String saveBankImage(MultipartFile image, String prefix, int bank_id, HttpServletRequest request){
-        String newname = null;
+        String newName = null;
         try{
             if (image != null && !image.isEmpty()) {
-                newname =  prefix + bank_id +"."+FilenameUtils.getExtension(image.getOriginalFilename());
-                save(image, newname, request);
+                newName =  prefix + bank_id +"."+FilenameUtils.getExtension(image.getOriginalFilename());
+                save(image, newName, request);
             }
         } catch (IOException e) {
             log.error("IO error saving image "+prefix+ bank_id);
             e.printStackTrace();
         }
-        return newname;
+        return newName;
     }
 
 
