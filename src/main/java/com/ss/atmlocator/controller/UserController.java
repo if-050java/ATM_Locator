@@ -3,15 +3,17 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
-import com.ss.atmlocator.validator.UserProfileValidator;
+import com.ss.atmlocator.validator.UserValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,8 +37,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserProfileValidator userProfileValidator;
+    /*@Autowired
+    @Qualifier("uservalidator")
+    Validator userValidator;*/
 
 
     @RequestMapping(value = "/profile")
@@ -47,14 +50,14 @@ public class UserController {
         return "profile";
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+   /* @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<List<FieldError>> update(
             User updatedUser,
             BindingResult result,
             HttpServletRequest request,
             @RequestParam(value = "file", required = false) MultipartFile image) {
-        userProfileValidator.validate(updatedUser, image, result);
+        userValidator.validate(updatedUser, image, result);
         if (!result.hasErrors()) {
             try {
                 if (image != null) {
@@ -69,5 +72,5 @@ public class UserController {
             }
         }
         return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
-    }
+    }*/
 }

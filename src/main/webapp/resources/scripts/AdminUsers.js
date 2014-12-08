@@ -116,20 +116,20 @@ function getUpdatedFields(){
 }
 
 function updateUser(){
-    //checking login
-    if(! validateLogin($('#inputLogin').prop("value"))){
-        $('#inputLogin').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
-        $('#inputLogin').popover("show");
-        return;
-    }
-
-    //checking E-Mail
-    if(!validateEmail($('#inputEmail').prop("value"))){
-        $('#inputEmail').popover("show");
-        return;
-    };
-
-
+    ////checking login
+    //if(! validateLogin($('#inputLogin').prop("value"))){
+    //    $('#inputLogin').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
+    //    $('#inputLogin').popover("show");
+    //    return;
+    //}
+    //
+    ////checking E-Mail
+    //if(!validateEmail($('#inputEmail').prop("value"))){
+    //    $('#inputEmail').popover("show");
+    //    return;
+    //};
+    //
+    //
     var data = JSON.stringify(getUpdatedFields());
     if (data === "{}" && $("#genPassword").prop("checked") == false){
         showAlert("alert alert-info", "Nothing to update");

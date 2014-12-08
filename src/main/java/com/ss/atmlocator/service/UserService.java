@@ -6,7 +6,7 @@ import com.ss.atmlocator.exception.NotValidException;
 import com.ss.atmlocator.utils.EmailCreator;
 import com.ss.atmlocator.utils.GenString;
 import com.ss.atmlocator.utils.SendMails;
-import com.ss.atmlocator.validator.UserProfileValidator;
+import com.ss.atmlocator.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,12 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.MapBindingResult;
 
 import javax.mail.MessagingException;
 import javax.persistence.PersistenceException;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -47,8 +45,8 @@ public class UserService {
     @Qualifier("jdbcUserService")
     public UserDetailsManager userDetailsManager;
 
-    @Autowired
-    UserProfileValidator validationService;
+    /*@Autowired
+    UserValidator validationService;*/
 
     private static final String EMAIL_SUBJECT = "Change user credentials";
     private static final int GEN_PASSWORD_LENGTH = 6;
@@ -58,7 +56,7 @@ public class UserService {
         return usersDAO.getUserByName(name);
     }
 
-    public List<String> setNames(String partial){
+    public List<String> getNames(String partial){
         return usersDAO.getNames(partial);
     }
 
@@ -71,15 +69,8 @@ public class UserService {
         usersDAO.createUser(user);
     }
 
-    public void editUser(User user, boolean genPassword) throws NotValidException {
+    public void editUser(User user, boolean genPassword) throws MessagingException{
         try {
-            //validating user profile
-            MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
-            validationService.validate(user, null, errors);
-            if (errors.hasErrors()) {
-                throw new NotValidException();
-            }
-            ;
             //generate password if required
             if (genPassword) {
                 user.setPassword(GenString.genString(GEN_PASSWORD_LENGTH));
@@ -91,17 +82,9 @@ public class UserService {
             usersDAO.updateUser(merge(user));
         } catch (IllegalAccessException iae) {
             throw new PersistenceException("Can't merge this user");
-        } catch (MessagingException e) {
-            e.printStackTrace();
         }
     }
 
-    public void editProfile(User user) throws IllegalAccessException {
-        if (user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encodePassword(user.getPassword(), null));
-        }
-        usersDAO.updateUser(merge(user));
-    }
 
     private User merge(User user) throws IllegalAccessException {
         User persistedUser = getUserById(user.getId());
@@ -111,28 +94,6 @@ public class UserService {
             field.set(persistedUser, value);
         }
         return persistedUser;
-    }
-
-    public boolean isNotModified(User user) {
-        if (user.getId() <= 0) {
-            throw new IllegalArgumentException("User id can't be 0 or less");
-        }
-        try {
-            User persistedUser = getUserById(user.getId());
-            for (Field field : User.class.getDeclaredFields()) {
-                field.setAccessible(true);
-                if (!fieldEquals(field, user, persistedUser)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (IllegalAccessException iae) {
-            throw new PersistenceException();
-        }
-    }
-
-    private boolean fieldEquals(Field field, User newUser, User oldUser) throws IllegalAccessException {
-        return field.get(newUser) == null || field.get(newUser).equals(field.get(oldUser));
     }
 
     public void deleteUser(int id) {

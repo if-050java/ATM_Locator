@@ -1,19 +1,18 @@
 package com.ss.atmlocator.validator;
 
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Locale;
 
 @Service
-public class UserProfileValidator {
+public class UserValidator implements Validator {
 
     @Autowired
     @Qualifier("loginvalidator")
@@ -26,13 +25,11 @@ public class UserProfileValidator {
     @Autowired
     @Qualifier("emailvalidator")
     private Validator emailValidator;
-
     @Autowired
-    @Qualifier("imagevalidator")
-    private Validator imageValidator;
+    private MessageSource messages;
 
-
-    public void validate(User updatedUser, MultipartFile image, Errors errors) {
+    public void validate(Object object, Errors errors) {
+        User updatedUser = (User) object;
 
         if (updatedUser.getLogin() != null) {
             loginValidator.validate(updatedUser.getLogin(), errors);
@@ -43,8 +40,10 @@ public class UserProfileValidator {
         if (updatedUser.getPassword() != null) {
             passwordValidator.validate(updatedUser.getPassword(), errors);
         }
-        if (updatedUser.getAvatar() != null) {
-            imageValidator.validate(image, errors);
-        }
+    }
+
+    @Override
+    public boolean supports(Class<?> Clazz) {
+        return User.class.isAssignableFrom(Clazz);
     }
 }
