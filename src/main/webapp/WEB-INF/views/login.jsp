@@ -14,9 +14,12 @@
     </style>
 </head>
 <body>
+
 <c:if test="${not empty error}">
     <div class="alert alert-warning alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span></button>
 
         <div style="text-align: center">
             ${error}
@@ -25,6 +28,7 @@
 
     </div>
 </c:if>
+
 <div class="container">
     <form class="form-signin" role="form" action="<c:url value="/j_spring_security_check"/>" method="POST">
         <h2 class="form-signin-heading">Please sign in</h2>

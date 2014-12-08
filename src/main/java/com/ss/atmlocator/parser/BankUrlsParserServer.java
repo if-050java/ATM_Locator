@@ -28,13 +28,13 @@ public class BankUrlsParserServer implements Parser {
         this.url = url;
     }
 
-    public void setParametr(Map<String, String> parameters) {
+    public void setParameter(Map<String, String> parameters) {
 
         this.url = parameters.get("url");
        
     }
 
-    public List<Bank> parce() {
+    public List<Bank> parse() {
         bankList = new ArrayList<Bank>();
         AtmParserServise parser = new AtmParserServise();
         Map<String, Object> map = new HashMap<String, Object>();

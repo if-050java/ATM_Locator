@@ -22,6 +22,7 @@ import javax.mail.MessagingException;
 import javax.persistence.PersistenceException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by roman on 19.11.14.
@@ -55,6 +56,10 @@ public class UserService {
 
     public User getUserByName(String name) {
         return usersDAO.getUserByName(name);
+    }
+
+    public List<String> setNames(String partial){
+        return usersDAO.getNames(partial);
     }
 
     public User getUserById(int id) {

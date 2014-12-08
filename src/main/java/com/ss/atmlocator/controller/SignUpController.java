@@ -5,6 +5,7 @@ import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.entity.UserStatus;
 import com.ss.atmlocator.service.NewUserValidatorService;
+import com.ss.atmlocator.service.SignUpService;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.SendMails;
 import org.apache.log4j.Logger;
@@ -35,26 +36,15 @@ public class SignUpController {
 
     final Logger logger = Logger.getLogger(SignUpController.class.getName());
 
-    private final String DEFAULT_USER_AVATAR = "defaultUserAvatar.jpg";
+    private boolean autoLogin;
 
     @Autowired
-    private IUsersDAO usersDAO;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    @Qualifier("mail")
-    private SendMails sendMails;
-
-    @Autowired
-    private NewUserValidatorService validateUserField;
+    private SignUpService signUpService;
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup() {
         return "signup";
     }
-
 
     @RequestMapping(value = "/registering", method = RequestMethod.POST)
     public String registering(@RequestParam(value = "inputLogin",required = false) String login,
@@ -72,13 +62,11 @@ public class SignUpController {
         logger.info("POST parametr password: " +"{"+password+"}");
         logger.info("POST parametr email: " +"{"+email+"}");
 
+        if (signMe != null && signMe.length() > 0){ autoLogin = true; }
 
-        MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), user.getClass().getName());
-        validateUserField.validate(user,errors);
+        MapBindingResult errors = signUpService.signUpUser(user,autoLogin);
 
-        password = user.getPassword();
-
-        if(errors.hasErrors()) {
+        if(errors != null && errors.hasErrors()){
             String errorCause = "";
             for(ObjectError err : errors.getAllErrors()){
                 errorCause += err.getCode()+"; ";
@@ -88,40 +76,6 @@ public class SignUpController {
             return "signup";
         }
 
-        user.setEnabled(UserStatus.ENABLED);
-        user.setAvatar(DEFAULT_USER_AVATAR);
-        Role role = usersDAO.getDefaultUserRole();
-        Set<Role> roles = new HashSet<Role>(0);
-        roles.add(role);
-        user.setRoles(roles);
-        userService.createUser(user);
-
-        try{
-            sendMails.sendMail(user.getEmail(),
-                    "User Created",
-                    "You create user: "+user.getLogin()+"; with password:"+password);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-        if (signMe != null && signMe.length() > 0) {
-            loginUser(user.getLogin(),password, request);
-        }
-
         return "redirect:/";
     }
-
-    @Autowired
-    @Qualifier("authenticationManager")
-    protected AuthenticationManager authenticationManager;
-
-    private void loginUser(String login, String password, HttpServletRequest request) {
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
-        request.getSession();
-        Authentication authenticatedUser = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
-
-    }
-
 }

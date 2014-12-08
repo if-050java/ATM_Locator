@@ -1,6 +1,7 @@
 package com.ss.atmlocator.parser.parserNBU;
 
 import com.ss.atmlocator.parser.Parser;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,10 +20,12 @@ import com.ss.atmlocator.entity.Bank;
  */
 public class NbuParser implements Parser {
 
+    final Logger log = Logger.getLogger(NbuParser.class.getName());
     private List<Bank> banks = new ArrayList<Bank>();// Is it may by Set?
     private String url;
     private static String NAMEXPATH ;// ="table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a";
     private static String MFOXPATH ;//="table.col_title_t>tbody>tr:gt(0)>td:eq(2)" ;
+    private static String PAGINATORPATH ;
 
     public NbuParser() {
     }
@@ -32,26 +35,28 @@ public class NbuParser implements Parser {
     }
 
     @Override
-    public void setParametr(Map<String, String> parameters) {
-        if(parameters.containsKey("url")){
+    public void setParameter(Map<String, String> parameters) {
+        if(parameters.containsKey("url")){//TODO my by this can block the excess
             url =parameters.get("url");
         }if(parameters.containsKey("NAMEXPATH")){
             NAMEXPATH = parameters.get("NAMEXPATH");
         }if(parameters.containsKey("MFOXPATH")){
             MFOXPATH = parameters.get("MFOXPATH");
+        } if(parameters.containsKey("PAGINATORPATH")){
+            PAGINATORPATH = parameters.get("PAGINATORPATH");
         }
+
     }
 
     @Override
-    public List<Bank> parce() {
+    public List<Bank> parse() {
+        log.info("Start parser");
         parceBanks(url);
-        List<String> links = parceLink(url);
+        List<String> links = parseLink(url);
         for(String link: links){
             parceBanks(link);
         }
-//        for(Bank bank: banks){
-//            System.out.println(bank);
-//        }
+        log.info("End parser");
         return banks;
     }
 
@@ -60,25 +65,22 @@ public class NbuParser implements Parser {
      * @param url String where is list of banks in table
      */
     public void parceBanks(String url){     //MAKE IT A MULTITHREADED
+        log.info("Begin parse url - "+url);
          Document doc;
         try {
             doc =  Jsoup.connect(url).get(); // create connect to url
             Elements ElementsNames = doc.select(NAMEXPATH); // select all names of banks by Xpath
             Elements ElementsMFO =doc.select(MFOXPATH); // selsect mfo of banks by Xpath
             for (int i = 0; i < ElementsMFO.size(); i++) {                  //
-//                String name = getName(ElementsNames.get(i).text());
-//                banks.add(new Bank(ElementsNames.get(i).text() ,ElementsMFO.get(i).text() ));  // filling a list of banks
                 Bank bank = new Bank();
-                int a ="asdf".lastIndexOf("\"");
-//                bank.setName(ElementsNames.get(i).text());
                 bank.setName(deleteLastChar(getName(ElementsNames.get(i).text())));
                 bank.setMfoCode(Integer.parseInt(ElementsMFO.get(i).text()));
                 banks.add(bank);   // filling a list of banks
-//                banks.add(new Bank(name ,ElementsMFO.get(i).text() ));  // filling a list of banks
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("problem with  connect", e);
         }
+        log.info("end parse ");
     }
     private String deleteLastChar(String str){
 
@@ -90,8 +92,8 @@ public class NbuParser implements Parser {
 
 
     private String getName(String str) {
+
         String res = str;
-//        Pattern pattern = Pattern.compile("\"(.+)\"");
         Pattern pattern = Pattern.compile("[^\"]+\"+$");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
@@ -108,18 +110,20 @@ public class NbuParser implements Parser {
      * @param url
      * @return List Strings
      */
-    private List<String> parceLink(String url){
+    private List<String> parseLink(String url){
+        log.info("begin parse ");
         ArrayList<String> links=null;
         try {
             Document doc = Jsoup.connect(url).get(); // create connect to url
             links = new ArrayList<String>();
-            Elements elementsLinks = doc.select("div.content>table:eq(5)>tbody>tr>td:eq(1)>a"); // select all Links to other pages
+            Elements elementsLinks = doc.select(PAGINATORPATH); // select all Links to other pages
             for(Element link: elementsLinks){
                 links.add(link.attr("abs:href"));
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("problem with connection "+e);
+
         }
         return links;
     }

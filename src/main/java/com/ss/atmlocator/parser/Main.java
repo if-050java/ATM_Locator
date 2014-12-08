@@ -16,9 +16,9 @@ public class Main {
         BankUrlsParserServer parseUrl = new BankUrlsParserServer();
         Map<String, String> map = new HashMap<String, String>();
         map.put("url", "http://ubanks.com.ua/city/ivano-frankivska.php");
-        parseUrl.setParametr(map);
+        parseUrl.setParameter(map);
 
-        printBanks(parseUrl.parce());
+        printBanks(parseUrl.parse());
        
 
     }

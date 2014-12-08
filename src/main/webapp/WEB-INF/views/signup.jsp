@@ -10,6 +10,11 @@
     <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
     <script src="<c:url value="/resources"/>/scripts/NewUserValidator.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<style type="text/css">
+		.popover{
+		width:450px;
+		}
+	</style>
 </head>
 <body>
      <div class="panel-heading">
@@ -21,43 +26,50 @@
                  ${error}
          </div>
      </c:if>
-	<div class="row">
+	
         <form class="form-horizontal" role="form" method="POST" action="<c:url value="/registering"/>">
-            <div class="col-md-9">
+            <div class="row">
                 <div class="form-group">
                     <label for="inputLogin" class="col-sm-2 control-label">Login</label>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <input type="text" class="form-control" name="inputLogin" id="inputLogin" placeholder="Login"
                                data-content="" data-placement="right"
                                data-toggle="popover"  data-original-title="">
                     </div>
                 </div>
-
+			</div>
+			<div class="row">
 			<div class="form-group">
                 <label for="inputEmail" class="col-sm-2 control-label">Email</label>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                    <input type="text" class="form-control" name="inputEmail" id="inputEmail" placeholder="Email"
                           data-content="" data-placement="right"
                           data-toggle="popover" data-original-title="">
                 </div>
             </div>
+			</div>
 
-            <div class="form-group">
+            <div class="row">
+			<div class="form-group">
                 <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password">
                 </div>
             </div>
-
+			</div>
+			
+			<div class="row">
 			<div class="form-group">
                 <label for="confirmPassword" class="col-sm-2 control-label">Confirm your password</label>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
                 </div>
             </div>
+			</div>
 
-            <div class="form-group">
+            <div class="row">
+			<div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <div class="checkbox">
                         <label>
@@ -66,15 +78,18 @@
                     </div>
                 </div>
             </div>
+			</div>
 
-            <div class="form-group">
+            <div class="row">
+			<div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-default">Register me</button>
                 </div>
             </div>
         </div>
+		</div>
 
         </form>
-    </div>
+    
 </body>
 </html>
