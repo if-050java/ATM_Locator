@@ -2,11 +2,13 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.utils.UploadFileUtils;
 import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
 import com.ss.atmlocator.validator.ImageValidator;
 import com.ss.atmlocator.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -19,11 +21,14 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -37,17 +42,11 @@ public class usersController {
 
     @Autowired
     @Qualifier("uservalidator")
-    Validator validationService;
+    Validator userValidator;
 
-    @InitBinder("image")
-    protected void initUser1Binder(WebDataBinder binder) {
-        binder.setValidator(new ImageValidator());
-    }
-
-    @InitBinder("user")
-    protected void initUser2Binder(WebDataBinder binder) {
-        binder.setValidator(validationService);
-    }
+    @Autowired
+    @Qualifier("imagevalidator")
+    Validator imageValidator;
 
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)
     public ResponseEntity<User> findUser(@PathVariable("value") String value) {
@@ -96,8 +95,8 @@ public class usersController {
             @RequestParam(value = "generatePassword", required = false, defaultValue = "false") boolean genPassword,
             Principal principal,
             BindingResult bindingResult) {
+        userValidator.validate(updatedUser, bindingResult);
         if (bindingResult.hasErrors()) {
-            System.out.println("----------------------------");
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
         updatedUser.setId(id);
@@ -111,10 +110,30 @@ public class usersController {
                 userService.doAutoLogin(updatedUser.getLogin());
             }
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (PersistenceException | MessagingException | MailSendException exp ) {
+        } catch (PersistenceException | MessagingException | MailSendException exp) {
             //todo logger
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
+    }
+
+    @RequestMapping(value = "/updateAvatar", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<List<FieldError>> updateAvatar(
+            @RequestParam("id") int user_id,
+            @RequestParam(value = "file", required = false) MultipartFile image,
+            HttpServletRequest request,
+            BindingResult result) {
+
+        imageValidator.validate(image, result);
+        if (!result.hasErrors() && image != null) {
+            try {
+                UploadFileUtils.save(image, image.getOriginalFilename(), request);
+                userService.updateAvatar(user_id, image);
+            } catch (IOException e) {
+                //todo logging
+                return new ResponseEntity<>(result.getFieldErrors(),HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.persistence.PersistenceException;
@@ -84,6 +85,12 @@ public class UserService {
             throw new PersistenceException("Can't merge this user");
         }
     }
+
+    public void updateAvatar(int user_id, MultipartFile image){
+        User user = usersDAO.getUserById(user_id);
+        usersDAO.updateUser(user);
+    }
+
 
 
     private User merge(User user) throws IllegalAccessException {
