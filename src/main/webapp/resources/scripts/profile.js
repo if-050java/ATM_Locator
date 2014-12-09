@@ -37,20 +37,19 @@ function getUser() {
 }
 function validateForm() {
     var result = true;
-    //return result;
     var updatedUser = getUser();
 
     if (!validateLogin(updatedUser.login)) {
-        showMessage("login", INVALID_LOGIN, result);
+        showPopover("login", INVALID_LOGIN, result);
     }
     if (!validateEmail(updatedUser.email)) {
-        showMessage("login", INVALID_EMAIL, result);
+        showPopover("email", INVALID_EMAIL, result);
     }
     if (updatedUser.password.length != 0 && !validatePasswordStrange(updatedUser.password)) {
-        showMessage("login", INVALID_PASSWORD, result);
+        showPopover("password", INVALID_PASSWORD, result);
     }
     if (!validateConfirmPassword(updatedUser.password, updatedUser.confirmPassword)) {
-        showMessage("login", DIFFERENT_PASSWORD, result);
+        showPopover("confirmPassword", DIFFERENT_PASSWORD, result);
     }
     return result;
 }
@@ -67,6 +66,12 @@ function showAlert(className, html) {
 function prepareUser(updatedUser, persistedUser){
     if(updatedUser.login==persistedUser.login){
         delete updatedUser.login;
+    }
+    if(updatedUser.email==persistedUser.email){
+        delete updatedUser.email;
+    }
+    if(updatedUser.password==persistedUser.password){
+        delete updatedUser.password;
     }
 }
 
@@ -89,21 +94,17 @@ $(document).ready(function () {
 
     $("#save").click(function () {
 
-            if (validateForm(persistedUser)) {
+            if (validateForm()) {
                 var user = getUser();
-                var fd = new FormData();
-                for(prop in user){
-                    if(user[prop]!=null){
-                        fd.append(prop, user[prop]);
-                    }
-
-                }
+                prepareUser(user, persistedUser);
+               // var fd = new FormData();
                 $.ajax({
                     url: getHomeUrl() + "users/"+user.id,
                     type: "PATCH",
-                    data: user,
-                    processData: false,
-                    contentType: false,
+                    data: JSON.stringify(user),
+                    context : document.body,
+                    contentType: "application/json; charset=utf-8",
+                    dataType : "json",
                     statusCode: {
                         200: function (response) {
                             showAlert("alert alert-success", SUCCESS_MESSAGE);
@@ -120,13 +121,45 @@ $(document).ready(function () {
                                 $('#' + item.field).popover("show");
                             }
                         }
-                    },
-                    error: function () {
-                        showAlert("alert alert-danger", ERROR_MESSAGE);
                     }
                 })
             }
         }
-    )
+   );
+    //$("#save").click(function () {
+//
+//            if (validateForm()) {
+//                var user = getUser();
+//               // var fd = new FormData();
+//                $.ajax({
+//                    url: getHomeUrl() + "users/"+user.id,
+//                    type: "PATCH",
+//                    data: user,
+//                    processData: false,
+//                    contentType: false,
+//                    statusCode: {
+//                        200: function (response) {
+//                            showAlert("alert alert-success", SUCCESS_MESSAGE);
+//                        },
+//                        500: function () {
+//                            showAlert("alert alert-danger", ERROR_MESSAGE)
+//                        },
+//                        406: function (response) {
+//                            console.log(response);
+//                            showAlert("alert alert-warning", WARNING_MESSAGE);
+//                            for (var i = 0; i < response.responseJSON.length; i++) {
+//                                var item = response.responseJSON[i];
+//                                $('#' + item.field).attr("data-content", item.code);
+//                                $('#' + item.field).popover("show");
+//                            }
+//                        }
+//                    },
+//                    error: function () {
+//                        showAlert("alert alert-danger", ERROR_MESSAGE);
+//                    }
+//                })
+//            }
+//        }
+//    );
 });
 
