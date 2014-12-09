@@ -19,4 +19,8 @@ public class AtmNetworksService {
         return atmNetworksDAO.getNetworksList();
     }
 
+    public AtmNetwork getNetwork(int id) {
+        return atmNetworksDAO.getNetwork(id);
+    }
+
 }

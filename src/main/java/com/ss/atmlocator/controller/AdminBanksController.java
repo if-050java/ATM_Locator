@@ -4,6 +4,8 @@ import com.ss.atmlocator.dao.AtmNetworksDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.service.AtmNetworksService;
+import com.ss.atmlocator.service.BanksService;
 import com.ss.atmlocator.service.ParserService;
 import com.ss.atmlocator.utils.*;
 import org.apache.log4j.Logger;
@@ -26,9 +28,14 @@ public class AdminBanksController {
     @Autowired
     IBanksDAO banksDAO;
     @Autowired
-    AtmNetworksDAO networksDAO;
+    private BanksService banksService;
+    //@Autowired
+    //AtmNetworksDAO networksDAO;
     @Autowired
     ParserService parserService;
+    @Autowired
+    private AtmNetworksService atmNetworksService;
+
 
     /**
      *  Show page with list of Banks and ATM Networks
@@ -36,11 +43,8 @@ public class AdminBanksController {
     @RequestMapping(value = "/adminBanks")
     public String banksList(ModelMap modelMap) {
         log.debug("GET: banks page");
-        List<AtmNetwork> networks = networksDAO.getNetworksList();
-        modelMap.addAttribute("networks", networks);
-
+        modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("active","adminBanks");
-
         return "adminBanks";
     }
 
@@ -52,8 +56,7 @@ public class AdminBanksController {
     @ResponseBody
     List<Bank> banksListAjax(){
         log.debug("GET: list of banks");
-        List<Bank> banks = banksDAO.getBanksList();
-        return banks;
+        return banksService.getBanksList();
     }
 
     /**
@@ -64,10 +67,8 @@ public class AdminBanksController {
                            @RequestParam(value = "bank_id", required = true) int bank_id,
                            ModelMap modelMap) {
         log.debug("GET: bank #"+bank_id);
-        List<AtmNetwork> networks = networksDAO.getNetworksList();
-        modelMap.addAttribute("networks", networks);
-        Bank bank = banksDAO.getBank(bank_id);
-        modelMap.addAttribute("bank", bank);
+        modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
+        modelMap.addAttribute("bank", banksService.getBank(bank_id));
         modelMap.addAttribute("active","adminBanks");
 
         return "adminBankEdit";
@@ -79,8 +80,7 @@ public class AdminBanksController {
     @RequestMapping(value = "/adminBankCreateNew", method = RequestMethod.GET)
     public String bankCreateNew(ModelMap modelMap) {
         log.debug("GET: create new bank");
-        List<AtmNetwork> networks = networksDAO.getNetworksList();
-        modelMap.addAttribute("networks", networks);
+        modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         Bank bank = banksDAO.newBank();
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active","adminBanks");
@@ -98,33 +98,14 @@ public class AdminBanksController {
                            @RequestParam(value = "imageLogo", required = false) MultipartFile imageLogo,
                            @RequestParam(value = "iconAtmFile", required = false) MultipartFile iconAtmFile,
                            @RequestParam(value = "iconOfficeFile", required = false) MultipartFile iconOfficeFile,
-                           HttpServletRequest request,
-                           ModelMap modelMap)
+                           HttpServletRequest request)
     {
         log.debug("AJAX: save bank "+bank.getName()+" #"+bank.getId());
-        OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
 
-        AtmNetwork network = networksDAO.getNetwork(network_id);
-        bank.setNetwork(network);
+        bank.setNetwork(atmNetworksService.getNetwork(network_id));
 
-        String newname = null;
-        newname = UploadFileUtils.saveBankImage(imageLogo, "bank_logo", bank.getId(), request);
-        if(newname != null) bank.setLogo(newname);
-        newname = UploadFileUtils.saveBankImage(iconAtmFile, "bank_atm", bank.getId(), request);
-        if(newname != null) bank.setIconAtm(newname);
-        newname = UploadFileUtils.saveBankImage(iconOfficeFile, "bank_off", bank.getId(), request);
-        if(newname != null) bank.setIconOffice(newname);
+        return banksService.saveBank(bank, imageLogo, iconAtmFile, iconOfficeFile, request);
 
-        Bank savedBank = banksDAO.saveBank(bank); // TODO: check for save error
-        if (savedBank != null && savedBank.getId() > 0){
-            response.setStatus(Constants.SUCCESS);
-        } else {
-            response.setStatus(Constants.ERROR);
-        }
-
-        response.setErrorMessageList(errorMesages);
-        return response;
     }
 
     /**
@@ -133,18 +114,7 @@ public class AdminBanksController {
     @RequestMapping(value = "/adminBankDeleteAjax", method = RequestMethod.POST)
     @ResponseBody
     public OutResponse bankDeleteAjax(@RequestParam int bank_id, HttpServletRequest request) {
-        OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMesages = new ArrayList<ErrorMessage>();
-
-        log.debug("AJAX: delete bank #"+bank_id);
-
-        if (banksDAO.deleteBank(bank_id)){
-            response.setStatus(Constants.SUCCESS);
-        } else {
-            response.setStatus(Constants.ERROR);
-        }
-        response.setErrorMessageList(errorMesages);
-        return response;
+        return banksService.deleteBank(bank_id);
     }
 
 
@@ -154,7 +124,6 @@ public class AdminBanksController {
     @RequestMapping(value ="/updateBanksFromNbu")
     public String saveAllBank(){
         parserService.updateAllBanks();
-
         return "adminBanks";
     }
 
@@ -165,8 +134,8 @@ public class AdminBanksController {
     public String adminBankAtmList(@ModelAttribute("bank") Bank bank,
                                    ModelMap modelMap) {
         log.debug("AdminBanksController.adminBankAtmList():GET");
-        Bank getbank = banksDAO.getBank(bank.getId());
-        modelMap.addAttribute("bank", getbank);
+
+        modelMap.addAttribute("bank", banksService.getBank(bank.getId()));
         modelMap.addAttribute("active","adminBanks");
         //TODO: provide list of ATMs and offices
 
