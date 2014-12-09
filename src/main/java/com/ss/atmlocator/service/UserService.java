@@ -78,6 +78,7 @@ public class UserService {
             }
             sendMails.sendMail(getUserById(user.getId()).getEmail(), EMAIL_SUBJECT, emailCreator.toUser(user));
             if (user.getPassword() != null) {
+
                 user.setPassword(passwordEncoder.encodePassword(user.getPassword(), null));
             }
             usersDAO.updateUser(merge(user));

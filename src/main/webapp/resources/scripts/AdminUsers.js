@@ -11,7 +11,10 @@ function FindUser(){
         context: document.body,
         dataType: "json",
         statusCode: {
-            200: showData,
+            200: function(response) {
+                                showData(response);
+                                return response;
+                            },
             404: couldNotFind
         }
     })
@@ -36,10 +39,10 @@ function showData(response){
 }
 //Fill user profile
 function fillFields(user){
-    $("#userAvatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
-    $("#inputLogin").val(user.login);
-    $("#inputName").val(user.name);
-    $("#inputEmail").val(user.email);
+    $("#avatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
+    $("#login").val(user.login);
+    $("#name").val(user.name);
+    $("#email").val(user.email);
     $("#genPassword").prop("checked" ,false).change();
     if(user.enabled != 0){
         $("#enabled").prop("checked" ,true).change();
@@ -92,7 +95,7 @@ function hideAlert(){
 
 function getUpdatedFields(){
     updatedUser = {
-        login : $("#inputLogin").val(),
+        login : $("#login").val(),
         name : $("#inputName").val(),
         email : $("#inputEmail").val(),
         enabled : $("#enabled").prop("checked") == true ? 1 : 0
@@ -118,20 +121,25 @@ function getUpdatedFields(){
 }
 
 function updateUser(){
-    ////checking login
-    //if(! validateLogin($('#inputLogin').prop("value"))){
-    //    $('#inputLogin').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
-    //    $('#inputLogin').popover("show");
-    //    return;
-    //}
-    //
-    ////checking E-Mail
-    //if(!validateEmail($('#inputEmail').prop("value"))){
-    //    $('#inputEmail').popover("show");
-    //    return;
-    //};
-    //
-    //
+    //checking login
+    if(! validateLogin($('#login').prop("value"))){
+        $('#login').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
+        $('#login').popover("show");
+        return;
+    }
+    //checking login
+    if(! validateLogin($('#nickname').prop("value"))){
+        $('#login').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
+        $('#login').popover("show");
+        return;
+    }
+    //checking E-Mail
+    if(!validateEmail($('#email').prop("value"))){
+        $('#email').popover("show");
+        return;
+    };
+
+
     var data = JSON.stringify(getUpdatedFields());
     if (data === "{}" && $("#genPassword").prop("checked") == false){
         showAlert("alert alert-info", "Nothing to update");
@@ -146,9 +154,20 @@ function updateUser(){
         data : data,
         dataType : "json",
         statusCode: {
-            200: function(){ showAlert("alert alert-success", "Operation successfully processed")},
+            200: function(){
+                showAlert("alert alert-success", "Operation successfully processed");
+                user = FindUser();
+            },
             304: function(){ showAlert("alert alert-info", "Nothing to update")},
-            406: function(){ showAlert("alert alert-warning", "Not valid field")},
+            406: function (response) {
+                console.log(response);
+                showAlert("alert alert-warning", WARNING_MESSAGE);
+                for (var i = 0; i < response.responseJSON.length; i++) {
+                    var item = response.responseJSON[i];
+                    $('#' + item.field).attr("data-content", item.code);
+                    $('#' + item.field).popover("show");
+                }
+            },
             500: function(){ showAlert("alert alert-danger", "kuhf")}
         }
     })
