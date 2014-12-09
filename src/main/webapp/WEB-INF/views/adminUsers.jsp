@@ -92,18 +92,18 @@
                                             min-width: 100px;
                                         }
                                     </style>
-                                    <input checked id="enabled" data-toggle="toggle"
-                                           data-on="allowed" data-off="prohibited" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()"/>
+                                    <input id="enabled" data-style="width" data-toggle="toggle" unchecked
+                                           data-on="on" data-off="off" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="genPassword" class="col-md-3 control-label">Reset password</label>
 
                                 <div class="col-md-3">
-                                    <input checked id="genPassword" data-toggle="toggle"
-                                           data-on="allowed" data-off="prohibited" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()"/>
+                                    <input id="genPassword" data-style="width" data-toggle="toggle" unchecked
+                                           data-on="on" data-off="off" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
                                 </div>
                             </div>
                         </form>
