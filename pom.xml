@@ -8,7 +8,7 @@
     <name>ATM Locator Webapp</name>
     <properties>
         <spring.version>3.2.11.RELEASE</spring.version>
-        <hibernate.version>4.2.11.Final</hibernate.version>
+        <hibernate.version>4.3.5.Final</hibernate.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
     </properties>
 
@@ -154,9 +154,33 @@
             <artifactId>ST4</artifactId>
             <version>4.0.7</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>3.2.11.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.3.0.Final</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>atmlocator</finalName>
+        <plugins>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.7</source>
+                <target>1.7</target>
+            </configuration>
+        </plugin>
+        </plugins>
+
     </build>
 </project>

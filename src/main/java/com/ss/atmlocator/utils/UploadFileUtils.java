@@ -16,6 +16,10 @@ public class UploadFileUtils {
     private final static org.apache.log4j.Logger log = Logger.getLogger(UploadFileUtils.class);
     public static final String RESOURCES_FOLDER = "\\resources\\images\\";
 
+
+    /**
+     *  Save user avatar
+     */
     public static void save(MultipartFile image,String filename, HttpServletRequest request) throws IOException {
         String path = request.getSession().getServletContext().getRealPath("/") + RESOURCES_FOLDER;
         File file = new File(path + filename);

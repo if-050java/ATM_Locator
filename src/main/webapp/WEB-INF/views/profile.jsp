@@ -24,7 +24,8 @@
                            role="form" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="row">
                         <div class="col-md-2 avablock">
-                            <img src="<c:url value="/resources"/>/images/${user.avatar}" class="img-thumbnail" alt="avatar"
+                            <img src="<c:url value="/resources"/>/images/${user.avatar}" class="img-thumbnail"
+                                 alt="avatar"
                                  id="userAvatar">
 
                             <div class="controls clearfix">
@@ -37,7 +38,6 @@
                         </div>
                         <div class="col-md-6">
                             <form:hidden path="id"/>
-                            <form:hidden path="enabled"/>
                             <div class="form-group">
                                 <label for="login" class="col-sm-2 control-label">NickName</label>
 
@@ -58,17 +58,19 @@
                             </div>
                             <div class="form-group">
                                 <label for="password" class="col-sm-2 control-label">Password</label>
+
                                 <div class="col-md-10">
-                                    <input type="password" id="password"  placeholder="&#149;&#149;&#149;&#149;&#149;&#149;"
-                                                   class="form-control" data-toggle="popover"
-                                                   data-placement="right" onclick="hidePopover('password')"/>
+                                    <input type="password" id="password" name="password"
+                                           placeholder="&#149;&#149;&#149;&#149;&#149;&#149;"
+                                           class="form-control" data-toggle="popover"
+                                           data-placement="right" onclick="hidePopover('password')"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="confirmPassword" class="col-sm-2 control-label">Confirm</label>
 
                                 <div class="col-md-10">
-                                    <input type="password" id="confirmPassword"
+                                    <input type="password" id="confirmPassword" name="confirmPassword"
                                            placeholder="&#149;&#149;&#149;&#149;&#149;&#149;" class="form-control"
                                            data-toggle="popover" data-placement="right"
                                            onclick="hidePopover('confirmPassword')"/>

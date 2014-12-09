@@ -63,7 +63,6 @@
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="${mailserver.ip}" />
         <property name="port" value="${mailserver.port}" />
-
         <property name="javaMailProperties">
             <props>
                 <prop key="mail.smtp.auth">${smtp.auth}</prop>
@@ -101,6 +100,7 @@
     <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
     <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
     <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
+    <bean id="uservalidator" class="com.ss.atmlocator.validator.UserValidator"/>
 
     <bean id="passwordEncoder"
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />

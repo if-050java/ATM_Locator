@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
-
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 @Service
 public class ImageValidator implements Validator {
 
     private final int MAX_FILE_SIZE = 716800; //700kb
+    private static final List<String> EXTENSIONS = Arrays.asList("jpg", "jpeg", "png","gif");
 
     @Autowired
     private MessageSource messages;
@@ -32,11 +34,14 @@ public class ImageValidator implements Validator {
             errors.rejectValue(Constants.USER_AVATAR,
                     messages.getMessage("file.size.limit", null, Locale.ENGLISH));
             return;
-        } else if (!FilenameUtils.getExtension(image.getOriginalFilename()).equals("jpg") &&
-                !FilenameUtils.getExtension(image.getOriginalFilename()).equals("jpeg") &&
-                !FilenameUtils.getExtension(image.getOriginalFilename()).equals("png")) {
+        } else if (!isValidExtension(image)) {
             errors.rejectValue(Constants.USER_AVATAR,
                     messages.getMessage("file.extension", null, Locale.ENGLISH));
         }
+    }
+
+    private boolean isValidExtension(MultipartFile image) {
+        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
+        return EXTENSIONS.contains(extension);
     }
 }

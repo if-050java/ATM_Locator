@@ -11,6 +11,6 @@ import java.util.Map;
  * Created by maks on 19.11.2014.
  */
 public interface Parser {
-    public void setParametr(Map<String, String> parameters);
-    public List<Bank> parce();
+    public void setParameter(Map<String, String> parameters);
+    public List<Bank> parse();
 }

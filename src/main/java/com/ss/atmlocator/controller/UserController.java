@@ -2,23 +2,27 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.utils.*;
-import com.ss.atmlocator.validator.ImageValidator;
-import com.ss.atmlocator.validator.UserProfileValidator;
+import com.ss.atmlocator.utils.UploadFileUtils;
+import com.ss.atmlocator.validator.UserValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.MapBindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,7 +30,6 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/user")
-@SessionAttributes("user")
 public class UserController {
 
     final Logger logger = Logger.getLogger(UserController.class.getName());
@@ -34,11 +37,10 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserProfileValidator userProfileValidator;
+    /*@Autowired
+    @Qualifier("uservalidator")
+    Validator userValidator;*/
 
-    @Autowired
-    ImageValidator imageValidator;
 
     @RequestMapping(value = "/profile")
     public String profile(ModelMap model, Principal principal) {
@@ -48,46 +50,27 @@ public class UserController {
         return "profile";
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+   /* @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public OutResponse update(
-            @RequestParam int id,
-            @RequestParam String login,
-            @RequestParam String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(value = "avatar", required = false) MultipartFile avatar, HttpServletRequest request
-    ) {
-        OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
-
-        User newUser = new User(id, login, email, password, 1);
-        newUser.setAvatar(avatar == null ? null : avatar.getOriginalFilename());
-        MapBindingResult errors = new MapBindingResult(new HashMap<String, String>(), User.class.getName());
-        if (userService.isNotModified(newUser)) {
-            response.setStatus(Constants.INFO);
-            return response;
-        }
-        userProfileValidator.validate(newUser, avatar, errors);
-        if (!errors.hasErrors()) {
+    public ResponseEntity<List<FieldError>> update(
+            User updatedUser,
+            BindingResult result,
+            HttpServletRequest request,
+            @RequestParam(value = "file", required = false) MultipartFile image) {
+        userValidator.validate(updatedUser, image, result);
+        if (!result.hasErrors()) {
             try {
-                if (avatar != null) {
-                    UploadFileUtils.save(avatar, avatar.getOriginalFilename(), request);
+                if (image != null) {
+                    UploadFileUtils.save(image, image.getOriginalFilename(), request);
                 }
-                userService.editUser(newUser);
-                userService.doAutoLogin(newUser.getLogin());
-            } catch (IOException e) {
-                logger.error(ExceptionParser.parseExceptions(e));
-                response.setStatus(Constants.ERROR);
-                return response;
+                userService.editProfile(updatedUser);
+                userService.doAutoLogin(updatedUser.getLogin());
+                return new ResponseEntity(HttpStatus.OK);
+            } catch (IOException | IllegalAccessException e) {
+                logger.error(e.getMessage(), e);
+                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            response.setStatus(Constants.SUCCESS);
-            return response;
         }
-        for (FieldError objectError : errors.getFieldErrors()) {
-            errorMessages.add(new ErrorMessage(objectError.getField(), objectError.getCode()));
-        }
-        response.setStatus(Constants.WARNING);
-        response.setErrorMessageList(errorMessages);
-        return response;
-    }
+        return new ResponseEntity<>(result.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
+    }*/
 }
