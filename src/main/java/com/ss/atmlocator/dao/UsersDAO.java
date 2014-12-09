@@ -114,7 +114,7 @@ public class UsersDAO implements IUsersDAO {
     @Override
     public List<String> getNames(String partial) {
         List<String> result = new ArrayList<String>();
-        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial UNION SELECT email FROM users WHERE email LIKE :partial LIMIT 3";
+        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial UNION SELECT email FROM users WHERE email LIKE :partial LIMIT 5";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("partial", "%"+partial+"%");
         result.addAll(query.getResultList());

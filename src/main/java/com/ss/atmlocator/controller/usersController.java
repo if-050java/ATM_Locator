@@ -87,7 +87,7 @@ public class usersController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<List<FieldError>> updateUser(
             @PathVariable("id") int id,
-            @Validated @RequestBody User updatedUser,
+            @RequestBody User updatedUser,
             @RequestParam(value = "generatePassword", required = false, defaultValue = "false") boolean genPassword,
             Principal principal,
             BindingResult bindingResult) {
@@ -112,10 +112,10 @@ public class usersController {
         }
     }
 
-    @RequestMapping(value = "/updateAvatar", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/updateAvatar", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<List<FieldError>> updateAvatar(
-            @RequestParam("id") int user_id,
+            @PathVariable("id") int user_id,
             @RequestParam(value = "file", required = false) MultipartFile image,
             HttpServletRequest request,
             BindingResult result) {
@@ -131,14 +131,5 @@ public class usersController {
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-    
-    @ExceptionHandler({ MethodArgumentNotValidException.class })
-    protected ResponseEntity<List<ErrorMessage>> handleInvalidRequest(MethodArgumentNotValidException  e) {
-        List<ErrorMessage> errorMessages = new ArrayList<>();
-        for(FieldError fieldError : e.getBindingResult().getFieldErrors()){
-            errorMessages.add(new ErrorMessage(fieldError.getField(), fieldError.getCode()));
-        }
-        return new ResponseEntity<>(errorMessages, HttpStatus.NOT_ACCEPTABLE);
     }
 }

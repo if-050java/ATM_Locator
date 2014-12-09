@@ -91,7 +91,13 @@ public class UserService {
         usersDAO.updateUser(user);
     }
 
+    public boolean checkExistLoginName(User user){
+        return usersDAO.checkExistLoginName(user);
+    };
 
+    public boolean checkExistEmail(User user){
+        return usersDAO.checkExistEmail(user);
+    };
 
     private User merge(User user) throws IllegalAccessException {
         User persistedUser = getUserById(user.getId());
