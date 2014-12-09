@@ -26,7 +26,6 @@ public class UserValidator implements Validator {
     @Autowired
     private MessageSource messages;
 
-
     public void validate(Object object, Errors errors) {
         User updatedUser = (User) object;
 
@@ -38,6 +37,9 @@ public class UserValidator implements Validator {
         }
         if (updatedUser.getPassword() != null) {
             validatePassword(updatedUser, errors);
+        }
+        if (updatedUser.getName() != null) {
+            validateNickName(updatedUser, errors);
         }
     }
 
@@ -79,6 +81,14 @@ public class UserValidator implements Validator {
         if(!userCredMatcher.validatePassword(password)) {
             errors.rejectValue(Constants.USER_PASSWORD,
                     messages.getMessage("invalid.password", null, Locale.ENGLISH));
+        }
+    }
+
+    private void validateNickName(User user, Errors errors) {
+        final String nickName = user.getName();
+        if(!userCredMatcher.validateLogin(nickName)){
+            errors.rejectValue(Constants.USER_NAME,
+                    messages.getMessage("invalid.nickname", null, Locale.ENGLISH));
         }
     }
 }

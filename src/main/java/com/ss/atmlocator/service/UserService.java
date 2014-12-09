@@ -46,12 +46,8 @@ public class UserService {
     @Qualifier("jdbcUserService")
     public UserDetailsManager userDetailsManager;
 
-    /*@Autowired
-    UserValidator validationService;*/
-
     private static final String EMAIL_SUBJECT = "Change user credentials";
     private static final int GEN_PASSWORD_LENGTH = 6;
-
 
     public User getUserByName(String name) {
         return usersDAO.getUserByName(name);
@@ -87,9 +83,8 @@ public class UserService {
         }
     }
 
-    public void updateAvatar(int user_id, MultipartFile image){
-        User user = usersDAO.getUserById(user_id);
-        usersDAO.updateUser(user);
+    public void updateAvatar(int user_id, String avatar){
+        usersDAO.updateAvatar(user_id, avatar);
     }
 
     public boolean checkExistLoginName(User user){
