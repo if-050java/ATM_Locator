@@ -38,11 +38,11 @@ public class Bank  implements Comparable<Bank> {
     private Timestamp lastUpdated;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.LAZY)
     private Set<AtmOffice> atmOfficeSet;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.LAZY)
     private Set<AtmParser> atmParserSet;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -54,7 +54,7 @@ public class Bank  implements Comparable<Bank> {
     }
 
     public void setId(int id) {
-        id = id;
+        this.id = id;
     }
 
     public String getName() {

@@ -1,6 +1,7 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmNetwork;
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
@@ -12,7 +13,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;;
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Olavin on 22.11.2014.

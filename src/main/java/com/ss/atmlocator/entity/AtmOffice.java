@@ -60,10 +60,12 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return Id;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
     private Set<AtmComment> atmComments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
     private Set<AtmFavorite> atmFavorites;
 
     public int getId() {
@@ -128,6 +130,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
         this.photo = photo;
     }
 
+
     public Set<AtmComment> getAtmComments() {
         return atmComments;
     }
@@ -135,6 +138,15 @@ public class AtmOffice implements Comparable<AtmOffice>{
     public void setAtmComments(Set<AtmComment> atmComments) {
         this.atmComments = atmComments;
     }
+
+    public Set<AtmFavorite> getAtmFavorites() {
+        return atmFavorites;
+    }
+
+    public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
+        this.atmFavorites = atmFavorites;
+    }
+
 
     public Bank getBank() {
         return bank;

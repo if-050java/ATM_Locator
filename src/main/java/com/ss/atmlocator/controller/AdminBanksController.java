@@ -113,8 +113,8 @@ public class AdminBanksController {
      */
     @RequestMapping(value = "/adminBankDeleteAjax", method = RequestMethod.POST)
     @ResponseBody
-    public OutResponse bankDeleteAjax(@RequestParam int bank_id, HttpServletRequest request) {
-        return banksService.deleteBank(bank_id);
+    public OutResponse bankDeleteAjax(@RequestParam int id, HttpServletRequest request) {
+        return banksService.deleteBank(id);
     }
 
 
