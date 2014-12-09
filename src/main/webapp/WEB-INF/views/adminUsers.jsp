@@ -85,7 +85,6 @@
                             </div>
                             <div class="form-group">
                                 <label for="enabled" class="col-md-3 control-label">Log in</label>
-
                                 <div class="col-md-3">
                                     <!-- custom style to set width of switch -->
                                     <style>
@@ -93,18 +92,18 @@
                                             min-width: 100px;
                                         }
                                     </style>
-                                    <input id="enabled" data-style="width" data-toggle="toggle" checked
+                                    <input checked id="enabled" data-toggle="toggle"
                                            data-on="allowed" data-off="prohibited" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
+                                           data-offstyle="danger" type="checkbox" onchange="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="enabled" class="col-md-3 control-label">Reset password</label>
+                                <label for="genPassword" class="col-md-3 control-label">Reset password</label>
 
                                 <div class="col-md-3">
-                                    <input id="genPassword" data-style="width" data-toggle="toggle" unchecked
-                                           data-on="on" data-off="off" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
+                                    <input checked id="genPassword" data-toggle="toggle"
+                                           data-on="allowed" data-off="prohibited" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox" onchange="setModified()"/>
                                 </div>
                             </div>
                         </form>
@@ -134,7 +133,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-primary" onclick="deleteUser()">Yes</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteUser()">Yes</button>
                 </div>
             </div>
         </div>

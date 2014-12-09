@@ -1,5 +1,15 @@
 var user;               //Instance of current loaded user
 
+window.onload = function() {
+    jQuery("#findName").autocomplete({
+        serviceUrl: getHomeUrl() + "users",
+        minChars: 2,
+        deferRequestBy: 200,
+        delimiter: /(,|;)\s*/,
+        zIndex: 1000
+    })
+}
+
 //Request to find user by name or email
 function FindUser(){
     var findValue = $("#findName").val().replace('.','*');
@@ -13,6 +23,7 @@ function FindUser(){
         statusCode: {
             200: function(response) {
                                 showData(response);
+                                $("#findName").val("");
                                 return response;
                             },
             404: couldNotFind
@@ -41,7 +52,7 @@ function showData(response){
 function fillFields(user){
     $("#avatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
     $("#login").val(user.login);
-    $("#name").val(user.name);
+    $("#nickname").val(user.name);
     $("#email").val(user.email);
     $("#genPassword").prop("checked" ,false).change();
     if(user.enabled != 0){
@@ -96,8 +107,8 @@ function hideAlert(){
 function getUpdatedFields(){
     updatedUser = {
         login : $("#login").val(),
-        name : $("#inputName").val(),
-        email : $("#inputEmail").val(),
+        name : $("#nickname").val(),
+        email : $("#email").val(),
         enabled : $("#enabled").prop("checked") == true ? 1 : 0
     }
 
@@ -129,8 +140,8 @@ function updateUser(){
     }
     //checking login
     if(! validateLogin($('#nickname').prop("value"))){
-        $('#login').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
-        $('#login').popover("show");
+        $('#nickname').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
+        $('#nickname').popover("show");
         return;
     }
     //checking E-Mail
@@ -156,11 +167,12 @@ function updateUser(){
         statusCode: {
             200: function(){
                 showAlert("alert alert-success", "Operation successfully processed");
-                user = FindUser();
+                user.login = $("#login").val();
+                user.name = $("#nickname").val();
+                user.email = $("#email").val();
+                user.enabled = $("#enabled").prop("checked") == true ? 1 : 0;
             },
-            304: function(){ showAlert("alert alert-info", "Nothing to update")},
             406: function (response) {
-                console.log(response);
                 showAlert("alert alert-warning", WARNING_MESSAGE);
                 for (var i = 0; i < response.responseJSON.length; i++) {
                     var item = response.responseJSON[i];
@@ -185,15 +197,8 @@ function setModified(){
     }
 }
 
- window.onload = function() {
-    jQuery("#findName").autocomplete({
-        serviceUrl: getHomeUrl() + "users",
-        minChars: 2,
-        deferRequestBy: 200,
-        delimiter: /(,|;)\s*/,
-        zIndex: 1000
-    })
-}
+
+
 
 
 

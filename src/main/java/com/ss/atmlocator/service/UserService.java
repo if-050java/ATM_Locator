@@ -68,16 +68,16 @@ public class UserService {
 
     public void editUser(User user, boolean genPassword) throws MessagingException{
         try {
-            //generate password if required
             if (genPassword) {
                 user.setPassword(GenString.genString(GEN_PASSWORD_LENGTH));
-            }
-            sendMails.sendMail(getUserById(user.getId()).getEmail(), EMAIL_SUBJECT, emailCreator.toUser(user));
+            };
+            User mergedUser = merge(user);
             if (user.getPassword() != null) {
-
-                user.setPassword(passwordEncoder.encodePassword(user.getPassword(), null));
+                mergedUser.setPassword(passwordEncoder.encodePassword(user.getPassword(), null));
             }
-            usersDAO.updateUser(merge(user));
+            usersDAO.updateUser(merge(mergedUser));
+            mergedUser.setPassword(user.getPassword());
+            sendMails.sendMail(mergedUser.getEmail() , EMAIL_SUBJECT, emailCreator.toUser(mergedUser));
         } catch (IllegalAccessException iae) {
             throw new PersistenceException("Can't merge this user");
         }
