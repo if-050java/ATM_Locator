@@ -112,7 +112,7 @@ public class usersController {
         }
     }
 
-    @RequestMapping(value = "/{id}/updateAvatar", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/avatar", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<List<FieldError>> updateAvatar(
             @PathVariable("id") int user_id,
@@ -123,8 +123,9 @@ public class usersController {
         imageValidator.validate(image, result);
         if (!result.hasErrors() && image != null) {
             try {
-                UploadFileUtils.save(image, image.getOriginalFilename(), request);
-                userService.updateAvatar(user_id, image);
+                String avatar = user_id + image.getOriginalFilename();
+                UploadFileUtils.save(image, avatar, request);
+                userService.updateAvatar(user_id, avatar);
             } catch (IOException e) {
                 //todo logging
                 return new ResponseEntity<>(result.getFieldErrors(),HttpStatus.NOT_ACCEPTABLE);
