@@ -92,7 +92,7 @@ public class BanksDAO implements IBanksDAO {
     @Override
     @Transactional
     public void saveAllBankNBU(List<Bank> banks) {
-        Bank bank1;
+        Bank tempBank;
         AtmNetwork unassigned = entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
 
         for (Bank bank : banks) {
@@ -101,13 +101,13 @@ public class BanksDAO implements IBanksDAO {
                 TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.mfoCode=:mfoCode", Bank.class);
                 query.setParameter("mfoCode", mfoCode);
 
-                bank1 = query.getSingleResult();// тут вилітає , бо query не повертає щось не те
-
-                if (bank.getMfoCode() == bank1.getMfoCode()) {
+                tempBank = query.getSingleResult();
+                if (bank.getMfoCode() == tempBank.getMfoCode()) {
                     System.out.println("------I'm in continue-----");
                     continue;
                 }
             } catch (NoResultException nre) {
+                log.warn("he bank with mfo code not found"+nre.getMessage());
                 //if the bank with mfo code not found , catch this exception
 //                continue;
             }

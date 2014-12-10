@@ -1,5 +1,6 @@
 package com.ss.atmlocator.dao;
 
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
