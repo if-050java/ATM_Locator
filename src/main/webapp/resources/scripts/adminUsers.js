@@ -1,5 +1,6 @@
 var user;               //Instance of current loaded user
 
+//initialize autocomplite for finding
 window.onload = function() {
     jQuery("#findName").autocomplete({
         serviceUrl: getHomeUrl() + "users",
@@ -13,8 +14,9 @@ window.onload = function() {
     })
 }
 
-//Request to find user by name or email
+//request to find user by name or email
 function FindUser(){
+    user = null;
     var findValue = $("#findName").val().replace('.','*');
 
    //Send request
@@ -35,8 +37,8 @@ function FindUser(){
     return false;
 }
 
-//Show popover if cant find such user
-function couldNotFind(message){
+//show popover if cant find such user
+function couldNotFind(){
         //show popover if user not found
         $('#findName').attr("data-content", "Can't find user with this name or e-mail");
         $('#findName').popover("show");
@@ -44,7 +46,7 @@ function couldNotFind(message){
         $("#userData").slideUp();
 }
 
-//Show user profile
+//show user profile
 function showData(response){
     user = response;
     //fill fields in form by user data
@@ -52,7 +54,8 @@ function showData(response){
     //show form
     $("#userData").slideDown();
 }
-//Fill user profile
+
+//fill user profile
 function fillFields(user){
     $("#avatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
     $("#login").val(user.login);
@@ -65,17 +68,29 @@ function fillFields(user){
     }
     $("#genPassword").prop("checked" ,false).change();
     $("#save").prop('disabled', true);
+    for(i=0;i < user.roles.length; i++){
+        if (user.roles[i].name === "ADMIN") {
+            $("#enabled").bootstrapToggle('disable');
+            $("#delete").prop('disabled', true);
+            return;
+        } else {
+            $("#enabled").bootstrapToggle('enable');
+            $("#delete").prop('disabled', false);
+        }
+    }
 }
-//hide form
+
+//hide user profile
 function clearForm(){
     $("#userData").slideUp();
 }
 
+//to ask about deleting
 function askForDeleting(){
     $("#questionModal").modal("show");
 }
 
-//Delete user from server
+//delete user from server
 function deleteUser(){
     //Send request
     $.ajax({
@@ -84,9 +99,9 @@ function deleteUser(){
         context: document.body,
         dataType: "json",
         statusCode: {
-            200: showAlert,
-            404: showAlert,
-            406: showAlert
+            200: showAlert("alert alert-success", "Operation successfully processed"),
+            404: showAlert("alert alert-warning", "No such user"),
+            422: showAlert("alert alert-warning", "Can't delete administrator")
         }
     })
     //hide user form
@@ -94,6 +109,7 @@ function deleteUser(){
  //   $("#userData").slideUp();
 }
 
+//show alert about result of operation
 function showAlert(className, html) {
     $("#message").removeClass();
     $("#message").addClass(className);
@@ -103,11 +119,13 @@ function showAlert(className, html) {
     setTimeout(hideAlert, 8000)
 }
 
+//hide alert about result of operation
 function hideAlert(){
 
     $("#message").slideUp(500);
 }
 
+//create PATCH data from updated fields
 function getUpdatedFields(){
     updatedUser = {
         login : $("#login").val(),
@@ -135,15 +153,16 @@ function getUpdatedFields(){
     return updatedUser;
 }
 
+//request to update user
 function updateUser(){
     //checking login
- /*   if(! validateLogin($('#login').prop("value"))){
+    if(! validateLogin($('#login').prop("value"))){
         $('#login').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
         $('#login').popover("show");
         return;
     }
     //checking login
-    if(! validateLogin($('#name').prop("value"))){
+    if(! validateNickName($('#name').prop("value"))){
         $('#name').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
         $('#name').popover("show");
         return;
@@ -152,7 +171,7 @@ function updateUser(){
     if(!validateEmail($('#email').prop("value"))){
         $('#email').popover("show");
         return;
-    };*/
+    };
 
 
     var data = JSON.stringify(getUpdatedFields());
@@ -186,15 +205,20 @@ function updateUser(){
                     $('#' + item.field).popover("show");
                 }
             },
+            422: function(){
+                showAlert("alert alert-warning", "Can't disable administrator");
+            },
             500: function(){ showAlert("alert alert-danger", "Operation failed because of a server error")}
         }
     })
 }
 
+//hide aditional information about validation fields
 function hidePopover(element){
     $('#'+element).popover("destroy");
 }
 
+//enable save button if some fields was modified by user
 function setModified(){
     if(JSON.stringify(getUpdatedFields()) != "{}") {
         $("#save").prop('disabled', false);
@@ -214,10 +238,3 @@ $(function() {
         $("#save").prop('disabled', false);
     })
 })
-
-
-
-
-
-
-

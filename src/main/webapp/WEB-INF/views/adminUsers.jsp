@@ -111,7 +111,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2 col-lg-offset-8">
-                        <button type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">Delete
+                        <button id="delete" type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">Delete
                         </button>
                     </div>
                     <div class="col-md-2">

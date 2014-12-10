@@ -2,6 +2,7 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.entity.UserStatus;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
 import com.ss.atmlocator.utils.ErrorMessage;
@@ -74,7 +75,7 @@ public class usersController {
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
         //Check want to remove admin
         if (userService.getUserById(id).getRoles().contains(ADMIN_ROLE)) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<Void>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         try {
             userService.deleteUser(id);
@@ -99,6 +100,11 @@ public class usersController {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
         try {
+            //Can't disable admin
+            boolean isAdmin = userService.getUserById(id).getRoles().contains(ADMIN_ROLE);
+            if (isAdmin && UserStatus.DISABLED == updatedUser.getEnabled()) {
+                return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            }
             //id of user who is logged
             int currentLoggedUserId = userService.getUserByName(principal.getName()).getId();
             //try to update user in database

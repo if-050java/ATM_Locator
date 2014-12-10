@@ -20,3 +20,8 @@ function validateLogin(login){
     var regExp = /^[A-Za-z](\w){3,}$/;
     return regExp.test(login);
 };
+
+function validateNickName(nickName){
+    var regExp = /^(\w){2,}(\s)?(\w){2,}$/;
+    return regExp.test(nickName);
+};

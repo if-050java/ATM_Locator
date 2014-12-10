@@ -34,18 +34,17 @@ public class User {
     @Column
     private Date lastLoging;
 
-    @JsonIgnore //Ignoring this field in JSON serializing
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
     @JoinColumn(name = "roles_id")
     private Set<Role> roles;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<AtmComment> atmComments;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<AtmFavorite> atmFavorites;
 
     public User(int id, String login, String email, String password, UserStatus enabled) {
