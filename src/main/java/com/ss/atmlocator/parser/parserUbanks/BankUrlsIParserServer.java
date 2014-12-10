@@ -52,11 +52,13 @@ public class BankUrlsIParserServer implements IParser {
                 int count =2;
 
                 for (Element url : urls) {
-
-                        if (url.text().equals("відділення")) {
+                        /* відділення */
+                        if (url.text().equals("\u0432\u0456\u0434\u0434\u0456\u043B\u0435\u043D\u043D\u044F")) {
                             listSelector = "branch";
 
-                        } else if (url.text().equals("банкомати")) {
+                        } else
+                        /* банкомати */
+                        if (url.text().equals("\u0431\u0430\u043D\u043A\u043E\u043C\u0430\u0442\u0438")) {
                             listSelector = "atm";
 
                         }

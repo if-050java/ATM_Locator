@@ -50,6 +50,12 @@
                             </button>
                         </div>
 
+                        <div class="btn-group">
+                            <button formaction="<c:url value="/testU" />" name="testu" class="btn btn-default">
+                                Update ATM list from UBanks.com.ua <i class="glyphicon glyphicon-import"></i>
+                            </button>
+                        </div>
+
 
                         <%--
                         Select Bank dropdown menu
