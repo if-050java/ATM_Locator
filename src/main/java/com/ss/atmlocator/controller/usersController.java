@@ -2,23 +2,20 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.entity.UserStatus;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
-import com.ss.atmlocator.utils.ErrorMessage;
+import com.ss.atmlocator.utils.UploadedFile;
 import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSendException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
@@ -27,10 +24,7 @@ import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Controller
@@ -100,11 +94,6 @@ public class usersController {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
         try {
-            //Can't disable admin
-            boolean isAdmin = userService.getUserById(id).getRoles().contains(ADMIN_ROLE);
-            if (isAdmin && UserStatus.DISABLED == updatedUser.getEnabled()) {
-                return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-            }
             //id of user who is logged
             int currentLoggedUserId = userService.getUserByName(principal.getName()).getId();
             //try to update user in database
@@ -125,23 +114,25 @@ public class usersController {
 
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<List<FieldError>> updateAvatar(
-            @PathVariable("id") int user_id,
-            @RequestParam(value = "file", required = false) MultipartFile image,
-            HttpServletRequest request,
-            BindingResult result) {
+    public ResponseEntity<List<ObjectError>> updateAvatar(
+            @PathVariable int id,
+            UploadedFile file,
+            BindingResult result,
+            HttpServletRequest request) {
 
-        imageValidator.validate(image, result);
-        if (!result.hasErrors() && image != null) {
+        imageValidator.validate(file, result);
+        MultipartFile avatar = file.getFile();
+        if (!result.hasErrors() && avatar != null) {
             try {
-                String avatar = user_id + image.getOriginalFilename();
-                UploadFileUtils.save(image, avatar, request);
-                userService.updateAvatar(user_id, avatar);
+                String filename = id + avatar.getOriginalFilename();
+                UploadFileUtils.save(avatar, filename, request);
+                userService.updateAvatar(id, filename);
+                return new ResponseEntity<>(HttpStatus.OK);
             } catch (IOException e) {
                 //todo logging
-                return new ResponseEntity<>(result.getFieldErrors(),HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(result.getAllErrors(),HttpStatus.NOT_ACCEPTABLE);
     }
 }

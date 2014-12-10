@@ -14,6 +14,7 @@ public class Constants {
     public static final String USER_PASSWORD = "password";
     public static final String USER_NAME = "name";
     public static final String USER_AVATAR = "avatar";
+    public static final String USER_ENABLED = "enabled";
     //Operation names
     public static final String DELETE = "delete";
     public static final String UPDATE = "update";

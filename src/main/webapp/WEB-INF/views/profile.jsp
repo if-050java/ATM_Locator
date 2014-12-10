@@ -39,12 +39,20 @@
                         <div class="col-md-6">
                             <form:hidden path="id"/>
                             <div class="form-group">
-                                <label for="login" class="col-sm-2 control-label">NickName</label>
+                                <label for="login" class="col-sm-2 control-label">Login</label>
 
                                 <div class="col-md-10">
                                     <form:input path="login" placeholder="login" cssClass="form-control"
                                                 data-toggle="popover"
                                                 data-placement="right" onclick="hidePopover('login')"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name" class="col-sm-2 control-label">NickName</label>
+                                <div class="col-md-10">
+                                    <form:input path="name" placeholder="name" cssClass="form-control"
+                                                data-toggle="popover"
+                                                data-placement="right" onclick="hidePopover('name')"/>
                                 </div>
                             </div>
                             <div class="form-group">

@@ -1,12 +1,16 @@
 package com.ss.atmlocator.validator;
 
+import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import com.ss.atmlocator.entity.UserStatus;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.UserCredMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -15,6 +19,9 @@ import java.util.Locale;
 
 @Service
 public class UserValidator implements Validator {
+
+    private final String ADMIN_ROLE_NAME = "ADMIN";
+    private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
 
     @Autowired
     @Qualifier("usercredmatcher")
@@ -28,6 +35,11 @@ public class UserValidator implements Validator {
 
     public void validate(Object object, Errors errors) {
         User updatedUser = (User) object;
+
+        boolean isAdmin = userService.getUserById(updatedUser.getId()).getRoles().contains(ADMIN_ROLE);
+        if (isAdmin && UserStatus.DISABLED == updatedUser.getEnabled()) {
+            errors.rejectValue(Constants.USER_ENABLED, messages.getMessage("invalid.enabled", null, Locale.ENGLISH));
+        }
 
         if (updatedUser.getLogin() != null) {
             validateLogin(updatedUser, errors);
