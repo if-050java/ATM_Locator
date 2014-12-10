@@ -19,4 +19,5 @@ public interface IBanksDAO {
     public Bank saveBank(Bank bank);
     public boolean deleteBank(int bank_id);
     public void saveAllBankNBU(List<Bank> banks);
+    public void saveAllBanksUbank(List<Bank> banks);
 }

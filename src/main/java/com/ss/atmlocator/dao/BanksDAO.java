@@ -92,7 +92,7 @@ public class BanksDAO implements IBanksDAO {
     @Override
     @Transactional
     public void saveAllBankNBU(List<Bank> banks) {
-        Bank bank1;
+        Bank tempBank;
         AtmNetwork unassigned = entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
 
         for (Bank bank : banks) {
@@ -101,13 +101,13 @@ public class BanksDAO implements IBanksDAO {
                 TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.mfoCode=:mfoCode", Bank.class);
                 query.setParameter("mfoCode", mfoCode);
 
-                bank1 = query.getSingleResult();// тут вилітає , бо query не повертає щось не те
-
-                if (bank.getMfoCode() == bank1.getMfoCode()) {
+                tempBank = query.getSingleResult();
+                if (bank.getMfoCode() == tempBank.getMfoCode()) {
                     System.out.println("------I'm in continue-----");
                     continue;
                 }
             } catch (NoResultException nre) {
+                log.warn("he bank with mfo code not found"+nre.getMessage());
                 //if the bank with mfo code not found , catch this exception
 //                continue;
             }
@@ -115,6 +115,59 @@ public class BanksDAO implements IBanksDAO {
             bank.setNetwork(unassigned);
             entityManager.merge(bank);
         }
+    }
+
+    @Override
+     @Transactional
+     public void saveAllBanksUbank(List<Bank> banks) {
+        Bank bankOther;
+        int mfoCode;
+        String bankName;
+        Set<AtmOffice> officeSet;
+        for (Bank bank : banks){
+            bankName=bank.getName();
+
+
+            officeSet=bank.getAtmOfficeSet();
+            try {
+                TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.name=:bankName", Bank.class);
+                query.setParameter("bankName", bankName);
+
+                bankOther = query.getSingleResult();
+
+                if (bank.getName().equals(bankOther.getName())) {
+                    Set<AtmOffice> persistedAtms = bankOther.getAtmOfficeSet();
+                    for (AtmOffice atmOffice: officeSet) {
+
+                        if (!persistedAtms.contains(atmOffice)){
+                            atmOffice.setBank(bankOther);
+                            persistedAtms.add(atmOffice);
+
+                        } else {
+//  зробити провірку по типу атм
+                        }
+
+
+                        //bankOther.setAtmOfficeSet(officeSet);
+                    }
+                    entityManager.merge(bankOther);
+                    continue;
+                }
+            } catch (NoResultException nre) {
+                System.out.println();
+                //if the bank with mfo code not found , catch this exception
+//                continue;
+            }
+
+
+//            for(AtmOffice atmOffice:officeSet){
+//                atmOffice.setBank(bank);
+//            }
+
+
+
+        }
+
     }
 
 

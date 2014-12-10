@@ -42,5 +42,8 @@
     <definition name="profile" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/profile.jsp"/>
     </definition>
+    <definition name="changeParser" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/changeParser.jsp"/>
+    </definition>
 
 </tiles-definitions>

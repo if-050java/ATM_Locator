@@ -38,7 +38,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @Column
     private String photo;  // filename of real street photo
 
-    @JsonIgnore
+   @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_id")
     Bank bank;
@@ -50,14 +50,12 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
         AtmOffice atmOffice = (AtmOffice) o;
 
-        if (Id != atmOffice.Id) return false;
-
-        return true;
+        return address.equals(atmOffice.address);
     }
 
     @Override
     public int hashCode() {
-        return Id;
+        return address.hashCode();
     }
 
     @JsonIgnore
@@ -104,15 +102,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return type;
     }
 
-    public void setType(AtmType type) {
-        if (this.type==null){
-            this.type = type;
-        }else if (this.type==type){
-            this.type = type;
-        }else{
-            this.type = AtmType.IS_ATM_OFFICE;
-        }
-    }
+    public void setType(AtmType type) {   this.type = type;}
 
     public Timestamp getLastUpdated() {
         return lastUpdated;
@@ -146,7 +136,6 @@ public class AtmOffice implements Comparable<AtmOffice>{
     public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
         this.atmFavorites = atmFavorites;
     }
-
 
     public Bank getBank() {
         return bank;

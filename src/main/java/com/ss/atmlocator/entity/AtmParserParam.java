@@ -19,7 +19,7 @@ public class AtmParserParam {
     @Column
     private String value;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parser_id")
     AtmParser atmParser;
 
