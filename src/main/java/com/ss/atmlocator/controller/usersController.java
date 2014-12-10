@@ -49,7 +49,7 @@ public class usersController {
         try {
             value = value.replace('*', '.');
             return new ResponseEntity<User>(userService.getUserByName(value), HttpStatus.OK);
-        } catch (PersistenceException pe) {
+        } catch (EntityNotFoundException enfe) {
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
     }

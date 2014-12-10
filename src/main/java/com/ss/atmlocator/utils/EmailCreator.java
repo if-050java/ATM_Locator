@@ -10,6 +10,8 @@ import org.stringtemplate.v4.STRawGroupDir;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 
+import javax.mail.MessagingException;
+
 /**
  * Class for creating e-mail messages from templates
  */
@@ -36,14 +38,14 @@ public class EmailCreator {
     }
 
     //Method for creating e-mail message to user if password was changed
-    public String toUser(User user) {
+    public String toUser(User user) throws MessagingException {
         String templateName = user.getEnabled() == UserStatus.ENABLED ? Constants.UPDATE_TEMPLATE_ENABLED_USER : Constants.UPDATE_TEMPLATE_DISABLED_USER;
 
         logger.info("Loading email message template from file" + templateName + ".st");
         ST template = stGroup.getInstanceOf(templateName);
         if(template == null){
-            logger.error("Can't load StringTemplate from file "+templateName+".st");
-            return null;
+            logger.error("Can't load email from file "+templateName+".st");
+            throw new MessagingException("Can't load email from file "+templateName+".st");
         }
         template.add(Constants.USER_NAME, user.getName());
         template.add(Constants.USER_LOGIN, user.getLogin());
