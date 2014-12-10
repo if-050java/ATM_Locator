@@ -93,11 +93,11 @@ public class usersController {
             @RequestParam(value = "generatePassword", required = false, defaultValue = "false") boolean genPassword,
             Principal principal,
             BindingResult bindingResult) {
+        updatedUser.setId(id);
         userValidator.validate(updatedUser, bindingResult);
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
-        updatedUser.setId(id);
         try {
             //id of user who is logged
             int currentLoggedUserId = userService.getUserByName(principal.getName()).getId();
