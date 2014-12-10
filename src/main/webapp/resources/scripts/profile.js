@@ -10,6 +10,7 @@ var DIFFERENT_PASSWORD = "Password and confirm password are different";
 
 var MAX_FILE_SIZE = 716800;
 var EXTENTIONS = ['jpg', 'jpeg', 'png', 'gif'];
+var uploadOK = false;
 
 function hidePopover(element) {
     $('#' + element).popover("destroy");
@@ -98,39 +99,14 @@ function checkFileSize(size) {
     return size <= MAX_FILE_SIZE;
 }
 
-function uploadFile(i, file) {
-    var fd = new FormData();
 
-    fd.append("file", file);
-    fd.append("user", user);
-    $.ajax({
-        url: getHomeUrl() + "users/avatar",
-        type: "POST",
-        data: fd,
-        processData: false,
-        contentType: false,
-        statusCode: {
-            200: function (response) {
-                showAlert("alert alert-success", SUCCESS_MESSAGE);
-            },
-            500: function () {
-                showAlert("alert alert-danger", ERROR_MESSAGE)
-            },
-            406: function (response) {
-                var message = WARNING_MESSAGE;
-                for (var i = 0; i < response.responseJSON.length; i++) {
-                    var item = response.responseJSON[i];
-                    message.append("\n"+item.code);
-                }
-                showAlert("alert alert-warning", message);
-            }
-        }
-    })
-}
 
 function changeImage(input) {
     if (input.files && input.files[0]) {
-        var user = {id : $("#id").val()};
+        var user = {
+            id: $("#id").val(),
+            avatar: ($("#image")[0].files[0] != undefined) ? $("#image")[0].files[0] : null
+        };
         var reader = new FileReader();
         var extension = input.files[0].name.split('.').pop().toLowerCase()  //file extension from input fileisSuccess =  //is extension in acceptable types
         reader.onload = function (e) {
@@ -139,12 +115,47 @@ function changeImage(input) {
             //} else if (!checkFileSize(e.total)) {
             //    alert("size");
             //} else {
+            uploadFile(user, input.files[0])
+            if(uploadOK){
                 $('#userAvatar').attr('src', e.target.result);
-                uploadFile(user, input.files[0]);
-         //   }
+                uploadOK=false;
+            }
+
+            //   }
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+function uploadFile(user, file) {
+    var fd = new FormData();
+    fd.append("file", user.avatar);
+    $.ajax({
+        url: getHomeUrl() + "users/" + user.id + "/avatar",
+        type: "POST",
+        data: fd,
+        async:false,
+        processData: false,
+        contentType: false,
+        statusCode: {
+            200: function (response) {
+                showAlert("alert alert-success", SUCCESS_MESSAGE);
+                uploadOK = true;
+            },
+            500: function () {
+                showAlert("alert alert-danger", ERROR_MESSAGE);
+            },
+            406: function (response) {
+                var message = WARNING_MESSAGE;
+                for (var i = 0; i < response.responseJSON.length; i++) {
+                    var item = response.responseJSON[i];
+                    message+=("<div>" + item.code +"</div>");
+                    //console.log(item.code);
+                }
+                showAlert("alert alert-warning", message);
+
+            }
+        }
+    })
 }
 
 $(document).ready(function () {
@@ -173,7 +184,7 @@ $(document).ready(function () {
                             showAlert("alert alert-success", SUCCESS_MESSAGE);
                         },
                         500: function () {
-                            showAlert("alert alert-danger", ERROR_MESSAGE)
+                            showAlert("alert alert-danger", ERROR_MESSAGE);
                         },
                         406: function (response) {
                             console.log(response);

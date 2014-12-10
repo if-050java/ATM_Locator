@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
+import com.ss.atmlocator.utils.UploadedFile;
 import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,25 +110,27 @@ public class usersController {
         }
     }
 
-    @RequestMapping(value = "/avatar", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/avatar", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<List<FieldError>> updateAvatar(
-            User user,
+    public ResponseEntity<List<ObjectError>> updateAvatar(
+            @PathVariable int id,
+            UploadedFile file,
             BindingResult result,
-            HttpServletRequest request,
-            @RequestParam(value = "file", required = false) MultipartFile file) {
+            HttpServletRequest request) {
 
         imageValidator.validate(file, result);
-        if (!result.hasErrors() && file != null) {
+        MultipartFile avatar = file.getFile();
+        if (!result.hasErrors() && avatar != null) {
             try {
-                String avatar = user.getId() + file.getOriginalFilename();
-                UploadFileUtils.save(file, avatar, request);
-                userService.updateAvatar(user.getId(), avatar);
+                String filename = id + avatar.getOriginalFilename();
+                UploadFileUtils.save(avatar, filename, request);
+                userService.updateAvatar(id, filename);
+                return new ResponseEntity<>(HttpStatus.OK);
             } catch (IOException e) {
                 //todo logging
-                return new ResponseEntity<>(result.getFieldErrors(),HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(result.getAllErrors(),HttpStatus.NOT_ACCEPTABLE);
     }
 }

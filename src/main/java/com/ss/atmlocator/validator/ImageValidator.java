@@ -1,6 +1,7 @@
 package com.ss.atmlocator.validator;
 
 import com.ss.atmlocator.utils.Constants;
+import com.ss.atmlocator.utils.UploadedFile;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,20 +24,19 @@ public class ImageValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> Clazz) {
-        return MultipartFile.class.isAssignableFrom(Clazz);
+        return UploadedFile.class.isAssignableFrom(Clazz);
     }
 
     @Override
     public void validate(Object object, Errors errors) {
-        MultipartFile image = (MultipartFile) object;
+        UploadedFile file = (UploadedFile) object;
+        MultipartFile image = file.getFile();
         if (null == image) return;
         if (image.getSize() > MAX_FILE_SIZE) {
-            errors.rejectValue(Constants.USER_AVATAR,
-                    messages.getMessage("file.size.limit", null, Locale.ENGLISH));
+            errors.reject(messages.getMessage("file.size.limit", null, Locale.ENGLISH));
             return;
         } else if (!isValidExtension(image)) {
-            errors.rejectValue(Constants.USER_AVATAR,
-                    messages.getMessage("file.extension", null, Locale.ENGLISH));
+            errors.reject(messages.getMessage("file.extension", null, Locale.ENGLISH));
         }
     }
 
