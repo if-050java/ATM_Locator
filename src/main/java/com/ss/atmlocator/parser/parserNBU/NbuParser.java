@@ -1,6 +1,6 @@
 package com.ss.atmlocator.parser.parserNBU;
 
-import com.ss.atmlocator.parser.Parser;
+import com.ss.atmlocator.parser.IParser;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +18,7 @@ import com.ss.atmlocator.entity.Bank;
 /**
  * Created by maks on 18.11.2014.
  */
-public class NbuParser implements Parser {
+public class NbuParser implements IParser {
 
     final Logger log = Logger.getLogger(NbuParser.class.getName());
     private List<Bank> banks = new ArrayList<Bank>();// Is it may by Set?
@@ -73,7 +73,7 @@ public class NbuParser implements Parser {
             Elements ElementsMFO =doc.select(MFOXPATH); // selsect mfo of banks by Xpath
             for (int i = 0; i < ElementsMFO.size(); i++) {                  //
                 Bank bank = new Bank();
-                bank.setName(deleteLastChar(getName(ElementsNames.get(i).text())));
+                bank.setName(deleteLastChar(getName(ElementsNames.get(i).text())).toUpperCase());
                 bank.setMfoCode(Integer.parseInt(ElementsMFO.get(i).text()));
                 banks.add(bank);   // filling a list of banks
             }

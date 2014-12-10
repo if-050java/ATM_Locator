@@ -1,4 +1,4 @@
-package com.ss.atmlocator.parser;
+package com.ss.atmlocator.parser.parserUbanks;
 
 
 import com.ss.atmlocator.entity.AtmOffice;
@@ -9,7 +9,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Ivanna Terletska on 26.10.2014.
@@ -24,7 +26,7 @@ public class AtmParserServise {
 
 
 // method fot seting parameters
-//    url / ww fdjasfkl;
+//    url is url to parsing
 //    listselector "atm" or "branch"
 public void setParam(Map<String, Object> params) {
     if (params.containsKey("url")) {
@@ -38,12 +40,11 @@ public void setParam(Map<String, Object> params) {
 
     public Set<AtmOffice> getItems() {
         atmsList = new TreeSet<AtmOffice>();
-        String atmCity;
-        String atmStreet;
+        String atmAdress;
 
        //System.out.println(listSelector);
         if (listSelector.equals("branch")) {    // selector for bank office
-           atmType=AtmOffice.AtmType.IS_OFFICE;
+           atmType= AtmOffice.AtmType.IS_OFFICE;
         } else if (listSelector.equals("atm")) {    // selector for atm
             atmType= AtmOffice.AtmType.IS_ATM;
         }
@@ -61,20 +62,20 @@ public void setParam(Map<String, Object> params) {
                 Element row = rows.get(i);
                 Elements cols = row.select("td");
                 if (url.equals("http://ubanks.com.ua/adr/privatbank/branches/ivano-frankivska/ivano-frankivsk.php")) {    // in PrivatBank another structure
-                    atmCity = "Івано-Франківськ";
-                    atmStreet = cols.get(0).children().text().trim();
+                    atmAdress="Івано-Франківськ"+", "+cols.get(0).children().text().trim();
                 } else {
-                    atmCity = cols.get(0).text().trim();
-                    atmStreet = cols.get(2).children().text().trim();
+                    atmAdress=cols.get(0).text().trim()+", "+cols.get(2).children().text().trim();
                 }
-                String atmAdress=atmCity+", "+atmStreet;
+
               //  System.out.println(atmType.toString());
               //  System.out.println(atmAdress);
 
                 AtmOffice atm = new AtmOffice();
+
                 atm.setBank(bank);
                 atm.setAddress(atmAdress);
                 atm.setType(atmType);
+
 
                 atmsList.add(atm);
 

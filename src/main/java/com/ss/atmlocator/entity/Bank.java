@@ -39,6 +39,8 @@ public class Bank  implements Comparable<Bank> {
 
     @JsonIgnore //Ignoring this field in JSON serializing
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
+/*    @JoinTable(name ="atm" )
+    @JoinColumn(name = "bank_id")*/
     private Set<AtmOffice> atmOfficeSet;
 
     @JsonIgnore //Ignoring this field in JSON serializing

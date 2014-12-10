@@ -1,6 +1,7 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmNetwork;
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
@@ -12,7 +13,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;;
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Olavin on 22.11.2014.
@@ -112,6 +115,59 @@ public class BanksDAO implements IBanksDAO {
             bank.setNetwork(unassigned);
             entityManager.merge(bank);
         }
+    }
+
+    @Override
+     @Transactional
+     public void saveAllBanksUbank(List<Bank> banks) {
+        Bank bankOther;
+        int mfoCode;
+        String bankName;
+        Set<AtmOffice> officeSet;
+        for (Bank bank : banks){
+            bankName=bank.getName();
+
+
+            officeSet=bank.getAtmOfficeSet();
+            try {
+                TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.name=:bankName", Bank.class);
+                query.setParameter("bankName", bankName);
+
+                bankOther = query.getSingleResult();
+
+                if (bank.getName().equals(bankOther.getName())) {
+                    Set<AtmOffice> persistedAtms = bankOther.getAtmOfficeSet();
+                    for (AtmOffice atmOffice: officeSet) {
+
+                        if (!persistedAtms.contains(atmOffice)){
+                            atmOffice.setBank(bankOther);
+                            persistedAtms.add(atmOffice);
+
+                        } else {
+//  зробити провірку по типу атм
+                        }
+
+
+                        //bankOther.setAtmOfficeSet(officeSet);
+                    }
+                    entityManager.merge(bankOther);
+                    continue;
+                }
+            } catch (NoResultException nre) {
+                System.out.println();
+                //if the bank with mfo code not found , catch this exception
+//                continue;
+            }
+
+
+//            for(AtmOffice atmOffice:officeSet){
+//                atmOffice.setBank(bank);
+//            }
+
+
+
+        }
+
     }
 
 

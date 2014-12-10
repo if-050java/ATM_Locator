@@ -1,7 +1,8 @@
-package com.ss.atmlocator.parser;
+package com.ss.atmlocator.parser.parserUbanks;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.parser.IParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +14,7 @@ import java.util.*;
 /**
  * Created by Ivanna Terletska on 11/19/2014.
  */
-public class BankUrlsParserServer implements Parser {
+public class BankUrlsIParserServer implements IParser {
     protected String url;
     protected String listSelector = "spoiler";
     protected String bankName;
@@ -21,10 +22,10 @@ public class BankUrlsParserServer implements Parser {
     protected String bankUrl;
     
 
-    public BankUrlsParserServer() {
+    public BankUrlsIParserServer() {
     }
 
-    public BankUrlsParserServer(String url) {
+    public BankUrlsIParserServer(String url) {
         this.url = url;
     }
 
@@ -45,9 +46,10 @@ public class BankUrlsParserServer implements Parser {
             Elements banks = doc.getElementsByClass(listSelector);
 
             for (Element element : banks) {
-                bankName = element.ownText();
+                bankName = element.ownText().trim().toUpperCase();
                // System.out.println(bankName);
                 Elements urls = element.select("div>a");
+                int count =2;
 
                 for (Element url : urls) {
 
@@ -81,6 +83,8 @@ public class BankUrlsParserServer implements Parser {
                         }
 
                         bank.setAtmOfficeSet(AtmOfficeSetTmp);
+
+
                         bankList.add(bank);
 
                         //System.out.println(bankUrls.getBankName());
@@ -96,6 +100,20 @@ public class BankUrlsParserServer implements Parser {
             e.printStackTrace();
         }
         return bankList;
+    }
+
+    ////////////////////////////
+    public static int randInt(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 
 }
