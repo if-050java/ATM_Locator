@@ -1,5 +1,6 @@
 package com.ss.atmlocator.controller;
 
+import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
@@ -26,7 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -43,6 +46,8 @@ public class usersController {
     @Autowired
     @Qualifier("imagevalidator")
     Validator imageValidator;
+    private final String ADMIN_ROLE_NAME = "ADMIN";
+    private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
 
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)
     public ResponseEntity<User> findUser(@PathVariable("value") String value) {
@@ -67,13 +72,10 @@ public class usersController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
-        //id of current logged user
-        int currentLoggedUserId = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
-        //Check user want to remove himself
-        if (id == currentLoggedUserId) {
+        //Check want to remove admin
+        if (userService.getUserById(id).getRoles().contains(ADMIN_ROLE)) {
             return new ResponseEntity<Void>(HttpStatus.NOT_ACCEPTABLE);
         }
-        ;
         try {
             userService.deleteUser(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
@@ -106,7 +108,10 @@ public class usersController {
                 userService.doAutoLogin(updatedUser.getLogin());
             }
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (PersistenceException | MessagingException | MailSendException exp) {
+        } catch (PersistenceException persistExp) {
+            //todo logger
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch ( MessagingException | MailSendException mailExp){
             //todo logger
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

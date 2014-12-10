@@ -84,6 +84,7 @@
         <constructor-arg name="mailRegExp" value="${email.pattern}"/>
         <constructor-arg name="loginRegExp" value="${login.pattern}"/>
         <constructor-arg name="passwordRegExp" value="${password.pattern}"/>
+        <constructor-arg name="nickNameRegExp" value="${nickname.pattern}"/>
     </bean>
     <!-- Message source for validation-->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

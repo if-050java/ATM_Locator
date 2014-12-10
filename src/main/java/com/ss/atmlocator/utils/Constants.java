@@ -12,7 +12,7 @@ public class Constants {
     public static final String USER_LOGIN = "login";
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
-    public static final String USER_NAME = "nickname";
+    public static final String USER_NAME = "name";
     public static final String USER_AVATAR = "avatar";
     //Operation names
     public static final String DELETE = "delete";

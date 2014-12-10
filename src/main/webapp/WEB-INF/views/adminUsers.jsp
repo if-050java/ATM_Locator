@@ -67,9 +67,9 @@
                                 <label for="login" class="col-md-3 control-label">NickName</label>
 
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="nickname" placeholder="NickName"
+                                    <input type="text" class="form-control" id="name" placeholder="NickName"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
-                                           data-original-title="" onclick="hidePopover('nickname')"
+                                           data-original-title="" onclick="hidePopover('name')"
                                            onkeyup="setModified()"/>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                     </style>
                                     <input id="enabled" data-style="width" data-toggle="toggle" unchecked
                                            data-on="on" data-off="off" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -103,7 +103,7 @@
                                 <div class="col-md-3">
                                     <input id="genPassword" data-style="width" data-toggle="toggle" unchecked
                                            data-on="on" data-off="off" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
                             </div>
                         </form>

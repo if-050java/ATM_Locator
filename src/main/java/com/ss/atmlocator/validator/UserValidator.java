@@ -86,7 +86,7 @@ public class UserValidator implements Validator {
 
     private void validateNickName(User user, Errors errors) {
         final String nickName = user.getName();
-        if(!userCredMatcher.validateLogin(nickName)){
+        if(!userCredMatcher.validateNickName(nickName)){
             errors.rejectValue(Constants.USER_NAME,
                     messages.getMessage("invalid.nickname", null, Locale.ENGLISH));
         }

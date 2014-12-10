@@ -6,6 +6,9 @@ window.onload = function() {
         minChars: 2,
         deferRequestBy: 200,
         delimiter: /(,|;)\s*/,
+        onSelect: function(){
+            FindUser();
+        },
         zIndex: 1000
     })
 }
@@ -24,11 +27,12 @@ function FindUser(){
             200: function(response) {
                                 showData(response);
                                 $("#findName").val("");
-                                return response;
                             },
             404: couldNotFind
         }
     })
+
+    return false;
 }
 
 //Show popover if cant find such user
@@ -52,14 +56,14 @@ function showData(response){
 function fillFields(user){
     $("#avatar").attr("src",getHomeUrl()+"resources/images/"+user.avatar);
     $("#login").val(user.login);
-    $("#nickname").val(user.name);
+    $("#name").val(user.name);
     $("#email").val(user.email);
-    $("#genPassword").prop("checked" ,false).change();
     if(user.enabled != 0){
         $("#enabled").prop("checked" ,true).change();
     } else {
         $("#enabled").prop("checked" ,false).change();
     }
+    $("#genPassword").prop("checked" ,false).change();
     $("#save").prop('disabled', true);
 }
 //hide form
@@ -96,7 +100,7 @@ function showAlert(className, html) {
     $("#resultDefinition").empty();
     $("#resultDefinition").append(html);
     $("#message").slideDown(500);
-  //  setTimeout(hideAlert, 10000)
+    setTimeout(hideAlert, 8000)
 }
 
 function hideAlert(){
@@ -107,7 +111,7 @@ function hideAlert(){
 function getUpdatedFields(){
     updatedUser = {
         login : $("#login").val(),
-        name : $("#nickname").val(),
+        name : $("#name").val(),
         email : $("#email").val(),
         enabled : $("#enabled").prop("checked") == true ? 1 : 0
     }
@@ -133,22 +137,22 @@ function getUpdatedFields(){
 
 function updateUser(){
     //checking login
-    if(! validateLogin($('#login').prop("value"))){
+ /*   if(! validateLogin($('#login').prop("value"))){
         $('#login').attr("data-content", "Login is too short(min 4 letters) or has unsupported character");
         $('#login').popover("show");
         return;
     }
     //checking login
-    if(! validateLogin($('#nickname').prop("value"))){
-        $('#nickname').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
-        $('#nickname').popover("show");
+    if(! validateLogin($('#name').prop("value"))){
+        $('#name').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
+        $('#name').popover("show");
         return;
     }
     //checking E-Mail
     if(!validateEmail($('#email').prop("value"))){
         $('#email').popover("show");
         return;
-    };
+    };*/
 
 
     var data = JSON.stringify(getUpdatedFields());
@@ -168,19 +172,21 @@ function updateUser(){
             200: function(){
                 showAlert("alert alert-success", "Operation successfully processed");
                 user.login = $("#login").val();
-                user.name = $("#nickname").val();
+                user.name = $("#name").val();
                 user.email = $("#email").val();
                 user.enabled = $("#enabled").prop("checked") == true ? 1 : 0;
+                $("#genPassword").prop("checked" ,false).change();
+                $("#save").prop('disabled', true);
             },
             406: function (response) {
-                showAlert("alert alert-warning", WARNING_MESSAGE);
+                showAlert("alert alert-warning", "Validation error");
                 for (var i = 0; i < response.responseJSON.length; i++) {
                     var item = response.responseJSON[i];
                     $('#' + item.field).attr("data-content", item.code);
                     $('#' + item.field).popover("show");
                 }
             },
-            500: function(){ showAlert("alert alert-danger", "kuhf")}
+            500: function(){ showAlert("alert alert-danger", "Operation failed because of a server error")}
         }
     })
 }
@@ -190,12 +196,24 @@ function hidePopover(element){
 }
 
 function setModified(){
-    if(JSON.stringify(getUpdatedFields()) !== "{}") {
+    if(JSON.stringify(getUpdatedFields()) != "{}") {
         $("#save").prop('disabled', false);
     }else{
         $("#save").prop('disabled', true);
     }
 }
+
+$(function() {
+    $('#enabled').change(function() {
+        $("#save").prop('disabled', false);
+    })
+})
+
+$(function() {
+    $('#genPassword').change(function() {
+        $("#save").prop('disabled', false);
+    })
+})
 
 
 
