@@ -1,6 +1,8 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IBanksDAO;
+import com.ss.atmlocator.dao.IParserDAO;
+import com.ss.atmlocator.entity.AtmParser;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.parser.Parser;
 import com.ss.atmlocator.parser.parserNBU.NbuParser;
@@ -18,6 +20,8 @@ import java.util.Map;
 public class ParserService {
     @Autowired
     IBanksDAO banksDAO;
+    @Autowired
+    IParserDAO parserDAO;
 
     public void updateAllBanks(){
 
@@ -30,5 +34,13 @@ public class ParserService {
         parser.setParameter(par);
         List<Bank> bankList = parser.parse();
         banksDAO.saveAllBankNBU(bankList);
+    }
+    public boolean changeState(int id, int state){
+
+        return parserDAO.changeState( id, state);
+    }
+    public List<AtmParser> getParserByBankId(int id){
+
+        return  parserDAO.getParsersByBankId(id);
     }
 }

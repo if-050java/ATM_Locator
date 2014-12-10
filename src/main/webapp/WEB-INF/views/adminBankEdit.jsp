@@ -109,11 +109,13 @@
                               </ul>
                           </div>
                       </div>
-
+                        <button type="submit" formaction="<c:url value="/bankParser" />" class="btn btn-info ">
+                            Parser parameters
+                        </button>
                     </div>
                   </div>
            </div>
-           <%-- <input type="hidden" name="bank_id" id="bank_id" value="${bank.id}" cssClass="form-control"> --%>
+            <input type="hidden" name="bank_id" id="bank_id" value="${bank.id}" cssClass="form-control">
 
            <div class="alert" role="alert" style="display: none">
                <a class="close" onclick="$('.alert').hide()">&times;</a>
