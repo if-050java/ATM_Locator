@@ -12,4 +12,6 @@ import java.util.List;
 public interface IAtmNetworksDAO {
     List<AtmNetwork> getNetworksList();
     AtmNetwork getNetwork(int id);
+    public AtmNetwork saveNetwork(AtmNetwork network);
+    boolean deleteNetwork(int network_id);
 }

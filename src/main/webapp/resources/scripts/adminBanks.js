@@ -53,7 +53,7 @@ function showBanks(network) {
 
 $("#networks_menu li a").click(function(){
     var selText = $(this).text();
-    $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
     network_id = $(this).attr("id");
 /*
     var netbanks = document.getElementsByClassName("bankitem");
