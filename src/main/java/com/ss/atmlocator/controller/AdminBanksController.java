@@ -49,6 +49,17 @@ public class AdminBanksController {
     }
 
     /**
+     *  Get list of ATM networks to AJAX request
+     */
+    @RequestMapping(value = "/networksListAjax", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<AtmNetwork> networksListAjax(){
+        log.debug("GET: list of ATM networks");
+        return atmNetworksService.getNetworksList();
+    }
+
+    /**
      *  Get list of Banks to AJAX request
      */
     @RequestMapping(value = "/banksListAjax", method = RequestMethod.GET)
@@ -58,6 +69,7 @@ public class AdminBanksController {
         log.debug("GET: list of banks");
         return banksService.getBanksList();
     }
+
 
     /**
      *  Show Bank information page for edit
@@ -109,12 +121,34 @@ public class AdminBanksController {
     }
 
     /**
+     *  Update ATM Network information or create new entry if ID=0 by AJAX POST
+     */
+    @RequestMapping(value = "/adminNetworkSaveAjax", method = RequestMethod.POST)
+    @ResponseBody
+    public OutResponse networkSaveAjax(@ModelAttribute("network") AtmNetwork network,
+                                    HttpServletRequest request)
+    {
+        log.debug("AJAX request: save network "+network.getName()+" #"+network.getId());
+        return atmNetworksService.saveNetwork(network);
+    }
+
+
+    /**
      *  Delete Bank by Ajax request
      */
     @RequestMapping(value = "/adminBankDeleteAjax", method = RequestMethod.POST)
     @ResponseBody
-    public OutResponse bankDeleteAjax(@RequestParam int id, HttpServletRequest request) {
+    public OutResponse bankDeleteAjax(@RequestParam int id) {
         return banksService.deleteBank(id);
+    }
+
+    /**
+     *  Delete ATM Network by Ajax request
+     */
+    @RequestMapping(value = "/adminNetworkDeleteAjax", method = RequestMethod.POST)
+    @ResponseBody
+    public OutResponse networkDeleteAjax(@RequestParam int id) {
+        return atmNetworksService.deleteNetwork(id);
     }
 
 

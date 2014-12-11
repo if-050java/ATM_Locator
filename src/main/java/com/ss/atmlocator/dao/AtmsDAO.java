@@ -22,7 +22,10 @@ public class AtmsDAO implements IAtmsDAO {
     @Override
     @Transactional
     public List<AtmOffice> getBankAtms(int bank_id){
-        TypedQuery<AtmOffice> query = entityManager.createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+        TypedQuery<AtmOffice> query = entityManager.createQuery(
+                "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id "
+                        +"and a.geoPosition.latitude is not null and a.geoPosition.longitude is not null",
+                AtmOffice.class);
         query.setParameter("bank_id", bank_id);
         return query.getResultList();
     }

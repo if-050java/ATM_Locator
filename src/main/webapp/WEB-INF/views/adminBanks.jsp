@@ -45,7 +45,7 @@
 
                         <%-- update all banks from nbu--%>
                         <div class="btn-group">
-                            <button id="singlebutton" formaction="<c:url value="/updateBanksFromNbu" />" name="singlebutton" class="btn btn-primary">
+                            <button id="singlebutton" formaction="<c:url value="/updateBanksFromNbu" />" name="singlebutton" class="btn btn-default">
                                 Update banks list from NBU <i class="glyphicon glyphicon-import"></i>
                             </button>
                         </div>

@@ -90,6 +90,11 @@ public class BanksDAO implements IBanksDAO {
     }
 
     @Override
+    public AtmNetwork getUnassignedNetwork() {
+        return entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
+    }
+
+    @Override
     @Transactional
     public void saveAllBankNBU(List<Bank> banks) {
         Bank tempBank;
