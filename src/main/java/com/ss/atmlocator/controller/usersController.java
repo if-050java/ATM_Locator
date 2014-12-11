@@ -6,6 +6,7 @@ import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadFileUtils;
 import com.ss.atmlocator.utils.UploadedFile;
 import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
@@ -31,18 +33,22 @@ import java.util.List;
 @RequestMapping("users")
 public class usersController {
 
+    private final String ADMIN_ROLE_NAME = "ADMIN";
+    private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
+
+    final Logger logger = Logger.getLogger(usersController.class.getName());
+
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
     @Qualifier("uservalidator")
-    Validator userValidator;
+    private Validator userValidator;
 
     @Autowired
     @Qualifier("imagevalidator")
-    Validator imageValidator;
-    private final String ADMIN_ROLE_NAME = "ADMIN";
-    private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
+    private Validator imageValidator;
+
 
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)
     public ResponseEntity<User> findUser(@PathVariable("value") String value) {
@@ -104,10 +110,10 @@ public class usersController {
             }
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (PersistenceException persistExp) {
-            //todo logger
+            logger.error(persistExp.getMessage(), persistExp);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch ( MessagingException | MailSendException mailExp){
-            //todo logger
+        } catch (MessagingException | MailSendException mailExp) {
+            logger.error(mailExp.getMessage(), mailExp);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -128,11 +134,11 @@ public class usersController {
                 UploadFileUtils.save(avatar, filename, request);
                 userService.updateAvatar(id, filename);
                 return new ResponseEntity<>(HttpStatus.OK);
-            } catch (IOException e) {
-                //todo logging
+            } catch (IOException ioe) {
+                logger.error(ioe.getMessage(), ioe);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>(result.getAllErrors(),HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(result.getAllErrors(), HttpStatus.NOT_ACCEPTABLE);
     }
 }

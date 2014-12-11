@@ -13,7 +13,7 @@ import java.io.IOException;
  * Created by roman on 27.11.14.
  */
 public class UploadFileUtils {
-    private final static org.apache.log4j.Logger log = Logger.getLogger(UploadFileUtils.class);
+    private final static Logger log = Logger.getLogger(UploadFileUtils.class);
     public static final String RESOURCES_FOLDER = "\\resources\\images\\";
 
 

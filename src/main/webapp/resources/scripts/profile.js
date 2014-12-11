@@ -3,10 +3,12 @@ var ERROR_MESSAGE = "<strong>Error!</strong> <span>Error saving data!</span>";
 var WARNING_MESSAGE = "<strong>Warning!</strong> <span>See the validation rules!</span>";
 
 var INVALID_LOGIN = "Login is too short(min 4 letters) or has unsupported character";
-var INVALID_NAME = "Login is too short(min 4 letters) or has unsupported character";
+var INVALID_NAME = "Nickname is too short(min 4 letters) or has unsupported character";
 var INVALID_EMAIL = "Email isn't valid (example: someone@domain.com)";
 var INVALID_PASSWORD = "Password is invalid. Password must have minimum 6 characters, uppercase letter, lowercase letter and digit";
 var DIFFERENT_PASSWORD = "Password and confirm password are different";
+var FILE_SIZE_LIMIT = "File size should be less than 700kb";
+var INVALID_FILE_EXTENTION = "Invalid file extension (accepts png, gif and jpg)"
 
 var MAX_FILE_SIZE = 716800;
 var EXTENTIONS = ['jpg', 'jpeg', 'png', 'gif'];
@@ -26,32 +28,18 @@ function hidePopoveDelay(element) {
         $('#' + element).popover("destroy");
     }, 2000);
 };
-function isNotEmptyField(field) {
-    return (field.length > 0);
-}
 function getUser() {
     var form = $("#user").serializeArray();
-    var user = {
-        /*id: $("#id").val(),
-         login: $("#login").val(),
-         name: $("#name").val(),
-         email: $("#email").val(),
-         password: $("#password").val(),
-         confirmPassword: $("#confirmPassword").val()*/
-    };
+    var user = {};
     $.each(form, function (i, field) {
         user[field.name] = field.value;
     });
-    ////user["avatar"] = ($("#image")[0].files[0] != undefined) ? $("#image").val().split('\\').pop() : null;
-    ////user["file"] = ($("#image")[0].files[0] != undefined) ? $("#image")[0].files[0] : null;
-    //console.log(user);
     return user;
 }
 function validateForm() {
     var result = true;
     return true;
     var updatedUser = getUser();
-
     if (!validateLogin(updatedUser.login)) {
         showPopover("login", INVALID_LOGIN, result);
     }
@@ -100,30 +88,34 @@ function checkFileSize(size) {
 }
 
 
-
 function changeImage(input) {
     if (input.files && input.files[0]) {
         var user = {
             id: $("#id").val(),
             avatar: ($("#image")[0].files[0] != undefined) ? $("#image")[0].files[0] : null
         };
+        var message = WARNING_MESSAGE;
         var reader = new FileReader();
         var extension = input.files[0].name.split('.').pop().toLowerCase()  //file extension from input fileisSuccess =  //is extension in acceptable types
         reader.onload = function (e) {
-            //if (!checkFileExtention(extension)) {
-            //    alert("ext");
-            //} else if (!checkFileSize(e.total)) {
-            //    alert("size");
-            //} else {
-            uploadFile(user, input.files[0])
-            if(uploadOK){
-                $('#userAvatar').attr('src', e.target.result);
-                uploadOK=false;
-            }
+            if (!checkFileExtention(extension)) {
+                message += ("<div>" + INVALID_FILE_EXTENTION + "</div>");
+                showAlert("alert alert-warning", message);
+            } else if (!checkFileSize(e.total)) {
+                console.log("size");
+                message += ("<div>" + FILE_SIZE_LIMIT + "</div>");
+                showAlert("alert alert-warning", message);
+            } else {
+                uploadFile(user, input.files[0])
+                if (uploadOK) {
+                    $('#userAvatar').attr('src', e.target.result);
+                    uploadOK = false;
+                }
 
-            //   }
+            }
         }
         reader.readAsDataURL(input.files[0]);
+
     }
 }
 function uploadFile(user, file) {
@@ -133,7 +125,7 @@ function uploadFile(user, file) {
         url: getHomeUrl() + "users/" + user.id + "/avatar",
         type: "POST",
         data: fd,
-        async:false,
+        async: false,
         processData: false,
         contentType: false,
         statusCode: {
@@ -148,15 +140,13 @@ function uploadFile(user, file) {
                 var message = WARNING_MESSAGE;
                 for (var i = 0; i < response.responseJSON.length; i++) {
                     var item = response.responseJSON[i];
-                    message+=("<div>" + item.code +"</div>");
-                    //console.log(item.code);
+                    message += ("<div>" + item.code + "</div>");
                 }
                 showAlert("alert alert-warning", message);
-
             }
         }
     })
-}
+};
 
 $(document).ready(function () {
     var persistedUser = getUser();
@@ -167,73 +157,38 @@ $(document).ready(function () {
 
     $("#save").click(function () {
 
-            if (validateForm()) {
-                var user = getUser();
-                prepareUser(user, persistedUser);
-                // var fd = new FormData();
-                var url = getHomeUrl() + "users/" + user.id;
-                $.ajax({
-                    url: url,
-                    type: "PATCH",
-                    context: document.body,
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(user),
-                    dataType: "json",
-                    statusCode: {
-                        200: function (response) {
-                            showAlert("alert alert-success", SUCCESS_MESSAGE);
-                        },
-                        500: function () {
-                            showAlert("alert alert-danger", ERROR_MESSAGE);
-                        },
-                        406: function (response) {
-                            console.log(response);
-                            showAlert("alert alert-warning", WARNING_MESSAGE);
-                            for (var i = 0; i < response.responseJSON.length; i++) {
-                                var item = response.responseJSON[i];
-                                $('#' + item.field).attr("data-content", item.code);
-                                $('#' + item.field).popover("show");
-                            }
+        if (validateForm()) {
+            var user = getUser();
+            prepareUser(user, persistedUser);
+            // var fd = new FormData();
+            var url = getHomeUrl() + "users/" + user.id;
+            $.ajax({
+                url: url,
+                type: "PATCH",
+                context: document.body,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(user),
+                dataType: "json",
+                statusCode: {
+                    200: function (response) {
+                        showAlert("alert alert-success", SUCCESS_MESSAGE);
+                    },
+                    500: function () {
+                        showAlert("alert alert-danger", ERROR_MESSAGE);
+                    },
+                    406: function (response) {
+                        console.log(response);
+                        showAlert("alert alert-warning", WARNING_MESSAGE);
+                        for (var i = 0; i < response.responseJSON.length; i++) {
+                            var item = response.responseJSON[i];
+                            $('#' + item.field).attr("data-content", item.code);
+                            $('#' + item.field).popover("show");
                         }
                     }
-                })
-            }
+                }
+            })
         }
-    );
-    //$("#save").click(function () {
-//
-//            if (validateForm()) {
-//                var user = getUser();
-//               // var fd = new FormData();
-//                $.ajax({
-//                    url: getHomeUrl() + "users/"+user.id,
-//                    type: "PATCH",
-//                    data: user,
-//                    processData: false,
-//                    contentType: false,
-//                    statusCode: {
-//                        200: function (response) {
-//                            showAlert("alert alert-success", SUCCESS_MESSAGE);
-//                        },
-//                        500: function () {
-//                            showAlert("alert alert-danger", ERROR_MESSAGE)
-//                        },
-//                        406: function (response) {
-//                            console.log(response);
-//                            showAlert("alert alert-warning", WARNING_MESSAGE);
-//                            for (var i = 0; i < response.responseJSON.length; i++) {
-//                                var item = response.responseJSON[i];
-//                                $('#' + item.field).attr("data-content", item.code);
-//                                $('#' + item.field).popover("show");
-//                            }
-//                        }
-//                    },
-//                    error: function () {
-//                        showAlert("alert alert-danger", ERROR_MESSAGE);
-//                    }
-//                })
-//            }
-//        }
-//    );
+    });
 });
+
 
