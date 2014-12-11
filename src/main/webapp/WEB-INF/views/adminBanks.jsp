@@ -11,49 +11,85 @@
             <div class="panel-body">
                 <%--<form>--%>
                 <form:form method="get" role="form" cssClass="form-horizontal">
-                <%-- Select ATM Network dropdown menu --%>
-                    <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Select ATM network<span class="caret"></span></a>
-                        <ul class="dropdown-menu" id="networks_menu">
-                            <li><a href="#" id="isnet0"><span class="glyphicon glyphicon-star"></span>All networks</a></li>
-                            <li class="divider"></li>
-                            <c:forEach items="${networks}" var="net">
-                                <c:if test="${net.id > 0}">
-                                    <li><a href="#" id="isnet${net.id}">${net.name}</a></li>
-                                </c:if>
-                            </c:forEach>
-                            <li class="divider"></li>
-                            <li><a href="#" id="isnet-1"><span class="glyphicon glyphicon-question-sign"></span> Unassigned</a></li>
-                        </ul>
-                    </div>
-                <%-- Select ATM Network dropdown menu --%>
 
-<%--
-Select Bank dropdown menu
-                    <div class="btn-group"> <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Select a Bank <span class="caret"></span></a>
-                        <ul class="dropdown-menu" id="banks_menu">
-                            <c:forEach items="${banks}" var="bank">
-                                <li class="bankitem isnet${bank.network.id}"><a href="#" id="${bank.id}">${bank.name}</a></li>
-                            </c:forEach>
-                        </ul>
-                    </div>
-Select Bank dropdown menu
+                    <div class="form-group">
+                        <%-- Select ATM Network dropdown menu --%>
+                        <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Filter by ATM network<span class="caret"></span></a>
+                            <ul class="dropdown-menu" id="networks_menu">
+                                <li><a href="#" id="isnet0"><span class="glyphicon glyphicon-star"></span>All networks</a></li>
+                                <li class="divider"></li>
+                                <c:forEach items="${networks}" var="net">
+                                    <c:if test="${net.id > 0}">
+                                        <li><a href="#" id="isnet${net.id}">${net.name}</a></li>
+                                    </c:if>
+                                </c:forEach>
+                                <li class="divider"></li>
+                                <li><a href="#" id="isnet-1"><span class="glyphicon glyphicon-question-sign"></span> Unassigned</a></li>
+                            </ul>
+                        </div>
+                        <%-- Select ATM Network dropdown menu --%>
 
-Go to Edit Bank page
-                    <div class="btn-group">
-                        <button type="submit" formaction="<c:url value="./adminBankEdit" />" id="btnBankEdit" class="btn btn-primary" disabled="true">Edit</button>
-                    </div>
-Go to Edit Bank page
---%>
+                        <div class="btn-group">
+                            <button type="submit" formaction="<c:url value="/adminBankCreateNew" />" id="btnBankCreateNew" class="btn btn-primary">
+                                Add new bank <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </div>
+                                        <%--<input type="hidden" name="network_id" id="network_id">--%>
+                        <input type="hidden" name="bank_id" id="bank_id">
 
-                    <div class="btn-group">
-                        <button type="submit" formaction="<c:url value="/adminBankCreateNew" />" id="btnBankCreateNew" class="btn btn-primary">Add new bank</button>
-                    </div>
-                                    <%--<input type="hidden" name="network_id" id="network_id">--%>
-                    <input type="hidden" name="bank_id" id="bank_id">
+                        <div class="btn-group">
+                            <button type="button" id="btnAddNetwork" class="btn btn-primary" data-toggle="collapse" data-target="#network_edit">
+                                Manage ATM Networks <i class="glyphicon glyphicon-edit"></i>
+                            </button>
+                        </div>
 
-                    <%-- update all banks from nbu--%>
-                    <div class="btn-group">
-                        <button id="singlebutton" formaction="<c:url value="/updateBanksFromNbu" />" name="singlebutton" class="btn btn-primary">Update banks list from NBU</button>
+                        <%-- update all banks from nbu--%>
+                        <div class="btn-group">
+                            <button id="singlebutton" formaction="<c:url value="/updateBanksFromNbu" />" name="singlebutton" class="btn btn-default">
+                                Update banks list from NBU <i class="glyphicon glyphicon-import"></i>
+                            </button>
+                        </div>
+
+                        <div class="btn-group">
+                            <button formaction="<c:url value="/testU" />" name="testu" class="btn btn-default">
+                                Update ATM list from UBanks.com.ua <i class="glyphicon glyphicon-import"></i>
+                            </button>
+                        </div>
+
+
+                        <%--
+                        Select Bank dropdown menu
+                                            <div class="btn-group"> <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Select a Bank <span class="caret"></span></a>
+                                                <ul class="dropdown-menu" id="banks_menu">
+                                                    <c:forEach items="${banks}" var="bank">
+                                                        <li class="bankitem isnet${bank.network.id}"><a href="#" id="${bank.id}">${bank.name}</a></li>
+                                                    </c:forEach>
+                                                </ul>
+                                            </div>
+                        Select Bank dropdown menu
+
+                        Go to Edit Bank page
+                                            <div class="btn-group">
+                                                <button type="submit" formaction="<c:url value="./adminBankEdit" />" id="btnBankEdit" class="btn btn-primary" disabled="true">Edit</button>
+                                            </div>
+                        Go to Edit Bank page
+                        --%>
+                    </div>
+
+                    <div id="network_edit" class="form-group collapse">
+                        <label for="net_name" class="control-label col-sm-2">Network name:</label>
+                        <div class="col-md-3">
+                            <input type="text" name="net_name" id="net_name" value="" class="form-control"/>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-default btn-block" type="button">Save</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-default btn-block" type="button">Add new</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-default btn-block" type="button">Delete</button>
+                        </div>
                     </div>
 
                 </form:form>

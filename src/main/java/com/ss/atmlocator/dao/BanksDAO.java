@@ -90,6 +90,11 @@ public class BanksDAO implements IBanksDAO {
     }
 
     @Override
+    public AtmNetwork getUnassignedNetwork() {
+        return entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
+    }
+
+    @Override
     @Transactional
     public void saveAllBankNBU(List<Bank> banks) {
         Bank tempBank;
@@ -124,10 +129,12 @@ public class BanksDAO implements IBanksDAO {
         int mfoCode;
         String bankName;
         Set<AtmOffice> officeSet;
+        int cntBanksUpdated = 0;
+        int cntNewAtms = 0;
+        log.debug("Parsed "+banks.size()+" banks from Ubanks.com.ua");
         for (Bank bank : banks){
             bankName=bank.getName();
-
-
+            boolean bankUpdated = false;
             officeSet=bank.getAtmOfficeSet();
             try {
                 TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.name=:bankName", Bank.class);
@@ -141,17 +148,17 @@ public class BanksDAO implements IBanksDAO {
 
                         if (!persistedAtms.contains(atmOffice)){
                             atmOffice.setBank(bankOther);
+                            atmOffice.setLastUpdated(TimeUtil.currentTimestamp());
                             persistedAtms.add(atmOffice);
-
+                            cntNewAtms++;
+                            bankUpdated = true;
                         } else {
-//  зробити провірку по типу атм
+                            //TODO:  зробити провірку по типу атм
                         }
 
-
-                        //bankOther.setAtmOfficeSet(officeSet);
                     }
                     entityManager.merge(bankOther);
-                    continue;
+                    //continue;
                 }
             } catch (NoResultException nre) {
                 System.out.println();
@@ -163,10 +170,12 @@ public class BanksDAO implements IBanksDAO {
 //            for(AtmOffice atmOffice:officeSet){
 //                atmOffice.setBank(bank);
 //            }
-
-
+            if(bankUpdated) {
+                cntBanksUpdated++;
+            }
 
         }
+        log.debug("Added "+cntNewAtms+" new ATMs and bank offices, for "+cntBanksUpdated+" banks.");
 
     }
 
