@@ -13,6 +13,7 @@ var INVALID_FILE_EXTENTION = "Invalid file extension (accepts png, gif and jpg)"
 var MAX_FILE_SIZE = 716800;
 var EXTENTIONS = ['jpg', 'jpeg', 'png', 'gif'];
 var uploadOK = false;
+var persistedUser;
 
 function hidePopover(element) {
     $('#' + element).popover("destroy");
@@ -23,11 +24,7 @@ function showPopover(element, message, result) {
     result = false;
 }
 
-function hidePopoveDelay(element) {
-    setTimeout(function () {
-        $('#' + element).popover("destroy");
-    }, 2000);
-};
+
 function getUser() {
     var form = $("#user").serializeArray();
     var user = {};
@@ -64,7 +61,8 @@ function showAlert(className, html) {
     element.addClass(className);
     element.children(".close").nextAll().remove();
     element.append(html);
-    element.show();
+    element.fadeIn("slow");
+    element.delay(3000).fadeOut("slow");
 }
 
 function prepareUser(updatedUser, persistedUser) {
@@ -149,7 +147,17 @@ function uploadFile(user, file) {
 };
 
 $(document).ready(function () {
-    var persistedUser = getUser();
+    persistedUser = getUser();
+
+    $("input:not(input[type=file],#login)").on("input", function() {
+        console.log(this.value);
+        console.log(persistedUser[this.id]);
+        if(this.value!=persistedUser[this.id]){
+            $("#save").prop("disabled",false);
+        } else{
+            $("#save").prop("disabled",true);
+        }
+    });
 
     $("#image").change(function () {
         changeImage(this);
@@ -171,7 +179,9 @@ $(document).ready(function () {
                 dataType: "json",
                 statusCode: {
                     200: function (response) {
+                        $("#save").prop("disabled",true);
                         showAlert("alert alert-success", SUCCESS_MESSAGE);
+                        persistedUser = getUser();
                     },
                     500: function () {
                         showAlert("alert alert-danger", ERROR_MESSAGE);
