@@ -15,21 +15,25 @@
 </head>
 <body>
 
-<c:if test="${not empty error}">
-    <div class="alert alert-warning alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-        <span class="sr-only">Close</span></button>
 
-        <div style="text-align: center">
-            ${error}
-            <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
-        </div>
-
-    </div>
-</c:if>
 
 <div class="container">
+    <div style="height:40px; width:100%;">
+        <c:if test="${not empty error}">
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+
+                <div style="text-align: center">
+                        ${error}
+                    <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+                </div>
+
+            </div>
+        </c:if>
+    </div>
+
     <form class="form-signin" role="form" action="<c:url value="/j_spring_security_check"/>" method="POST">
         <h2 class="form-signin-heading">Please sign in</h2>
         <input type="text" class="form-control" name="j_username" placeholder="Email address" required autofocus>
