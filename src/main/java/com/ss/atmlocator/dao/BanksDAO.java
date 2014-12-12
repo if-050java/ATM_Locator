@@ -122,7 +122,7 @@ public class BanksDAO implements IBanksDAO {
         }
     }
 
-    @Override
+     @Override
      @Transactional
      public void saveAllBanksUbank(List<Bank> banks) {
         int cntBanksUpdated = 0;
@@ -174,6 +174,7 @@ public class BanksDAO implements IBanksDAO {
         log.debug("Added "+cntNewAtms+" new ATMs and bank offices, for "+cntBanksUpdated+" banks.");
 
     }
+
 
 
 }
