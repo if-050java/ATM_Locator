@@ -84,6 +84,7 @@
         <constructor-arg name="mailRegExp" value="${email.pattern}"/>
         <constructor-arg name="loginRegExp" value="${login.pattern}"/>
         <constructor-arg name="passwordRegExp" value="${password.pattern}"/>
+        <constructor-arg name="nickNameRegExp" value="${nickname.pattern}"/>
     </bean>
     <!-- Message source for validation-->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -100,6 +101,7 @@
     <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
     <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
     <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
+    <bean id="uservalidator" class="com.ss.atmlocator.validator.UserValidator"/>
 
     <bean id="passwordEncoder"
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />

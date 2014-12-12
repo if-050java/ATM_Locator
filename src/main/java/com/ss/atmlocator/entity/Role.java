@@ -39,5 +39,29 @@ public class Role {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public Role() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+
+        Role role = (Role) o;
+
+        if (!name.equals(role.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
 

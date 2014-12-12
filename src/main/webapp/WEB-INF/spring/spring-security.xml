@@ -18,8 +18,8 @@
             <password-encoder hash="md5"/>
             <jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
                                users-by-username-query="
-		      select login as username, password, enabled
-		      from users where login=?"
+		      SELECT login AS username, password, enabled
+		      FROM users WHERE login=?"
 
                                authorities-by-username-query="
 		      SELECT users.login, roles.name FROM users
