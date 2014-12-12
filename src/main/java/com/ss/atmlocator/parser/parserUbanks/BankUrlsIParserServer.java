@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
 import java.util.*;
 
 /**
@@ -36,6 +37,12 @@ public class BankUrlsIParserServer implements IParser {
     }
 
     public List<Bank> parse() {
+        final String BRANCH_SELECTOR_EXPR= "відділення";
+        final String ATM_SELECTOR_EXPR = "банкомати";
+
+        assert (BRANCH_SELECTOR_EXPR.equals("\u0432\u0456\u0434\u0434\u0456\u043B\u0435\u043D\u043D\u044F"));
+        assert (ATM_SELECTOR_EXPR.equals("\u0431\u0430\u043D\u043A\u043E\u043C\u0430\u0442\u0438"));
+
         bankList = new ArrayList<Bank>();
         AtmParserServise parser = new AtmParserServise();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -53,12 +60,12 @@ public class BankUrlsIParserServer implements IParser {
 
                 for (Element url : urls) {
                         /* відділення */
-                        if (url.text().equals("\u0432\u0456\u0434\u0434\u0456\u043B\u0435\u043D\u043D\u044F")) {
+                        if (url.text().equals(BRANCH_SELECTOR_EXPR)) {
                             listSelector = "branch";
 
                         } else
                         /* банкомати */
-                        if (url.text().equals("\u0431\u0430\u043D\u043A\u043E\u043C\u0430\u0442\u0438")) {
+                        if (url.text().equals(ATM_SELECTOR_EXPR)) {
                             listSelector = "atm";
 
                         }
