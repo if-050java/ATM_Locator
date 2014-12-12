@@ -4,7 +4,7 @@
 <html>
 <head>
     <!-- custom scripts and css  -->
-    <script src="<c:url value="/resources"/>/scripts/AdminUsers.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/adminUsers.js"></script>
     <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
     <link href="<c:url value="/resources"/>/styles/adminUsers.css" rel="stylesheet">
@@ -49,43 +49,42 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="" class="img-thumbnail" id="userAvatar">
+                        <img src="" class="img-thumbnail" id="avatar">
                     </div>
                     <div class="col-md-8">
                         <form action="" method="post" class="form-horizontal" role="form">
                             <div class="form-group">
-                                <label for="inputLogin" class="col-md-3 control-label">Login</label>
+                                <label for="login" class="col-md-3 control-label">Login</label>
 
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="inputLogin" placeholder="login"
+                                    <input type="text" class="form-control" id="login" placeholder="login"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
                                            data-original-title="" onclick="hidePopover('inputLogin')"
-                                           onchange="setModified()"/>
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputLogin" class="col-md-3 control-label">NickName</label>
+                                <label for="login" class="col-md-3 control-label">NickName</label>
 
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="inputName" placeholder="NickName"
+                                    <input type="text" class="form-control" id="name" placeholder="NickName"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
-                                           data-original-title="" onclick="hidePopover('inputName')"
-                                           onchange="setModified()"/>
+                                           data-original-title="" onclick="hidePopover('name')"
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputEmail" class="col-md-3 control-label">E-mail</label>
+                                <label for="email" class="col-md-3 control-label">E-mail</label>
 
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="inputEmail" placeholder="E-mail"
+                                    <input type="text" class="form-control" id="email" placeholder="E-mail"
                                            title="" data-content="E-mail isn't valid" data-placement="left"
                                            data-toggle="popover" data-original-title=""
-                                           onclick="hidePopover('inputEmail')" onchange="setModified()"/>
+                                           onclick="hidePopover('email')" onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="enabled" class="col-md-3 control-label">Log in</label>
-
                                 <div class="col-md-3">
                                     <!-- custom style to set width of switch -->
                                     <style>
@@ -93,18 +92,18 @@
                                             min-width: 100px;
                                         }
                                     </style>
-                                    <input id="enabled" data-style="width" data-toggle="toggle" checked
-                                           data-on="allowed" data-off="prohibited" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
+                                    <input id="enabled" data-style="width" data-toggle="toggle" unchecked
+                                           data-on="on" data-off="off" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="enabled" class="col-md-3 control-label">Reset password</label>
+                                <label for="genPassword" class="col-md-3 control-label">Reset password</label>
 
                                 <div class="col-md-3">
                                     <input id="genPassword" data-style="width" data-toggle="toggle" unchecked
                                            data-on="on" data-off="off" data-onstyle="success"
-                                           data-offstyle="danger" type="checkbox" onchange="setModified()">
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
                             </div>
                         </form>
@@ -112,7 +111,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2 col-lg-offset-8">
-                        <button type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">Delete
+                        <button id="delete" type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">Delete
                         </button>
                     </div>
                     <div class="col-md-2">
@@ -134,7 +133,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-primary" onclick="deleteUser()">Yes</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteUser()">Yes</button>
                 </div>
             </div>
         </div>
