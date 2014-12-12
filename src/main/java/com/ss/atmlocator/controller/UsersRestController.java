@@ -3,10 +3,8 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.utils.UploadFileUtils;
 import com.ss.atmlocator.utils.UploadedFile;
 import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -28,15 +26,16 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
+import static com.ss.atmlocator.utils.Constants.USER_AVATAR_PREFIX;
+
 
 @Controller
-@RequestMapping("users")
-public class usersController {
+@RequestMapping("/users")
+public class UsersRestController {
 
     private final String ADMIN_ROLE_NAME = "ADMIN";
     private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
 
-    final Logger logger = Logger.getLogger(usersController.class.getName());
 
     @Autowired
     private UserService userService;
@@ -49,41 +48,34 @@ public class usersController {
     @Qualifier("imagevalidator")
     private Validator imageValidator;
 
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<jQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
+        List<String> listUsers = userService.getNames(query);
+        return new ResponseEntity<>(new jQueryAutoCompleteResponse(query, listUsers), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)
     public ResponseEntity<User> findUser(@PathVariable("value") String value) {
         try {
             value = value.replace('*', '.');
-            return new ResponseEntity<User>(userService.getUserByName(value), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUserByName(value), HttpStatus.OK);
         } catch (EntityNotFoundException enfe) {
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<jQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
-        List<String> list = userService.getNames(query);
-
-        jQueryAutoCompleteResponse nameResponse = new jQueryAutoCompleteResponse();
-        nameResponse.setQuery(query);
-        nameResponse.setSuggestions(list);
-
-        return new ResponseEntity<jQueryAutoCompleteResponse>(nameResponse, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
-        //Check want to remove admin
-        if (userService.getUserById(id).getRoles().contains(ADMIN_ROLE)) {
-            return new ResponseEntity<Void>(HttpStatus.UNPROCESSABLE_ENTITY);
+        if (userService.getUserById(id).getRoles().contains(ADMIN_ROLE)) {//Check want to remove admin
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         try {
             userService.deleteUser(id);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (EntityNotFoundException enfe) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (PersistenceException pe) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -100,21 +92,16 @@ public class usersController {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
         try {
-            //id of user who is logged
-            int currentLoggedUserId = userService.getUserByName(principal.getName()).getId();
-            //try to update user in database
-            userService.editUser(updatedUser, genPassword);
-            //login if change yourself
-            if (id == currentLoggedUserId) {
+            int currentLoggedUserId = userService.getUserByName(principal.getName()).getId();//id of user who is logged
+            userService.editUser(updatedUser, genPassword);//try to update user in database
+            if (id == currentLoggedUserId) { //login if change yourself
                 userService.doAutoLogin(updatedUser.getLogin());
             }
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (PersistenceException persistExp) {
-            logger.error(persistExp.getMessage(), persistExp);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (MessagingException | MailSendException mailExp) {
-            logger.error(mailExp.getMessage(), mailExp);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -128,14 +115,12 @@ public class usersController {
 
         imageValidator.validate(file, result);
         MultipartFile avatar = file.getFile();
-        if (!result.hasErrors() && avatar != null) {
+        if (!result.hasErrors()) {
             try {
-                String filename = id + avatar.getOriginalFilename();
-                UploadFileUtils.save(avatar, filename, request);
-                userService.updateAvatar(id, filename);
+                String newName = UploadedFile.saveImage(avatar, USER_AVATAR_PREFIX, id, request);
+                userService.updateAvatar(id, newName);
                 return new ResponseEntity<>(HttpStatus.OK);
             } catch (IOException ioe) {
-                logger.error(ioe.getMessage(), ioe);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }

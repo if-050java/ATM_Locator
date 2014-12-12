@@ -19,7 +19,7 @@ function FindUser(){
     user = null;
     var findValue = $("#findName").val().replace('.','*');
 
-   //Send request
+    //Send request
     $.ajax({
         url: getHomeUrl()+"users/"+findValue,
         type : "GET",
@@ -27,9 +27,9 @@ function FindUser(){
         dataType: "json",
         statusCode: {
             200: function(response) {
-                                showData(response);
-                                $("#findName").val("");
-                            },
+                showData(response);
+                $("#findName").val("");
+            },
             404: couldNotFind
         }
     })
@@ -39,11 +39,11 @@ function FindUser(){
 
 //show popover if cant find such user
 function couldNotFind(){
-        //show popover if user not found
-        $('#findName').attr("data-content", "Can't find user with this name or e-mail");
-        $('#findName').popover("show");
-        //hide user form
-        $("#userData").slideUp();
+    //show popover if user not found
+    $('#findName').attr("data-content", "Can't find user with this name or e-mail");
+    $('#findName').popover("show");
+    //hide user form
+    $("#userData").slideUp();
 }
 
 //show user profile
@@ -106,7 +106,7 @@ function deleteUser(){
     })
     //hide user form
     $("#questionModal").modal("hide");
- //   $("#userData").slideUp();
+    //   $("#userData").slideUp();
 }
 
 //show alert about result of operation
@@ -208,7 +208,8 @@ function updateUser(){
             422: function(){
                 showAlert("alert alert-warning", "Can't disable administrator");
             },
-            500: function(){ showAlert("alert alert-danger", "Operation failed because of a server error")}
+            500: function(){ showAlert("alert alert-danger", "Saving failed because of a server error")},
+            503: function(){ showAlert("alert alert-danger", "Sending email failed because of a server error")}
         }
     })
 }

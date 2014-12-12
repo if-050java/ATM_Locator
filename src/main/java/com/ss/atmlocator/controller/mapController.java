@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/map")
-public class mapController {
+public class MapController {
     @Autowired
     ATMService atmService;
     @Autowired

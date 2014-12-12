@@ -125,26 +125,22 @@ public class BanksDAO implements IBanksDAO {
     @Override
      @Transactional
      public void saveAllBanksUbank(List<Bank> banks) {
-        Bank bankOther;
-        int mfoCode;
-        String bankName;
-        Set<AtmOffice> officeSet;
         int cntBanksUpdated = 0;
         int cntNewAtms = 0;
         log.debug("Parsed "+banks.size()+" banks from Ubanks.com.ua");
         for (Bank bank : banks){
-            bankName=bank.getName();
+
             boolean bankUpdated = false;
-            officeSet=bank.getAtmOfficeSet();
+
             try {
                 TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.name=:bankName", Bank.class);
-                query.setParameter("bankName", bankName);
+                query.setParameter("bankName", bank.getName());
 
-                bankOther = query.getSingleResult();
+                Bank bankOther = query.getSingleResult();
 
                 if (bank.getName().equals(bankOther.getName())) {
                     Set<AtmOffice> persistedAtms = bankOther.getAtmOfficeSet();
-                    for (AtmOffice atmOffice: officeSet) {
+                    for (AtmOffice atmOffice: bank.getAtmOfficeSet()) {
 
                         if (!persistedAtms.contains(atmOffice)){
                             atmOffice.setBank(bankOther);

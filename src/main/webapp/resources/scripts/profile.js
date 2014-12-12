@@ -145,17 +145,21 @@ function uploadFile(user, file) {
         }
     })
 };
-
+function showOK(response) {
+    $("#save").prop("disabled", true);
+    showAlert("alert alert-success", SUCCESS_MESSAGE);
+    persistedUser = getUser();
+}
 $(document).ready(function () {
     persistedUser = getUser();
 
-    $("input:not(input[type=file],#login)").on("input", function() {
+    $("input:not(input[type=file],#login)").on("input", function () {
         console.log(this.value);
         console.log(persistedUser[this.id]);
-        if(this.value!=persistedUser[this.id]){
-            $("#save").prop("disabled",false);
-        } else{
-            $("#save").prop("disabled",true);
+        if (this.value != persistedUser[this.id]) {
+            $("#save").prop("disabled", false);
+        } else {
+            $("#save").prop("disabled", true);
         }
     });
 
@@ -179,12 +183,13 @@ $(document).ready(function () {
                 dataType: "json",
                 statusCode: {
                     200: function (response) {
-                        $("#save").prop("disabled",true);
-                        showAlert("alert alert-success", SUCCESS_MESSAGE);
-                        persistedUser = getUser();
+                        showOK(response);
                     },
                     500: function () {
                         showAlert("alert alert-danger", ERROR_MESSAGE);
+                    },
+                    503: function (response) {
+                        showOK(response);
                     },
                     406: function (response) {
                         console.log(response);

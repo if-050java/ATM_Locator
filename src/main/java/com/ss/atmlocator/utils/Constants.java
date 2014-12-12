@@ -4,16 +4,17 @@ package com.ss.atmlocator.utils;
  * Created by Vasyl Danylyuk on 29.11.2014.
  */
 public class Constants {
-    //Request parameters for finding users
-    public static final String FIND_BY = "findBy";
-    public static final String FIND_VALUE = "findValue";
+
+    public static final String RESOURCES_FOLDER = "\\resources\\images\\";
+
+    public static final String USER_AVATAR_PREFIX = "avatar_";
     //Request parameters for user fields
     public static final String USER_ID = "id";
     public static final String USER_LOGIN = "login";
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
     public static final String USER_NAME = "name";
-    public static final String USER_AVATAR = "avatar";
+
     public static final String USER_ENABLED = "enabled";
     //Operation names
     public static final String DELETE = "delete";

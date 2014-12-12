@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,17 +74,32 @@ public class BanksService {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-        String newLogo = UploadFileUtils.saveBankImage(imageLogo, "bank_logo", bank.getId(), request);
+        String newLogo = null;
+        try {
+            newLogo = UploadedFile.saveImage(imageLogo, "bank_logo", bank.getId(), request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(newLogo != null){
             bank.setLogo(newLogo);
         }
 
-        String newIconAtm = UploadFileUtils.saveBankImage(iconAtmFile, "bank_atm", bank.getId(), request);
+        String newIconAtm = null;
+        try {
+            newIconAtm = UploadedFile.saveImage(iconAtmFile, "bank_atm", bank.getId(), request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(newIconAtm != null){
             bank.setIconAtm(newIconAtm);
         }
 
-        String newIconOffice = UploadFileUtils.saveBankImage(iconOfficeFile, "bank_off", bank.getId(), request);
+        String newIconOffice = null;
+        try {
+            newIconOffice = UploadedFile.saveImage(iconOfficeFile, "bank_off", bank.getId(), request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if(newIconOffice != null) {
             bank.setIconOffice(newIconOffice);
         }
