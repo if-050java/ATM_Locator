@@ -3,18 +3,22 @@ var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
 var markers = [];
+var overlay;
 
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 document.onclick = hideMenu;
 
 //get mouse position in window on click
-function getMousePos(event){
-    event = event || window.event;
-    var mousPositionOnClickX = event.pageX;
-    var mousPositionOnClickY = event.pageY;
-    $("#userAddress").val(mousPositionOnClickX);
-	return {x:mousPositionOnClickX, y:mousPositionOnClickY};
+function getMousePos(e){
+    var projection = overlay.getProjection();
+    var pixel = projection.fromLatLngToContainerPixel(e.latLng);
+    var mapOffset = $("#map_container").offset();
+    var mousePosition = {
+        x: pixel.x +mapOffset.left,
+        y: pixel.y +mapOffset.top
+    }
+    return mousePosition;
 }
 
 //add map to page and set to default position
@@ -31,6 +35,10 @@ function initializeMap() {
     } else {
         getLocation();
     }
+
+    overlay = new google.maps.OverlayView();
+    overlay.draw = function() {};
+    overlay.setMap(map);
 }
 
 //Getting location from browser
@@ -130,10 +138,10 @@ function addMarker(position, title) {
     });
     marker.setMap(map);
 
-/*    google.maps.event.addListener(marker, 'rightclick', function(event){
+    google.maps.event.addListener(marker, 'rightclick', function(event){
 		var pos = getMousePos(event);
         markerMenu(pos.x,pos.y);
-    });*/
+    });
 
     markers.push(marker);
 }
@@ -161,24 +169,10 @@ function hidePopover(element){
     $('#'+element).popover("destroy");
 }
 
-//add cookies about user position(lat lng)
-function setPositionCookies(){
-    $.cookie("position", JSON.stringify(userPosition));
-    google.maps.event.addListener(marker, 'click', function removeMarker() {
-        if (window.confirm("Are you sure?")) {//If this marker not in current position marker then remove
-            marker.setMap(null);
-            //   removeReq(marker.getPosition());
-        }
-    });
-}
-
-function hidePopover(element) {
-    $('#' + element).popover("destroy");
-}
-
 function setPositionCookies() {
     $.cookie("position", JSON.stringify(userPosition));
 }
+
 //change filters by network and bank
 $(document).ready(function () {
     $('#networksDropdown li a').click(function (e) {
