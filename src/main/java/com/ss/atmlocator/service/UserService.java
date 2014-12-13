@@ -2,11 +2,9 @@ package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.exception.NotValidException;
 import com.ss.atmlocator.utils.EmailCreator;
 import com.ss.atmlocator.utils.GenString;
 import com.ss.atmlocator.utils.SendMails;
-import com.ss.atmlocator.validator.UserValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,10 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.lang.reflect.Field;

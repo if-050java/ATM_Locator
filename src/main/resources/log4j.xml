@@ -61,6 +61,16 @@
         </layout>
     </appender>
 
+    <appender name="parserLog" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="MaxFileSize" value="2048KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="File" value="../logs/parser-logs.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+
     <!-- Spring Log -->
     <logger name="org.springframework">
         <level value="info" />
@@ -82,6 +92,11 @@
     <logger name="com.ss.atmlocator.utils.AuthLogging">
         <level value="debug"/>
         <appender-ref ref="logInLogs"/>
+    </logger>
+    <!-- Parser Logs -->
+    <logger name="com.ss.atmlocator.parser">
+        <level value="debug"/>
+        <appender-ref ref="parserLog"/>
     </logger>
 
 <root>

@@ -2,17 +2,13 @@ package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IAtmNetworksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.ErrorMessage;
 import com.ss.atmlocator.utils.OutResponse;
-import com.ss.atmlocator.utils.UploadFileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 

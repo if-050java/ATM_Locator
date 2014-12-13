@@ -50,68 +50,89 @@ public class CredoBankParser implements IParser {
     private static final String ILLEGAL_ARGUMENT_MESSAGE = "Required parameter not specified or empty: ";
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
     private static final String ATM_HTML_TAG = "item";
+    private static final String REGION_ELEMENTS_CLASS = "white_back";
+
+    private static final String GET_REGION_URL = "/xml/coord_data/s/";
+    private static final String GET_CITY_URL = "/xml/coord_data/a/";
+    private static final String ATM_PAGE_URL = "/our_coordinates.html";
 
     private static final String ATM_TYPE_ATM = "банкомат";
-    private static final String ATM_TYPE_OFFICE = "Відділення";
+    private static final int CITY_ID_CHILD = 1;
 
-    private static final int TYPE = 0;
-    private static final int ADDRESS = 1;
 
-    private static final int STREET = 0;
-    private static final int CITY = 1;
+    private static final int TYPE_CHILD = 0;
+    private static final int ADDRESS_CHILD = 1;
+
+    private static final int STREET_PART = 0;
+    private static final int CITY_PART = 1;
+
+    private static final int REGION_ID_STRING_START_POSITION = 2;
+    private static final int REGION_DIV_CHILD = 0;
+    private static final int REGION_NAME_ELEMENT = 1;
+
+    private static final String POSTAL_CODE_REGEXP = ", \\d{5}";
+    private static final String REMOVE_SPACES_REGEXP = "\\s{1,}";
+    private static final String POSTAL_SPACE_AFTER_DOT = "\\. ";
 
     private final Logger logger = Logger.getLogger(CredoBankParser.class);
 
-    private String startURL;
+    private String bankSite;
     private List<String> regions = new ArrayList<String>();
     private Document mainPage;
     private List<AtmOffice> ATMs = new ArrayList<>();
-    private int bankId;
 
-    public List<String> getRegions() {
-        return regions;
-    }
 
-    public void setRegions(List<String> regions) {
-        this.regions = regions;
-    }
-
-    public void parseMainPage(){
-
+    /**
+     * @return list AtmOffices that was parsed from given URL and is included to given regions
+     * @throws IOException if couldn't load given URL(URL is bad or site don't work at this time)
+     */
+    public List<AtmOffice> parseATMs() throws IOException {
         try{
-            logger.trace("Завантажуємо початкову сторінку");
-            mainPage = Jsoup.connect(startURL).get();
-            logger.trace("Початкову сторінку завантажено");
+            logger.info("Try to load start page " + bankSite + ATM_PAGE_URL);
+            mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
+            int parsedRegions = 0;
             for(String region : regions){
-                Elements regionRows = mainPage.getElementsByClass("white_back");
+                Elements regionRows = mainPage.getElementsByClass(REGION_ELEMENTS_CLASS);
                 for(Element regionRow : regionRows){
-                    String regionID = regionRow.id().substring(2);
-                    Element regionDiv = regionRow.child(0);
-                    Element regionDivLink = regionDiv.children().get(1);
-                    if(regionDivLink.text().equals(region)){
-                        parseRegion("http://www.kredobank.com.ua/xml/coord_data/s/"+regionID+"/");
-                    }
-                }
+                    String regionID = regionRow.id().substring(REGION_ID_STRING_START_POSITION);
+                    Element regionDiv = regionRow.child(REGION_DIV_CHILD);
+                    Element regionNameElement = regionDiv.child(REGION_NAME_ELEMENT);
+                    if(region.equals(regionNameElement.text())){
+                        logger.info("Try to parse ATMs from region " + region);
+                        parseRegion(bankSite + GET_REGION_URL+regionID);
+                        parsedRegions++;
+                    }//end if
+                }//end for regionRows
+            }//end for regions
+            logger.info("Parsing is done. Was parsed " + ATMs.size() + " ATMs and offices");
+            if(regions.size() != parsedRegions){
+                logger.warn("Regions given " + regions.size() + "regions parsed " + parsedRegions);
             }
-
-        }catch (IOException IOE){
-            logger.error("Сторінку не вдалось завантажити");
+            return ATMs;
+        }catch(IOException ioe){
+            logger.error(ioe.getMessage(), ioe);
+            throw ioe;
         }
-
     }
 
+    /**
+     * Parse region that is defined by @param request to kredobank rest api
+     * and get URLs for cities parser
+     */
     private void parseRegion(String request){
+        logger.info("Try to connect to URL "+request);
         try{
-            Document regionXML = Jsoup.connect(request).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")
-                                                        .referrer("http://www.kredobank.com.ua/our_coordinates.html#")
-                                                        .method(Connection.Method.GET)
-                                                        .execute().parse();
-            Elements cityItem = regionXML.getElementsByTag("item");
+            Document regionXML = Jsoup.connect(request).userAgent(USER_AGENT)
+                                                       .referrer(bankSite)
+                                                       .method(Connection.Method.GET)
+                                                       .execute().parse();
+            Elements cityItem = regionXML.getElementsByTag(ATM_HTML_TAG);
             for(Element city : cityItem){
-                parseCity("http://www.kredobank.com.ua/xml/coord_data/a/"+city.child(1).text()+"/");
+                logger.info("Try to parse ATMs from city " + city.child(0).text());
+                parseCity(bankSite+GET_CITY_URL + city.child(CITY_ID_CHILD).text());
             }
-        }catch(IOException IOE){
-            logger.error("Сторінку не вдалось завантажити");
+        }catch(IOException ioe){
+            logger.error(ioe.getMessage(), ioe);
         }
     }
 
@@ -120,30 +141,42 @@ public class CredoBankParser implements IParser {
      * and add all ATMs from this city to list
      */
     private void parseCity(String request){
+        logger.info("Try to connect to URL "+request);
         try{
             Document cityXML = Jsoup.connect(request).userAgent(USER_AGENT)
-                                                     .referrer(startURL)
+                                                     .referrer(bankSite)
                                                      .method(Connection.Method.GET)
                                                      .execute().parse();
             Elements ATMItems = cityXML.getElementsByTag(ATM_HTML_TAG);
             for(Element ATMItem : ATMItems){
-                String[] addressArray = ATMItem.child(ADDRESS).text().split(ADDRESS_SEPARATOR);
-                String address = addressArray[CITY]+addressArray[STREET];
+                String address = prepareAddress(ATMItem.child(ADDRESS_CHILD).text());
                 if(isAtmAndOffice(address)){
                     continue;
                 }
 
                 AtmOffice ATM = new AtmOffice();
                 ATM.setAddress(address);
-                ATM.setType(ATMItem.child(TYPE).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
+                ATM.setType(ATMItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
                 ATM.setLastUpdated(new Timestamp(new Date().getTime()));
 
                 ATMs.add(ATM);
             }
 
-        }catch(IOException IOE){
-
+        }catch(IOException ioe){
+            logger.error(ioe.getMessage(), ioe);
         }
+    }
+
+    /**
+     * @return formated address string based on @param rawAddress from site
+     */
+    private String  prepareAddress(String rawAddress){
+        String[] addressArray = rawAddress.split(ADDRESS_SEPARATOR);
+        String address = addressArray[STREET_PART]+addressArray[CITY_PART];
+        address = address.replaceFirst(POSTAL_CODE_REGEXP,"");
+        address = address.replaceAll(POSTAL_SPACE_AFTER_DOT, ".");
+        address = address.replaceAll(REMOVE_SPACES_REGEXP," ");
+        return address.trim();
     }
 
     /**
@@ -167,11 +200,11 @@ public class CredoBankParser implements IParser {
     @Override
     public void setParameter(Map<String, String> parameters) {
         checkParameters(parameters);
-        String regionsString = parameters.get(requiredParameters.REGIONS);
+        String regionsString = parameters.get(requiredParameters.REGIONS.getValue());
         for(String region : regionsString.split(REGIONS_SEPARATOR)){
             regions.add(region.trim());
         };
-        startURL = parameters.get(requiredParameters.URL);
+        bankSite = parameters.get(requiredParameters.URL.getValue());
     }
 
     /**
