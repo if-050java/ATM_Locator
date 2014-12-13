@@ -21,19 +21,15 @@ public class BankUrlsIParserServer implements IParser {
     protected String bankName;
     protected List<Bank> bankList;
     protected String bankUrl;
-    
 
-    public BankUrlsIParserServer() {
-    }
+    public BankUrlsIParserServer() {}
 
     public BankUrlsIParserServer(String url) {
         this.url = url;
     }
 
     public void setParameter(Map<String, String> parameters) {
-
         this.url = parameters.get("url");
-       
     }
 
     public List<Bank> parse() {
@@ -93,13 +89,11 @@ public class BankUrlsIParserServer implements IParser {
 
                         bank.setAtmOfficeSet(AtmOfficeSetTmp);
 
-
                         bankList.add(bank);
 
                         //System.out.println(bankUrls.getBankName());
                         //System.out.println(bankUrls.getBankUrl());
                         //System.out.println(bankUrls.getBankOfficceOrAtm());
-
 
                 }
             }
