@@ -29,18 +29,17 @@ public class ATMService {
      * Add ATMs that is in circle of a given radius from banks with given IDs
      * or empty collection if not exist such ATMs
      *
-     * @param bankIDs
+     * @param network_id
+     * @param bank_id
      * @param userPosition
      * @param radius
-     * @return
+     * @return Collection<AtmOffice>
      */
-    public Collection<AtmOffice> getATMs(Collection<Integer> bankIDs,GeoPosition userPosition,  int radius){
+    public Collection<AtmOffice> getATMs(Integer network_id, Integer bank_id, GeoPosition userPosition,  int radius){
 
-        Collection<AtmOffice> result =new ArrayList<AtmOffice>();
+        Collection<AtmOffice> result = new ArrayList<AtmOffice>();
 
-        for (int id : bankIDs){
-            addBankATMsToResult(result, id, userPosition, radius);
-        }
+        addBankATMsToResult(result, network_id,bank_id, userPosition, radius);
 
         return result;
     }
@@ -53,8 +52,8 @@ public class ATMService {
      * @param userPosition coordinates of circle center
      * @param radius
      */
-    private void addBankATMsToResult(Collection<AtmOffice> result, int bank_id, GeoPosition userPosition, int radius){
-        for(AtmOffice atmOffice : atmsDAO.getBankAtms(bank_id)){
+    private void addBankATMsToResult(Collection<AtmOffice> result,Integer network_id, Integer bank_id, GeoPosition userPosition, int radius){
+        for(AtmOffice atmOffice : atmsDAO.getBankAtms(network_id, bank_id)){
             if(GeoUtil.inRadius(userPosition, atmOffice.getGeoPosition(),radius)){
                 result.add(atmOffice);
             }
