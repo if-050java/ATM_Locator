@@ -8,19 +8,9 @@ var overlay;
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 document.onclick = hideMenu;
-
-//get mouse position in window on click
-function getMousePos(e){
-    var projection = overlay.getProjection();
-    var pixel = projection.fromLatLngToContainerPixel(e.latLng);
-    var mapOffset = $("#map_container").offset();
-    var mousePosition = {
-        x: pixel.x +mapOffset.left,
-        y: pixel.y +mapOffset.top
-    }
-    return mousePosition;
-}
-
+//======================================================================================================================
+//User positioning
+//======================================================================================================================
 //add map to page and set to default position
 function initializeMap() {
     var defaultMapOptions = {
@@ -78,6 +68,11 @@ function setLocationByAddress() {
     return false;
 };
 
+//hide popower about finding address
+function hidePopover(element){
+    $('#'+element).popover("destroy");
+}
+
 //Seting user position by google geocoder
 function setMapByGeocode(data, status) {
     if (status == google.maps.GeocoderStatus.OK) {//if google found this address
@@ -97,14 +92,66 @@ function setMapByGeocode(data, status) {
     }
 }
 
-//Deleting marker from map
-function deleteMarker(marker) {
-    if (marker != null) {
-        marker.setMap(null);
-    }
-    ;
+//set cookies about user position
+function setPositionCookies() {
+    $.cookie("position", JSON.stringify(userPosition));
+}
+//======================================================================================================================
+//Working with markers
+//======================================================================================================================
+//Adding marker to map
+function addMarker(position, title) {
+    var marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        title: title,
+        icon: getHomeUrl()+"resources/images/privat_icon.jpg"
+    });
+    marker.setMap(map);
+
+    google.maps.event.addListener(marker, 'rightclick', function(event){
+        var pos = getMousePos(event);
+        markerMenu(pos.x,pos.y);
+    });
+
+    markers.push(marker);
 }
 
+//delete all ATM markers from map
+function deleteMarkers(){
+    for(i = 0; i < markers.length; i++){
+        markers[i].setMap(null);
+    }
+    markers = [];
+}
+
+//add marker menu in position x, y
+function markerMenu(x,y){
+    $(".popup-menu")
+        .css({top: y + "px", left: x + "px"})
+        .show();
+}
+
+//hide marker menu
+function hideMenu(){
+    $(".popup-menu").hide();
+}
+
+//get mouse position in window on marker right click
+function getMousePos(e){
+    var projection = overlay.getProjection();
+    var pixel = projection.fromLatLngToContainerPixel(e.latLng);
+    var mapOffset = $("#map_container").offset();
+    var mousePosition = {
+        x: pixel.x +mapOffset.left,
+        y: pixel.y +mapOffset.top
+    }
+    return mousePosition;
+}
+
+//======================================================================================================================
+//Geting ATMs from server by filtering
+//======================================================================================================================
 //Get ATMs from server by filter
 function updateFilter() {
     var bankId = $("#banksDropdownInput").prop("bankId");
@@ -127,51 +174,6 @@ function showAtms(data) {
         addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
     }
 };
-
-//Adding marker to map
-function addMarker(position, title) {
-    var marker = new google.maps.Marker({
-        position: position,
-        map: map,
-        title: title,
-        icon: getHomeUrl()+"resources/images/privat_icon.jpg"
-    });
-    marker.setMap(map);
-
-    google.maps.event.addListener(marker, 'rightclick', function(event){
-		var pos = getMousePos(event);
-        markerMenu(pos.x,pos.y);
-    });
-
-    markers.push(marker);
-}
-
-function deleteMarkers(){
-    for(i = 0; i < markers.length; i++){
-        markers[i].setMap(null);
-    }
-}
-
-//add marker menu in position x, y
-function markerMenu(x,y){
-    $(".popup-menu")
-        .css({top: y + "px", left: x + "px"})
-		.show();
-}
-
-//hide marker menu
-function hideMenu(){
-	$(".popup-menu").hide();
-}
-
-//hide popower about finding address
-function hidePopover(element){
-    $('#'+element).popover("destroy");
-}
-
-function setPositionCookies() {
-    $.cookie("position", JSON.stringify(userPosition));
-}
 
 //change filters by network and bank
 $(document).ready(function () {
@@ -196,3 +198,17 @@ $(document).on('click', '#banksDropdown li a', function (e) {
     $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
 });
 
+//======================================================================================================================
+//Adding favorites for user
+//======================================================================================================================
+function addFavorite(ATM){
+    $.ajax({
+        url: getHomeUrl() + "users/favorites/" + ATM.id,
+        type : "PUT",
+        context: document.body,
+        dataType: "json",
+        success: function(){
+            console.log("додано")
+        }
+    })
+}

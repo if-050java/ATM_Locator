@@ -1,6 +1,7 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IUsersDAO;
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.utils.EmailCreator;
 import com.ss.atmlocator.utils.GenString;
@@ -21,6 +22,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by roman on 19.11.14.
@@ -148,6 +150,11 @@ public class UserService {
         UserDetails user = userDetailsManager.loadUserByUsername(username);
         Authentication auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    public void addFavorite(int userId, int ATMId){
+        User user = usersDAO.getUserById(userId);
+        Set<AtmOffice> favorites = user.getAtmFavorites();
     }
 
 

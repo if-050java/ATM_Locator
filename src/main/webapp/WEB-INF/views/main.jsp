@@ -7,30 +7,6 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY"></script>
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>
-    <script src="<c:url value="/resources"/>/jquery/jquery.contextMenu.js"></script>
-    <script src="<c:url value="/resources"/>/jquery/jquery.ui.position.js"></script>
-    <link rel="stylesheet" href="<c:url value="/resources"/>/styles/jquery.contextMenu.css">
-    <style>
-        .popup-menu{
-            border:1px solid black;
-            position:absolute;
-            z-index:1000;
-            background-color:#FFFFFF;
-            margin:0px;
-            padding:0px;
-            width:200px;
-        }
-        .popup-menu-item{
-            padding-left:10px;
-            border-bottom:1px solid black;
-            display:inline-table;
-            width:198px;
-        }
-
-        .popup-menu-item:hover{
-            background-color: #c4e3f3;
-        }
-    </style>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
 </head>
 <body>
