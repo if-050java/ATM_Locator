@@ -9,12 +9,12 @@ google.maps.event.addDomListener(window, 'load', initializeMap);
 document.onclick = hideMenu;
 
 //get mouse position in window on click
-function getMousePos(event){
+function getMousePos(event) {
     event = event || window.event;
     var mousPositionOnClickX = event.pageX;
     var mousPositionOnClickY = event.pageY;
     $("#userAddress").val(mousPositionOnClickX);
-	return {x:mousPositionOnClickX, y:mousPositionOnClickY};
+    return {x: mousPositionOnClickX, y: mousPositionOnClickY};
 }
 
 //add map to page and set to default position
@@ -99,10 +99,22 @@ function deleteMarker(marker) {
 
 //Get ATMs from server by filter
 function updateFilter() {
+    var networkId = $("#networksDropdownInput").prop("networkId");
     var bankId = $("#banksDropdownInput").prop("bankId");
+    var distance = $("#distance").val();
+    var data = {
+        networkId: networkId,
+        bankId: bankId,
+        radius: distance,
+        userLat: userPosition.lat,
+        userLng: userPosition.lng
+    };
+    if (!networkId) delete data.networkId;
+    if (!bankId) delete data.bankId;
     $.ajax({
-        url: getHomeUrl()+"map/getATMs?id="+bankId+"&userLat="+userPosition.lat+"&userLng="+userPosition.lng+"&radius="+$("#distance").val(),
-        type : "GET",
+        url: getHomeUrl() + "map/getATMs",
+        data: data,
+        type: "GET",
         context: document.body,
         dataType: "json",
         success: showAtms
@@ -116,53 +128,54 @@ function showAtms(data) {
     for (var i = 0; i < ATMs.length; i++) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n" + ATMs[i].address;
-        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
+        var atmIcon = ATMs[i].bank.iconAtm;
+        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
 };
 
 //Adding marker to map
-function addMarker(position, title) {
+function addMarker(position, title, icon) {
     var marker = new google.maps.Marker({
         position: position,
         map: map,
         title: title,
-        icon: getHomeUrl()+"resources/images/privat_icon.jpg"
+        icon: getHomeUrl() + "resources/images/" + icon
     });
     marker.setMap(map);
 
-/*    google.maps.event.addListener(marker, 'rightclick', function(event){
-		var pos = getMousePos(event);
-        markerMenu(pos.x,pos.y);
-    });*/
+    /*    google.maps.event.addListener(marker, 'rightclick', function(event){
+     var pos = getMousePos(event);
+     markerMenu(pos.x,pos.y);
+     });*/
 
     markers.push(marker);
 }
 
-function deleteMarkers(){
-    for(i = 0; i < markers.length; i++){
+function deleteMarkers() {
+    for (i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
 }
 
 //add marker menu in position x, y
-function markerMenu(x,y){
+function markerMenu(x, y) {
     $(".popup-menu")
         .css({top: y + "px", left: x + "px"})
-		.show();
+        .show();
 }
 
 //hide marker menu
-function hideMenu(){
-	$(".popup-menu").hide();
+function hideMenu() {
+    $(".popup-menu").hide();
 }
 
 //hide popower about finding address
-function hidePopover(element){
-    $('#'+element).popover("destroy");
+function hidePopover(element) {
+    $('#' + element).popover("destroy");
 }
 
 //add cookies about user position(lat lng)
-function setPositionCookies(){
+function setPositionCookies() {
     $.cookie("position", JSON.stringify(userPosition));
     google.maps.event.addListener(marker, 'click', function removeMarker() {
         if (window.confirm("Are you sure?")) {//If this marker not in current position marker then remove
@@ -179,22 +192,59 @@ function hidePopover(element) {
 function setPositionCookies() {
     $.cookie("position", JSON.stringify(userPosition));
 }
+function autocompleteBanks() {
+    $('#banksDropdownInput').autocomplete({
+        lookup: getBanks(),
+        onSelect: function (bank) {
+            $("#banksDropdownInput").prop("bankId", bank.data)
+        },
+        lookupFilter: function (suggestion, query, queryLowerCase) {
+            return suggestion.value.toLowerCase().indexOf(queryLowerCase) === 0;
+        },
+        lookupLimit: 10,
+        noCache: true
+    });
+}
+
+function getBanks() {
+    var sources = [];
+    $("#banksDropdown li a").each(function () {
+        sources.push({ value: $(this).text(), data: $(this).attr("href")})
+    });
+    return sources;
+};
 //change filters by network and bank
 $(document).ready(function () {
+    autocompleteBanks();
     $('#networksDropdown li a').click(function (e) {
         e.preventDefault();
         $("#networksDropdownInput").val($(this).text());
+        $("#networksDropdownInput").prop("networkId", $(this).attr('href'));
         var network_id = $(this).attr('href');
         $.getJSON(getHomeUrl() + "map/getBanksByNetwork", {network_id: network_id }, function (banks) {
                 $("#banksDropdown").empty();
-                $("#banksDropdownInput").val(banks[0].name);
-                $("#banksDropdownInput").prop("bankId", banks[0].id);
+                $("#banksDropdownInput").val("");
+//                if (network_id != 0) {
+//                    $("#banksDropdownInput").val(banks[0].name);
+//                    $("#banksDropdownInput").prop("bankId", banks[0].id);
+//                }
                 $.each(banks, function (i, bank) {
                     $("#banksDropdown").append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
                 });
+                autocompleteBanks();
             }
         );
     });
+
+
+    $("#distance").TouchSpin({
+        initval: 500,
+        min: 100,
+        max: 5000,
+        step: 500
+    });
+
+
 });
 $(document).on('click', '#banksDropdown li a', function (e) {
     e.preventDefault();

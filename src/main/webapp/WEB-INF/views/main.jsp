@@ -6,10 +6,10 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY"></script>
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
+    <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>
-    <script src="<c:url value="/resources"/>/jquery/jquery.contextMenu.js"></script>
-    <script src="<c:url value="/resources"/>/jquery/jquery.ui.position.js"></script>
-    <link rel="stylesheet" href="<c:url value="/resources"/>/styles/jquery.contextMenu.css">
+    <script src="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.js"></script>
+    <link  href="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.css" rel="stylesheet">
     <style>
         .popup-menu{
             border:1px solid black;
@@ -65,13 +65,14 @@
                     <form action="" method="get" onsubmit="updateFilter()" class="form">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Network" id="networksDropdownInput">
+                                <input type="text" class="form-control" placeholder="Select network" id="networksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu" id="networksDropdown">
+                                        <li><a href="0">All networks</a></li>
                                         <c:forEach items="${networks}" var="network">
                                             <li><a href="${network.id}">${network.name}</a></li>
                                         </c:forEach>
@@ -81,14 +82,18 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control " placeholder="Bank"
+                                <input type="text" class="form-control " placeholder="Select bank"
                                        id="banksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
                                             data-toggle="dropdown" aria-expanded="false"><span class="caret"></span>
                                     </button>
-                                    <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                                    <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <c:forEach items="${banks}" var="bank">
+                                            <li><a href="${bank.id}">${bank.name}</a></li>
+                                        </c:forEach>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -112,11 +117,11 @@
                                 </label>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <div class="input-group">
-                                <label class="input-group-addon">Distance: </label>
-                                <input type="text" class="form-control bfh-number" data-min="50" data-max="600" id="distance">
-                                <label class="input-group-addon">m </label>
+                                <label class="input-group-addon">Distance(m):</label>
+                                <input id="distance" type="text">
                             </div>
                         </div>
                         <div class="form-group">
