@@ -78,8 +78,8 @@ public class ImageUtil {
         int numColors = colorModel.getNumColorComponents();
         int numComponents = colorModel.getNumComponents(); // same as numColors plus 1, if alpha channel present
 
-        float scale[] = new float[numComponents];
-        float offset[] = new float[numComponents];
+        float[] scale = new float[numComponents];
+        float[] offset = new float[numComponents];
 
         for(int i = 0; i < numColors; i++){
             scale[i] = scaleFactor;
