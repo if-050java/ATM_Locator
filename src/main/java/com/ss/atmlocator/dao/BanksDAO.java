@@ -5,13 +5,19 @@ import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;;
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +37,7 @@ public class BanksDAO implements IBanksDAO {
     @Override
     public List<Bank> getBanksList() {
         List<Bank> banks;
-        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b ORDER BY b.name",Bank.class);
+        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b ORDER BY b.name", Bank.class);
         banks = query.getResultList();
         return banks;
     }
@@ -41,7 +47,7 @@ public class BanksDAO implements IBanksDAO {
     public Bank newBank() {
         Bank bank = new Bank();
         AtmNetwork network = entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
-        if(network != null) {
+        if (network != null) {
             bank.setNetwork(network);
         } else {
             log.error("Failed to fetch UNASSIGNED_NETWORK from database");
@@ -52,13 +58,16 @@ public class BanksDAO implements IBanksDAO {
 
     @Override
     public Bank getBank(int id) {
-        return (Bank)entityManager.find(Bank.class, id);
+        return (Bank) entityManager.find(Bank.class, id);
     }
 
     @Override
     public List<Bank> getBanksByNetworkId(int network_id) {
+        if (network_id == 0) {
+            return getBanksList();
+        }
         TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b " +
-                "where b.network.id=:network_id ORDER BY b.name",Bank.class);
+                "where b.network.id=:network_id ORDER BY b.name", Bank.class);
         query.setParameter("network_id", network_id);
         return query.getResultList();
     }
@@ -68,7 +77,7 @@ public class BanksDAO implements IBanksDAO {
     public Bank saveBank(Bank bank) {
         bank.setLastUpdated(TimeUtil.currentTimestamp());
         Bank saved = (Bank) entityManager.merge(bank);
-        log.debug("Saved Bank '"+saved.getName()+"' #"+saved.getId());
+        log.debug("Saved Bank '" + saved.getName() + "' #" + saved.getId());
         return saved;
     }
 
@@ -77,13 +86,13 @@ public class BanksDAO implements IBanksDAO {
     public boolean deleteBank(int bank_id) {
         try {
             Bank bank = (Bank) entityManager.find(Bank.class, bank_id);
-            if(bank == null) return false;
+            if (bank == null) return false;
             String delName = bank.getName(); //get name before it will be deleted
             entityManager.remove(bank);
-            log.debug("Deleted Bank '"+delName+"' #"+bank_id);
+            log.debug("Deleted Bank '" + delName + "' #" + bank_id);
             return true;
         } catch (PersistenceException e) {
-            log.error("Failed to delete bank "+bank_id);
+            log.error("Failed to delete bank " + bank_id);
             e.printStackTrace();
             return false;
         }
@@ -112,7 +121,7 @@ public class BanksDAO implements IBanksDAO {
                     continue;
                 }
             } catch (NoResultException nre) {
-                log.warn("he bank with mfo code not found"+nre.getMessage());
+                log.warn("he bank with mfo code not found" + nre.getMessage());
                 //if the bank with mfo code not found , catch this exception
 //                continue;
             }
@@ -122,13 +131,13 @@ public class BanksDAO implements IBanksDAO {
         }
     }
 
-     @Override
-     @Transactional
-     public void saveAllBanksUbank(List<Bank> banks) {
+    @Override
+    @Transactional
+    public void saveAllBanksUbank(List<Bank> banks) {
         int cntBanksUpdated = 0;
         int cntNewAtms = 0;
-        log.debug("Parsed "+banks.size()+" banks from Ubanks.com.ua");
-        for (Bank bank : banks){
+        log.debug("Parsed " + banks.size() + " banks from Ubanks.com.ua");
+        for (Bank bank : banks) {
 
             boolean bankUpdated = false;
 
@@ -140,9 +149,9 @@ public class BanksDAO implements IBanksDAO {
 
                 if (bank.getName().equals(bankOther.getName())) {
                     Set<AtmOffice> persistedAtms = bankOther.getAtmOfficeSet();
-                    for (AtmOffice atmOffice: bank.getAtmOfficeSet()) {
+                    for (AtmOffice atmOffice : bank.getAtmOfficeSet()) {
 
-                        if (!persistedAtms.contains(atmOffice)){
+                        if (!persistedAtms.contains(atmOffice)) {
                             atmOffice.setBank(bankOther);
                             atmOffice.setLastUpdated(TimeUtil.currentTimestamp());
                             persistedAtms.add(atmOffice);
@@ -166,15 +175,14 @@ public class BanksDAO implements IBanksDAO {
 //            for(AtmOffice atmOffice:officeSet){
 //                atmOffice.setBank(bank);
 //            }
-            if(bankUpdated) {
+            if (bankUpdated) {
                 cntBanksUpdated++;
             }
 
         }
-        log.debug("Added "+cntNewAtms+" new ATMs and bank offices, for "+cntBanksUpdated+" banks.");
+        log.debug("Added " + cntNewAtms + " new ATMs and bank offices, for " + cntBanksUpdated + " banks.");
 
     }
-
 
 
 }

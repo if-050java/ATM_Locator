@@ -38,8 +38,8 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @Column
     private String photo;  // filename of real street photo
 
-   @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bank_id")
     Bank bank;
 

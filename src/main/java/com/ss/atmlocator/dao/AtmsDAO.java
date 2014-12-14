@@ -4,9 +4,13 @@ import com.ss.atmlocator.entity.AtmOffice;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;;
 import java.util.List;
 
 /**
@@ -19,15 +23,27 @@ public class AtmsDAO implements IAtmsDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    //    @Override
+//    @Transactional
+//    public List<AtmOffice> getBankAtms(int bank_id){
+//        TypedQuery<AtmOffice> query = entityManager.createQuery(
+//                "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id "
+//                        +"and a.geoPosition.latitude is not null and a.geoPosition.longitude is not null",
+//                AtmOffice.class);
+//        query.setParameter("bank_id", bank_id);
+//        return query.getResultList();
+//    }
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(int bank_id){
-        TypedQuery<AtmOffice> query = entityManager.createQuery(
-                "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id "
-                        +"and a.geoPosition.latitude is not null and a.geoPosition.longitude is not null",
-                AtmOffice.class);
-        query.setParameter("bank_id", bank_id);
-        return query.getResultList();
+    public List<AtmOffice> getBankAtms(Integer network_id, Integer bank_id) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AtmOffice> criteria = builder.createQuery(AtmOffice.class);
+        Root<AtmOffice> atmOfficeRoot = criteria.from(AtmOffice.class);
+        criteria.select(atmOfficeRoot);
+        if (network_id != null)
+            criteria.where(builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
+        if (bank_id != null) criteria.where(builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
+        return entityManager.createQuery(criteria).getResultList();
     }
 
 }

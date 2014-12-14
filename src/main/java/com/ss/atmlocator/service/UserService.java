@@ -2,7 +2,7 @@ package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.exception.NotValidException;
+
 import com.ss.atmlocator.utils.EmailCreator;
 import com.ss.atmlocator.utils.GenString;
 import com.ss.atmlocator.utils.SendMails;

@@ -2,17 +2,15 @@ package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IAtmNetworksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.Bank;
+
 import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.ErrorMessage;
 import com.ss.atmlocator.utils.OutResponse;
-import com.ss.atmlocator.utils.UploadFileUtils;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class AtmNetworksService {
     @Autowired
     private IAtmNetworksDAO atmNetworksDAO;
 
-    public List<AtmNetwork> getNetworksList(){
+    public List<AtmNetwork> getNetworksList() {
         return atmNetworksDAO.getNetworksList();
     }
 
@@ -40,7 +38,7 @@ public class AtmNetworksService {
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
         AtmNetwork savedNetwork = atmNetworksDAO.saveNetwork(network); // TODO: check for save error
-        if (savedNetwork != null && savedNetwork.getId() != 0){
+        if (savedNetwork != null && savedNetwork.getId() != 0) {
             response.setStatus(Constants.SUCCESS);
         } else {
             response.setStatus(Constants.ERROR);
@@ -56,9 +54,9 @@ public class AtmNetworksService {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-        log.debug("Delete ATM network #"+id);
+        log.debug("Delete ATM network #" + id);
 
-        if (atmNetworksDAO.deleteNetwork(id)){
+        if (atmNetworksDAO.deleteNetwork(id)) {
             response.setStatus(Constants.SUCCESS);
         } else {
             response.setStatus(Constants.ERROR);
