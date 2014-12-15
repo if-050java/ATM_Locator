@@ -36,6 +36,11 @@ function initializeMap() {
     overlay = new google.maps.OverlayView();
     overlay.draw = function() {};
     overlay.setMap(map);
+
+    //getting favorites
+    if(getFavorites != undefined){
+        getFavorites();
+    }
 }
 
 //Getting location from browser
@@ -99,19 +104,6 @@ function setMapByGeocode(data, status) {
     }
 }
 
-//set cookies about user position
-function setPositionCookies() {
-    $.cookie("position", JSON.stringify(userPosition));
-}
-
-//Deleting marker from map
-function deleteMarker(marker) {
-    if (marker != null) {
-        marker.setMap(null);
-    }
-    ;
-}
-
 //Get ATMs from server by filter
 function updateFilter() {
     var networkId = $("#networksDropdownInput").prop("networkId");
@@ -144,13 +136,15 @@ function showAtms(data) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n" + ATMs[i].address;
         var atmIcon = ATMs[i].bank.iconAtm;
-        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
+        var atmId = ATMs[i].id;
+        addMarker(atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
 };
 
 //Adding marker to map
-function addMarker(position, title, icon) {
+function addMarker(id, position, title, icon) {
     var marker = new google.maps.Marker({
+        id : id,
         position: position,
         map: map,
         title: title,
@@ -160,10 +154,18 @@ function addMarker(position, title, icon) {
 
     google.maps.event.addListener(marker, 'rightclick', function(event){
         var pos = getMousePos(event);
-        markerMenu(pos.x,pos.y);
+        markerMenu(pos.x,pos.y, marker.id);
     });
 
     markers.push(marker);
+}
+
+//Deleting marker from map
+function deleteMarker(marker) {
+    if (marker != null) {
+        marker.setMap(null);
+    }
+    ;
 }
 
 //delete all ATM markers from map
@@ -175,8 +177,9 @@ function deleteMarkers(){
 }
 
 //add marker menu in position x, y
-function markerMenu(x, y) {
-    $(".popup-menu")
+function markerMenu(x,y, ATMId){
+    $("#defaultMarkerMenu").attr("atmid", ATMId);
+    $("#defaultMarkerMenu")
         .css({top: y + "px", left: x + "px"})
         .show();
 }
@@ -198,9 +201,6 @@ function getMousePos(e){
     return mousePosition;
 }
 
-//======================================================================================================================
-//Geting ATMs from server by filtering
-//======================================================================================================================
 //Get ATMs from server by filter
 function updateFilter() {
     var bankId = $("#banksDropdownInput").prop("bankId");
@@ -220,7 +220,7 @@ function showAtms(data) {
     for (var i = 0; i < ATMs.length; i++) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n" + ATMs[i].address;
-        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
+        addMarker(ATMs[i].id, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
     }
 };
 

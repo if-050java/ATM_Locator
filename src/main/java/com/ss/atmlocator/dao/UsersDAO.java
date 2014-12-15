@@ -1,24 +1,29 @@
 package com.ss.atmlocator.dao;
 
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UsersDAO implements IUsersDAO {
 
     private final String DEFAULT_USER_ROLE = "USER";
 
-    @PersistenceContext
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
+
+    @Autowired
+    IAtmsDAO atmsDAO;
 
     @Override
     public User getUserByName(String name) {
@@ -146,4 +151,32 @@ public class UsersDAO implements IUsersDAO {
         query.setParameter("id", user_id);
         query.executeUpdate();
     }
+
+    @Override
+    @Transactional
+    public Set<AtmOffice> getFavorites(int userId) {
+        User user = getUserById(userId);
+        Set<AtmOffice> favorites = user.getAtmFavorites();
+        return favorites;
+    }
+
+    @Override
+    @Transactional
+    public void addFavorite(int userId, int atmId){
+        User user = getUserById(userId);
+        Set<AtmOffice> favorites = user.getAtmFavorites();
+        favorites.add(atmsDAO.getAtmById(atmId));
+        updateUser(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFavorite(int userId, int atmId) {
+        User user = getUserById(userId);
+        Set<AtmOffice> favorites = user.getAtmFavorites();
+        favorites.remove(atmsDAO.getAtmById(atmId));
+        updateUser(user);
+    }
+
+
 }

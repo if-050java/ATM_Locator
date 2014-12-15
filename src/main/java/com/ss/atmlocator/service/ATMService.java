@@ -59,4 +59,8 @@ public class ATMService {
             }
         }
     }
+
+    public AtmOffice getATMById(int id){
+        return  atmsDAO.getAtmById(id);
+    }
 }

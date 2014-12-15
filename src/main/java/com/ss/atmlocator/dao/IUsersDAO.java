@@ -1,11 +1,13 @@
 package com.ss.atmlocator.dao;
 
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface IUsersDAO {
@@ -33,4 +35,9 @@ public interface IUsersDAO {
     List<String> getNames (String partial);
     public void writeLoginTime(String userName);
     public void updateAvatar(int user_id, String avatar);
+
+    //favorites
+    public Set<AtmOffice> getFavorites(int userId);
+    public void addFavorite(int userId, int atmId);
+    public void deleteFavorite(int userId, int atmId);
 }

@@ -44,8 +44,11 @@ public class User {
     private Set<AtmComment> atmComments;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<AtmFavorite> atmFavorites;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="favorites", joinColumns = {
+            @JoinColumn(name = "user_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "atm_id", nullable = false)})
+    private Set<AtmOffice> atmFavorites;
 
     public User(int id, String login, String email, String password, UserStatus enabled) {
         this.id = id;
@@ -122,11 +125,11 @@ public class User {
         this.atmComments = atmComments;
     }
 
-    public Set<AtmFavorite> getAtmFavorites() {
+    public Set<AtmOffice> getAtmFavorites() {
         return atmFavorites;
     }
 
-    public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
+    public void setAtmFavorites(Set<AtmOffice> atmFavorites) {
         this.atmFavorites = atmFavorites;
     }
 
