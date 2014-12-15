@@ -22,7 +22,7 @@ function showFavorites(favorites){
         favoriteElement = '<a class="list-group-item" atmid="' + value.id + '" oncontextmenu="favMenu(event, '+ value.id +')" onclick="panToFavorite(event)">' + value.address + '</a>';
         jQuery("#favorites_list").append(jQuery.parseHTML(favoriteElement))
         var favoritePosition = value.geoPosition;
-        addFavoriteMarker(value.id, {"lat": favoritePosition.latitude, "lng": favoritePosition.longitude}, value.address);
+        addFavoriteMarker(value.id, {"lat": favoritePosition.latitude, "lng": favoritePosition.longitude}, value.address, value.bank.iconAtm);
     })
 }
 
@@ -36,7 +36,7 @@ function clearFavorites(){
 }
 
 //Adding favorite marker to map
-function addFavoriteMarker(id, position, title) {
+function addFavoriteMarker(id, position, title, icon) {
 
     var markerPos = new google.maps.LatLng(position.lat, position.lng);
     marker = new RichMarker({
@@ -46,7 +46,7 @@ function addFavoriteMarker(id, position, title) {
         draggable: false,
         flat: true,
         content:'<div style="position:relative" id="' + id + '" class="favorite_marker">'+
-                    '<img src="'+getHomeUrl()+'resources/images/privat_icon.jpg" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ id +')"/>'+
+                    '<img src="'+getHomeUrl()+'resources/images/'+ icon +'" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ id +')"/>'+
                     '<img style="position:absolute; left:24px; top:-8px" src="'+getHomeUrl()+'resources/images/favorite.ico" width="16" height="16" alt=""/>'+
                 '</div>'
     });
@@ -78,7 +78,7 @@ function addFavorite(){
                     if (value.id == ATMId) {
                         value.setMap(null);
                         var position = {lat: value.position.lat(), lng: value.position.lng()}
-                        addFavoriteMarker(value.id, position, value.title);
+                        addFavoriteMarker(value.id, position, value.title, value.bank.iconAtm);
                         getFavorites();
                     }
                 })

@@ -189,41 +189,6 @@ function hideMenu(){
     $(".popup-menu").hide();
 }
 
-//get mouse position in window on marker right click
-function getMousePos(e){
-    var projection = overlay.getProjection();
-    var pixel = projection.fromLatLngToContainerPixel(e.latLng);
-    var mapOffset = $("#map_container").offset();
-    var mousePosition = {
-        x: pixel.x +mapOffset.left,
-        y: pixel.y +mapOffset.top
-    }
-    return mousePosition;
-}
-
-//Get ATMs from server by filter
-function updateFilter() {
-    var bankId = $("#banksDropdownInput").prop("bankId");
-    $.ajax({
-        url: getHomeUrl()+"map/getATMs?id="+bankId+"&userLat="+userPosition.lat+"&userLng="+userPosition.lng+"&radius="+$("#distance").val(),
-        type : "GET",
-        context: document.body,
-        dataType: "json",
-        success: showAtms
-    })
-}
-
-//Receiving data about markers from server and adding marker to map
-function showAtms(data) {
-    deleteMarkers();
-    var ATMs = data;
-    for (var i = 0; i < ATMs.length; i++) {
-        var atmPosition = ATMs[i].geoPosition;
-        var atmDescription = data.name + "\n" + ATMs[i].address;
-        addMarker(ATMs[i].id, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
-    }
-};
-
 function setPositionCookies() {
     $.cookie("position", JSON.stringify(userPosition));
 }
