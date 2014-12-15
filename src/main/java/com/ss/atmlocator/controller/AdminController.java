@@ -16,4 +16,10 @@ public class AdminController {
         model.addAttribute("active","admin");
         return "admin";
     }
+
+    @RequestMapping(value = "/users")
+    public String adminUsers(ModelMap model) {
+        model.addAttribute("active", "adminUsers");
+        return "adminUsers";
+    }
 }

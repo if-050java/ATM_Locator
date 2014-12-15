@@ -56,7 +56,7 @@ public class SignUpController {
             for(ObjectError err : errors.getAllErrors()){
                 errorCause += err.getCode()+"; ";
             }
-            String errorMessage = "You entered invalid  parametrs: "+errorCause;
+            String errorMessage = "You entered invalid  parameters: "+errorCause;
             model.addAttribute("error", errorMessage);
             return "signup";
         }

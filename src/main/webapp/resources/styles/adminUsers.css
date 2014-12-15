@@ -1,0 +1,6 @@
+.autocomplete-suggestions { background:#FFF bottom right; position:absolute; top:0px; left:0px; margin:6px 0 0 6px;}
+.autocomplete-suggestion { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px;}
+.autocomplete-suggestion .selected { background:#F0F0F0; }
+.autocomplete-suggestion div { padding:2px 5px; white-space:nowrap; overflow:hidden; }
+.autocomplete-suggestion strong { font-weight:normal; color:#3399FF; }
+.autocomplete-suggestion :hover { background:#000 }

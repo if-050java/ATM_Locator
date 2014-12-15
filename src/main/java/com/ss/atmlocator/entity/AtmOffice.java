@@ -38,8 +38,8 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @Column
     private String photo;  // filename of real street photo
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bank_id")
     Bank bank;
 
@@ -50,20 +50,20 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
         AtmOffice atmOffice = (AtmOffice) o;
 
-        if (Id != atmOffice.Id) return false;
-
-        return true;
+        return address.equals(atmOffice.address);
     }
 
     @Override
     public int hashCode() {
-        return Id;
+        return address.hashCode();
     }
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
     private Set<AtmComment> atmComments;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
     private Set<AtmFavorite> atmFavorites;
 
     public int getId() {
@@ -102,15 +102,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return type;
     }
 
-    public void setType(AtmType type) {
-        if (this.type==null){
-            this.type = type;
-        }else if (this.type==type){
-            this.type = type;
-        }else{
-            this.type = AtmType.IS_ATM_OFFICE;
-        }
-    }
+    public void setType(AtmType type) {   this.type = type;}
 
     public Timestamp getLastUpdated() {
         return lastUpdated;
@@ -128,12 +120,21 @@ public class AtmOffice implements Comparable<AtmOffice>{
         this.photo = photo;
     }
 
+
     public Set<AtmComment> getAtmComments() {
         return atmComments;
     }
 
     public void setAtmComments(Set<AtmComment> atmComments) {
         this.atmComments = atmComments;
+    }
+
+    public Set<AtmFavorite> getAtmFavorites() {
+        return atmFavorites;
+    }
+
+    public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
+        this.atmFavorites = atmFavorites;
     }
 
     public Bank getBank() {

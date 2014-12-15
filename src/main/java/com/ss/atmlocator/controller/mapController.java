@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/map")
-public class mapController {
+public class MapController {
     @Autowired
     ATMService atmService;
     @Autowired
@@ -32,15 +32,14 @@ public class mapController {
 
     @RequestMapping(value = "/getATMs")
     @ResponseBody
-    public Collection<AtmOffice> getATMs(@RequestParam int id,
+    public Collection<AtmOffice> getATMs(@RequestParam(required = false) Integer networkId,
+                                         @RequestParam(required = false) Integer bankId,
                                          @RequestParam double userLat,
                                          @RequestParam double userLng,
                                          @RequestParam int radius
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
-        List<Integer> banks = new ArrayList<Integer>();
-        banks.add(id);
-        return atmService.getATMs(banks, userPosition, radius);
+        return atmService.getATMs(networkId, bankId, userPosition, radius);
     }
 
 

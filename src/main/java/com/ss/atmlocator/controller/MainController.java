@@ -2,6 +2,7 @@ package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.service.AtmNetworksService;
+import com.ss.atmlocator.service.BanksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -18,11 +19,14 @@ import java.util.List;
 public class MainController {
     @Autowired
     private AtmNetworksService atmNetworksService;
+    @Autowired
+    private BanksService banksService;
 
     @RequestMapping
     public String indexPage(ModelMap model) {
 
         model.addAttribute("networks", atmNetworksService.getNetworksList());
+        model.addAttribute("banks", banksService.getBanksList());
         model.addAttribute("active", "main");
         return "main";
     }

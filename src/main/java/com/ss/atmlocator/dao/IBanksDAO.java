@@ -1,5 +1,7 @@
 package com.ss.atmlocator.dao;
 
+import com.ss.atmlocator.entity.AtmNetwork;
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,7 @@ import java.util.List;
  */
 @Repository
 public interface IBanksDAO {
+    public AtmNetwork getUnassignedNetwork();
     public List<Bank> getBanksList();
     public List<Bank> getBanksByNetworkId(int network_id);
     public Bank newBank();
@@ -18,4 +21,5 @@ public interface IBanksDAO {
     public Bank saveBank(Bank bank);
     public boolean deleteBank(int bank_id);
     public void saveAllBankNBU(List<Bank> banks);
+    public void saveAllBanksUbank(List<Bank> banks);
 }

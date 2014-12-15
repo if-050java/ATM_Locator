@@ -3,6 +3,7 @@ package com.ss.atmlocator.dao;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,6 +31,6 @@ public interface IUsersDAO {
     boolean checkExistEmail(User user);
     /* Get user names and emails*/
     List<String> getNames (String partial);
-
     public void writeLoginTime(String userName);
+    public void updateAvatar(int user_id, String avatar);
 }

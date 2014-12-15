@@ -4,6 +4,7 @@ import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.math.BigInteger;
@@ -114,11 +115,11 @@ public class UsersDAO implements IUsersDAO {
     @Override
     public List<String> getNames(String partial) {
         List<String> result = new ArrayList<String>();
-        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial OR email LIKE :partial";
+        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial UNION SELECT email FROM users WHERE email LIKE :partial LIMIT 5";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("partial", "%"+partial+"%");
         result.addAll(query.getResultList());
-        return null;
+        return result;
     }
 
     @Override
@@ -136,4 +137,13 @@ public class UsersDAO implements IUsersDAO {
         query.executeUpdate();
     }
 
+    @Override
+    @Transactional
+    public void updateAvatar(int user_id, String avatar){
+        String sqlQuery = "UPDATE users SET avatar = :avatar WHERE id = :id";
+        Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("avatar", avatar);
+        query.setParameter("id", user_id);
+        query.executeUpdate();
+    }
 }

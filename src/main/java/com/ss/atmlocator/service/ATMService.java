@@ -1,6 +1,7 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.BanksDAO;
+import com.ss.atmlocator.dao.IAtmsDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Vasyl Danylyuk on 02.12.2014.
@@ -21,24 +23,23 @@ import java.util.List;
 public class ATMService {
 
     @Autowired
-    private IBanksDAO banksDAO;
+    private IAtmsDAO atmsDAO;
 
     /**
      * Add ATMs that is in circle of a given radius from banks with given IDs
      * or empty collection if not exist such ATMs
      *
-     * @param bankIDs
+     * @param network_id
+     * @param bank_id
      * @param userPosition
      * @param radius
-     * @return
+     * @return Collection<AtmOffice>
      */
-    public Collection<AtmOffice> getATMs(Collection<Integer> bankIDs,GeoPosition userPosition,  int radius){
+    public Collection<AtmOffice> getATMs(Integer network_id, Integer bank_id, GeoPosition userPosition,  int radius){
 
-        Collection<AtmOffice> result =new ArrayList<AtmOffice>();
+        Collection<AtmOffice> result = new ArrayList<AtmOffice>();
 
-        for (int id : bankIDs){
-            addBankATMsToResult(result, banksDAO.getBank(id), userPosition, radius);
-        }
+        addBankATMsToResult(result, network_id,bank_id, userPosition, radius);
 
         return result;
     }
@@ -47,12 +48,12 @@ public class ATMService {
      * Add ATMs from current bank that is in circle of a given radius
      *
      * @param result collection with ATMs where to add ATMs
-     * @param bank
+     * @param bank_id
      * @param userPosition coordinates of circle center
      * @param radius
      */
-    private void addBankATMsToResult(Collection<AtmOffice> result, Bank bank, GeoPosition userPosition, int radius){
-        for(AtmOffice atmOffice : bank.getAtmOfficeSet()){
+    private void addBankATMsToResult(Collection<AtmOffice> result,Integer network_id, Integer bank_id, GeoPosition userPosition, int radius){
+        for(AtmOffice atmOffice : atmsDAO.getBankAtms(network_id, bank_id)){
             if(GeoUtil.inRadius(userPosition, atmOffice.getGeoPosition(),radius)){
                 result.add(atmOffice);
             }

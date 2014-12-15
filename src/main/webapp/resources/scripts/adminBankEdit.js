@@ -111,8 +111,8 @@ $(document).ready(function () {
 
     $("#adminBankDelete").click(function () {
         var fd = new FormData();
-        form_bank_id = $("#bank_id").val();
-        fd.append("bank_id", form_bank_id);
+        form_bank_id = $("#id").val();
+        fd.append("id", form_bank_id);
         if (form_bank_id == 0 || form_bank_id == undefined) {
             showAlert("alert alert-danger", ERROR_DELETE);
         } else {

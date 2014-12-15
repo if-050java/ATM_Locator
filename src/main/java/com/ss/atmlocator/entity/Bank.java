@@ -14,7 +14,7 @@ import java.util.Set;
 public class Bank  implements Comparable<Bank> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String name;
@@ -38,11 +38,11 @@ public class Bank  implements Comparable<Bank> {
     private Timestamp lastUpdated;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.LAZY)
     private Set<AtmOffice> atmOfficeSet;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.LAZY)
     private Set<AtmParser> atmParserSet;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,11 +50,11 @@ public class Bank  implements Comparable<Bank> {
     private AtmNetwork network;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -145,7 +145,7 @@ public class Bank  implements Comparable<Bank> {
     @Override
     public String toString() {
         return "Bank{" +
-                "Id=" + Id +
+                "Id=" + id +
                 ", name='" + name + '\'' +
                 ", mfoCode=" + mfoCode +
                 ", webSite='" + webSite + '\'' +
