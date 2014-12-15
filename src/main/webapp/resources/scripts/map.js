@@ -3,10 +3,12 @@ var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
 var markers = [];
-
+var radius;
+var cityCircle = new google.maps.Circle();
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 document.onclick = hideMenu;
+
 
 //get mouse position in window on click
 function getMousePos(event) {
@@ -101,11 +103,11 @@ function deleteMarker(marker) {
 function updateFilter() {
     var networkId = $("#networksDropdownInput").prop("networkId");
     var bankId = $("#banksDropdownInput").prop("bankId");
-    var distance = $("#distance").val();
+    radius = parseInt($("#distance").val());
     var data = {
         networkId: networkId,
         bankId: bankId,
-        radius: distance,
+        radius: radius,
         userLat: userPosition.lat,
         userLng: userPosition.lng
     };
@@ -131,6 +133,24 @@ function showAtms(data) {
         var atmIcon = ATMs[i].bank.iconAtm;
         addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
+
+    var circleOptions = {
+        strokeColor: "#c4c4c4",
+        strokeOpacity: 0.35,
+        strokeWeight: 0,
+        fillColor: "#198CFF",
+        fillOpacity: 0.35,
+        map: map,
+        center: userPosition,
+        radius: radius,
+        bounds: map.getBounds()
+
+    };
+    cityCircle.setMap(null);
+    cityCircle = new google.maps.Circle(circleOptions);
+    console.log(map.getZoom());
+
+    map.fitBounds(cityCircle.getBounds());
 };
 
 //Adding marker to map
@@ -224,10 +244,6 @@ $(document).ready(function () {
         $.getJSON(getHomeUrl() + "map/getBanksByNetwork", {network_id: network_id }, function (banks) {
                 $("#banksDropdown").empty();
                 $("#banksDropdownInput").val("");
-//                if (network_id != 0) {
-//                    $("#banksDropdownInput").val(banks[0].name);
-//                    $("#banksDropdownInput").prop("bankId", banks[0].id);
-//                }
                 $.each(banks, function (i, bank) {
                     $("#banksDropdown").append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
                 });
