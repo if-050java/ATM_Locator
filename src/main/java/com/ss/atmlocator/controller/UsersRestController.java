@@ -126,11 +126,4 @@ public class UsersRestController {
         }
         return new ResponseEntity<>(result.getAllErrors(), HttpStatus.NOT_ACCEPTABLE);
     }
-
-    @RequestMapping(value = "/favorites/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> addFavorite(@PathVariable int id,
-                                            Principal user){
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
 }

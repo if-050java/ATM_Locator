@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,9 @@ import java.util.Set;
 public class UserService {
     @Autowired
     IUsersDAO usersDAO;
+
+    @Autowired
+    ATMService atmService;
 
     @Autowired
     private Md5PasswordEncoder passwordEncoder;
@@ -152,9 +156,27 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-    public void addFavorite(int userId, int ATMId){
-        User user = usersDAO.getUserById(userId);
-        Set<AtmOffice> favorites = user.getAtmFavorites();
+    public Set<AtmOffice> getFavorites(int userId){
+        return usersDAO.getFavorites(userId);
+    }
+
+    public void addFavorite(int userId, int atmId){
+        try {
+            logger.info("Try to add to favorites ATM with id " + atmId);
+            usersDAO.addFavorite(userId, atmId);
+        } catch (PersistenceException pe){
+            logger.error(pe.getMessage(), pe);
+        }
+
+    }
+
+    public void deleteFavorite(int userId, int atmId){
+        try {
+            logger.info("Try to delete atm with id = " + atmId + "from favorites for user_id " + userId);
+            usersDAO.deleteFavorite(userId, atmId);
+        } catch (PersistenceException pe){
+            logger.error(pe.getMessage(), pe);
+        }
     }
 
 

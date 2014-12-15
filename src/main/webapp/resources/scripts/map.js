@@ -29,6 +29,11 @@ function initializeMap() {
     overlay = new google.maps.OverlayView();
     overlay.draw = function() {};
     overlay.setMap(map);
+
+    //getting favorites
+    if(getFavorites != undefined){
+        getFavorites();
+    }
 }
 
 //Getting location from browser
@@ -100,8 +105,9 @@ function setPositionCookies() {
 //Working with markers
 //======================================================================================================================
 //Adding marker to map
-function addMarker(position, title) {
+function addMarker(id, position, title) {
     var marker = new google.maps.Marker({
+        id : id,
         position: position,
         map: map,
         title: title,
@@ -111,10 +117,18 @@ function addMarker(position, title) {
 
     google.maps.event.addListener(marker, 'rightclick', function(event){
         var pos = getMousePos(event);
-        markerMenu(pos.x,pos.y);
+        markerMenu(pos.x,pos.y, marker.id);
     });
 
     markers.push(marker);
+}
+
+//Deleting marker from map
+function deleteMarker(marker) {
+    if (marker != null) {
+        marker.setMap(null);
+    }
+    ;
 }
 
 //delete all ATM markers from map
@@ -126,8 +140,9 @@ function deleteMarkers(){
 }
 
 //add marker menu in position x, y
-function markerMenu(x,y){
-    $(".popup-menu")
+function markerMenu(x,y, ATMId){
+    $("#defaultMarkerMenu").attr("atmid", ATMId);
+    $("#defaultMarkerMenu")
         .css({top: y + "px", left: x + "px"})
         .show();
 }
@@ -171,7 +186,7 @@ function showAtms(data) {
     for (var i = 0; i < ATMs.length; i++) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n" + ATMs[i].address;
-        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
+        addMarker(ATMs[i].id, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription);
     }
 };
 
@@ -197,18 +212,3 @@ $(document).on('click', '#banksDropdown li a', function (e) {
     $("#banksDropdownInput").val($(this).text());
     $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
 });
-
-//======================================================================================================================
-//Adding favorites for user
-//======================================================================================================================
-function addFavorite(ATM){
-    $.ajax({
-        url: getHomeUrl() + "users/favorites/" + ATM.id,
-        type : "PUT",
-        context: document.body,
-        dataType: "json",
-        success: function(){
-            console.log("додано")
-        }
-    })
-}

@@ -6,26 +6,35 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY"></script>
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/richmarker-compiled.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>
+    <sec:authorize access="isAuthenticated()">
+        <script src="<c:url value="/resources"/>/scripts/favorites.js"></script>
+        <link rel="stylesheet" href="<c:url value="/resources"/>/styles/animate.min.css"/>
+    </sec:authorize>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
 </head>
 <body>
 <div class="container">
     <div class="row">
         <div class="col-md-9">
+            <form onsubmit="return setLocationByAddress()">
             <div class="input-group">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="getLocation()"><span class="glyphicon glyphicon-globe"></span>
+                    <button class="btn btn-default" type="button" onclick="getLocation()"><span
+                            class="glyphicon glyphicon-globe"></span>
                     </button>
                 </span>
                 <input type="text" class="form-control" id="userAddress"
                        title="" data-content="" data-placement="bottom" data-toggle="popover"
                        data-original-title="" onclick="hidePopover('userAddress')"/>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="setLocationByAddress()"><span class="glyphicon glyphicon-search"
-                                                                        title="Find"></span></button>
+                    <button class="btn btn-default" type="button" onclick="setLocationByAddress()"><span
+                            class="glyphicon glyphicon-search"
+                            title="Find"></span></button>
                 </span>
             </div>
+            </form>
             <div id="map_container" style="height: 500px" class="media">
                 <!-- Map is here  -->
             </div>
@@ -41,7 +50,8 @@
                     <form action="" method="get" onsubmit="updateFilter()" class="form">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Network" id="networksDropdownInput">
+                                <input type="text" class="form-control" placeholder="Network"
+                                       id="networksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
@@ -91,7 +101,8 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <label class="input-group-addon">Distance: </label>
-                                <input type="text" class="form-control bfh-number" data-min="50" data-max="600" id="distance">
+                                <input type="text" class="form-control bfh-number" data-min="50" data-max="600"
+                                       id="distance">
                                 <label class="input-group-addon">m </label>
                             </div>
                         </div>
@@ -101,12 +112,27 @@
                     </form>
                 </div>
             </div>
+            <sec:authorize access="isAuthenticated()">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Favorites</h3>
+                    </div>
+                    <ul id="favorites_list" class="panel-body list-group" style="padding: 0px; max-height: 163px; overflow-y: scroll">
+                    </ul>
+                </div>
+            </sec:authorize>
         </div>
     </div>
 </div>
-<div class="popup-menu" style = "display:none">
-	<div class="popup-menu-item">Add to favorites</div>
-	<div class="popup-menu-item">Add comment</div>
-</div>
+<sec:authorize access="isAuthenticated()">
+    <div class="popup-menu" id="defaultMarkerMenu" style="display:none">
+        <div class="popup-menu-item" onclick="addFavorite()">Add to favorites</div>
+        <div class="popup-menu-item">Add comment</div>
+    </div>
+    <div class="popup-menu" id="favoriteMarkerMenu" style="display:none">
+        <div class="popup-menu-item" onclick="deleteFavorite()">Delete from favorites</div>
+        <div class="popup-menu-item">Add comment</div>
+    </div>
+</sec:authorize>
 </body>
 </html>

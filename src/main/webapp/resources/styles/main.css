@@ -24,3 +24,15 @@
     background-color: #c4e3f3;
     cursor: pointer
 }
+
+.favorite_marker:hover{
+    cursor: pointer
+}
+
+.list-group-item:hover{
+    cursor: pointer
+}
+
+.favorite_marker{
+
+}

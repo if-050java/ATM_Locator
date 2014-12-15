@@ -30,4 +30,8 @@ public class AtmsDAO implements IAtmsDAO {
         return query.getResultList();
     }
 
+    public AtmOffice getAtmById(int id){
+        return entityManager.find(AtmOffice.class, id);
+    }
+
 }

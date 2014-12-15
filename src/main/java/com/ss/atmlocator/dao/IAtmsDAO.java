@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface IAtmsDAO {
 
-    public List<AtmOffice> getBankAtms(int bank_id);
+    List<AtmOffice> getBankAtms(int bank_id);
+    AtmOffice getAtmById(int id);
 
 }
