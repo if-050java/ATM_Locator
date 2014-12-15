@@ -12,7 +12,7 @@ import java.util.Set;
 public class AtmNetwork {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String name;
@@ -24,11 +24,11 @@ public class AtmNetwork {
 */
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getName() {
