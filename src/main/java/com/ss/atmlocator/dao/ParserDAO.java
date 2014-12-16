@@ -38,10 +38,12 @@ public class ParserDAO implements IParserDAO {
 
     //    @Transactional
     public AtmParser getParserById2(int id) {
-        TypedQuery<AtmParser> query = entityManager.createQuery("SELECT p FROM AtmParser AS p WHERE p.id=:id", AtmParser.class);
+
+        return entityManager.find(AtmParser.class, id);
+/*        TypedQuery<AtmParser> query = entityManager.createQuery("SELECT p FROM AtmParser AS p WHERE p.id=:id", AtmParser.class);
         query.setParameter("id", id);
         AtmParser atmParser = query.getSingleResult();
-        return atmParser;
+        return atmParser;*/
     }
 
     @Override

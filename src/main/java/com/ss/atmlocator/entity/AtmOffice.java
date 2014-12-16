@@ -16,7 +16,7 @@ import static org.apache.commons.lang.ObjectUtils.*;
 public class AtmOffice implements Comparable<AtmOffice>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String address;
@@ -50,11 +50,17 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
         AtmOffice atmOffice = (AtmOffice) o;
 
-        return address.equals(atmOffice.address);
+        if (address != null ? !address.equals(atmOffice.address) : atmOffice.address != null) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
+        int hash = 0;
+        if(address == null){
+            return hash;
+        }
         return address.hashCode();
     }
 
@@ -62,16 +68,12 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
     private Set<AtmComment> atmComments;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
-    private Set<AtmFavorite> atmFavorites;
-
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getAddress() {
@@ -127,14 +129,6 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
     public void setAtmComments(Set<AtmComment> atmComments) {
         this.atmComments = atmComments;
-    }
-
-    public Set<AtmFavorite> getAtmFavorites() {
-        return atmFavorites;
-    }
-
-    public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
-        this.atmFavorites = atmFavorites;
     }
 
     public Bank getBank() {

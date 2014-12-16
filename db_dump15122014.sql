@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.52 (32 bit)
 MySQL - 5.6.21 : Database - atmlocator
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -100,7 +101,6 @@ DROP TABLE IF EXISTS `favorites`;
 
 CREATE TABLE `favorites` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `timeCreated` datetime DEFAULT NULL,
   `atm_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
