@@ -4,7 +4,7 @@ import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.dao.IParserDAO;
 import com.ss.atmlocator.entity.AtmParser;
 import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.IParsers;
 import com.ss.atmlocator.parser.parserNBU.NbuParser;
 import com.ss.atmlocator.parser.parserUbanks.BankUrlsIParserServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class ParserService {
 
     public void updateAllBanks(){
 
-        IParser parser =new NbuParser();
+        IParsers parser =new NbuParser();
         Map<String, String> par = new HashMap<String, String>();
         par.put("url", "http://www.bank.gov.ua/control/bankdict/banks?type=369&sort=name&cPage=0&startIndx=1");
         par.put("NAMEXPATH" , "table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a");

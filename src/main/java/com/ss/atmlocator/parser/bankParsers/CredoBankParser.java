@@ -86,7 +86,7 @@ public class CredoBankParser implements IParser {
      * @return list AtmOffices that was parsed from given URL and is included to given regions
      * @throws IOException if couldn't load given URL(URL is bad or site don't work at this time)
      */
-    public List<AtmOffice> parseATMs() throws IOException {
+    public List<AtmOffice> parse() throws IOException {
         try{
             logger.info("Try to load start page " + bankSite + ATM_PAGE_URL);
             mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
@@ -235,10 +235,5 @@ public class CredoBankParser implements IParser {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public List<Bank> parse() {
-        return null;
     }
 }
