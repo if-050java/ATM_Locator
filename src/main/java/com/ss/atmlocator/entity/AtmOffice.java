@@ -50,12 +50,18 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
         AtmOffice atmOffice = (AtmOffice) o;
 
-        return id == atmOffice.id;
+        if (address != null ? !address.equals(atmOffice.address) : atmOffice.address != null) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int hash = 0;
+        if(address == null){
+            return hash;
+        }
+        return address.hashCode();
     }
 
     @JsonIgnore
