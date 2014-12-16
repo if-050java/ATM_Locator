@@ -49,12 +49,18 @@ public class AtmOffice implements Comparable<AtmOffice>{
         if (o == null || getClass() != o.getClass()) return false;
 
         AtmOffice atmOffice = (AtmOffice) o;
-
-        return address.equals(atmOffice.address);
+        String addressOne = address.toLowerCase().trim();
+        String addressTwo = atmOffice.address.toLowerCase().trim();// TODO dellete Oll space in Address and than equals
+        return addressOne.equals(addressTwo)&&(atmOffice.getType().equals(type));
     }
 
     @Override
     public int hashCode() {
+        int hash=123456;
+        if(address==null){
+            return hash;
+
+        }
         return address.hashCode();
     }
 

@@ -1,6 +1,7 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmOffice;
+import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,44 @@ public class AtmsDAO implements IAtmsDAO {
             criteria.where(builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
         if (bank_id != null) criteria.where(builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
         return entityManager.createQuery(criteria).getResultList();
+    }
+
+    @Override
+    @Transactional
+    public List<AtmOffice> getBankAtms(int bank_id){
+        TypedQuery<AtmOffice> query = entityManager.createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+        query.setParameter("bank_id", bank_id);
+        return query.getResultList();
+    }
+
+   /* @Override
+    public void updateAtmTime(AtmOffice tempAtm) {
+
+    }*/
+
+    @Override
+    public void persiste(AtmOffice Atm) {
+        entityManager.persist(Atm);
+    }
+
+    @Override
+    @Transactional
+    public void update(List<AtmOffice> atmExistList) {
+        for(AtmOffice atm: atmExistList) {
+//            atm.setLastUpdated(TimeUtil.currentTimestamp());
+            entityManager.merge(atm);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void persist(List<AtmOffice> atmNewList) {
+        for(AtmOffice atm: atmNewList){
+            atm.setLastUpdated(TimeUtil.currentTimestamp());
+            entityManager.persist(atm);
+            entityManager.refresh(atm);
+        }
+
     }
 
 }

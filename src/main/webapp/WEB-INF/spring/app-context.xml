@@ -48,6 +48,8 @@
             <list>
                 <value>com.ss.atmlocator.entity</value>
                 <value>com.ss.atmlocator.dao</value>
+                <value>com.ss.atmlocator.parser</value>
+                <!--<value>com.ss.atmlocator.parser.testParser</value>-->
             </list>
         </property>
 

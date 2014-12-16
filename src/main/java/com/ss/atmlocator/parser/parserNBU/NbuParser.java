@@ -1,6 +1,6 @@
 package com.ss.atmlocator.parser.parserNBU;
 
-import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.IParsers;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,7 +18,7 @@ import com.ss.atmlocator.entity.Bank;
 /**
  * Created by maks on 18.11.2014.
  */
-public class NbuParser implements IParser {
+public class NbuParser implements IParsers {
 
     final Logger log = Logger.getLogger(NbuParser.class.getName());
     private List<Bank> banks = new ArrayList<Bank>();// Is it may by Set?
