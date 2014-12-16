@@ -3,6 +3,7 @@ var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
 var markers = [];
+var overlay;
 
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
@@ -30,6 +31,15 @@ function initializeMap() {
         setLocationByLatLng(JSON.parse($.cookie("position")));
     } else {
         getLocation();
+    }
+
+    overlay = new google.maps.OverlayView();
+    overlay.draw = function() {};
+    overlay.setMap(map);
+
+    //getting favorites
+    if(getFavorites != undefined){
+        getFavorites();
     }
 }
 
@@ -70,6 +80,11 @@ function setLocationByAddress() {
     return false;
 };
 
+//hide popower about finding address
+function hidePopover(element){
+    $('#'+element).popover("destroy");
+}
+
 //Seting user position by google geocoder
 function setMapByGeocode(data, status) {
     if (status == google.maps.GeocoderStatus.OK) {//if google found this address
@@ -87,14 +102,6 @@ function setMapByGeocode(data, status) {
         $('#userAddress').attr("data-content", "Can't find this address");
         $('#userAddress').popover("show");
     }
-}
-
-//Deleting marker from map
-function deleteMarker(marker) {
-    if (marker != null) {
-        marker.setMap(null);
-    }
-    ;
 }
 
 //Get ATMs from server by filter
@@ -129,13 +136,15 @@ function showAtms(data) {
         var atmPosition = ATMs[i].geoPosition;
         var atmDescription = data.name + "\n" + ATMs[i].address;
         var atmIcon = ATMs[i].bank.iconAtm;
-        addMarker({"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
+        var atmId = ATMs[i].id;
+        addMarker(atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
 };
 
 //Adding marker to map
-function addMarker(position, title, icon) {
+function addMarker(id, position, title, icon) {
     var marker = new google.maps.Marker({
+        id : id,
         position: position,
         map: map,
         title: title,
@@ -143,50 +152,41 @@ function addMarker(position, title, icon) {
     });
     marker.setMap(map);
 
-    /*    google.maps.event.addListener(marker, 'rightclick', function(event){
-     var pos = getMousePos(event);
-     markerMenu(pos.x,pos.y);
-     });*/
+    google.maps.event.addListener(marker, 'rightclick', function(event){
+        var pos = getMousePos(event);
+        markerMenu(pos.x,pos.y, marker.id);
+    });
 
     markers.push(marker);
 }
 
-function deleteMarkers() {
-    for (i = 0; i < markers.length; i++) {
+//Deleting marker from map
+function deleteMarker(marker) {
+    if (marker != null) {
+        marker.setMap(null);
+    }
+    ;
+}
+
+//delete all ATM markers from map
+function deleteMarkers(){
+    for(i = 0; i < markers.length; i++){
         markers[i].setMap(null);
     }
+    markers = [];
 }
 
 //add marker menu in position x, y
-function markerMenu(x, y) {
-    $(".popup-menu")
+function markerMenu(x,y, ATMId){
+    $("#defaultMarkerMenu").attr("atmid", ATMId);
+    $("#defaultMarkerMenu")
         .css({top: y + "px", left: x + "px"})
         .show();
 }
 
 //hide marker menu
-function hideMenu() {
+function hideMenu(){
     $(".popup-menu").hide();
-}
-
-//hide popower about finding address
-function hidePopover(element) {
-    $('#' + element).popover("destroy");
-}
-
-//add cookies about user position(lat lng)
-function setPositionCookies() {
-    $.cookie("position", JSON.stringify(userPosition));
-    google.maps.event.addListener(marker, 'click', function removeMarker() {
-        if (window.confirm("Are you sure?")) {//If this marker not in current position marker then remove
-            marker.setMap(null);
-            //   removeReq(marker.getPosition());
-        }
-    });
-}
-
-function hidePopover(element) {
-    $('#' + element).popover("destroy");
 }
 
 function setPositionCookies() {
@@ -213,6 +213,7 @@ function getBanks() {
     });
     return sources;
 };
+
 //change filters by network and bank
 $(document).ready(function () {
     autocompleteBanks();
@@ -252,3 +253,17 @@ $(document).on('click', '#banksDropdown li a', function (e) {
     $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
 });
 
+//======================================================================================================================
+//Adding favorites for user
+//======================================================================================================================
+function addFavorite(ATM){
+    $.ajax({
+        url: getHomeUrl() + "users/favorites/" + ATM.id,
+        type : "PUT",
+        context: document.body,
+        dataType: "json",
+        success: function(){
+            console.log("додано")
+        }
+    })
+}

@@ -24,16 +24,6 @@ public class AtmsDAO implements IAtmsDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    //    @Override
-//    @Transactional
-//    public List<AtmOffice> getBankAtms(int bank_id){
-//        TypedQuery<AtmOffice> query = entityManager.createQuery(
-//                "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id "
-//                        +"and a.geoPosition.latitude is not null and a.geoPosition.longitude is not null",
-//                AtmOffice.class);
-//        query.setParameter("bank_id", bank_id);
-//        return query.getResultList();
-//    }
     @Override
     @Transactional
     public List<AtmOffice> getBankAtms(Integer network_id, Integer bank_id) {
@@ -47,6 +37,9 @@ public class AtmsDAO implements IAtmsDAO {
         return entityManager.createQuery(criteria).getResultList();
     }
 
+    public AtmOffice getAtmById(int id) {
+        return entityManager.find(AtmOffice.class, id);
+    }
     @Override
     @Transactional
     public List<AtmOffice> getBankAtms(int bank_id){
@@ -82,7 +75,6 @@ public class AtmsDAO implements IAtmsDAO {
             entityManager.persist(atm);
             entityManager.refresh(atm);
         }
-
     }
 
 }
