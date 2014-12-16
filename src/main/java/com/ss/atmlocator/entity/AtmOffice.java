@@ -16,7 +16,7 @@ import static org.apache.commons.lang.ObjectUtils.*;
 public class AtmOffice implements Comparable<AtmOffice>{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String address;
@@ -50,12 +50,12 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
         AtmOffice atmOffice = (AtmOffice) o;
 
-        return address.equals(atmOffice.address);
+        return id == atmOffice.id;
     }
 
     @Override
     public int hashCode() {
-        return address.hashCode();
+        return id;
     }
 
     @JsonIgnore
@@ -63,11 +63,11 @@ public class AtmOffice implements Comparable<AtmOffice>{
     private Set<AtmComment> atmComments;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getAddress() {

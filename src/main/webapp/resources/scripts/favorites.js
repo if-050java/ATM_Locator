@@ -78,7 +78,7 @@ function addFavorite(){
                     if (value.id == ATMId) {
                         value.setMap(null);
                         var position = {lat: value.position.lat(), lng: value.position.lng()}
-                        addFavoriteMarker(value.id, position, value.title, value.bank.iconAtm);
+                        addFavoriteMarker(value.id, position, value.title, value.icon);
                         getFavorites();
                     }
                 })
