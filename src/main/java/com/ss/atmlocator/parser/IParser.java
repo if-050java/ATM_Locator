@@ -1,19 +1,17 @@
 package com.ss.atmlocator.parser;
 
-
-
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.entity.Bank;
+import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Created by maks on 19.11.2014.
+ * Created by maks on 15.12.2014.
  */
+@Service
 public interface IParser {
-    public void setParameter(Map<String, String> parameters);
-    public List<Bank> parse();
-    //public Set<AtmOffice> parseAtms();
+void setParameter(Map<String, String> parameters);
+List<AtmOffice> parse() throws IOException;
 }

@@ -13,7 +13,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
@@ -21,7 +20,7 @@ import java.util.*;
 /**
  * Created by Olavin on 14.12.2014.
  */
-public class OschadBankParser implements IParser {
+public class OschadBankParser implements IParsers {
 
     private Map<String,String> parameters;
     String siteEncoding = null;

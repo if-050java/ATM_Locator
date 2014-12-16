@@ -2,20 +2,19 @@ package com.ss.atmlocator.parser.parserUbanks;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.IParsers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
 import java.util.*;
 
 /**
  * Created by Ivanna Terletska on 11/19/2014.
  */
-public class BankUrlsIParserServer implements IParser {
+public class BankUrlsIParserServer implements IParsers {
     protected String url;
     protected String listSelector = "spoiler";
     protected String bankName;
