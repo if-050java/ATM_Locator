@@ -19,10 +19,13 @@ function getFavorites(){
 function showFavorites(favorites){
     clearFavorites();
     favorites.forEach(function(value){
-        favoriteElement = '<a class="list-group-item" atmid="' + value.id + '" oncontextmenu="favMenu(event, '+ value.id +')" onclick="panToFavorite(event)">' + value.address + '</a>';
+        favoriteElement = '<a class="list-group-item" atmid="' + value.id +
+                          '" oncontextmenu="favMenu(event, '+ value.id +
+                          ')" onclick="panToFavorite(event)">' + value.address +
+                          '</a>';
         jQuery("#favorites_list").append(jQuery.parseHTML(favoriteElement))
         var favoritePosition = value.geoPosition;
-        addFavoriteMarker(value.id, {"lat": favoritePosition.latitude, "lng": favoritePosition.longitude}, value.address, value.bank.iconAtm);
+        addFavoriteMarker(value, value.id, {"lat": favoritePosition.latitude, "lng": favoritePosition.longitude}, value.address, value.bank.iconAtm);
     })
 }
 
@@ -36,21 +39,33 @@ function clearFavorites(){
 }
 
 //Adding favorite marker to map
-function addFavoriteMarker(id, position, title, icon) {
-
-    var markerPos = new google.maps.LatLng(position.lat, position.lng);
-    marker = new RichMarker({
-        id: id,
+function addFavoriteMarker(atm) {
+    var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
+    var favoiteMarker = new RichMarker({
+        id: atm.id,
         position: markerPos,
         map: map,
         draggable: false,
         flat: true,
-        content:'<div style="position:relative" id="' + id + '" class="favorite_marker">'+
-                    '<img src="'+getHomeUrl()+'resources/images/'+ icon +'" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ id +')"/>'+
+        anchorPoint: {x: 0, y: -32},
+        content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">'+
+                     '<img src="' + getHomeUrl() + 'resources/images/'+ atm.bank.iconAtm +'" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ atm.id +')"/>'+
                     '<img style="position:absolute; left:24px; top:-8px" src="'+getHomeUrl()+'resources/images/favorite.ico" width="16" height="16" alt=""/>'+
-                '</div>'
+                 '</div>'
     });
-    favoriteMarkers.push(marker);
+
+    var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
+                         '<div>' + atm.address + '</div>'
+
+    google.maps.event.addListener(favoiteMarker, 'click', function(){
+        var infowindow = new google.maps.InfoWindow({
+            content: tollTipContent,
+            maxWidth: 135
+        });
+        infowindow.open(map, favoiteMarker);
+    });
+
+    favoriteMarkers.push(favoiteMarker);
 }
 
 //show context menu on favorite marker and element of favorites list
@@ -77,8 +92,6 @@ function addFavorite(){
                 markers.forEach(function(value){
                     if (value.id == ATMId) {
                         value.setMap(null);
-                        var position = {lat: value.position.lat(), lng: value.position.lng()}
-                        addFavoriteMarker(value.id, position, value.title, value.icon);
                         getFavorites();
                     }
                 })
@@ -121,9 +134,10 @@ function panToFavorite(event){
     })
 }
 
+//animate marker on panTo
 function jampedMarker(id){
-    $("#"+id).addClass('animated bounce')
+    jQuery("#"+id).addClass('animated bounce')
              .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-                     $(this).removeClass('animated bounce');
+                     jQuery(this).removeClass('animated bounce');
                 });
 }
