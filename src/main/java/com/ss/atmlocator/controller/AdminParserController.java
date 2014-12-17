@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmParser;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.parser.parserAval.AvalParserExecutor;
 import com.ss.atmlocator.parser.testParser.TestParserExecutor;
 import com.ss.atmlocator.service.ParserParamService;
 import com.ss.atmlocator.service.ParserService;
@@ -31,7 +32,7 @@ public class AdminParserController {
     @Autowired
     ParserParamService paramService;
     @Autowired
-    TestParserExecutor parserExecutor;
+    AvalParserExecutor parserExecutor;
 //    @RequestMapping
 //    public String viewJsp(){
 //        System.out.println("asdf");
@@ -82,12 +83,7 @@ public class AdminParserController {
     public String testParser(){
 //        TestParserExecutor parserExecutor1 = new TestParserExecutor();
         parserExecutor.execute();
-/*        Map<String,String> par = new HashMap<>();
-        par.put("ParserId", "3");
-        par.put("BankId","1");
 
-        parserExecutor.setParameters(par);
-        parserExecutor.execute();*/
 
         return "redirect:/";
 
