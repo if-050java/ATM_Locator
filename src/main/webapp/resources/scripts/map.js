@@ -172,7 +172,7 @@ function updateFilter() {
     };
     console.log((bankId && networkId && showOtherBanks));
     if (!networkId || networkId == 0) delete data.networkId;
-    if (!bankId) delete data.bankId;
+    if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
     $.ajax({
         url: getHomeUrl() + "map/getATMs",
         data: data,
