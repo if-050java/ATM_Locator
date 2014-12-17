@@ -1,5 +1,4 @@
 var favoriteMarkers = [];
-
 //send request for favorites t oserver
 function getFavorites(){
     jQuery.ajax({
@@ -57,8 +56,11 @@ function addFavoriteMarker(atm) {
     var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
                          '<div>' + atm.address + '</div>'
 
-    google.maps.event.addListener(favoiteMarker, 'click', function(){
-        var infowindow = new google.maps.InfoWindow({
+    google.maps.event.addListener(favoiteMarker, 'click', function(event){
+        if(infowindow != undefined) {
+            infowindow.close();
+        }
+        infowindow = new google.maps.InfoWindow({
             content: tollTipContent,
             maxWidth: 135
         });

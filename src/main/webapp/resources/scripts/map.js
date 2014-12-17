@@ -5,10 +5,12 @@ var USER_MARKER_TITLE = "My position"
 var markers = [];
 var radius;
 var circle = new google.maps.Circle();
-var overlay;
+var infowindow;
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
-document.onclick = hideMenu;
+document.onclick = function(){
+    hideMenu();
+}
 
 //autocentering map
 function myFitBounds(myMap, bounds) {
@@ -213,12 +215,17 @@ function displayAtms(data) {
 
 //Adding marker to map
 function addMarker(id, position, title, icon) {
-    var marker = new google.maps.Marker({
+    var markerPos = new google.maps.LatLng(position.lat, position.lng);
+    var marker = new RichMarker({
         id : id,
-        position: position,
+        position: markerPos,
         map: map,
         title: title,
-        icon: getHomeUrl() + "resources/images/" + icon
+        draggable: false,
+        flat: true,
+        content: '<div style="position:relative" id="' + id + '" class="favorite_marker">'+
+                      '<img src="' + getHomeUrl() + 'resources/images/'+ icon +'" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, '+ id +')"/>'+
+                 '</div>'
     });
     marker.setMap(map);
 
@@ -247,7 +254,9 @@ function deleteMarkers(){
 }
 
 //add marker menu in position x, y
-function markerMenu(x,y, ATMId){
+function markerMenu(event, ATMId){
+    var x = event.pageX;
+    var y = event.pageY;
     $("#defaultMarkerMenu").attr("atmid", ATMId);
     $("#defaultMarkerMenu")
         .css({top: y + "px", left: x + "px"})
@@ -326,17 +335,3 @@ $(document).on('click', '#banksDropdown li a', function (e) {
     $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
 });
 
-//======================================================================================================================
-//Adding favorites for user
-//======================================================================================================================
-function addFavorite(ATM){
-    $.ajax({
-        url: getHomeUrl() + "users/favorites/" + ATM.id,
-        type : "PUT",
-        context: document.body,
-        dataType: "json",
-        success: function(){
-            console.log("додано")
-        }
-    })
-}
