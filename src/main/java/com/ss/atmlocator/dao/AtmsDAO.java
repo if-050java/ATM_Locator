@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;;
 import java.util.Collections;
 import java.util.List;
@@ -33,16 +34,17 @@ public class AtmsDAO implements IAtmsDAO {
         CriteriaQuery<AtmOffice> criteria = builder.createQuery(AtmOffice.class);
         Root<AtmOffice> atmOfficeRoot = criteria.from(AtmOffice.class);
         criteria.select(atmOfficeRoot);
+        Predicate where = builder.conjunction();
         if (network_id != null)
-            criteria.where(builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
+            where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
         if (bank_id != null)
-            criteria.where(builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
+            where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
         if (showAtms && !showOffices)
-            criteria.where(builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_ATM));
+            where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_ATM));
         if (showOffices && !showAtms)
-            criteria.where(builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_OFFICE));
+            where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_OFFICE));
         if (!showAtms && !showOffices) return Collections.emptyList();
-        return entityManager.createQuery(criteria).getResultList();
+        return entityManager.createQuery(criteria.where(where)).getResultList();
     }
 
     public AtmOffice getAtmById(int id) {
