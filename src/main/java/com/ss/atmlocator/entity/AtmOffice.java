@@ -49,7 +49,6 @@ public class AtmOffice implements Comparable<AtmOffice>{
         if (!(o instanceof AtmOffice)) return false;
 
         AtmOffice atmOffice = (AtmOffice) o;
-
         return address.equals(atmOffice.address);
     }
 
