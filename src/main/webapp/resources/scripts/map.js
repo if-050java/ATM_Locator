@@ -3,11 +3,57 @@ var userPosition;
 var userPositionMarker;
 var USER_MARKER_TITLE = "My position"
 var markers = [];
+var radius;
+var circle = new google.maps.Circle();
 var overlay;
-
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 document.onclick = hideMenu;
+
+//autocentering map
+function myFitBounds(myMap, bounds) {
+    myMap.fitBounds(bounds); // calling fitBounds() here to center the map for the bounds
+
+    var overlayHelper = new google.maps.OverlayView();
+    overlayHelper.draw = function () {
+        if (!this.ready) {
+            var extraZoom = getExtraZoom(this.getProjection(), bounds, myMap.getBounds());
+            if (extraZoom > 0) {
+                myMap.setZoom(myMap.getZoom() + extraZoom);
+            }
+            this.ready = true;
+            google.maps.event.trigger(this, 'ready');
+        }
+    };
+    overlayHelper.setMap(myMap);
+}
+
+function getExtraZoom(projection, expectedBounds, actualBounds) {
+
+    // in: LatLngBounds bounds -> out: height and width as a Point
+    function getSizeInPixels(bounds) {
+        var sw = projection.fromLatLngToContainerPixel(bounds.getSouthWest());
+        var ne = projection.fromLatLngToContainerPixel(bounds.getNorthEast());
+        return new google.maps.Point(Math.abs(sw.y - ne.y), Math.abs(sw.x - ne.x));
+    }
+
+    var expectedSize = getSizeInPixels(expectedBounds),
+        actualSize = getSizeInPixels(actualBounds);
+
+    if (Math.floor(expectedSize.x) == 0 || Math.floor(expectedSize.y) == 0) {
+        return 0;
+    }
+
+    var qx = actualSize.x / expectedSize.x;
+    var qy = actualSize.y / expectedSize.y;
+    var min = Math.min(qx, qy);
+
+    if (min < 1) {
+        return 0;
+    }
+
+    return Math.floor(Math.log(min) / Math.LN2 /* = log2(min) */);
+}
 
 //get mouse position in window on click
 function getMousePos(event) {
@@ -108,15 +154,21 @@ function setMapByGeocode(data, status) {
 function updateFilter() {
     var networkId = $("#networksDropdownInput").prop("networkId");
     var bankId = $("#banksDropdownInput").prop("bankId");
-    var distance = $("#distance").val();
+    var showAtms = $("#ATMs").prop("checked");
+    var showOffices = $("#offices").prop("checked");
+    console.log($("#distance").val());
+    radius = parseInt($("#distance").val());
+    console.log(radius);
     var data = {
         networkId: networkId,
         bankId: bankId,
-        radius: distance,
+        radius: radius,
         userLat: userPosition.lat,
-        userLng: userPosition.lng
+        userLng: userPosition.lng,
+        showAtms: showAtms,
+        showOffices: showOffices
     };
-    if (!networkId) delete data.networkId;
+    if (!networkId || networkId == 0 ) delete data.networkId;
     if (!bankId) delete data.bankId;
     $.ajax({
         url: getHomeUrl() + "map/getATMs",
@@ -124,12 +176,12 @@ function updateFilter() {
         type: "GET",
         context: document.body,
         dataType: "json",
-        success: showAtms
+        success: displayAtms
     })
 }
 
 //Receiving data about markers from server and adding marker to map
-function showAtms(data) {
+function displayAtms(data) {
     deleteMarkers();
     var ATMs = data;
     for (var i = 0; i < ATMs.length; i++) {
@@ -139,6 +191,24 @@ function showAtms(data) {
         var atmId = ATMs[i].id;
         addMarker(atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
+
+    var circleOptions = {
+        strokeColor: "#c4c4c4",
+        strokeOpacity: 0.35,
+        strokeWeight: 0,
+        fillColor: "#198CFF",
+        fillOpacity: 0.35,
+        map: map,
+        center: userPosition,
+        radius: radius,
+
+    };
+    circle.setMap(null);
+    circle = new google.maps.Circle(circleOptions);
+    console.log(map.getZoom());
+    var circleBounds = circle.getBounds();
+    myFitBounds(map, circleBounds);
+   // map.setZoom(map.getZoom()+1);
 };
 
 //Adding marker to map
@@ -217,20 +287,23 @@ function getBanks() {
 //change filters by network and bank
 $(document).ready(function () {
     autocompleteBanks();
-    $('#networksDropdown li a').click(function (e) {
+    var networksInput = $("#networksDropdownInput");
+    var networksList = $("#networksDropdown");
+    var banksInput = $("#banksDropdownInput");
+    var banksList = $("#banksDropdown");
+    networksInput.val(networksList.find("a").first().text());
+    networksInput.prop("networkId", networksList.find("a").first().attr('href'));
+    networksList.find("a").click(function (e) {
         e.preventDefault();
-        $("#networksDropdownInput").val($(this).text());
-        $("#networksDropdownInput").prop("networkId", $(this).attr('href'));
+        networksInput.val($(this).text());
+        networksInput.prop("networkId", $(this).attr('href'));
         var network_id = $(this).attr('href');
         $.getJSON(getHomeUrl() + "map/getBanksByNetwork", {network_id: network_id }, function (banks) {
-                $("#banksDropdown").empty();
-                $("#banksDropdownInput").val("");
-//                if (network_id != 0) {
-//                    $("#banksDropdownInput").val(banks[0].name);
-//                    $("#banksDropdownInput").prop("bankId", banks[0].id);
-//                }
+                banksList.empty();
+                banksInput.val("");
+                banksInput.removeProp("bankId");
                 $.each(banks, function (i, bank) {
-                    $("#banksDropdown").append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
+                    banksList.append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
                 });
                 autocompleteBanks();
             }
