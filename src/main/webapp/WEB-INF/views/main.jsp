@@ -4,8 +4,10 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY"></script>
+    <script src="https://maps.googleapis.com/maps/api/js??key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY&sensor=false&libraries=places"></script>
+
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
+    <script src="<c:url value="/resources"/>/jquery/jquery.geocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.js"></script>
@@ -30,9 +32,10 @@
                 </span>
                 <input type="text" class="form-control" id="userAddress"
                        title="" data-content="" data-placement="bottom" data-toggle="popover"
-                       data-original-title="" onclick="hidePopover('userAddress')"/>
+                       data-original-title="" placeholder="Type in an address" />
+                <span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="setLocationByAddress()"><span
+                    <button class="btn btn-default" id="findLocation" type="button" onclick="setLocationByAddress()"><span
                             class="glyphicon glyphicon-search"
                             title="Find"></span></button>
                 </span>
@@ -88,15 +91,15 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="otherNetworks">
-                                    Show banks from other networks
+                                    <input type="checkbox" id="showOtherBanks">
+                                    Show other banks from network
                                 </label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="checkbox">
                                 <label class="checkbox-inline">
-                                    <input type="checkbox" id="ATMs">
+                                    <input type="checkbox" id="ATMs" checked>
                                     ATMs
                                 </label>
                                 <label class="checkbox-inline">

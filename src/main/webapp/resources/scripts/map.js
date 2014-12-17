@@ -8,7 +8,7 @@ var circle = new google.maps.Circle();
 var infowindow;
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
-document.onclick = function(){
+document.onclick = function () {
     hideMenu();
 }
 
@@ -73,7 +73,7 @@ function initializeMap() {
         zoom: 14
     };
     map = new google.maps.Map(document.getElementById('map_container'), defaultMapOptions);
-
+    autocompleteMap();
     //if user has cookies with his position set map to this position else get position from browser
     if ($.cookie("position")) {
         setLocationByLatLng(JSON.parse($.cookie("position")));
@@ -82,11 +82,12 @@ function initializeMap() {
     }
 
     overlay = new google.maps.OverlayView();
-    overlay.draw = function() {};
+    overlay.draw = function () {
+    };
     overlay.setMap(map);
 
     //getting favorites
-    if(getFavorites != undefined){
+    if (getFavorites != undefined) {
         getFavorites();
     }
 }
@@ -129,8 +130,8 @@ function setLocationByAddress() {
 };
 
 //hide popower about finding address
-function hidePopover(element){
-    $('#'+element).popover("destroy");
+function hidePopover(element) {
+    $('#' + element).popover("destroy");
 }
 
 //Seting user position by google geocoder
@@ -158,9 +159,8 @@ function updateFilter() {
     var bankId = $("#banksDropdownInput").prop("bankId");
     var showAtms = $("#ATMs").prop("checked");
     var showOffices = $("#offices").prop("checked");
-    console.log($("#distance").val());
+    var showOtherBanks = $("#showOtherBanks").prop("checked");
     radius = parseInt($("#distance").val());
-    console.log(radius);
     var data = {
         networkId: networkId,
         bankId: bankId,
@@ -170,7 +170,8 @@ function updateFilter() {
         showAtms: showAtms,
         showOffices: showOffices
     };
-    if (!networkId || networkId == 0 ) delete data.networkId;
+    console.log((bankId && networkId && showOtherBanks));
+    if (!networkId || networkId == 0) delete data.networkId;
     if (!bankId) delete data.bankId;
     $.ajax({
         url: getHomeUrl() + "map/getATMs",
@@ -210,28 +211,28 @@ function displayAtms(data) {
     console.log(map.getZoom());
     var circleBounds = circle.getBounds();
     myFitBounds(map, circleBounds);
-   // map.setZoom(map.getZoom()+1);
+    // map.setZoom(map.getZoom()+1);
 };
 
 //Adding marker to map
 function addMarker(id, position, title, icon) {
     var markerPos = new google.maps.LatLng(position.lat, position.lng);
     var marker = new RichMarker({
-        id : id,
+        id: id,
         position: markerPos,
         map: map,
         title: title,
         draggable: false,
         flat: true,
-        content: '<div style="position:relative" id="' + id + '" class="favorite_marker">'+
-                      '<img src="' + getHomeUrl() + 'resources/images/'+ icon +'" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, '+ id +')"/>'+
-                 '</div>'
+        content: '<div style="position:relative" id="' + id + '" class="favorite_marker">' +
+            '<img src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + id + ')"/>' +
+            '</div>'
     });
     marker.setMap(map);
 
-    google.maps.event.addListener(marker, 'rightclick', function(event){
+    google.maps.event.addListener(marker, 'rightclick', function (event) {
         var pos = getMousePos(event);
-        markerMenu(pos.x,pos.y, marker.id);
+        markerMenu(pos.x, pos.y, marker.id);
     });
 
     markers.push(marker);
@@ -246,15 +247,15 @@ function deleteMarker(marker) {
 }
 
 //delete all ATM markers from map
-function deleteMarkers(){
-    for(i = 0; i < markers.length; i++){
+function deleteMarkers() {
+    for (i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
     markers = [];
 }
 
 //add marker menu in position x, y
-function markerMenu(event, ATMId){
+function markerMenu(event, ATMId) {
     var x = event.pageX;
     var y = event.pageY;
     $("#defaultMarkerMenu").attr("atmid", ATMId);
@@ -264,12 +265,18 @@ function markerMenu(event, ATMId){
 }
 
 //hide marker menu
-function hideMenu(){
+function hideMenu() {
     $(".popup-menu").hide();
 }
 
 function setPositionCookies() {
     $.cookie("position", JSON.stringify(userPosition));
+}
+function autocompleteMap() {
+    $("#userAddress").geocomplete()
+        .bind("geocode:result", function () {
+            $("#findLocation").trigger("click");
+        });
 }
 function autocompleteBanks() {
     $('#banksDropdownInput').autocomplete({
@@ -295,6 +302,7 @@ function getBanks() {
 
 //change filters by network and bank
 $(document).ready(function () {
+
     autocompleteBanks();
     var networksInput = $("#networksDropdownInput");
     var networksList = $("#networksDropdown");
@@ -322,9 +330,10 @@ $(document).ready(function () {
 
     $("#distance").TouchSpin({
         initval: 500,
-        min: 100,
+        min: 50,
+        forcestepdivisibility: 'none',
         max: 5000,
-        step: 500
+        step: 250
     });
 
 
