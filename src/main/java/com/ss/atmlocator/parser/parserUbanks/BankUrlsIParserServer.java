@@ -35,9 +35,6 @@ public class BankUrlsIParserServer implements IParsers {
         final String BRANCH_SELECTOR_EXPR= "відділення";
         final String ATM_SELECTOR_EXPR = "банкомати";
 
-        assert (BRANCH_SELECTOR_EXPR.equals("\u0432\u0456\u0434\u0434\u0456\u043B\u0435\u043D\u043D\u044F"));
-        assert (ATM_SELECTOR_EXPR.equals("\u0431\u0430\u043D\u043A\u043E\u043C\u0430\u0442\u0438"));
-
         bankList = new ArrayList<Bank>();
         AtmParserServise parser = new AtmParserServise();
         Map<String, Object> map = new HashMap<String, Object>();

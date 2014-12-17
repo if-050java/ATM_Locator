@@ -1,7 +1,7 @@
-package com.ss.atmlocator.parser;
+package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.parser.IParser;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -12,9 +12,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -37,20 +34,29 @@ public class OschadBankParser implements IParser {
     @Override
     public List<AtmOffice> parse(){
         List<AtmOffice> atms = new ArrayList<>();
-        List<String> regions = getRegionList();
-        for(int i=0; i < regions.size(); i++){
-            System.out.println(i+". "+regions.get(i));
-        }
+
 
         //String ifr2 = "Івано-Франківська область";
         //String ifr = "\u0406\u0432\u0430\u043D\u043E-\u0424\u0440\u0430\u043D\u043A\u0456\u0432\u0441\u044C\u043A\u0430 \u043E\u0431\u043B\u0430\u0441\u0442\u044C";
         //System.out.println("[ "+ifr + "=" + ifr2+" ]");
-        String testRegion = regions.get(2);
 
         String page = parameters.get("base_url")+parameters.get("branch_page");
         String selector = parameters.get("branch_selector");
-        List<String> addressList = parseRegion(page, testRegion, selector);
+        int totalPages = 0;
+        try {
+            totalPages = getPageCount(createJsoupConnection(page, "", 1));
+            System.out.println("Total pages:"+totalPages);
 
+            List<String> regions = getRegionList();
+            for(int i=0; i < regions.size(); i++){
+                System.out.println(i+". "+regions.get(i));
+            }
+
+            String testRegion = regions.get(2);
+            List<String> addressList = parseRegion(page, testRegion, selector);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return atms;
     }
 
