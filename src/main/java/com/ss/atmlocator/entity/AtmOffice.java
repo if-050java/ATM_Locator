@@ -46,21 +46,14 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof AtmOffice)) return false;
 
         AtmOffice atmOffice = (AtmOffice) o;
-
-        if (address != null ? !address.equals(atmOffice.address) : atmOffice.address != null) return false;
-
-        return true;
+        return address.equals(atmOffice.address);
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        if(address == null){
-            return hash;
-        }
         return address.hashCode();
     }
 
@@ -77,6 +70,9 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
 
     public String getAddress() {
+        if(address == null){
+            return "";
+        }
         return address;
     }
 
