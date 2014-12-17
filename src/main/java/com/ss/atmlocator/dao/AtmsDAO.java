@@ -3,6 +3,7 @@ package com.ss.atmlocator.dao;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Repository
 public class AtmsDAO implements IAtmsDAO {
-    private final org.apache.log4j.Logger log = Logger.getLogger(AtmsDAO.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(AtmsDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -68,20 +69,24 @@ public class AtmsDAO implements IAtmsDAO {
     @Override
     @Transactional
     public void update(List<AtmOffice> atmExistList) {
+        log.info("[TRANSACTION] update() begin transaction");
         for(AtmOffice atm: atmExistList) {
 //            atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.merge(atm);
         }
+        log.info("[TRANSACTION]update() end transaction");
     }
 
     @Override
     @Transactional
     public void persist(List<AtmOffice> atmNewList) {
+        log.info("[TRANSACTION] persist()---> begin transaction");
         for(AtmOffice atm: atmNewList){
             atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.persist(atm);
             entityManager.refresh(atm);
         }
+        log.info("[TRANSACTION] persist()---> end transaction");
     }
 
 }

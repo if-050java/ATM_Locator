@@ -6,6 +6,7 @@ import com.ss.atmlocator.service.IDBParserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public abstract class ParserExecutor {
 
     public IParser parser;
 
-    public  void execute(){
+    public  void execute() throws IOException{
         setParser();
         Map<String,String> parameters=getParametrs();
         parser.setParameter(parameters);

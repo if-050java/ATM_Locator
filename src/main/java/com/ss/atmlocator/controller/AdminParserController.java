@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -82,7 +83,11 @@ public class AdminParserController {
     @RequestMapping(value = "tes")
     public String testParser(){
 //        TestParserExecutor parserExecutor1 = new TestParserExecutor();
-        parserExecutor.execute();
+        try {
+            parserExecutor.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         return "redirect:/";

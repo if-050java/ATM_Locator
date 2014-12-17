@@ -22,63 +22,14 @@ public class DbParserService implements IDBParserService {
     IBanksDAO banksDAO;
     int bankId;
 
-    // Dummy value to associate with an Object in the backing Map
-    private static final Object PRESENT = new Object();
-
-
     @Override
     public void update(List<AtmOffice> atms) {
 
 
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-
-
-//        HashSet<AtmOffice> atmsFromDb = new HashSet<>();
-
         bankId = atms.get(0).getBank().getId();     // TODO Bed understand , will changed
-     /*   atmListFomDb=(ArrayList)atmsDAO.getBankAtms(bankId);
-        HashMap<AtmOffice, Object > tempMap=new HashMap<>();*/
-
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
-//        for (int i = 0; i < atmListFomDb.size(); i++) {
-////           tempMap.put(atmListFomDb.get(i), PRESENT); // filling the array
-//
-//        }
-
-//        for(AtmOffice tempAtm : atms){
-//
-//        }
-
-
-
-//         atmsFromDb.addAll(atmsDAO.getBankAtms(bankId));
-
-
-  /*     for (AtmOffice tempAtm : atms) {
-         *//*   if (atmsFomDb.contains(tempAtm)) {
-                atmsDAO.updateAtmTime(tempAtm);// TODO create new List with changed field lastUpdate and then updated theirs in Db
-            } else {
-                atmsDAO.persiste(tempAtm);  //TODO create new List with new Atms and then persist theirs in Db
-            }*//*
-
-           for(AtmOffice dbAtm:atmListFomDb){
-                if(tempAtm.equals(dbAtm)){
-
-                }
-           }
-
-
-          *//*
-            if (!atmListFomDb.contains(tempAtm)) {
-                atmListFomDb.add(tempAtm);
-
-            }else{
-
-            }*//*
-
-/////////////////////////////////
-        }*/
         for(AtmOffice atmDb: atmListFomDb){
             if(atms.contains(atmDb)){
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
@@ -95,11 +46,9 @@ public class DbParserService implements IDBParserService {
             }
         }
 
-//        atmsDAO.update(atmListFomDb);
+//        atmsDAO.update(atmListFomDb
         atmsDAO.update(atmExistList);
         atmsDAO.persist(atmNewList);
-
-
     }
 
     @Override
@@ -126,7 +75,6 @@ public class DbParserService implements IDBParserService {
             }
         }
 
-//        atmsDAO.update(atmListFomDb);
         atmsDAO.update(atmExistList);
 
         atmsDAO.persist(atmNewList);
