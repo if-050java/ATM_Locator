@@ -55,6 +55,9 @@ function addFavoriteMarker(atm) {
 
     var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
                          '<div>' + atm.address + '</div>'
+    if(atm.commentsCount > 0){
+        tollTipContent += '<div><a href="#" onclick="showComments()">Comments...</a></div>'
+    }
 
     google.maps.event.addListener(favoiteMarker, 'click', function(event){
         if(infowindow != undefined) {

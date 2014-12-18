@@ -43,6 +43,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @JoinColumn(name = "bank_id")
     Bank bank;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,8 +59,15 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "atmOffice",fetch = FetchType.EAGER)
     private Set<AtmComment> atmComments;
+
+    @Transient
+    private int commentsCount;
+
+    public int getCommentsCount() {
+        return atmComments.size();
+    }
 
     public int getId() {
         return id;

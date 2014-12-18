@@ -17,8 +17,10 @@ function addMarker(atm) {
     });
 
     var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
-        '<div>' + atm.address + '</div><br>'+
-        '<div><a href="#" onclick="showComments()">Comments...</a></div>'
+        '<div>' + atm.address + '</div><br>';
+    if(atm.commentsCount > 0){
+        tollTipContent += '<div><a href="#" onclick="showComments()">Comments...</a></div>'
+    }
 
     google.maps.event.addListener(marker, 'click', function(event){
         if(infowindow != undefined) {

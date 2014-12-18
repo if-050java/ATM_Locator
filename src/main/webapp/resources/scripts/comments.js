@@ -5,6 +5,14 @@ jQuery(document).ready(function(){
         jQuery("#comment").val("");
         $("#commentModal").modal("show");
     })
+
+    jQuery(".addcomment").click(function(event){
+        var atmId = event.target.parentNode.getAttribute("atmid")
+        jQuery("#commentModal").attr("atmid",atmId);
+        jQuery("#comment").val("");
+        $("#commentModal").modal("show");
+    })
+    commentsWindow
 })
 
 function addComment(){
