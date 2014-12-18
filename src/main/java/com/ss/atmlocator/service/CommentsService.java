@@ -14,6 +14,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Vasyl Danylyuk on 17.12.2014.
@@ -45,4 +46,5 @@ public class CommentsService {
             throw pe;
         }
     }
+
 }

@@ -56,7 +56,7 @@ function addFavoriteMarker(atm) {
     var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
                          '<div>' + atm.address + '</div>'
     if(atm.commentsCount > 0){
-        tollTipContent += '<div><a href="#" onclick="showComments()">Comments...</a></div>'
+        tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + atm.commentsCount + ')...</a></div>'
     }
 
     google.maps.event.addListener(favoiteMarker, 'click', function(event){
@@ -68,8 +68,8 @@ function addFavoriteMarker(atm) {
             maxWidth: 135
         });
         infowindow.open(map, favoiteMarker);
+        initCommentsClick();
     });
-
     favoriteMarkers.push(favoiteMarker);
 }
 

@@ -1,22 +1,22 @@
 package com.ss.atmlocator.parser.scheduler;
 
-
 import org.quartz.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class CreateJobFactory {
-
+    final static Logger logger = LoggerFactory.getLogger(SchcedService.class);
     private CreateJobFactory(){}
 
-    public static JobTrigerHolder createJob(JobTemplate jobTemplate)
-            throws ClassNotFoundException{
-
+    public static JobTrigerHolder createJob(JobTemplate jobTemplate){
+        try{
         Map<String,String> map = jobTemplate.getMap();
 
-        JobKey jobKey = new JobKey(jobTemplate.getJobName(), jobTemplate.getTriggerName());
+        JobKey jobKey = new JobKey(jobTemplate.getJobName(), jobTemplate.getJobGroup());
         TriggerKey triggerKey = new TriggerKey(jobTemplate.getTriggerName(), jobTemplate.getTriggerGroup());
 
         Class  clazz = Class.forName(jobTemplate.getJobClassName());
@@ -44,5 +44,11 @@ public final class CreateJobFactory {
         return new JobTrigerHolder(job,trigger);
 
     }
+        catch (Exception exp){
+            logger.error(exp.getMessage(), exp);
+            return null;
+        }
+    }
+
 
 }

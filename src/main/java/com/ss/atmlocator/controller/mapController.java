@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by Vasyl Danylyuk on 29.11.2014.
@@ -51,7 +48,10 @@ public class MapController {
         Collection<AtmOffice> atmOffices = atmService.getATMs(networkId, bankId,showAtms,showOffices, userPosition, radius);
         if(principal != null){
             User user = userService.getUserByName(principal.getName());
-            atmOffices.removeAll(user.getAtmFavorites());
+            Set<AtmOffice> favorites = user.getAtmFavorites();
+            if(favorites != null) {
+                atmOffices.removeAll(user.getAtmFavorites());
+            }
         }
         return atmOffices;
     }

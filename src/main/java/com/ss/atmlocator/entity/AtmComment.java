@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -20,11 +22,12 @@ public class AtmComment {
     @Column
     private Timestamp timeCreated;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atm_id")
     private AtmOffice atmOffice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
