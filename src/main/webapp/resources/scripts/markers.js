@@ -8,6 +8,7 @@ function addMarker(atm) {
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
         id: atm.id,
+        commentsCount : atm.commentsCount,
         position: markerPos,
         map: map,
         draggable: false,
@@ -18,13 +19,13 @@ function addMarker(atm) {
         '</div>'
     });
 
-    var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
-        '<div>' + atm.address + '</div><br>';
-    if(atm.commentsCount > 0){
-        tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + atm.commentsCount + ')...</a></div>'
-    }
-
     google.maps.event.addListener(marker, 'click', function(event){
+        var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
+            '<div>' + atm.address + '</div><br>';
+        if(marker.commentsCount > 0){
+            tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + marker.commentsCount + ')...</a></div>'
+        }
+
         if(infowindow != undefined) {
             infowindow.close();
         }
@@ -33,7 +34,7 @@ function addMarker(atm) {
             maxWidth: 135
         });
         infowindow.open(map, marker);
-        initCommentsClick();
+        setTimeout(initCommentsClick, 200);
     });
 
     markers.push(marker);

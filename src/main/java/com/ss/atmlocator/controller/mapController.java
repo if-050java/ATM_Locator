@@ -42,6 +42,7 @@ public class MapController {
                                          @RequestParam int radius,
                                          @RequestParam boolean showAtms,
                                          @RequestParam boolean showOffices,
+                                         @RequestParam boolean excludeFavorites,
                                          Principal principal
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
@@ -49,7 +50,7 @@ public class MapController {
         if(principal != null){
             User user = userService.getUserByName(principal.getName());
             Set<AtmOffice> favorites = user.getAtmFavorites();
-            if(favorites != null) {
+            if(favorites != null && excludeFavorites) {
                 atmOffices.removeAll(user.getAtmFavorites());
             }
         }
