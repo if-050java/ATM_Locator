@@ -30,6 +30,16 @@
         </layout>
     </appender>
 
+    <appender name="schedLogs" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="MaxFileSize" value="2048KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="File" value="../logs/schedLogs.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+
     <appender name="springLogs" class="org.apache.log4j.RollingFileAppender">
         <param name="Threshold" value="DEBUG" />
         <param name="MaxFileSize" value="2048KB" />
@@ -71,6 +81,11 @@
     <logger name="com.ss.atmlocator.utils.SendMails">
         <level value="error"/>
         <appender-ref ref="smtpLogs"/>
+    </logger>
+
+    <logger name="com.ss.atmlocator.parser.scheduler">
+        <level value="debug"/>
+        <appender-ref ref="schedLogs"/>
     </logger>
 
     <!-- Controlers Logs -->

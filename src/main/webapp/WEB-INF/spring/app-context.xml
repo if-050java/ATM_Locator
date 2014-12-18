@@ -52,9 +52,24 @@
         </property>
 
     </bean>
+    <!-- Begin Quartz -->
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="quartz-scheduler"></property>
+        <property name="dataSource" ref="dataSource" />
+        <property name="transactionManager" ref="quartzTransactionManager"></property>
 
+        <property name="quartzProperties">
+            <map>
+                <!-- Disable check updates -->
+                <entry key="org.quartz.scheduler.skipUpdateCheck" value="true" />
+            </map>
+        </property>
+    </bean>
 
-
+    <bean id="quartzTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <!-- END Quartz-->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
