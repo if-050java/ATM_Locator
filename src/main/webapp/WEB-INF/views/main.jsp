@@ -7,14 +7,17 @@
     <script src="https://maps.googleapis.com/maps/api/js??key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY&sensor=false&libraries=places"></script>
 
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/markers.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/userPositioning.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.geocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.js"></script>
-    <link  href="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.css" rel="stylesheet">
+    <link href="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.css" rel="stylesheet">
     <script src="<c:url value="/resources"/>/scripts/richmarker-compiled.js"></script>
     <sec:authorize access="isAuthenticated()">
         <script src="<c:url value="/resources"/>/scripts/favorites.js"></script>
+        <script src="<c:url value="/resources"/>/scripts/comments.js"></script>
         <link rel="stylesheet" href="<c:url value="/resources"/>/styles/animate.min.css"/>
     </sec:authorize>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
@@ -24,22 +27,23 @@
     <div class="row">
         <div class="col-md-9">
             <form onsubmit="return setLocationByAddress()">
-            <div class="input-group">
+                <div class="input-group">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="getLocation()"><span
                             class="glyphicon glyphicon-globe"></span>
                     </button>
                 </span>
-                <input type="text" class="form-control" id="userAddress"
-                       title="" data-content="" data-placement="bottom" data-toggle="popover"
-                       data-original-title="" placeholder="Type in an address" />
-                <span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
+                    <input type="text" class="form-control" id="userAddress"
+                           title="" data-content="" data-placement="bottom" data-toggle="popover"
+                           data-original-title="" placeholder="Type in an address"/>
+                    <span id="searchclear" class="glyphicon glyphicon-remove-circle"></span>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" id="findLocation" type="button" onclick="setLocationByAddress()"><span
+                    <button class="btn btn-default" id="findLocation" type="button"
+                            onclick="setLocationByAddress()"><span
                             class="glyphicon glyphicon-search"
                             title="Find"></span></button>
                 </span>
-            </div>
+                </div>
             </form>
             <div id="map_container" style="height: 500px" class="media">
                 <!-- Map is here  -->
@@ -56,7 +60,8 @@
                     <form action="" method="get" onsubmit="updateFilter()" class="form">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Select network" id="networksDropdownInput">
+                                <input type="text" class="form-control" placeholder="Select network"
+                                       id="networksDropdownInput">
 
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default dropdown-toggle"
@@ -126,7 +131,8 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">Favorites</h3>
                     </div>
-                    <ul id="favorites_list" class="panel-body list-group" style="padding: 0px; max-height: 163px; overflow-y: scroll">
+                    <ul id="favorites_list" class="panel-body list-group"
+                        style="padding: 0px; max-height: 163px; overflow-y: scroll">
                     </ul>
                 </div>
             </sec:authorize>
@@ -134,14 +140,54 @@
     </div>
 </div>
 <sec:authorize access="isAuthenticated()">
+    <%--Menu on default marker--%>
     <div class="popup-menu" id="defaultMarkerMenu" style="display:none">
         <div class="popup-menu-item" onclick="addFavorite()">Add to favorites</div>
-        <div class="popup-menu-item">Add comment</div>
+        <div class="popup-menu-item addcomment">Add comment</div>
     </div>
+    <%--Menu on favorite marker--%>
     <div class="popup-menu" id="favoriteMarkerMenu" style="display:none">
         <div class="popup-menu-item" onclick="deleteFavorite()">Delete from favorites</div>
-        <div class="popup-menu-item">Add comment</div>
+        <div class="popup-menu-item addcomment">Add comment</div>
     </div>
+    <%--Add comment modal--%>
+    <div class="modal fade" id="commentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Add comment</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" id="comment" style="max-width: 100%"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addComment()">Add comment</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 </sec:authorize>
+<%--Show comments modal--%>
+<div class="modal fade" id="commentsWindow">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">Comments</h4>
+            </div>
+            <div class="modal-body table" id="comments">
+                <tr>adfgsdfgsdfgsdfg</tr>
+                <tr>adfgsdfgsdfgsdfg</tr>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 </body>
 </html>

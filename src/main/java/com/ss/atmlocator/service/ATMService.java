@@ -62,7 +62,7 @@ public class ATMService {
         }
     }
 
-    public AtmOffice getATMById(int id){
+    public AtmOffice getAtmById(int id){
         return  atmsDAO.getAtmById(id);
     }
 }

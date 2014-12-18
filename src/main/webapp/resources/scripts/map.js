@@ -1,16 +1,9 @@
 var map;                //Map element
-var userPosition;
-var userPositionMarker;
-var USER_MARKER_TITLE = "My position"
-var markers = [];
 var radius;
 var circle = new google.maps.Circle();
 var infowindow;
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
-document.onclick = function () {
-    hideMenu();
-}
 
 //autocentering map
 function myFitBounds(myMap, bounds) {
@@ -57,15 +50,6 @@ function getExtraZoom(projection, expectedBounds, actualBounds) {
     return Math.floor(Math.log(min) / Math.LN2 /* = log2(min) */);
 }
 
-//get mouse position in window on click
-function getMousePos(event) {
-    event = event || window.event;
-    var mousPositionOnClickX = event.pageX;
-    var mousPositionOnClickY = event.pageY;
-    $("#userAddress").val(mousPositionOnClickX);
-    return {x: mousPositionOnClickX, y: mousPositionOnClickY};
-}
-
 //add map to page and set to default position
 function initializeMap() {
     var defaultMapOptions = {
@@ -81,77 +65,17 @@ function initializeMap() {
         getLocation();
     }
 
-    overlay = new google.maps.OverlayView();
-    overlay.draw = function () {
-    };
-    overlay.setMap(map);
-
     //getting favorites
     if (getFavorites != undefined) {
         getFavorites();
     }
 }
 
-//Getting location from browser
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(setLocation);
-    }
-};
-
-//Setting current location to position received from browser
-function setLocation(position) {
-    userPosition = { lat: position.coords.latitude, lng: position.coords.longitude};
-    setLocationByLatLng(userPosition);
-};
-
-//seting current location to position defined by LatLng value
-function setLocationByLatLng(position) {
-    userPosition = position;
-    deleteMarker(userPositionMarker);
-    userPositionMarker = new google.maps.Marker({
-        position: userPosition,
-        map: map,
-        title: USER_MARKER_TITLE
-    });
-    userPositionMarker.setMap(map);
-    map.panTo(userPosition);
-    setPositionCookies();
-}
-
-//Seting user position by address
-function setLocationByAddress() {
-    var userAddress = $("#userAddress").val();
-    if (userAddress != "") {
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode({'address': userAddress}, setMapByGeocode)
-    }
-    return false;
-};
-
 //hide popower about finding address
 function hidePopover(element) {
     $('#' + element).popover("destroy");
 }
 
-//Seting user position by google geocoder
-function setMapByGeocode(data, status) {
-    if (status == google.maps.GeocoderStatus.OK) {//if google found this address
-        deleteMarker(userPositionMarker);
-        userPosition = {lat: data[0].geometry.location.lat(), lng: data[0].geometry.location.lng()};
-        userPositionMarker = new google.maps.Marker({
-            position: userPosition,
-            map: map,
-            title: USER_MARKER_TITLE
-        });
-        userPositionMarker.setMap(map);
-        map.panTo(userPosition);
-        setPositionCookies();
-    } else {//if address is invalid or google didn't find it
-        $('#userAddress').attr("data-content", "Can't find this address");
-        $('#userAddress').popover("show");
-    }
-}
 
 //Get ATMs from server by filter
 function updateFilter() {
@@ -192,7 +116,7 @@ function displayAtms(data) {
         var atmDescription = data.name + "\n" + ATMs[i].address;
         var atmIcon = ATMs[i].bank.iconAtm;
         var atmId = ATMs[i].id;
-        addMarker(atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
+        addMarker(ATMs[i], atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
 
     var circleOptions = {
@@ -214,64 +138,6 @@ function displayAtms(data) {
     // map.setZoom(map.getZoom()+1);
 };
 
-//Adding marker to map
-function addMarker(id, position, title, icon) {
-    var markerPos = new google.maps.LatLng(position.lat, position.lng);
-    var marker = new RichMarker({
-        id: id,
-        position: markerPos,
-        map: map,
-        title: title,
-        draggable: false,
-        flat: true,
-        content: '<div style="position:relative" id="' + id + '" class="favorite_marker">' +
-            '<img src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + id + ')"/>' +
-            '</div>'
-    });
-    marker.setMap(map);
-
-    google.maps.event.addListener(marker, 'rightclick', function (event) {
-        var pos = getMousePos(event);
-        markerMenu(pos.x, pos.y, marker.id);
-    });
-
-    markers.push(marker);
-}
-
-//Deleting marker from map
-function deleteMarker(marker) {
-    if (marker != null) {
-        marker.setMap(null);
-    }
-    ;
-}
-
-//delete all ATM markers from map
-function deleteMarkers() {
-    for (i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-    }
-    markers = [];
-}
-
-//add marker menu in position x, y
-function markerMenu(event, ATMId) {
-    var x = event.pageX;
-    var y = event.pageY;
-    $("#defaultMarkerMenu").attr("atmid", ATMId);
-    $("#defaultMarkerMenu")
-        .css({top: y + "px", left: x + "px"})
-        .show();
-}
-
-//hide marker menu
-function hideMenu() {
-    $(".popup-menu").hide();
-}
-
-function setPositionCookies() {
-    $.cookie("position", JSON.stringify(userPosition));
-}
 function autocompleteMap() {
     $("#userAddress").geocomplete()
         .bind("geocode:result", function () {

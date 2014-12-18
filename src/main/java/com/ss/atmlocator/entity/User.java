@@ -45,9 +45,9 @@ public class User {
 
     @JsonIgnore //Ignoring this field in JSON serializing
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="favorites", joinColumns = {
-            @JoinColumn(name = "user_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "atm_id", nullable = false)})
+    @JoinTable(name="favorites",
+               joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
+               inverseJoinColumns = {@JoinColumn(name = "atm_id", nullable = false)})
     private Set<AtmOffice> atmFavorites;
 
     public User(int id, String login, String email, String password, UserStatus enabled) {
