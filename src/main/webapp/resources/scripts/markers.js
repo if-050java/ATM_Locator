@@ -3,6 +3,8 @@ var markers = [];
 
 //Adding marker to map
 function addMarker(atm) {
+    console.log(atm);
+    var icon = (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
         id: atm.id,
@@ -12,7 +14,7 @@ function addMarker(atm) {
         flat: true,
         anchorPoint: {x: 0, y: -32},
         content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">' +
-        '<img src="' + getHomeUrl() + 'resources/images/' + atm.bank.iconAtm + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
+        '<img src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
         '</div>'
     });
 

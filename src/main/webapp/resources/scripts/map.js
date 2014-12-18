@@ -94,7 +94,6 @@ function updateFilter() {
         showAtms: showAtms,
         showOffices: showOffices
     };
-    console.log((bankId && networkId && showOtherBanks));
     if (!networkId || networkId == 0) delete data.networkId;
     if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
     $.ajax({
@@ -127,12 +126,11 @@ function displayAtms(data) {
         fillOpacity: 0.35,
         map: map,
         center: userPosition,
-        radius: radius,
+        radius: radius
 
     };
     circle.setMap(null);
     circle = new google.maps.Circle(circleOptions);
-    console.log(map.getZoom());
     var circleBounds = circle.getBounds();
     myFitBounds(map, circleBounds);
     // map.setZoom(map.getZoom()+1);
