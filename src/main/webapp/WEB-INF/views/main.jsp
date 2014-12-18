@@ -15,9 +15,11 @@
     <script src="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.js"></script>
     <link href="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.css" rel="stylesheet">
     <script src="<c:url value="/resources"/>/scripts/richmarker-compiled.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/feedback.js"></script>
     <sec:authorize access="isAuthenticated()">
         <script src="<c:url value="/resources"/>/scripts/favorites.js"></script>
         <script src="<c:url value="/resources"/>/scripts/comments.js"></script>
+
         <link rel="stylesheet" href="<c:url value="/resources"/>/styles/animate.min.css"/>
     </sec:authorize>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
@@ -138,6 +140,7 @@
             </sec:authorize>
         </div>
     </div>
+
 </div>
 <sec:authorize access="isAuthenticated()">
     <%--Menu on default marker--%>
@@ -173,6 +176,28 @@
     </div>
     <!-- /.modal -->
 </sec:authorize>
+<%--show feedback modal window  --%>
+    <div class="modal fade" id="feedbackModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Add feedback</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" id="feedback" style="max-width: 100%"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="getFeedback()">Add feedback</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
 <%--Show comments modal--%>
 <div class="modal fade" id="commentsWindow">
     <div class="modal-dialog">
@@ -189,5 +214,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 </body>
 </html>

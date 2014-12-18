@@ -18,7 +18,7 @@ public abstract class ParserExecutor {
     @Autowired
     public IDBParserService parserService;
 
-
+    @Autowired
     public IParser parser;
 
     public  void execute() throws IOException{

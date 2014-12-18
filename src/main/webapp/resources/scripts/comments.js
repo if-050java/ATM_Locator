@@ -15,6 +15,9 @@ jQuery(document).ready(function(){
     commentsWindow
 })
 
+
+
+
 function addComment(){
     var comment = jQuery("#comment").val();
     var atmId = jQuery("#commentModal").attr("atmid");

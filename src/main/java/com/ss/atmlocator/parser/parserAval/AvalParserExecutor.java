@@ -3,6 +3,7 @@ package com.ss.atmlocator.parser.parserAval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ss.atmlocator.parser.testParser.ParserExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import java.util.Map;
  */
 @Service
 public class AvalParserExecutor extends ParserExecutor {
+
+
 
     final static Logger logger = LoggerFactory.getLogger(AvalParserExecutor.class);
     @Override
