@@ -19,7 +19,7 @@ function addMarker(atm) {
     var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
         '<div>' + atm.address + '</div><br>';
     if(atm.commentsCount > 0){
-        tollTipContent += '<div><a href="#" onclick="showComments()">Comments...</a></div>'
+        tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + atm.commentsCount + ')...</a></div>'
     }
 
     google.maps.event.addListener(marker, 'click', function(event){
@@ -31,6 +31,7 @@ function addMarker(atm) {
             maxWidth: 135
         });
         infowindow.open(map, marker);
+        initCommentsClick();
     });
 
     markers.push(marker);

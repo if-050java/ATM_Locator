@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 import static org.apache.commons.lang.ObjectUtils.*;
 
@@ -55,12 +56,15 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
     @Override
     public int hashCode() {
+        if(address == null){
+            return 0;
+        }
         return address.hashCode();
     }
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "atmOffice",fetch = FetchType.EAGER)
-    private Set<AtmComment> atmComments;
+    private List<AtmComment> atmComments;
 
     @Transient
     private int commentsCount;
@@ -78,9 +82,6 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
 
     public String getAddress() {
-        if(address == null){
-            return "";
-        }
         return address;
     }
 
@@ -127,11 +128,11 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
 
 
-    public Set<AtmComment> getAtmComments() {
+    public List<AtmComment> getAtmComments() {
         return atmComments;
     }
 
-    public void setAtmComments(Set<AtmComment> atmComments) {
+    public void setAtmComments(List<AtmComment> atmComments) {
         this.atmComments = atmComments;
     }
 

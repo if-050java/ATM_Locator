@@ -166,12 +166,9 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="addComment()">Add comment</button>
                 </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </sec:authorize>
 <%--Show comments modal--%>
 <div class="modal fade" id="commentsWindow">
@@ -182,9 +179,7 @@
                         class="sr-only">Close</span></button>
                 <h4 class="modal-title">Comments</h4>
             </div>
-            <div class="modal-body table" id="comments">
-                <tr>adfgsdfgsdfgsdfg</tr>
-                <tr>adfgsdfgsdfgsdfg</tr>
+            <div class="modal-body table" id="comments" style="max-height: 500px; overflow-y: scroll">
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
