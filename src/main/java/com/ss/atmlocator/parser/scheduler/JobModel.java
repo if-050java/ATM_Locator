@@ -1,27 +1,25 @@
 package com.ss.atmlocator.parser.scheduler;
 
-import org.quartz.Trigger;
-
 import java.util.Map;
 
-public class JobTemplate {
+public class JobModel {
     private String jobName;
     private String jobGroup;
     private String triggerName;
     private String triggerGroup;
     private String cronSched;
     private String jobClassName;
-    private Map<String,String> map;
-    private String jobStatus;
+    private String params;
 
-
-    public String getJobStatus() {
-        return jobStatus;
+    public String getParams() {
+        return params;
     }
 
-    public void setJobStatus(String jobStatus) {
-        this.jobStatus = jobStatus;
+    public void setParams(String params) {
+        this.params = params;
     }
+
+
 
     public String getJobName() {
         return jobName;
@@ -71,11 +69,4 @@ public class JobTemplate {
         this.jobClassName = jobClassName;
     }
 
-    public Map<String, String> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String, String> map) {
-        this.map = map;
-    }
 }

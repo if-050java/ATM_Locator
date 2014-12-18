@@ -45,5 +45,8 @@
     <definition name="changeParser" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/changeParser.jsp"/>
     </definition>
+    <definition name="jobs" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/jobs.jsp"/>
+    </definition>
 
 </tiles-definitions>
