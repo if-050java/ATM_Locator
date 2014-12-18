@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
+import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
+
 /**
  * Created by Olavin on 14.12.2014.
  */
@@ -26,6 +28,7 @@ public class OschadBankParser implements IParser {
     private final static String SET_FILTER_PARAM = "\u0428\u0443\u043A\u0430\u0442\u0438"; //"Шукати"
     private final static int ADDRESS_COLUMN_BRANCH = 1;
     private final static int ADDRESS_COLUMN_ATM = 0;
+    private final static int MAX_ROWS_AT_PAGE = 20;
     private final static String REGION_SEPARATOR = ", ";
 
     private Map<String,String> parameters;
@@ -38,10 +41,6 @@ public class OschadBankParser implements IParser {
     @Override
     public List<AtmOffice> parse(){
         List<AtmOffice> atms = new ArrayList<>();
-
-        //String ifr2 = "Івано-Франківська область";
-        //String ifr = "\u0406\u0432\u0430\u043D\u043E-\u0424\u0440\u0430\u043D\u043A\u0456\u0432\u0441\u044C\u043A\u0430 \u043E\u0431\u043B\u0430\u0441\u0442\u044C";
-        //System.out.println("[ "+ifr + "=" + ifr2+" ]");
 
         try {
             String branchPage = parameters.get("base_url")+parameters.get("branch_page");
@@ -59,8 +58,30 @@ public class OschadBankParser implements IParser {
             }
 
             String testRegion = regions.get(0);
-            List<String> branchAddressList = parseRegion(branchPage, testRegion, branchSelector, ADDRESS_COLUMN_BRANCH);
-            List<String> atmAddressList = parseRegion(atmPage, testRegion, atmSelector, ADDRESS_COLUMN_ATM);
+            LinkedList<String> branchAddressList = parseRegion(branchPage, testRegion, branchSelector, ADDRESS_COLUMN_BRANCH);
+            LinkedList<String> atmAddressList = parseRegion(atmPage, testRegion, atmSelector, ADDRESS_COLUMN_ATM);
+
+            AtmOffice atmOffice = null;
+            for(String branchAddress : branchAddressList){
+                atmOffice = new AtmOffice();
+                atmOffice.setAddress(branchAddress);
+                if(atmAddressList.contains(branchAddress)){
+                    atmOffice.setType(IS_ATM_OFFICE);
+                    atmAddressList.remove(branchAddress);
+                    logger.debug("Found branch and ATM at same address: "+branchAddress);
+                } else {
+                    atmOffice.setType(IS_OFFICE);
+                }
+                atms.add(atmOffice);
+            }
+            logger.debug("Total branches added: "+atms.size());
+            for(String atmAddress : atmAddressList){
+                atmOffice = new AtmOffice();
+                atmOffice.setAddress(atmAddress);
+                atmOffice.setType(IS_ATM);
+                atms.add(atmOffice);
+            }
+            logger.debug("Total branches and ATMs added: "+atms.size());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,15 +97,15 @@ public class OschadBankParser implements IParser {
                 .data("PAGEN_1",(pageNum > 1) ? String.valueOf(pageNum) : "");
     }
 
-    private List<String> parseRegion(String pageUrl, String regionName, String selector, int column){
-        List<String> addressList = new ArrayList<>();
+    private LinkedList<String> parseRegion(String pageUrl, String regionName, String selector, int column){
+        LinkedList<String> addressList = new LinkedList<>();
         try {
             Connection connection;
             int pageCount = getPageCount(createJsoupConnection(pageUrl, regionName, 1));
             for (int page = 1; page <= pageCount; page++){
                 logger.debug(String.format("Region: {%s} page %d/%d", regionName, page, pageCount));
                 connection = createJsoupConnection(pageUrl, regionName, page);
-                addressList.addAll(parseTable(connection, selector, column));
+                addressList.addAll(parseTable(connection, selector, column, regionName));
             }
 
         } catch (IOException e) {
@@ -93,18 +114,21 @@ public class OschadBankParser implements IParser {
         return addressList;
     }
 
-    private List<String> parseTable(Connection connection, String selector, int column) throws IOException {
-        List<String> addressList = new ArrayList<>();
+    private List<String> parseTable(Connection connection, String selector, int column, String regionName) throws IOException {
+        List<String> addressList = new ArrayList<>(MAX_ROWS_AT_PAGE);
         Connection.Response response = connection.execute();
         logger.debug("Request URL: "+connection.request().url());
         Elements rows = response.parse().select(selector);
         for (Element row : rows) {
-            String address = row.child(column).text();
+            String address = regionName + REGION_SEPARATOR + replaceAddress(row.child(column).text());
             addressList.add(address);
             logger.debug("Address: "+address);
-
         }
         return addressList;
+    }
+
+    private String replaceAddress(String source){
+        return source.replaceFirst("Ів\\.-.*Франківськ","Івано-Франківськ");
     }
 
     private int getPageCount(Connection connection) throws IOException {
@@ -148,7 +172,10 @@ public class OschadBankParser implements IParser {
 
     private static Connection createRegionListRequest(){
         return Jsoup.connect("http://www.oschadnybank.com/handlers/region1.php")
-                .data("contentType", "application/json; charset=utf-8", "ib", "atms_ua", "p", "1", "s", "15")
+                .data("contentType", "application/json; charset=utf-8")
+                .data("ib", "atms_ua")
+                .data("p", "1")
+                .data("s", "15")
                 .method(Connection.Method.GET)
                 .header("Accept", "application/json")
                 .header("Host", "www.oschadnybank.com")
@@ -168,7 +195,19 @@ public class OschadBankParser implements IParser {
 
         OschadBankParser bankParser = new OschadBankParser();
         bankParser.setParameter(parameters);
-        bankParser.parse();
+
+        List<AtmOffice> atms = bankParser.parse();
+        Collections.sort(atms,new Comparator<AtmOffice>()
+        {
+            public int compare(AtmOffice a1, AtmOffice a2)
+            {
+                return a1.getAddress().compareTo(a2.getAddress());
+            }
+        });
+
+        for(AtmOffice atm : atms){
+            System.out.printf("%d - %s\n", atm.getType().ordinal(), atm.getAddress());
+        }
 
     }
 
