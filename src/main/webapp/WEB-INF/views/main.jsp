@@ -13,6 +13,7 @@
     <script src="<c:url value="/resources"/>/scripts/richmarker-compiled.js"></script>
     <sec:authorize access="isAuthenticated()">
         <script src="<c:url value="/resources"/>/scripts/favorites.js"></script>
+        <script src="<c:url value="/resources"/>/scripts/comments.js"></script>
         <link rel="stylesheet" href="<c:url value="/resources"/>/styles/animate.min.css"/>
     </sec:authorize>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
@@ -131,14 +132,34 @@
     </div>
 </div>
 <sec:authorize access="isAuthenticated()">
+    <%--Menu on default marker--%>
     <div class="popup-menu" id="defaultMarkerMenu" style="display:none">
         <div class="popup-menu-item" onclick="addFavorite()">Add to favorites</div>
-        <div class="popup-menu-item">Add comment</div>
+        <div class="popup-menu-item addcomment">Add comment</div>
     </div>
+    <%--Menu on favorite marker--%>
     <div class="popup-menu" id="favoriteMarkerMenu" style="display:none">
         <div class="popup-menu-item" onclick="deleteFavorite()">Delete from favorites</div>
-        <div class="popup-menu-item">Add comment</div>
+        <div class="popup-menu-item addcomment">Add comment</div>
     </div>
+    <%--Add comment modal--%>
+    <div class="modal fade" id="commentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Add comment</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" id="comment" style="max-width: 100%"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addComment()">Add comment</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </sec:authorize>
 </body>
 </html>

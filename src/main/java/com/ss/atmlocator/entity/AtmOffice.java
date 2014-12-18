@@ -58,7 +58,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<AtmComment> atmComments;
 
     public int getId() {
