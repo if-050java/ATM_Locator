@@ -7,6 +7,8 @@
     <script src="https://maps.googleapis.com/maps/api/js??key=AIzaSyA4YR8loJtUaiviLc-WxnBsSH9Znt9TNEY&sensor=false&libraries=places"></script>
 
     <script src="<c:url value="/resources"/>/scripts/map.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/markers.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/userPositioning.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.geocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.cookie.js"></script>

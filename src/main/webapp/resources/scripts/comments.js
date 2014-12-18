@@ -1,3 +1,12 @@
+jQuery(document).ready(function(){
+    jQuery(".addcomment").click(function(event){
+        var atmId = event.target.parentNode.getAttribute("atmid")
+        jQuery("#commentModal").attr("atmid",atmId);
+        jQuery("#comment").val("");
+        $("#commentModal").modal("show");
+    })
+})
+
 function addComment(){
     var comment = jQuery("#comment").val();
     var atmId = jQuery("#commentModal").attr("atmid");
@@ -17,13 +26,9 @@ function addComment(){
         }
     })
 }
-jQuery(document).ready(function(){
-    jQuery(".addcomment").click(function(event){
-        var atmId = event.target.parentNode.getAttribute("atmid")
-        jQuery("#commentModal").attr("atmid",atmId);
-        jQuery("#comment").val("");
-        $("#commentModal").modal("show");
-    })
-})
+
+function showComments(){
+
+}
 
 
