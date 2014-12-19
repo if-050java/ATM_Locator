@@ -9,11 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-/**
- * Created by Vasyl Danylyuk on 17.12.2014.
- */
 @Repository
-public class CommentsDAO implements IComentsDAO {
+public class CommentsDAO implements ICommentsDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -29,7 +26,7 @@ public class CommentsDAO implements IComentsDAO {
     }
 
     @Override
-    public List<AtmComment> getComentsByAtmId(int atmId) {
+    public List<AtmComment> getCommentsByAtmId(int atmId) {
         TypedQuery<AtmComment> query = entityManager.createQuery("SELECT c FROM AtmComment AS c WHERE c.atmOffice.id=:atmId", AtmComment.class);
         query.setParameter("atmId", atmId);
         return query.getResultList();
