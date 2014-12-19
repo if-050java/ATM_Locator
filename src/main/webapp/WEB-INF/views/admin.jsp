@@ -23,7 +23,6 @@
 		$(document).ready(function() {
 			$("#jobsTable .deleteLink").on("click",function() {
 				var tr = $(this).parent().parent();
-				//change the background color to red before removing
 				var jobName = tr.children("td:nth-child(1)").html();
                 $.ajax({
                     url:"./admin/"+jobName,
@@ -38,24 +37,67 @@
                             });
                             return false;
                         },
-                        500: function(){alert("Error");}
+                        500: function(){alert("Error. See logs for details");}
                     }
                 })
 
 			});
 			
 			$("#jobsTable .enableLink").on("click",function() {
-				var tr = $(this).parent().parent(); //tr
-				var tdJobStatus = tr.children("td:nth-child(7)");
+                var tr = $(this).parent().parent();
+                var jobName = tr.children("td:nth-child(1)").html();
+                $.ajax({
+                    url:"./admin/"+jobName+"/enable",
+                    type : "POST",
+                    context: document.body,
+                    dataType: "json",
+                    statusCode: {
+                        200: function(){
+                            var tdJobStatus = tr.children("td:nth-child(7)");
+                            tdJobStatus.html("normal");
+                        },
+                        500: function(){alert("Error. See logs for details");}
+                    }
+                })
 
-                tdJobStatus.html("ACTIVE");
 			});
 			
 			$("#jobsTable .disableLink").on("click",function() {
-				var tr = $(this).parent().parent(); //tr
-				var tdJobStatus = tr.children("td:nth-child(7)");
-				tdJobStatus.html("PAUSED");
+                var tr = $(this).parent().parent();
+                var jobName = tr.children("td:nth-child(1)").html();
+                $.ajax({
+                    url:"./admin/"+jobName+"/disable",
+                    type : "POST",
+                    context: document.body,
+                    dataType: "json",
+                    statusCode: {
+                        200: function(){
+                            var tdJobStatus = tr.children("td:nth-child(7)");
+                            tdJobStatus.html("paused");
+                        },
+                        500: function(){alert("Error. See logs for details");}
+                    }
+                })
+
 			});
+
+            $("#jobsTable .runLink").on("click",function() {
+                var tr = $(this).parent().parent();
+                var jobName = tr.children("td:nth-child(1)").html();
+                $.ajax({
+                    url:"./admin/"+jobName+"/run",
+                    type : "POST",
+                    context: document.body,
+                    dataType: "json",
+                    statusCode: {
+                        200: function(){
+                            alert("Job successfully run");
+                        },
+                        500: function(){alert("Error. See logs for details");}
+                    }
+                })
+
+            });
 			
 			
 		});
@@ -98,8 +140,8 @@
                     <td><c:out value="${item.getJobGroup()}"/></td>
                     <td><c:out value="${item.getTriggerName()}"/></td>
                     <td><c:out value="${item.getTriggerGroup()}"/></td>
-                    <td><c:out value="${item.getJobClassName()}"/></td>
                     <td><c:out value="${item.getCronSched()}"/></td>
+                    <td><c:out value="${item.getJobClassName()}"/></td>
                     <td><c:out value="${item.getJobStatus()}"/></td>
 					<td>
 						<a class="runLink" href="#" >run</a>

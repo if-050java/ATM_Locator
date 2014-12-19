@@ -99,6 +99,7 @@ function updateFilter() {
     var showAtms = $("#ATMs").prop("checked");
     var showOffices = $("#offices").prop("checked");
     var showOtherBanks = $("#showOtherBanks").prop("checked");
+    var excludeFavorites = $("#showFavorites").prop("checked");
     radius = parseInt($("#distance").val());
     var data = {
         networkId: networkId,
@@ -107,7 +108,8 @@ function updateFilter() {
         userLat: userPosition.lat,
         userLng: userPosition.lng,
         showAtms: showAtms,
-        showOffices: showOffices
+        showOffices: showOffices,
+        excludeFavorites: excludeFavorites
     };
     if (networkId == 0 && !showOtherBanks) {
         delete data.networkId;

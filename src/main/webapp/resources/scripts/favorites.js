@@ -1,4 +1,11 @@
 var favoriteMarkers = [];
+
+jQuery(document).ready(function(){
+    jQuery("#favorites_list").niceScroll();
+    jQuery("#showFavorites").change(getFavorites);
+    jQuery("#showFavorites").change(updateFilter)
+});
+
 //send request for favorites t oserver
 function getFavorites(){
     jQuery.ajax({
@@ -18,13 +25,17 @@ function getFavorites(){
 function showFavorites(favorites){
     clearFavorites();
     favorites.forEach(function(value){
-        favoriteElement = '<a class="list-group-item" atmid="' + value.id +
+        favoriteElement = '<div class="list-group-item" atmid="' + value.id +
                           '" oncontextmenu="favMenu(event, '+ value.id +
-                          ')" onclick="panToFavorite(event)">' + value.address +
-                          '</a>';
+                          ')"  onclick="panToFavorite(event)">'+
+                           '<img class="img-rounded" style="max-width: 20%" src="' + getHomeUrl() + 'resources/images/'+((value.type == "IS_OFFICE" || value.type == "IS_ATM_OFFICE") ? value.bank.iconOffice :  value.bank.iconAtm) + '" width="40" height="40" alt=""/>'+
+        '<div style="max-width: 80%; display: inline-block; float: right">' + value.address + '</div>' +
+                          '</div>';
         jQuery("#favorites_list").append(jQuery.parseHTML(favoriteElement))
         var favoritePosition = value.geoPosition;
-        addFavoriteMarker(value, value.id, {"lat": favoritePosition.latitude, "lng": favoritePosition.longitude}, value.address, value.bank.iconAtm);
+        if(jQuery("#showFavorites").prop("checked")){
+            addFavoriteMarker(value);
+        }
     })
 }
 
@@ -42,24 +53,27 @@ function addFavoriteMarker(atm) {
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var favoiteMarker = new RichMarker({
         id: atm.id,
+        commentsCount : atm.commentsCount,
         position: markerPos,
         map: map,
         draggable: false,
         flat: true,
         anchorPoint: {x: 0, y: -32},
         content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">'+
-                     '<img src="' + getHomeUrl() + 'resources/images/'+ atm.bank.iconAtm +'" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ atm.id +')"/>'+
+                     '<img src="' + getHomeUrl() + 'resources/images/'+ ((atm.type == "IS_OFFICE" || atm.type == "IS_ATM_OFFICE") ? atm.bank.iconOffice :  atm.bank.iconAtm) + '" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ atm.id +')"/>'+
                     '<img style="position:absolute; left:24px; top:-8px" src="'+getHomeUrl()+'resources/images/favorite.ico" width="16" height="16" alt=""/>'+
                  '</div>'
     });
 
-    var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
-                         '<div>' + atm.address + '</div>'
-    if(atm.commentsCount > 0){
-        tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + atm.commentsCount + ')...</a></div>'
-    }
+
 
     google.maps.event.addListener(favoiteMarker, 'click', function(event){
+        var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
+            '<div>' + atm.address + '</div>'
+        if(favoiteMarker.commentsCount > 0){
+            tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + favoiteMarker.commentsCount + ')...</a></div>'
+        }
+
         if(infowindow != undefined) {
             infowindow.close();
         }
@@ -68,7 +82,7 @@ function addFavoriteMarker(atm) {
             maxWidth: 135
         });
         infowindow.open(map, favoiteMarker);
-        initCommentsClick();
+        setTimeout(initCommentsClick, 200);
     });
     favoriteMarkers.push(favoiteMarker);
 }
@@ -130,7 +144,7 @@ function deleteFavorite(){
 
 //canter map on selected favorite
 function panToFavorite(event){
-    atmId = event.target.getAttribute("atmid")
+    atmId = event.currentTarget.getAttribute("atmid")
     favoriteMarkers.forEach(function(value){
         if(value.id == atmId){
             map.panTo(value.position);

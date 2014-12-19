@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 @Service
 public class SchcedService {
+    final static int EQUALS_CODE = 61;
     final static Logger logger = LoggerFactory.getLogger(SchcedService.class);
     private static final String error = "Internal error. See logs for details";
     @Autowired
@@ -69,7 +70,7 @@ public class SchcedService {
     }
 
 
-    public String resumeJob(JobTemplate jobTemplate)throws SchedulerException {
+    public String resumeJob(JobTemplate jobTemplate){
         try{
         scheduler.resumeTrigger(new TriggerKey(jobTemplate.getTriggerName(),
                 jobTemplate.getTriggerGroup()));
@@ -148,5 +149,18 @@ public class SchcedService {
         }
         return null;
 
+    }
+
+    public Map<String,String> getMapParam(String params){
+        Map<String,String> keyMap = new HashMap<>();
+        String[] param = params.split(System.getProperty("line.separator"));
+        for (String template : param){
+            template = template.toLowerCase().replaceAll("\\s","");
+            int index  = template.indexOf(EQUALS_CODE);
+            String key = template.substring(0,index);
+            String val = template.substring(index+1,template.length());
+            keyMap.put(key,val);
+        }
+        return keyMap;
     }
 }
