@@ -11,6 +11,5 @@ import org.springframework.stereotype.Service;
 public abstract class ParserExecutor {
     @Autowired
     public IDBParserService parserService;
-
     public abstract void execute();
 }
