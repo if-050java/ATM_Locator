@@ -2,6 +2,7 @@ var map;                //Map element
 var radius;
 var circle = new google.maps.Circle();
 var infowindow;
+var showOther = false;
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 
@@ -75,12 +76,26 @@ function initializeMap() {
 function hidePopover(element) {
     $('#' + element).popover("destroy");
 }
-
-
+function checkShowOtherBanks(networkPropId, bankPropId) {
+    var showOther = (networkPropId == 0 && bankPropId);
+    if (!showOther) {
+        $("#showOtherBanks").removeAttr("checked");
+        $("#showOtherBanks").attr("disabled","disabled");
+    } else {
+        $("#showOtherBanks").removeAttr("disabled");
+    }
+}
+function showHideCheckboxOtherBanks(){
+    var networkPropId = $("#networksDropdownInput").prop("networkId");
+    var bankPropId = $("#banksDropdownInput").prop("bankId");
+    checkShowOtherBanks(networkPropId, bankPropId);
+}
 //Get ATMs from server by filter
 function updateFilter() {
+
     var networkId = $("#networksDropdownInput").prop("networkId");
     var bankId = $("#banksDropdownInput").prop("bankId");
+    var bankNetworkId = $("#banksDropdownInput").prop("networkId");
     var showAtms = $("#ATMs").prop("checked");
     var showOffices = $("#offices").prop("checked");
     var showOtherBanks = $("#showOtherBanks").prop("checked");
@@ -94,7 +109,11 @@ function updateFilter() {
         showAtms: showAtms,
         showOffices: showOffices
     };
-    if (!networkId || networkId == 0) delete data.networkId;
+    if (networkId == 0 && !showOtherBanks) {
+        delete data.networkId;
+    } else {
+        data.networkId = bankNetworkId;
+    }
     if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
     $.ajax({
         url: getHomeUrl() + "map/getATMs",
@@ -120,10 +139,10 @@ function displayAtms(data) {
 
     var circleOptions = {
         strokeColor: "#c4c4c4",
-        strokeOpacity: 0.35,
-        strokeWeight: 0,
+        strokeOpacity: 0.65,
+        strokeWeight: 1,
         fillColor: "#198CFF",
-        fillOpacity: 0.35,
+        fillOpacity: 0.15,
         map: map,
         center: userPosition,
         radius: radius
@@ -146,7 +165,8 @@ function autocompleteBanks() {
     $('#banksDropdownInput').autocomplete({
         lookup: getBanks(),
         onSelect: function (bank) {
-            $("#banksDropdownInput").prop("bankId", bank.data)
+            $("#banksDropdownInput").prop("bankId", bank.data);
+            showHideCheckboxOtherBanks();
         },
         lookupFilter: function (suggestion, query, queryLowerCase) {
             return suggestion.value.toLowerCase().indexOf(queryLowerCase) === 0;
@@ -166,7 +186,6 @@ function getBanks() {
 
 //change filters by network and bank
 $(document).ready(function () {
-
     autocompleteBanks();
     var networksInput = $("#networksDropdownInput");
     var networksList = $("#networksDropdown");
@@ -184,9 +203,10 @@ $(document).ready(function () {
                 banksInput.val("");
                 banksInput.removeProp("bankId");
                 $.each(banks, function (i, bank) {
-                    banksList.append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
+                    banksList.append('<li><a href="' + bank.id + '" networkId="' + bank.network.id + '">' + bank.name + '</a></li>');
                 });
                 autocompleteBanks();
+                showHideCheckboxOtherBanks();
             }
         );
     });
@@ -206,5 +226,7 @@ $(document).on('click', '#banksDropdown li a', function (e) {
     e.preventDefault();
     $("#banksDropdownInput").val($(this).text());
     $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
+    $("#banksDropdownInput").prop("networkId", $(this).attr('networkId'));
+    showHideCheckboxOtherBanks();
 });
 
