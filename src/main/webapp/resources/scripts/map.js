@@ -2,6 +2,7 @@ var map;                //Map element
 var radius;
 var circle = new google.maps.Circle();
 var infowindow;
+var showOther = false;
 //Create map on load page
 google.maps.event.addDomListener(window, 'load', initializeMap);
 
@@ -75,12 +76,24 @@ function initializeMap() {
 function hidePopover(element) {
     $('#' + element).popover("destroy");
 }
-
-
+function checkShowOtherBanks(bankPropId) {
+    if (!bankPropId) {
+        $("#showOtherBanks").removeAttr("checked");
+        $("#showOtherBanks").attr("disabled","disabled");
+    } else {
+        $("#showOtherBanks").removeAttr("disabled");
+    }
+}
+function showHideCheckboxOtherBanks(){
+    var bankPropId = $("#banksDropdownInput").prop("bankId");
+    checkShowOtherBanks(bankPropId);
+}
 //Get ATMs from server by filter
 function updateFilter() {
+
     var networkId = $("#networksDropdownInput").prop("networkId");
     var bankId = $("#banksDropdownInput").prop("bankId");
+    var bankNetworkId = $("#banksDropdownInput").prop("networkId");
     var showAtms = $("#ATMs").prop("checked");
     var showOffices = $("#offices").prop("checked");
     var showOtherBanks = $("#showOtherBanks").prop("checked");
@@ -96,7 +109,13 @@ function updateFilter() {
         showOffices: showOffices,
         excludeFavorites: excludeFavorites
     };
-    if (!networkId || networkId == 0) delete data.networkId;
+    if (networkId == 0 && !showOtherBanks) {
+        console.log("delete");
+        delete data.networkId;
+    } else if(showOtherBanks) {
+        console.log(bankNetworkId);
+        data.networkId = bankNetworkId;
+    }
     if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
     $.ajax({
         url: getHomeUrl() + "map/getATMs",
@@ -120,12 +139,13 @@ function displayAtms(data) {
         addMarker(ATMs[i], atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
 
+
     var circleOptions = {
         strokeColor: "#c4c4c4",
-        strokeOpacity: 0.35,
-        strokeWeight: 0,
+        strokeOpacity: 0.65,
+        strokeWeight: 1,
         fillColor: "#198CFF",
-        fillOpacity: 0.35,
+        fillOpacity: 0.15,
         map: map,
         center: userPosition,
         radius: radius
@@ -148,7 +168,10 @@ function autocompleteBanks() {
     $('#banksDropdownInput').autocomplete({
         lookup: getBanks(),
         onSelect: function (bank) {
-            $("#banksDropdownInput").prop("bankId", bank.data)
+            $("#banksDropdownInput").prop("bankId", bank.data);
+            $("#banksDropdownInput").prop("networkId", bank.network_id);
+            console.log("!!"+bank.network_id);
+            showHideCheckboxOtherBanks();
         },
         lookupFilter: function (suggestion, query, queryLowerCase) {
             return suggestion.value.toLowerCase().indexOf(queryLowerCase) === 0;
@@ -161,14 +184,13 @@ function autocompleteBanks() {
 function getBanks() {
     var sources = [];
     $("#banksDropdown li a").each(function () {
-        sources.push({ value: $(this).text(), data: $(this).attr("href")})
+        sources.push({ value: $(this).text(), data: $(this).attr("href"), network_id:$(this).attr("networkId")})
     });
     return sources;
 };
 
 //change filters by network and bank
 $(document).ready(function () {
-
     autocompleteBanks();
     var networksInput = $("#networksDropdownInput");
     var networksList = $("#networksDropdown");
@@ -186,9 +208,10 @@ $(document).ready(function () {
                 banksInput.val("");
                 banksInput.removeProp("bankId");
                 $.each(banks, function (i, bank) {
-                    banksList.append('<li><a href="' + bank.id + '">' + bank.name + '</a></li>');
+                    banksList.append('<li><a href="' + bank.id + '" networkId="' + bank.network.id + '">' + bank.name + '</a></li>');
                 });
                 autocompleteBanks();
+                showHideCheckboxOtherBanks();
             }
         );
     });
@@ -208,5 +231,7 @@ $(document).on('click', '#banksDropdown li a', function (e) {
     e.preventDefault();
     $("#banksDropdownInput").val($(this).text());
     $("#banksDropdownInput").prop("bankId", $(this).attr('href'));
+    $("#banksDropdownInput").prop("networkId", $(this).attr('networkId'));
+    showHideCheckboxOtherBanks();
 });
 

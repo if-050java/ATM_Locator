@@ -91,7 +91,7 @@
                                     </button>
                                     <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu">
                                         <c:forEach items="${banks}" var="bank">
-                                            <li><a href="${bank.id}">${bank.name}</a></li>
+                                            <li><a href="${bank.id}" networkId="${bank.network.id}">${bank.name}</a></li>
                                         </c:forEach>
                                     </ul>
                                 </div>
@@ -100,7 +100,7 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="showOtherBanks">
+                                    <input type="checkbox" id="showOtherBanks" disabled>
                                     Show other banks from network
                                 </label>
                             </div>

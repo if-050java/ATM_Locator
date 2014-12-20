@@ -42,7 +42,7 @@ public class MapController {
                                          @RequestParam int radius,
                                          @RequestParam boolean showAtms,
                                          @RequestParam boolean showOffices,
-                                         @RequestParam boolean excludeFavorites,
+                                         @RequestParam(required = false) boolean  excludeFavorites,
                                          Principal principal
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
