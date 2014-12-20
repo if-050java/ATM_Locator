@@ -76,9 +76,8 @@ function initializeMap() {
 function hidePopover(element) {
     $('#' + element).popover("destroy");
 }
-function checkShowOtherBanks(networkPropId, bankPropId) {
-    var showOther = (networkPropId == 0 && bankPropId);
-    if (!showOther) {
+function checkShowOtherBanks(bankPropId) {
+    if (!bankPropId) {
         $("#showOtherBanks").removeAttr("checked");
         $("#showOtherBanks").attr("disabled","disabled");
     } else {
@@ -86,9 +85,8 @@ function checkShowOtherBanks(networkPropId, bankPropId) {
     }
 }
 function showHideCheckboxOtherBanks(){
-    var networkPropId = $("#networksDropdownInput").prop("networkId");
     var bankPropId = $("#banksDropdownInput").prop("bankId");
-    checkShowOtherBanks(networkPropId, bankPropId);
+    checkShowOtherBanks(bankPropId);
 }
 //Get ATMs from server by filter
 function updateFilter() {
@@ -112,8 +110,10 @@ function updateFilter() {
         excludeFavorites: excludeFavorites
     };
     if (networkId == 0 && !showOtherBanks) {
+        console.log("delete");
         delete data.networkId;
-    } else {
+    } else if(showOtherBanks) {
+        console.log(bankNetworkId);
         data.networkId = bankNetworkId;
     }
     if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
@@ -138,6 +138,7 @@ function displayAtms(data) {
         var atmId = ATMs[i].id;
         addMarker(ATMs[i], atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
     }
+
 
     var circleOptions = {
         strokeColor: "#c4c4c4",
@@ -168,6 +169,8 @@ function autocompleteBanks() {
         lookup: getBanks(),
         onSelect: function (bank) {
             $("#banksDropdownInput").prop("bankId", bank.data);
+            $("#banksDropdownInput").prop("networkId", bank.network_id);
+            console.log("!!"+bank.network_id);
             showHideCheckboxOtherBanks();
         },
         lookupFilter: function (suggestion, query, queryLowerCase) {
@@ -181,7 +184,7 @@ function autocompleteBanks() {
 function getBanks() {
     var sources = [];
     $("#banksDropdown li a").each(function () {
-        sources.push({ value: $(this).text(), data: $(this).attr("href")})
+        sources.push({ value: $(this).text(), data: $(this).attr("href"), network_id:$(this).attr("networkId")})
     });
     return sources;
 };
