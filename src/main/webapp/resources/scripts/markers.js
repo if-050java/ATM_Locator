@@ -1,30 +1,37 @@
 var markers = [];
 
+function checkIfGrey(bankId){
+    var showOtherBanks = $("#showOtherBanks").prop("checked");
+    var currentBankId = $("#banksDropdownInput").prop("bankId");
+    return (showOtherBanks && bankId!=currentBankId ? "greyscale" : "")
+}
 
 //Adding marker to map
 function addMarker(atm) {
-    console.log(atm);
+    var imgClass = checkIfGrey(atm.bank.id);
+    console.log(imgClass);
     var icon = (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
         id: atm.id,
+        commentsCount : atm.commentsCount,
         position: markerPos,
         map: map,
         draggable: false,
         flat: true,
         anchorPoint: {x: 0, y: -32},
         content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">' +
-        '<img src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
+        '<img class = "'+ imgClass+'" src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
         '</div>'
     });
 
-    var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
-        '<div>' + atm.address + '</div><br>';
-    if(atm.commentsCount > 0){
-        tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + atm.commentsCount + ')...</a></div>'
-    }
-
     google.maps.event.addListener(marker, 'click', function(event){
+        var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>'+
+            '<div>' + atm.address + '</div><br>';
+        if(marker.commentsCount > 0){
+            tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + marker.commentsCount + ')...</a></div>'
+        }
+
         if(infowindow != undefined) {
             infowindow.close();
         }
@@ -33,7 +40,7 @@ function addMarker(atm) {
             maxWidth: 135
         });
         infowindow.open(map, marker);
-        initCommentsClick();
+        setTimeout(initCommentsClick, 200);
     });
 
     markers.push(marker);

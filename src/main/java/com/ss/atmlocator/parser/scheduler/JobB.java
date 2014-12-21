@@ -18,9 +18,10 @@ public class JobB implements Job {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
         Date date = new Date();
 
-        System.out.println("JobB is running (" +dateFormat.format(date)+")");
+
         JobDataMap data = context.getJobDetail().getJobDataMap();
         String message = data.getString("message");
+        System.out.println("JobB is running (" +dateFormat.format(date)+")" + ";"+message);
         logger.info(message);
 
 

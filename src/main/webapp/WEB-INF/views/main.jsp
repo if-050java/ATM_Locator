@@ -15,11 +15,13 @@
     <script src="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.js"></script>
     <link href="<c:url value="/resources"/>/jquery/jquery.bootstrap-touchspin.css" rel="stylesheet">
     <script src="<c:url value="/resources"/>/scripts/richmarker-compiled.js"></script>
+    <script src="<c:url value="/resources"/>/jquery/jquery.nicescroll.min.js"></script>
     <script src="<c:url value="/resources"/>/scripts/feedback.js"></script>
     <sec:authorize access="isAuthenticated()">
         <script src="<c:url value="/resources"/>/scripts/favorites.js"></script>
         <script src="<c:url value="/resources"/>/scripts/comments.js"></script>
-
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.0.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.0.0/js/bootstrap-toggle.min.js"></script>
         <link rel="stylesheet" href="<c:url value="/resources"/>/styles/animate.min.css"/>
     </sec:authorize>
     <link rel="stylesheet" href="<c:url value="/resources"/>/styles/main.css"/>
@@ -89,7 +91,7 @@
                                     </button>
                                     <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu">
                                         <c:forEach items="${banks}" var="bank">
-                                            <li><a href="${bank.id}">${bank.name}</a></li>
+                                            <li><a href="${bank.id}" networkId="${bank.network.id}">${bank.name}</a></li>
                                         </c:forEach>
                                     </ul>
                                 </div>
@@ -98,7 +100,7 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="showOtherBanks">
+                                    <input type="checkbox" id="showOtherBanks" disabled>
                                     Show other banks from network
                                 </label>
                             </div>
@@ -130,12 +132,14 @@
             </div>
             <sec:authorize access="isAuthenticated()">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Favorites</h3>
+                    <div class="panel-heading form-group">
+                        <label class="panel-title control-label col-md-8">Favorites</label>
+                        <input class="form-control col-md-3" id="showFavorites" data-toggle="toggle" unchecked data-onstyle="success"
+                               data-offstyle="danger" data-size="mini" data-on="show" data-off="hide" type="checkbox">
                     </div>
-                    <ul id="favorites_list" class="panel-body list-group"
+                    <div id="favorites_list" class="panel-body list-group"
                         style="padding: 0px; max-height: 163px; overflow-y: scroll">
-                    </ul>
+                    </div>
                 </div>
             </sec:authorize>
         </div>
