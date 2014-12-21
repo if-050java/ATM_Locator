@@ -66,7 +66,7 @@ function initializeMap() {
     }
 
     //getting favorites
-    if (getFavorites != undefined) {
+    if (typeof getFavorites != 'undefined') {
         getFavorites();
     }
 }
@@ -84,7 +84,6 @@ function updateFilter() {
     var showAtms = $("#ATMs").prop("checked");
     var showOffices = $("#offices").prop("checked");
     var showOtherBanks = $("#showOtherBanks").prop("checked");
-    var excludeFavorites = $("#showFavorites").prop("checked");
     radius = parseInt($("#distance").val());
     var data = {
         networkId: networkId,
@@ -93,8 +92,7 @@ function updateFilter() {
         userLat: userPosition.lat,
         userLng: userPosition.lng,
         showAtms: showAtms,
-        showOffices: showOffices,
-        excludeFavorites: excludeFavorites
+        showOffices: showOffices
     };
     if (!networkId || networkId == 0) delete data.networkId;
     if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
@@ -118,6 +116,11 @@ function displayAtms(data) {
         var atmIcon = ATMs[i].bank.iconAtm;
         var atmId = ATMs[i].id;
         addMarker(ATMs[i], atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
+    }
+
+    //exclude favorites from result
+    if(typeof deleteFaworitesFromDefaultMarkers != "undefined"){
+        deleteFaworitesFromDefaultMarkers();
     }
 
     var circleOptions = {
