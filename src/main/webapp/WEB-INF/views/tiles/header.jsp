@@ -33,6 +33,9 @@
                         <li class="profile"><a href="<c:url value="/profile" />">Profile</a></li>
                         <li><a href="<c:url value="/j_spring_security_logout" />">Logout</a></li>
                     </sec:authorize>
+                    <sec:authorize access="hasRole('ADMIN')">
+                        <li class="adminNotices"><a href="<c:url value="/adminNotices" />">Notices</a></li>
+                    </sec:authorize>
                 </ul>
             </div>
         </div>
