@@ -39,9 +39,9 @@ public class AtmsDAO implements IAtmsDAO {
             where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
         if (bank_id != null)
             where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
-        if (showAtms && !showOffices)
+        if (showAtms)
             where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_ATM));
-        if (showOffices && !showAtms)
+        if (showOffices)
             where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_OFFICE));
         if (!showAtms && !showOffices) return Collections.emptyList();
         return entityManager.createQuery(criteria.where(where)).getResultList();
