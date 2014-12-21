@@ -12,18 +12,12 @@ import java.util.regex.Pattern;
 public class OschadBankItem {
     private final static Logger logger = LoggerFactory.getLogger(OschadBankItem.class);
 
-    private final static String VIDDIL_PATTERN = "(\\d{5})\\s*/+0*(\\d+)";
     private final static String LOCALITY_PATTERN = "(м\\.|с\\.|смт)\\s+(.+?),";
 
-    //private String region;
     private String address;
     private String viddil;
 
-
-    OschadBankItem(){}
-
     OschadBankItem(String address, String viddil){
-        //this.regNum = regNum;
         setAddress(address);
         setViddil(viddil);
     }
@@ -37,19 +31,11 @@ public class OschadBankItem {
     }
 
     public void setAddress(String address) {
-        this.address = address.replaceFirst("Ів\\.-.*Франківськ", "Івано-Франківськ").trim();
+        this.address = address;
     }
 
     public void setViddil(String viddil) {
-        //TODO replace with parameter
-        //Pattern p = Pattern.compile(VIDDIL_PATTERN);
-        //Matcher m = p.matcher(viddil);
-        Matcher m = Pattern.compile(VIDDIL_PATTERN).matcher(viddil);
-        if (m.find()){
-            this.viddil = m.group(1)+"/"+m.group(2);
-        } else {
-            this.viddil = null;
-        }
+        this.viddil = viddil;
     }
 
     private String getLocality(){
