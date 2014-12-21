@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
  */
 public class OschadBankItem {
     private final static Logger logger = LoggerFactory.getLogger(OschadBankItem.class);
+
+    private final static String VIDDIL_PATTERN = "(\\d{5})\\s*/+0*(\\d+)";
+    private final static String LOCALITY_PATTERN = "(м\\.|с\\.|смт)\\s+(.+?),";
+
     //private String region;
     private String address;
     private String viddil;
@@ -37,14 +41,22 @@ public class OschadBankItem {
     }
 
     public void setViddil(String viddil) {
-        Pattern p = Pattern.compile("(\\d{5})\\s*/+0*(\\d+)"); //TODO replace with parameter
-        Matcher m = p.matcher(viddil);
+        //TODO replace with parameter
+        //Pattern p = Pattern.compile(VIDDIL_PATTERN);
+        //Matcher m = p.matcher(viddil);
+        Matcher m = Pattern.compile(VIDDIL_PATTERN).matcher(viddil);
         if (m.find()){
             this.viddil = m.group(1)+"/"+m.group(2);
         } else {
             this.viddil = null;
         }
+    }
 
+    private String getLocality(){
+        //TODO replace with parameter
+        Pattern p = Pattern.compile(LOCALITY_PATTERN);
+        Matcher m = p.matcher(address);
+        return m.find() ? m.group(2) : null;
     }
 
     @Override
@@ -54,7 +66,8 @@ public class OschadBankItem {
 
         OschadBankItem that = (OschadBankItem) o;
 
-        if (viddil != null && viddil.equals(that.viddil) ) {
+        if (viddil != null && viddil.equals(that.viddil)) {
+            if(getLocality().equals(that.getLocality()))
             return true;
         }
 

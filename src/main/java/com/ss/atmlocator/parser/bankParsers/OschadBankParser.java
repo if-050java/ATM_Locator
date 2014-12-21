@@ -37,8 +37,6 @@ public class OschadBankParser implements IParser {
 
     private Map<String,String> parameters;
 
-
-
     @Override
     public void setParameter(Map<String, String> parameters) {
         this.parameters = parameters;
@@ -63,7 +61,7 @@ public class OschadBankParser implements IParser {
                 logger.debug(String.format("Region: #%d %s",i,regions.get(i)));
             }
 
-            String testRegion = regions.get(0);
+            String testRegion = regions.get(24);
             LinkedList<OschadBankItem> branchList = parseRegion(branchPage, testRegion, branchSelector, ADDRESS_COLUMN_BRANCH, VIDDIL_COLUMN_BRANCH);
             LinkedList<OschadBankItem> atmList = parseRegion(atmPage, testRegion, atmSelector, ADDRESS_COLUMN_ATM, VIDDIL_COLUMN_ATM);
 
