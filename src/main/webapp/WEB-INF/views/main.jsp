@@ -17,9 +17,10 @@
     <script src="<c:url value="/resources"/>/scripts/richmarker-compiled.js"></script>
     <script src="<c:url value="/resources"/>/jquery/jquery.nicescroll.min.js"></script>
     <script src="<c:url value="/resources"/>/scripts/feedback.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/getComments.js"></script>
     <sec:authorize access="isAuthenticated()">
         <script src="<c:url value="/resources"/>/scripts/favorites.js"></script>
-        <script src="<c:url value="/resources"/>/scripts/comments.js"></script>
+        <script src="<c:url value="/resources"/>/scripts/addComments.js"></script>
         <link href="https://gitcdn.github.io/bootstrap-toggle/2.0.0/css/bootstrap-toggle.min.css" rel="stylesheet">
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.0.0/js/bootstrap-toggle.min.js"></script>
         <link rel="stylesheet" href="<c:url value="/resources"/>/styles/animate.min.css"/>
@@ -91,7 +92,7 @@
                                     </button>
                                     <ul id="banksDropdown" class="dropdown-menu dropdown-menu-right" role="menu">
                                         <c:forEach items="${banks}" var="bank">
-                                            <li><a href="${bank.id}">${bank.name}</a></li>
+                                            <li><a href="${bank.id}" networkId="${bank.network.id}">${bank.name}</a></li>
                                         </c:forEach>
                                     </ul>
                                 </div>
@@ -100,7 +101,7 @@
                         <div class="form-group">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="showOtherBanks">
+                                    <input type="checkbox" id="showOtherBanks" disabled>
                                     Show other banks from network
                                 </label>
                             </div>

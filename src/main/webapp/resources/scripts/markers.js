@@ -1,9 +1,15 @@
 var markers = [];
 
+function checkIfGrey(bankId){
+    var showOtherBanks = $("#showOtherBanks").prop("checked");
+    var currentBankId = $("#banksDropdownInput").prop("bankId");
+    return (showOtherBanks && bankId!=currentBankId ? "greyscale" : "")
+}
 
 //Adding marker to map
 function addMarker(atm) {
-    console.log(atm);
+    var imgClass = checkIfGrey(atm.bank.id);
+    console.log(imgClass);
     var icon = (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
@@ -15,7 +21,7 @@ function addMarker(atm) {
         flat: true,
         anchorPoint: {x: 0, y: -32},
         content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">' +
-        '<img src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
+        '<img class = "'+ imgClass+'" src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
         '</div>'
     });
 

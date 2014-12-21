@@ -56,12 +56,59 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{currentJobName}/enable", method = RequestMethod.POST)
+    public ResponseEntity<Void> enableJob(@PathVariable("currentJobName") String currentJobName
+    ) {
+        List<JobTemplate> jobs = service.getJobs();
+        for(JobTemplate job : jobs){
+            if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
+                String error = service.resumeJob(job);
+                if(error != null){
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{currentJobName}/disable", method = RequestMethod.POST)
+    public ResponseEntity<Void> disableJob(@PathVariable("currentJobName") String currentJobName
+    ) {
+        List<JobTemplate> jobs = service.getJobs();
+        for(JobTemplate job : jobs){
+            if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
+                String error = service.pauseJob(job);
+                if(error != null){
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{currentJobName}/run", method = RequestMethod.POST)
+    public ResponseEntity<Void> runJob(@PathVariable("currentJobName") String currentJobName
+    ) {
+        List<JobTemplate> jobs = service.getJobs();
+        for(JobTemplate job : jobs){
+            if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
+                String error = service.runJob(job);
+                if(error != null){
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
     @RequestMapping(value = "/save")
     public String saveJob(
             @ModelAttribute("job")JobModel jobModel,
             @RequestParam(value = "currentJobName", required = false) String currentJobName,
             ModelMap modelMap) {
+
 
         JobTemplate jobTemplate = JobTemplateBuilder.newJob()
                  .withJobName(jobModel.getJobName())
@@ -70,6 +117,7 @@ public class AdminController {
                  .withTriggerGroup(jobModel.getTriggerGroup())
                  .withCronSched(jobModel.getCronSched())
                  .withJobClass(jobModel.getJobClassName())
+                 .withMap(service.getMapParam(jobModel.getParams()))
                  .build();
 
         if(currentJobName != null && !currentJobName.isEmpty()){

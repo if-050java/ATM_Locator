@@ -2,8 +2,14 @@ var favoriteMarkers = [];
 
 jQuery(document).ready(function(){
     jQuery("#favorites_list").niceScroll();
-    jQuery("#showFavorites").change(getFavorites);
-    jQuery("#showFavorites").change(updateFilter)
+
+    jQuery("#showFavorites").change(function() {
+        if(jQuery("#showFavorites").prop("checked")) {
+            getFavorites();
+        } else {
+            clearFavoriteMarkers();
+        }
+    });
 });
 
 //send request for favorites t oserver
@@ -16,6 +22,7 @@ function getFavorites(){
         statusCode: {
             200: function(response) {
                 showFavorites(response);
+                deleteFaworitesFromDefaultMarkers();
             }
         }
     })
@@ -39,11 +46,36 @@ function showFavorites(favorites){
     })
 }
 
+function deleteFaworitesFromDefaultMarkers(){
+    markers.forEach(function(defaultMarker, index){
+        favoriteMarkers.forEach(function(favoriteMarker){
+            if(defaultMarker.id == favoriteMarker.id ){
+                defaultMarker.setMap(null);
+            }
+        })
+    })
+}
+
 //clear all favorites from map and list
 function clearFavorites(){
+    clearFavoritesList();
+    clearFavoriteMarkers();
+
+}
+
+function clearFavoritesList(){
     jQuery("#favorites_list").empty();
-    favoriteMarkers.forEach(function(value){
-        value.setMap(null);
+}
+
+//clear all favorite markers from map
+function clearFavoriteMarkers(){
+    favoriteMarkers.forEach(function(favoriteMarker){
+        markers.forEach(function(defaultMarker){
+            if(favoriteMarker.id == defaultMarker.id){
+                defaultMarker.setMap(map);
+            }
+        })
+        favoriteMarker.setMap(null);
     })
     favoriteMarkers = [];
 }
@@ -110,7 +142,10 @@ function addFavorite(){
             200: function () {
                 markers.forEach(function(value){
                     if (value.id == ATMId) {
-                        value.setMap(null);
+                        if(jQuery("#showFavorites").prop("checked")){
+                            value.setMap(null);
+
+                        }
                         getFavorites();
                     }
                 })
