@@ -9,7 +9,6 @@ function checkIfGrey(bankId){
 //Adding marker to map
 function addMarker(atm) {
     var imgClass = checkIfGrey(atm.bank.id);
-    console.log(imgClass);
     var icon = (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
