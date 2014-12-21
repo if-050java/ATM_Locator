@@ -44,6 +44,13 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @JoinColumn(name = "bank_id")
     Bank bank;
 
+    public AtmOffice() {}
+
+    public AtmOffice(String address, AtmType type) {
+        this.address = address;
+        this.type = type;
+        this.state = 1;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -147,6 +154,14 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @Override
     public int compareTo(AtmOffice other){
         return this.getAddress().compareTo(other.getAddress());
+    }
+
+    @Override
+    public String toString() {
+        return "AtmOffice{" +
+                "address='" + address + '\'' +
+                ", type=" + type +
+                '}';
     }
 }
 
