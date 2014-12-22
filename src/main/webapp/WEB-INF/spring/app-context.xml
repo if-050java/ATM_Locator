@@ -123,8 +123,17 @@
     <bean id="passwordEncoder"
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
-
     <!--Listener for log  loging process -->
     <bean id="authlogging" class="com.ss.atmlocator.utils.AuthLogging"/>
+
+    <!--Autowiring services into job-->
+    <context:spring-configured/>
+    <context:annotation-config/>
+    <!--<context:load-time-weaver/>-->
+    <bean id="job" class="com.ss.atmlocator.parser.scheduler.JobB" scope="prototype" abstract="true">
+        <property name="userService" ref="userService"/>
+    </bean>
+
+
 
 </beans>

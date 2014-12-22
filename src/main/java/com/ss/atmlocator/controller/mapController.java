@@ -42,18 +42,10 @@ public class MapController {
                                          @RequestParam int radius,
                                          @RequestParam boolean showAtms,
                                          @RequestParam boolean showOffices,
-                                         @RequestParam(required = false) boolean  excludeFavorites,
                                          Principal principal
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
         Collection<AtmOffice> atmOffices = atmService.getATMs(networkId, bankId,showAtms,showOffices, userPosition, radius);
-        if(principal != null){
-            User user = userService.getUserByName(principal.getName());
-            Set<AtmOffice> favorites = user.getAtmFavorites();
-            if(favorites != null && excludeFavorites) {
-                atmOffices.removeAll(user.getAtmFavorites());
-            }
-        }
         return atmOffices;
     }
 

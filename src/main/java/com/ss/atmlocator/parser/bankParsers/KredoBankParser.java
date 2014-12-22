@@ -1,7 +1,6 @@
 package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.parser.IParser;
 import org.apache.log4j.Logger;
 import org.jsoup.Connection;
@@ -22,7 +21,7 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 /**
  * Created by Vasyl Danylyuk on 05.11.2014.
  */
-public class CredoBankParser implements IParser {
+public class KredoBankParser implements IParser {
 
     private enum requiredParameters{
         REGIONS("regions"),
@@ -74,7 +73,7 @@ public class CredoBankParser implements IParser {
     private static final String REMOVE_SPACES_REGEXP = "\\s{1,}";
     private static final String POSTAL_SPACE_AFTER_DOT = "\\. ";
 
-    private final Logger logger = Logger.getLogger(CredoBankParser.class);
+    private final Logger logger = Logger.getLogger(KredoBankParser.class);
 
     private String bankSite;
     private List<String> regions = new ArrayList<String>();
@@ -97,7 +96,8 @@ public class CredoBankParser implements IParser {
                     String regionID = regionRow.id().substring(REGION_ID_STRING_START_POSITION);
                     Element regionDiv = regionRow.child(REGION_DIV_CHILD);
                     Element regionNameElement = regionDiv.child(REGION_NAME_ELEMENT);
-                    if(region.equals(regionNameElement.text())){
+                    String preparedRegionName = regionNameElement.text().toLowerCase().replace(" ", "");
+                    if(region.equals(preparedRegionName)){
                         logger.info("Try to parse ATMs from region " + region);
                         parseRegion(bankSite + GET_REGION_URL+regionID);
                         parsedRegions++;

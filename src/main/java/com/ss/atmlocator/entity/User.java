@@ -21,7 +21,6 @@ public class User {
     @Column(unique=true)
     private String email;
 
-    //@JsonIgnore //Ignoring this field in JSON serializing
     @Column
     private String password;
 
