@@ -2,8 +2,7 @@ package com.ss.atmlocator.parser.parserAval;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ss.atmlocator.parser.testParser.ParserExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ss.atmlocator.parser.ParserExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,17 +14,14 @@ import java.util.Map;
 @Service
 public class AvalParserExecutor extends ParserExecutor {
 
-
-
     final static Logger logger = LoggerFactory.getLogger(AvalParserExecutor.class);
     @Override
     protected void setParser() {
-
         parser = new AvalParser();
         logger.trace("parser set");
     }
 
-    @Override
+    /*@Override
     protected Map<String, String> getParametrs() {
         // Magic method where we take some parameters
         Map<String, String> parameters = new HashMap<>();
@@ -34,5 +30,5 @@ public class AvalParserExecutor extends ParserExecutor {
         parameters.put("bankId", "30");
         logger.trace("parameters map set");
         return parameters;
-    }
+    }*/
 }

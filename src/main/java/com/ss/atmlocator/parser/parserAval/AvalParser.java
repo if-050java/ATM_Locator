@@ -1,9 +1,7 @@
 package com.ss.atmlocator.parser.parserAval;
 
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.parser.IParser;
-import com.ss.atmlocator.parser.testParser.ParserExecutor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by maks on 17.12.2014.
@@ -35,8 +31,8 @@ public class AvalParser implements IParser {
     @Override
     public void setParameter(Map<String, String> parameters) {
 
-        bankUrl = parameters.get("bankUrl");
-        officeUrl = parameters.get("officeUrl");
+        bankUrl = parameters.get("bankurl");
+        officeUrl = parameters.get("officeurl");
     }
 
     private void parceAtm(String url, boolean isOffice) throws IOException {

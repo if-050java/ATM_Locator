@@ -4,7 +4,6 @@ import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmParser;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.parser.parserAval.AvalParserExecutor;
-import com.ss.atmlocator.parser.testParser.TestParserExecutor;
 import com.ss.atmlocator.service.ParserParamService;
 import com.ss.atmlocator.service.ParserService;
 import org.apache.log4j.Logger;
@@ -83,11 +82,11 @@ public class AdminParserController {
     @RequestMapping(value = "tes")
     public String testParser(){
 //        TestParserExecutor parserExecutor1 = new TestParserExecutor();
-        try {
+        /*try {
             parserExecutor.execute();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         return "redirect:/";
