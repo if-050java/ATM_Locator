@@ -35,11 +35,12 @@ public class ATMService {
      * @param radius
      * @return Collection<AtmOffice>
      */
-    public Collection<AtmOffice> getATMs(Integer network_id, Integer bank_id, GeoPosition userPosition,  int radius){
+    public Collection<AtmOffice> getATMs(Integer network_id, Integer bank_id,
+                                         boolean showAtms, boolean showOffices, GeoPosition userPosition,  int radius){
 
         Collection<AtmOffice> result = new ArrayList<AtmOffice>();
 
-        addBankATMsToResult(result, network_id,bank_id, userPosition, radius);
+        addBankATMsToResult(result, network_id,  bank_id, showAtms, showOffices, userPosition, radius);
 
         return result;
     }
@@ -52,11 +53,16 @@ public class ATMService {
      * @param userPosition coordinates of circle center
      * @param radius
      */
-    private void addBankATMsToResult(Collection<AtmOffice> result,Integer network_id, Integer bank_id, GeoPosition userPosition, int radius){
-        for(AtmOffice atmOffice : atmsDAO.getBankAtms(network_id, bank_id)){
+    private void addBankATMsToResult(Collection<AtmOffice> result,Integer network_id, Integer bank_id,
+                                     boolean showAtms, boolean showOffices, GeoPosition userPosition, int radius){
+        for(AtmOffice atmOffice : atmsDAO.getBankAtms(network_id, bank_id, showAtms, showOffices)){
             if(GeoUtil.inRadius(userPosition, atmOffice.getGeoPosition(),radius)){
                 result.add(atmOffice);
             }
         }
+    }
+
+    public AtmOffice getAtmById(int id){
+        return  atmsDAO.getAtmById(id);
     }
 }

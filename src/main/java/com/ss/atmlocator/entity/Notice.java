@@ -24,4 +24,39 @@ public class Notice {
     @Column
     private String message;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public String getTimeString() {
+        return String.format("%1$TD %1$TT", time);
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

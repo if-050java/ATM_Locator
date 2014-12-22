@@ -93,9 +93,10 @@
                                         }
                                     </style>
                                     <input id="enabled" data-style="width" data-toggle="toggle" unchecked
-                                           data-on="on" data-off="off" data-onstyle="success"
+                                           data-on="enable" data-off="disable" data-onstyle="success"
                                            data-offstyle="danger" type="checkbox">
                                 </div>
+                                <div class="col-md-6" style="color: #606060">User will not login if disable</div>
                             </div>
                             <div class="form-group">
                                 <label for="genPassword" class="col-md-3 control-label">Reset password</label>
@@ -105,6 +106,7 @@
                                            data-on="on" data-off="off" data-onstyle="success"
                                            data-offstyle="danger" type="checkbox">
                                 </div>
+                                <div class="col-md-6" style="color: #606060">Generate password on server if on</div>
                             </div>
                         </form>
                     </div>

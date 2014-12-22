@@ -147,7 +147,6 @@ DROP TABLE IF EXISTS `favorites`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `favorites` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `timeCreated` datetime DEFAULT NULL,
   `atm_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),

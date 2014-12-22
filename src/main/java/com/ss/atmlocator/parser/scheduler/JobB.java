@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 
@@ -18,6 +19,7 @@ public class JobB implements Job {
 
 
     final static Logger logger = LoggerFactory.getLogger(SchcedService.class);
+
     @Override
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
@@ -37,10 +39,10 @@ public class JobB implements Job {
         JobDataMap data = context.getJobDetail().getJobDataMap();
         String message = data.getString("message");
         System.out.println("JobB is running (" +dateFormat.format(date)+")" + ";"+message);
-        logger.info(message);
 
 
     }
+
 
     private ApplicationContext initAppContext(JobExecutionContext context){
 

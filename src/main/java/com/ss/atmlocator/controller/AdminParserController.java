@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmParser;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.parser.parserAval.AvalParserExecutor;
 import com.ss.atmlocator.service.ParserParamService;
 import com.ss.atmlocator.service.ParserService;
 import org.apache.log4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,6 +31,8 @@ public class AdminParserController {
     ParserService parserService;
     @Autowired
     ParserParamService paramService;
+    @Autowired
+    AvalParserExecutor parserExecutor;
 //    @RequestMapping
 //    public String viewJsp(){
 //        System.out.println("asdf");
@@ -73,6 +77,20 @@ public class AdminParserController {
 
 
         return "redirect:/adminBankEdit";
+    }
+
+    @RequestMapping(value = "tes")
+    public String testParser(){
+//        TestParserExecutor parserExecutor1 = new TestParserExecutor();
+        /*try {
+            parserExecutor.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+
+        return "redirect:/";
+
     }
 
 }

@@ -2,20 +2,19 @@ package com.ss.atmlocator.parser.parserUbanks;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.IParsers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
 import java.util.*;
 
 /**
  * Created by Ivanna Terletska on 11/19/2014.
  */
-public class BankUrlsIParserServer implements IParser {
+public class BankUrlsIParserServer implements IParsers {
     protected String url;
     protected String listSelector = "spoiler";
     protected String bankName;
@@ -35,9 +34,6 @@ public class BankUrlsIParserServer implements IParser {
     public List<Bank> parse() {
         final String BRANCH_SELECTOR_EXPR= "відділення";
         final String ATM_SELECTOR_EXPR = "банкомати";
-
-        assert (BRANCH_SELECTOR_EXPR.equals("\u0432\u0456\u0434\u0434\u0456\u043B\u0435\u043D\u043D\u044F"));
-        assert (ATM_SELECTOR_EXPR.equals("\u0431\u0430\u043D\u043A\u043E\u043C\u0430\u0442\u0438"));
 
         bankList = new ArrayList<Bank>();
         AtmParserServise parser = new AtmParserServise();

@@ -5,16 +5,18 @@ import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.entity.GeoPosition;
+import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.ATMService;
 import com.ss.atmlocator.service.BanksService;
+import com.ss.atmlocator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
+import java.security.Principal;
+import java.util.*;
 
 /**
  * Created by Vasyl Danylyuk on 29.11.2014.
@@ -27,7 +29,8 @@ public class MapController {
     ATMService atmService;
     @Autowired
     private BanksService banksService;
-
+    @Autowired
+    private UserService userService;
 
 
     @RequestMapping(value = "/getATMs")
@@ -36,10 +39,14 @@ public class MapController {
                                          @RequestParam(required = false) Integer bankId,
                                          @RequestParam double userLat,
                                          @RequestParam double userLng,
-                                         @RequestParam int radius
+                                         @RequestParam int radius,
+                                         @RequestParam boolean showAtms,
+                                         @RequestParam boolean showOffices,
+                                         Principal principal
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
-        return atmService.getATMs(networkId, bankId, userPosition, radius);
+        Collection<AtmOffice> atmOffices = atmService.getATMs(networkId, bankId,showAtms,showOffices, userPosition, radius);
+        return atmOffices;
     }
 
 

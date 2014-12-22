@@ -35,7 +35,7 @@
 
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
         <property name="database" value="MYSQL"/>
-        <property name="showSql" value="true"/>
+        <property name="showSql" value="false"/>
         <property name="generateDdl" value="true"/>
         <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
     </bean>
@@ -48,6 +48,8 @@
             <list>
                 <value>com.ss.atmlocator.entity</value>
                 <value>com.ss.atmlocator.dao</value>
+                <value>com.ss.atmlocator.parser</value>
+                <!--<value>com.ss.atmlocator.parser.testParser</value>-->
             </list>
         </property>
 
@@ -125,7 +127,6 @@
 
     <bean id="passwordEncoder"
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
-
 
     <!--Listener for log  loging process -->
     <bean id="authlogging" class="com.ss.atmlocator.utils.AuthLogging"/>

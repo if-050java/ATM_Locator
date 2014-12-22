@@ -1,7 +1,9 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmOffice;
+import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +12,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,32 +22,73 @@ import java.util.List;
  */
 @Repository
 public class AtmsDAO implements IAtmsDAO {
-    private final org.apache.log4j.Logger log = Logger.getLogger(AtmsDAO.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(AtmsDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    //    @Override
-//    @Transactional
-//    public List<AtmOffice> getBankAtms(int bank_id){
-//        TypedQuery<AtmOffice> query = entityManager.createQuery(
-//                "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id "
-//                        +"and a.geoPosition.latitude is not null and a.geoPosition.longitude is not null",
-//                AtmOffice.class);
-//        query.setParameter("bank_id", bank_id);
-//        return query.getResultList();
-//    }
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(Integer network_id, Integer bank_id) {
+    public List<AtmOffice> getBankAtms(Integer network_id, Integer bank_id, boolean showAtms, boolean showOffices) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AtmOffice> criteria = builder.createQuery(AtmOffice.class);
         Root<AtmOffice> atmOfficeRoot = criteria.from(AtmOffice.class);
         criteria.select(atmOfficeRoot);
+        Predicate where = builder.conjunction();
         if (network_id != null)
-            criteria.where(builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
-        if (bank_id != null) criteria.where(builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
-        return entityManager.createQuery(criteria).getResultList();
+            where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
+        if (bank_id != null)
+            where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
+        if (showAtms)
+            where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_ATM));
+        if (showOffices)
+            where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_OFFICE));
+        if (!showAtms && !showOffices) return Collections.emptyList();
+        return entityManager.createQuery(criteria.where(where)).getResultList();
+    }
+
+    public AtmOffice getAtmById(int id) {
+        return entityManager.find(AtmOffice.class, id);
+    }
+    @Override
+    @Transactional
+    public List<AtmOffice> getBankAtms(int bank_id){
+        TypedQuery<AtmOffice> query = entityManager.createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+        query.setParameter("bank_id", bank_id);
+        return query.getResultList();
+    }
+
+   /* @Override
+    public void updateAtmTime(AtmOffice tempAtm) {
+
+    }*/
+
+    @Override
+    public void persiste(AtmOffice Atm) {
+        entityManager.persist(Atm);
+    }
+
+    @Override
+    @Transactional
+    public void update(List<AtmOffice> atmExistList) {
+        log.info("[TRANSACTION] update() begin transaction");
+        for(AtmOffice atm: atmExistList) {
+//            atm.setLastUpdated(TimeUtil.currentTimestamp());
+            entityManager.merge(atm);
+        }
+        log.info("[TRANSACTION]update() end transaction");
+    }
+
+    @Override
+    @Transactional
+    public void persist(List<AtmOffice> atmNewList) {
+        log.info("[TRANSACTION] persist()---> begin transaction");
+        for(AtmOffice atm: atmNewList){
+            atm.setLastUpdated(TimeUtil.currentTimestamp());
+            entityManager.persist(atm);
+            entityManager.refresh(atm);
+        }
+        log.info("[TRANSACTION] persist()---> end transaction");
     }
 
 }

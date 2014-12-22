@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.52 (32 bit)
 MySQL - 5.6.21 : Database - atmlocator
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -35,7 +36,7 @@ CREATE TABLE `atm` (
 
 /*Data for the table `atm` */
 
-insert  into `atm`(`Id`,`address`,`latitude`,`longitude`,`lastUpdated`,`photo`,`state`,`type`,`bank_id`) values (33,'м. Івано-Франківськ, вул. Січових стрільців, 15',48.919509,24.709152,NULL,NULL,1,1,288),(34,'м. Івано-Франківськ, вул. Андрія Мельника, 2',48.918838,24.714501,NULL,NULL,1,1,288),(35,'м. Івано-Франківськ, вул. Гетьмана Мазепи, 38',48.919353,24.702641,NULL,NULL,1,1,288),(36,'м. Івано-Франківськ, вул. Галицька, 62',48.933872,24.706236,NULL,NULL,1,1,288),(37,'м. Івано-Франківськ, вул. Євгена Коновальця, 262Б',48.88854,24.709298,NULL,NULL,1,1,288),(38,'м. Івано-Франківськ, вул. Степана Бандери, 79',48.907239,24.715876,NULL,NULL,1,1,288),(39,'м. Івано-Франківськ, вул. Чорновола, 35',48.916831,24.705988,NULL,NULL,1,1,288),(40,'м. Івано-Франківськ, вул. Шашкевича, 4',48.919999,24.711851,NULL,NULL,1,1,288),(41,'м. Івано-Франківськ, вул. Юліана Целевича, 11',48.9444,24.703,NULL,'',1,1,213),(42,'м. Івано-Франківськ, вул. Галицька, 91',48.932,24.7072,NULL,NULL,1,2,213);
+insert  into `atm`(`Id`,`address`,`latitude`,`longitude`,`lastUpdated`,`photo`,`state`,`type`,`bank_id`) values (33,'м. Івано-Франківськ, вул. Січових стрільців, 15',48.919509,24.709152,NULL,NULL,1,0,288),(34,'м. Івано-Франківськ, вул. Андрія Мельника, 2',48.918838,24.714501,NULL,NULL,1,0,288),(35,'м. Івано-Франківськ, вул. Гетьмана Мазепи, 38',48.919353,24.702641,NULL,NULL,1,0,288),(36,'м. Івано-Франківськ, вул. Галицька, 62',48.933872,24.706236,NULL,NULL,1,1,288),(37,'м. Івано-Франківськ, вул. Євгена Коновальця, 262Б',48.88854,24.709298,NULL,NULL,1,0,288),(38,'м. Івано-Франківськ, вул. Степана Бандери, 79',48.907239,24.715876,NULL,NULL,1,1,288),(39,'м. Івано-Франківськ, вул. Чорновола, 35',48.916831,24.705988,NULL,NULL,1,0,288),(40,'м. Івано-Франківськ, вул. Шашкевича, 4',48.919999,24.711851,NULL,NULL,1,1,288),(41,'м. Івано-Франківськ, вул. Юліана Целевича, 11',48.9444,24.703,NULL,'',1,1,213),(42,'м. Івано-Франківськ, вул. Галицька, 91',48.932,24.7072,NULL,NULL,1,0,213);
 
 /*Table structure for table `atmnetworks` */
 
@@ -100,7 +101,6 @@ DROP TABLE IF EXISTS `favorites`;
 
 CREATE TABLE `favorites` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `timeCreated` datetime DEFAULT NULL,
   `atm_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
@@ -111,6 +111,20 @@ CREATE TABLE `favorites` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `favorites` */
+
+/*Table structure for table `notices` */
+
+DROP TABLE IF EXISTS `notices`;
+
+CREATE TABLE `notices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
+  `type` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `notices` */
 
 /*Table structure for table `parser_params` */
 
@@ -213,7 +227,7 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`avatar`,`email`,`enabled`,`login`,`password`,`lastLoging`,`name`) values (1,'avatar_1.jpg','admin@mail.com',1,'admin','c4ca4238a0b923820dcc509a6f75849b','2014-12-14 23:24:15',NULL),(2,'defaultUserAvatar.jpg','user@mail.com',1,'user','c4ca4238a0b923820dcc509a6f75849b',NULL,NULL),(3,'defaultUserAvatar.jpg','olavin@ukr.net',1,'Oleg','c4ca4238a0b923820dcc509a6f75849b',NULL,NULL);
+insert  into `users`(`id`,`avatar`,`email`,`enabled`,`login`,`password`,`lastLoging`,`name`) values (1,'avatar_1.jpg','admin@mail.com',1,'admin','c4ca4238a0b923820dcc509a6f75849b','2014-12-16 22:54:45',NULL),(2,'defaultUserAvatar.jpg','user@mail.com',1,'user','c4ca4238a0b923820dcc509a6f75849b',NULL,NULL),(3,'defaultUserAvatar.jpg','olavin@ukr.net',1,'Oleg','c4ca4238a0b923820dcc509a6f75849b',NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

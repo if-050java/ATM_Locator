@@ -1,11 +1,10 @@
 package com.ss.atmlocator.service;
 
-import com.ss.atmlocator.dao.IAtmNetworksDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
-import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.*;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +19,13 @@ import java.util.List;
  */
 @Service
 public class BanksService {
-    private final org.apache.log4j.Logger log = Logger.getLogger(BanksService.class);
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(BanksService.class);
 
     @Autowired
     private IBanksDAO banksDAO;
+
+    @Autowired
+    private NoticeService noticeService;
 
     public List<Bank> getBanksByNetworkId(int network_id){
         return banksDAO.getBanksByNetworkId(network_id);
@@ -39,6 +41,7 @@ public class BanksService {
 
     public Bank newBank(){
         Bank bank = banksDAO.newBank();
+        //TODO: get image names from parameters file
         bank.setLogo("default_logo.png");
         bank.setIconAtm("default_atm.png");
         bank.setIconOffice("default_office.png");
@@ -47,17 +50,19 @@ public class BanksService {
         return bank;
     }
 
-
     public OutResponse deleteBank(int id) {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-        log.debug("Delete bank #"+id);
+        logger.debug("Delete bank #" + id);
         //TODO: delete associated image files
 
         if (banksDAO.deleteBank(id)){
+            noticeService.info(String.format("Deleted Bank #%s",id));
             response.setStatus(Constants.SUCCESS);
         } else {
+            //TODO: add error message
+            noticeService.info(String.format("Deleted Bank #%s",id));
             response.setStatus(Constants.ERROR);
         }
         response.setErrorMessageList(errorMessages);
