@@ -2,6 +2,7 @@ package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.parser.IParser;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -12,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.*;
@@ -22,13 +24,15 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 
 /**
  * Created by Olavin on 14.12.2014.
+ * Parse OschadBank web-site to gel list of branches and ATMs
  */
 public class OschadBankParser implements IParser {
     private final static Logger logger = LoggerFactory.getLogger(OschadBankParser.class);
 
     private final static String USER_AGENT_PARAM = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0";
     private final static String LAST_PAGE_SELECTOR = "font.text > a:nth-last-child(1)";
-    private final static String SET_FILTER_VALUE = "\u0428\u0443\u043A\u0430\u0442\u0438"; //"Шукати"
+    //private final static String SET_FILTER_VALUE = "\u0428\u0443\u043A\u0430\u0442\u0438"; //"Шукати"
+    private final static String SET_FILTER_VALUE = "Шукати";
     private final static String SET_FILTER_PARAM = "set_filter";
     private final static String REGION_PARAM = "arrFilter_pf[RegionName]";
     private final static String PAGE_PARAM = "PAGEN_1";
@@ -40,6 +44,8 @@ public class OschadBankParser implements IParser {
     private final static String REGION_SEPARATOR = ", ";
     private final static String VIDDIL_PATTERN = "(\\d{5})\\s*/+0*(\\d+)";
     private final static String LOCALITY_PATTERN = "(м\\.|с\\.|смт)\\s+(.+?),";
+    private final static String ADDRESS_PATTERN = "Ів\\.-.*Франківськ";
+    private final static String ADDRESS_SUBSTITUTE = "Івано-Франківськ";
 
     private Map<String,String> parameters;
 
@@ -58,9 +64,9 @@ public class OschadBankParser implements IParser {
         String atmPage = parameters.get("base_url")+parameters.get("atm_page");
         String atmSelector = parameters.get("atm_selector");
 
-        String testRegion = parameters.get("region");
-        List<String> regions = new ArrayList<>();
+        List<String> regions = null;
 
+        String testRegion = parameters.get("region");
         // if empty - parse all regions subsequently
         if(testRegion.equals("")){
             try {
@@ -69,15 +75,17 @@ public class OschadBankParser implements IParser {
                 regions = getRegionList();
             } catch (IOException e) {
                 //e.printStackTrace();
-                logger.error("Cannot fetch regions list: "+e.getMessage());
+                logger.error("Cannot fetch regions list: "+e.getMessage(),e);
             }
         } else {
             regions = new ArrayList<>();
             regions.add(testRegion);
         }
 
-        RegionParser branchParser = new RegionParser(branchPage, branchSelector, ADDRESS_COLUMN_BRANCH, VIDDIL_COLUMN_BRANCH);
-        RegionParser atmParser = new RegionParser(atmPage, atmSelector, ADDRESS_COLUMN_ATM, VIDDIL_COLUMN_ATM);
+        RegionParser branchParser =
+                new RegionParser(branchPage, branchSelector, ADDRESS_COLUMN_BRANCH, VIDDIL_COLUMN_BRANCH);
+        RegionParser atmParser =
+                new RegionParser(atmPage, atmSelector, ADDRESS_COLUMN_ATM, VIDDIL_COLUMN_ATM);
 
         for (int i=0; i < regions.size(); i++){
             String region = regions.get(i);
@@ -88,7 +96,7 @@ public class OschadBankParser implements IParser {
                 atms.addAll(mergeOschadBankItems(region, branchList, atmList));
             } catch (IOException e) {
                 //e.printStackTrace();
-                logger.error("Connection error: " + e.getMessage());
+                logger.error("Connection error: " + e.getMessage(),e);
             }
             logger.info("End parse region");
         }
@@ -96,31 +104,54 @@ public class OschadBankParser implements IParser {
         return atms;
     }
 
-    List<AtmOffice> mergeOschadBankItems(String regionName, LinkedList<OschadBankItem> branchList, LinkedList<OschadBankItem> atmList){
+    private boolean equalLocality(@NotNull OschadBankItem item1, @NotNull OschadBankItem item2){
+        Pattern p = Pattern.compile(LOCALITY_PATTERN);
+        Matcher m1 = p.matcher(item1.getAddress());
+
+        if(m1.find()){
+            String locality1 = m1.group(2);
+            Matcher m2 = p.matcher(item2.getAddress());
+            if(locality1 != null && m2.find()) {
+                String locality2 = m2.group(2);
+                return locality1.equals(locality2);
+            }
+        }
+        return false;
+    }
+
+    List<AtmOffice> mergeOschadBankItems(@NotNull String regionName,
+                                         @NotNull LinkedList<OschadBankItem> branchList,
+                                         @NotNull LinkedList<OschadBankItem> atmList){
         List<AtmOffice> atms = new ArrayList<>();
         int branchAndAtmCount = 0;
 
         for(OschadBankItem branchItem : branchList){
-            AtmOffice atmOffice = new AtmOffice();
-            atmOffice.setAddress(regionName+REGION_SEPARATOR+branchItem.getAddress());
-            int index = atmList.indexOf(branchItem);
-            if (index >= 0){
-                logger.debug(String.format("Found branch and ATM at same address: %s and %s", branchItem.toString(), atmList.get(index)));
-                atmOffice.setType(IS_ATM_OFFICE);
-                atmList.remove(index);
-                branchAndAtmCount++;
-            } else {
-                atmOffice.setType(IS_OFFICE);
+            if(branchItem != null){
+                AtmOffice atmOffice = new AtmOffice();
+                atmOffice.setAddress(regionName+REGION_SEPARATOR+branchItem.getAddress());
+                int index = atmList.indexOf(branchItem);
+                if (index >= 0 && equalLocality(branchItem,atmList.get(index))){
+                    logger.debug(String.format("Found branch and ATM at same address: %s and %s",
+                            branchItem.toString(), atmList.get(index)));
+                    atmOffice.setType(IS_ATM_OFFICE);
+                    atmList.remove(index);
+                    branchAndAtmCount++;
+                } else {
+                    atmOffice.setType(IS_OFFICE);
+                }
+                atms.add(atmOffice);
             }
-            atms.add(atmOffice);
         }
-        logger.info(String.format("%s: %d branches added (including %d with ATM)", regionName, atms.size(), branchAndAtmCount));
+        logger.info(String.format("%s: %d branches added (including %d with ATM)",
+                regionName, atms.size(), branchAndAtmCount));
 
         for(OschadBankItem atmItem : atmList){
-            AtmOffice atmOffice = new AtmOffice();
-            atmOffice.setAddress(regionName+REGION_SEPARATOR+atmItem.getAddress());
-            atmOffice.setType(IS_ATM);
-            atms.add(atmOffice);
+            if(atmItem != null){
+                AtmOffice atmOffice = new AtmOffice();
+                atmOffice.setAddress(regionName+REGION_SEPARATOR+atmItem.getAddress());
+                atmOffice.setType(IS_ATM);
+                atms.add(atmOffice);
+            }
         }
         logger.info(String.format("%s: %d ATMs added", regionName, atmList.size()));
         logger.info(String.format("%s: %d total branches and ATMs added", regionName, atms.size()));
@@ -149,7 +180,7 @@ public class OschadBankParser implements IParser {
                     .data(PAGE_PARAM,(pageNum > 1) ? String.valueOf(pageNum) : "");
         }
 
-        private LinkedList<OschadBankItem> parseRegion(String regionName) throws IOException {
+        private LinkedList<OschadBankItem> parseRegion(@NotNull String regionName) throws IOException {
             LinkedList<OschadBankItem> addressList = new LinkedList<>();
             // get count of pages from first page
             int pageCount = getPageCount(createJsoupConnection(regionName, 1));
@@ -167,7 +198,7 @@ public class OschadBankParser implements IParser {
             logger.trace("Request URL: "+connection.request().url());
             Elements rows = response.parse().select(selector);
             for (Element row : rows) {
-                String address = prepareAddress(row.child(addressColumn).text()); //regionName + REGION_SEPARATOR +
+                String address = prepareAddress(row.child(addressColumn).text());
                 String viddil = prepareViddil(row.child(viddilColumn).text());
                 OschadBankItem item = new OschadBankItem(address, viddil);
                 addressList.add(item);
@@ -179,8 +210,10 @@ public class OschadBankParser implements IParser {
 
         private String prepareAddress(String address) {
             //TODO: replace with parameters
-            return (address == null) ? null : address.replaceFirst("Ів\\.-.*Франківськ", "Івано-Франківськ").trim();
+            return (address == null) ? null : address.replaceFirst(ADDRESS_PATTERN, ADDRESS_SUBSTITUTE).trim();
         }
+
+        @Nullable
         private String prepareViddil(String viddil){
             Matcher m = Pattern.compile(VIDDIL_PATTERN).matcher(viddil);
             return m.find() ? m.group(1)+"/"+m.group(2) : null;
@@ -202,8 +235,6 @@ public class OschadBankParser implements IParser {
 
     private List<String> getRegionList() throws IOException {
         Set<String> regions = new HashSet<>();
-        ArrayList<String> regionList = new ArrayList<>();
-
         Connection.Response response = createRegionListRequest().execute();
         Document document = Jsoup.parse(response.parse().outerHtml());
 
@@ -218,12 +249,10 @@ public class OschadBankParser implements IParser {
                 }
             }
         }
-        regionList = new ArrayList<>(regions.size());
+        ArrayList<String> regionList = new ArrayList<>(regions.size());
         regionList.addAll(regions);
         Collections.sort(regionList);
-
         return regionList;
-
     }
 
     private Connection createRegionListRequest(){
@@ -250,9 +279,9 @@ public class OschadBankParser implements IParser {
         parameters.put("atm_selector",".table_block > table:nth-child(1) > tbody:nth-child(1) > .news-item");
 
         //parameters.put("region","");
-        //parameters.put("region","Івано-Франківська область");
+        parameters.put("region","Івано-Франківська область");
         //parameters.put("region","АР Крим");
-        parameters.put("region","Донецька область");
+        //parameters.put("region","Донецька область");
 
         OschadBankParser bankParser = new OschadBankParser();
         bankParser.setParameter(parameters);
