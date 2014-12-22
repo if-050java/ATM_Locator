@@ -6,7 +6,7 @@ function initCommentsClick(){
         var comments = getcomments(atmId);
         comments.forEach(function(value){
             var commentContainer = jQuery.parseHTML('<div style="width: 100%"></div>');
-            var nameTimeDiv = jQuery.parseHTML('<div style=" display: table; width: 100%"></div>');
+            var nameTimeDiv = jQuery.parseHTML('<div style=" display: table; width: 100%; background-color: #eeeeee"></div>');
             jQuery(nameTimeDiv).append(jQuery.parseHTML('<strong>' + value.user.name + '</strong>'));
             jQuery(nameTimeDiv).append(jQuery.parseHTML('<i style="float: right">' + timestamptoFormatedtime(value.timeCreated) + '</i>'));
             jQuery(nameTimeDiv).append(jQuery.parseHTML('<br>'));
