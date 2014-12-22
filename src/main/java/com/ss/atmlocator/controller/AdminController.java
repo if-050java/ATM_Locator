@@ -57,7 +57,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/{currentJobName}/enable", method = RequestMethod.POST)
-    public ResponseEntity<Void> enableJob(@PathVariable("currentJobName") String currentJobName
+      public ResponseEntity<Void> enableJob(@PathVariable("currentJobName") String currentJobName
     ) {
         List<JobTemplate> jobs = service.getJobs();
         for(JobTemplate job : jobs){
@@ -69,6 +69,27 @@ public class AdminController {
             }
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/edit/{currentJobName}", method = RequestMethod.GET)
+    public String editJob(@PathVariable("currentJobName") String currentJobName,
+    ModelMap model) {
+        List<JobTemplate> jobs = service.getJobs();
+        for(JobTemplate job : jobs){
+            if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
+                JobModel jobModel = new JobModel();
+                jobModel.setJobName(job.getJobName());
+                jobModel.setJobGroup(job.getJobGroup());
+                jobModel.setTriggerName(job.getTriggerName());
+                jobModel.setTriggerGroup(job.getTriggerGroup());
+                jobModel.setJobClassName(job.getJobClassName());
+                jobModel.setCronSched(job.getCronSched());
+                jobModel.setParams(service.getStringParam(job.getMap()));
+                model.addAttribute("job",jobModel);
+                model.addAttribute("edit","edit");
+            }
+        }
+        return "jobs";
     }
 
     @RequestMapping(value = "/{currentJobName}/disable", method = RequestMethod.POST)
