@@ -196,7 +196,6 @@
             <artifactId>hibernate-validator</artifactId>
             <version>4.3.0.Final</version>
         </dependency>
-
     </dependencies>
     <build>
         <finalName>atmlocator</finalName>
