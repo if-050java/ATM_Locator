@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS `LOGS`;
+
+CREATE TABLE `logs` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `DATED` datetime NOT NULL,
+  `logger` varchar(250) DEFAULT NULL,
+  `LEVEL` varchar(10) NOT NULL,
+  `MESSAGE` varchar(1000) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

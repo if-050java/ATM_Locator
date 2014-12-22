@@ -24,9 +24,6 @@ public class BanksService {
     @Autowired
     private IBanksDAO banksDAO;
 
-    @Autowired
-    private NoticeService noticeService;
-
     public List<Bank> getBanksByNetworkId(int network_id){
         return banksDAO.getBanksByNetworkId(network_id);
     }
@@ -58,11 +55,9 @@ public class BanksService {
         //TODO: delete associated image files
 
         if (banksDAO.deleteBank(id)){
-            noticeService.info(String.format("Deleted Bank #%s",id));
             response.setStatus(Constants.SUCCESS);
         } else {
             //TODO: add error message
-            noticeService.info(String.format("Deleted Bank #%s",id));
             response.setStatus(Constants.ERROR);
         }
         response.setErrorMessageList(errorMessages);

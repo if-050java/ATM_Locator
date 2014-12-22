@@ -39,6 +39,7 @@ public class OschadBankParser implements IParser {
     private final static int MAX_ROWS_AT_PAGE = 20;
     private final static String REGION_SEPARATOR = ", ";
     private final static String VIDDIL_PATTERN = "(\\d{5})\\s*/+0*(\\d+)";
+    private final static String LOCALITY_PATTERN = "(м\\.|с\\.|смт)\\s+(.+?),";
 
     private Map<String,String> parameters;
 
@@ -62,8 +63,8 @@ public class OschadBankParser implements IParser {
 
         // if empty - parse all regions subsequently
         if(testRegion.equals("")){
-            // get Branch Page before fetching regions list to satisfy the bank's web server
             try {
+                // get Branch Page before fetching regions list to satisfy the bank's web server
                 Jsoup.connect(parameters.get("base_url")).execute();
                 regions = getRegionList();
             } catch (IOException e) {
@@ -163,15 +164,16 @@ public class OschadBankParser implements IParser {
         private List<OschadBankItem> parseTable(Connection connection) throws IOException {
             List<OschadBankItem> addressList = new ArrayList<>(MAX_ROWS_AT_PAGE);
             Connection.Response response = connection.execute();
-            logger.debug("Request URL: "+connection.request().url());
+            logger.trace("Request URL: "+connection.request().url());
             Elements rows = response.parse().select(selector);
             for (Element row : rows) {
                 String address = prepareAddress(row.child(addressColumn).text()); //regionName + REGION_SEPARATOR +
                 String viddil = prepareViddil(row.child(viddilColumn).text());
                 OschadBankItem item = new OschadBankItem(address, viddil);
                 addressList.add(item);
-                logger.debug("OschadBank item: " + item.toString());
+                logger.trace("OschadBank item: " + item.toString());
             }
+            logger.debug(String.format("Parsed %d items",addressList.size()));
             return addressList;
         }
 

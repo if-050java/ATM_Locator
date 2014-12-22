@@ -92,7 +92,7 @@ public class BanksDAO implements IBanksDAO {
             log.debug("Deleted Bank '" + delName + "' #" + bank_id);
             return true;
         } catch (PersistenceException e) {
-            log.error("Failed to delete bank " + bank_id);
+            log.error("Failed to delete bank #" + bank_id);
             e.printStackTrace();
             return false;
         }
