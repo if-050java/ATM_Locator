@@ -42,11 +42,17 @@
     <definition name="profile" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/profile.jsp"/>
     </definition>
+
     <definition name="changeParser" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/changeParser.jsp"/>
     </definition>
+
     <definition name="jobs" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/jobs.jsp"/>
+    </definition>
+
+    <definition name="adminNotices" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminNotices.jsp"/>
     </definition>
 
 </tiles-definitions>
