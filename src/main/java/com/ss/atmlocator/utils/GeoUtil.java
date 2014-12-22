@@ -22,6 +22,7 @@ public class GeoUtil {
     }
 
     public static boolean inRadius(GeoPosition basePoint, GeoPosition checkedPoint, int radius){
+        if(checkedPoint == null || basePoint == null) return false;
         return getDistance(basePoint, checkedPoint) <= radius;
     }
 }
