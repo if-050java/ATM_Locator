@@ -26,6 +26,7 @@ public class UkrSybBankParser implements IParser {
     public static final String BRANCHES_SELECTOR = "#goggle_tab_branches .address";
     public static final String ATMS_SELECTOR = "#goggle_tab_atms .address";
     public static final String URL = "http://my.ukrsibbank.com/ua/branches_atms/map/index.php";
+    public static final int RECORDS_PER_PAGE = 100;
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
     private Map<String, String> initSettings = new HashMap<>();
 
@@ -94,7 +95,8 @@ public class UkrSybBankParser implements IParser {
     }
 
     private int getTotalPages(int countElements) throws IOException {
-        return (int) Math.ceil(countElements / 100.0);
+
+        return (int) Math.ceil(countElements / (double)RECORDS_PER_PAGE);
     }
 
     private int getElementsCount(String selector) throws IOException {

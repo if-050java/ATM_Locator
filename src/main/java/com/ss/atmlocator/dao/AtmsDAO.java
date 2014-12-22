@@ -17,6 +17,11 @@ import javax.persistence.criteria.Root;;
 import java.util.Collections;
 import java.util.List;
 
+import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM;
+import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM_OFFICE;
+import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_OFFICE;
+import static java.util.Arrays.asList;
+
 /**
  * Created by Olavin on 10.12.2014.
  */
@@ -35,14 +40,15 @@ public class AtmsDAO implements IAtmsDAO {
         Root<AtmOffice> atmOfficeRoot = criteria.from(AtmOffice.class);
         criteria.select(atmOfficeRoot);
         Predicate where = builder.conjunction();
+
         if (network_id != null)
             where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
         if (bank_id != null)
             where = builder.and(where,builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
-        if (showAtms)
-            where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_ATM));
-        if (showOffices)
-            where = builder.and(where,builder.equal(atmOfficeRoot.get("type"), AtmOffice.AtmType.IS_OFFICE));
+        if (showAtms && !showOffices)
+            where = builder.and(where,atmOfficeRoot.get("type").in(asList(IS_ATM,IS_ATM_OFFICE)));
+        if (showOffices && !showAtms)
+            where = builder.and(where,atmOfficeRoot.get("type").in(asList(IS_OFFICE, IS_ATM_OFFICE)));
         if (!showAtms && !showOffices) return Collections.emptyList();
         return entityManager.createQuery(criteria.where(where)).getResultList();
     }
