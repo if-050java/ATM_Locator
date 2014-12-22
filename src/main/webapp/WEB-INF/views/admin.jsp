@@ -148,7 +148,7 @@
 						<a class="deleteLink" href="#" >delete</a>
 						<a class="enableLink" href="#" >enable</a>
 						<a class="disableLink" href="#" >disable</a>
-						<a class="editLink" href="#" >edit</a>
+						<a class="editLink" href="<c:url value="/admin/edit/${item.getJobName()}"/>" >edit</a>
 						<a class="viewLink" href="#" >view</a>
 					</td>
                 </tr>

@@ -59,7 +59,12 @@
         <property name="schedulerName" value="quartz-scheduler"></property>
         <property name="dataSource" ref="dataSource" />
         <property name="transactionManager" ref="quartzTransactionManager"></property>
-
+        <property name="jobFactory">
+            <bean class="org.springframework.scheduling.quartz.SpringBeanJobFactory" />
+        </property>
+        <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+        </property>
         <property name="quartzProperties">
             <map>
                 <!-- Disable check updates -->
@@ -125,15 +130,5 @@
 
     <!--Listener for log  loging process -->
     <bean id="authlogging" class="com.ss.atmlocator.utils.AuthLogging"/>
-
-    <!--Autowiring services into job-->
-    <context:spring-configured/>
-    <context:annotation-config/>
-    <!--<context:load-time-weaver/>-->
-    <bean id="job" class="com.ss.atmlocator.parser.scheduler.JobB" scope="prototype" abstract="true">
-        <property name="userService" ref="userService"/>
-    </bean>
-
-
 
 </beans>

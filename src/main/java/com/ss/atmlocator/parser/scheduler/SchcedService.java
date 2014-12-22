@@ -6,14 +6,26 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.List;
+import java.util.ArrayList;
+
+
 @Service
 public class SchcedService {
+
     final static int EQUALS_CODE = 61;
+
     final static Logger logger = LoggerFactory.getLogger(SchcedService.class);
-    private static final String error = "Internal error. See logs for details";
+
+    @Autowired
+    private MessageSource messages;
+
     @Autowired
     private Scheduler scheduler;
 
@@ -22,10 +34,11 @@ public class SchcedService {
             if(scheduler.checkExists(jobTrigerHolder.getJob().getKey()) == false){
                     scheduler.scheduleJob(jobTrigerHolder.getJob(),jobTrigerHolder.getTrigger());
             }
+            logger.info(messages.getMessage("add.job", null, Locale.ENGLISH)+jobTrigerHolder.getJob().getKey().getName());
         }
         catch (SchedulerException exp){
             logger.error(exp.getMessage(),exp);
-            return error;
+            return (messages.getMessage("error.job", null, Locale.ENGLISH)+exp.getMessage());
         }
         return null;
     }
@@ -35,10 +48,11 @@ public class SchcedService {
         try{
             scheduler.deleteJob(new JobKey(jobTemplate.getJobName(),
                     jobTemplate.getJobGroup()));
+            logger.info(messages.getMessage("remove.job", null, Locale.ENGLISH)+jobTemplate.getJobName());
         }
         catch (SchedulerException exp){
             logger.error(exp.getMessage(),exp);
-            return error;
+            return (messages.getMessage("error.job", null, Locale.ENGLISH)+exp.getMessage());
         }
         return null;
     }
@@ -46,12 +60,13 @@ public class SchcedService {
 
     public String runJob(JobTemplate jobTemplate){
         try{
-        scheduler.triggerJob(new JobKey(jobTemplate.getJobName(),
+            scheduler.triggerJob(new JobKey(jobTemplate.getJobName(),
                 jobTemplate.getJobGroup()));
+            logger.info(messages.getMessage("run.job", null, Locale.ENGLISH)+jobTemplate.getJobName());
         }
         catch (SchedulerException exp){
             logger.error(exp.getMessage(),exp);
-            return error;
+            return (messages.getMessage("error.job", null, Locale.ENGLISH)+exp.getMessage());
         }
         return null;
     }
@@ -60,11 +75,12 @@ public class SchcedService {
     public String pauseJob(JobTemplate jobTemplate){
            try{
                 scheduler.pauseTrigger(new TriggerKey(jobTemplate.getTriggerName(),
-                        jobTemplate.getTriggerGroup()));
-               }
+                    jobTemplate.getTriggerGroup()));
+                    logger.info(messages.getMessage("pause.job", null, Locale.ENGLISH)+jobTemplate.getJobName());
+           }
            catch (SchedulerException exp){
             logger.error(exp.getMessage(),exp);
-            return error;
+            return (messages.getMessage("error.job", null, Locale.ENGLISH)+exp.getMessage());
         }
         return null;
     }
@@ -72,12 +88,13 @@ public class SchcedService {
 
     public String resumeJob(JobTemplate jobTemplate){
         try{
-        scheduler.resumeTrigger(new TriggerKey(jobTemplate.getTriggerName(),
+            scheduler.resumeTrigger(new TriggerKey(jobTemplate.getTriggerName(),
                 jobTemplate.getTriggerGroup()));
+            logger.info(messages.getMessage("resume.job", null, Locale.ENGLISH)+jobTemplate.getJobName());
         }
         catch (SchedulerException exp){
             logger.error(exp.getMessage(),exp);
-            return error;
+            return (messages.getMessage("error.job", null, Locale.ENGLISH)+exp.getMessage());
         }
         return null;
     }
@@ -162,5 +179,16 @@ public class SchcedService {
             keyMap.put(key,val);
         }
         return keyMap;
+    }
+
+    public String getStringParam(Map<String,String> map){
+        if (map != null && !map.isEmpty()){
+            StringBuilder params = new StringBuilder();
+            for (String key : map.keySet()){
+               params.append(key + "=" + map.get(key)+"\r\n");
+            }
+            return params.toString();
+        }
+        return null;
     }
 }
