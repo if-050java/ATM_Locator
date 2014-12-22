@@ -35,7 +35,7 @@
                     <label for="jobName" class="col-sm-2 control-label">Job Name</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control"
-                               name="jobName" id="jobName" value="${job.getJobName()}">
+                               name="jobName" id="jobName" placeholder="for example: JobA" value="${job.getJobName()}">
                     </div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     <label for="jobGroup" class="col-sm-2 control-label">Job Group</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control"
-                               name="jobGroup" id="jobGroup" value="${job.getJobGroup()}">
+                               name="jobGroup" id="jobGroup"  placeholder="for example: JobAGroup" value="${job.getJobGroup()}">
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                     <label for="triggerName" class="col-sm-2 control-label">Trigger Name</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control"
-                               name="triggerName" id="triggerName" value="${job.getTriggerName()}">
+                               name="triggerName" id="triggerName"  placeholder="for example: Trigger1" value="${job.getTriggerName()}">
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     <label for="triggerGroup" class="col-sm-2 control-label">Trigger Group</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control"
-                               name="triggerGroup" id="triggerGroup" value="${job.getTriggerGroup()}">
+                               name="triggerGroup" id="triggerGroup" placeholder="for example: Trigger1Group" value="${job.getTriggerGroup()}">
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                     <label for="jobClassName" class="col-sm-2 control-label">Job Class</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control"
-                               name="jobClassName" id="jobClassName" value="${job.getJobClassName()}">
+                               name="jobClassName" id="jobClassName" placeholder="for example: com.ss.atmlocator.parser.scheduler.JobB" value="${job.getJobClassName()}">
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                     <label for="cronSched" class="col-sm-2 control-label">Job Cron</label>
                     <div class="col-md-4">
                         <input type="text" class="form-control"
-                               name="cronSched" id="cronSched" value="${job.getCronSched()}">
+                               name="cronSched" id="cronSched" placeholder="for example: 0/5 * * * * ?" value="${job.getCronSched()}">
                     </div>
                 </div>
             </div>
