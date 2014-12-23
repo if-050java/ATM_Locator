@@ -10,7 +10,7 @@ function initCommentsClick(){
         jQuery("#comments").empty();
         var atmId = event.target.getAttribute("atmid");
         var comments = getComments(atmId);
-        var userName = jQuery("#login").text();
+        var userName = jQuery("#userLogin").text();
         comments.forEach(function(comment){
             var commentContainerText =  '<div id="' + comment.id + '" class="container commentsContainer">' +
                                             '<div class="commentHeader">' +
