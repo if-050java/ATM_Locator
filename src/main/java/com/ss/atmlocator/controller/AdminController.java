@@ -151,9 +151,23 @@ public class AdminController {
                  .withMap(service.getMapParam(jobModel.getParams()))
                  .build();
 
-        if(currentJobName != null && !currentJobName.isEmpty()){
-            List<JobTemplate> jobs = service.getJobs();
-            for(JobTemplate job : jobs){
+        if(currentJobName == null || currentJobName.isEmpty()){
+            JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate);
+
+            if(jobHolder == null){
+                modelMap.addAttribute("add", "add");
+                modelMap.addAttribute("job",jobModel);
+                modelMap.addAttribute("error",error);
+                return "jobs";
+            }
+
+            service.addJob(jobHolder);
+            return "redirect:/admin";
+        }
+
+        List<JobTemplate> jobs = service.getJobs();
+
+        for(JobTemplate job : jobs){
                 if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
                     JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate);
                     if(jobHolder != null){
@@ -161,34 +175,14 @@ public class AdminController {
                         service.addJob(jobHolder);
                         return "redirect:/admin";
                     }
-                    else {
-                        modelMap.addAttribute("add","add");
-                        modelMap.addAttribute("job",jobModel);
-                        modelMap.addAttribute("error",error);
-                        return "jobs";
-                    }
                 }
-            }
         }
 
-        else{
-            JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate);
-            if(jobHolder != null){
-                service.addJob(jobHolder);
-                return "redirect:/admin";
-            }
-            else {
-                modelMap.addAttribute("add", "add");
-                modelMap.addAttribute("job",jobModel);
-                modelMap.addAttribute("error",error);
-
-            }
-        }
+        modelMap.addAttribute("add","add");
+        modelMap.addAttribute("job",jobModel);
+        modelMap.addAttribute("error",error);
         return "jobs";
     }
-
-
-
 
 
     @RequestMapping(value = "/users")
