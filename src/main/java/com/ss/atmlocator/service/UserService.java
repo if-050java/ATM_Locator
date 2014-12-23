@@ -100,9 +100,8 @@ public class UserService {
             }
             logger.info(UPDATING+mergedUser.getId());
             usersDAO.updateUser(merge(mergedUser));
-            mergedUser.setPassword(user.getPassword());
             logger.info(SENDING_EMAIL+mergedUser.getEmail());
-            sendMails.sendMail(mergedUser.getEmail() , EMAIL_SUBJECT, emailCreator.toUser(mergedUser));
+            sendMails.sendMail(mergedUser.getEmail() , EMAIL_SUBJECT, emailCreator.toUser(mergedUser, user.getPassword()));
         } catch (IllegalAccessException iae) {
             logger.error(iae.getMessage(), iae);
             throw new PersistenceException(iae);

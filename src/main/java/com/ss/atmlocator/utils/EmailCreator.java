@@ -12,6 +12,9 @@ import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
 
+import static com.ss.atmlocator.entity.UserStatus.ENABLED;
+import static com.ss.atmlocator.utils.Constants.*;
+
 /**
  * Class for creating e-mail messages from templates
  */
@@ -37,9 +40,9 @@ public class EmailCreator {
 
     }
 
-    //Method for creating e-mail message to user if password was changed
-    public String toUser(User user) throws MessagingException {
-        String templateName = user.getEnabled() == UserStatus.ENABLED ? Constants.UPDATE_TEMPLATE_ENABLED_USER : Constants.UPDATE_TEMPLATE_DISABLED_USER;
+    //Method for creating e-mail message to user
+    public String toUser(User user, String password) throws MessagingException {
+        String templateName = user.getEnabled() == ENABLED ? UPDATE_TEMPLATE_ENABLED_USER : UPDATE_TEMPLATE_DISABLED_USER;
 
         logger.info("Loading email message template from file" + templateName + ".st");
         ST template = stGroup.getInstanceOf(templateName);
@@ -47,10 +50,10 @@ public class EmailCreator {
             logger.error("Can't load email from file "+templateName+".st");
             throw new MessagingException("Can't load email from file "+templateName+".st");
         }
-        template.add(Constants.USER_NAME, user.getName());
-        template.add(Constants.USER_LOGIN, user.getLogin());
-        template.add(Constants.USER_EMAIL, user.getEmail());
-        template.add(Constants.USER_PASSWORD, user.getPassword() != null ? user.getPassword() : "Password didn't change");
+        template.add(USER_NAME, user.getName());
+        template.add(USER_LOGIN, user.getLogin());
+        template.add(USER_EMAIL, user.getEmail());
+        template.add(USER_PASSWORD, password != null ? password : "Password didn't change");
         String s = template.render();
         return s;
     }
