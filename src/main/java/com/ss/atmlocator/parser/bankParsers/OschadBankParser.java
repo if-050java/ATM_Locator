@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -191,7 +192,12 @@ public final class OschadBankParser implements IParser {
         private LinkedList<OschadBankItem> parseRegion(@NotNull final String regionName) throws IOException {
             LinkedList<OschadBankItem> addressList = new LinkedList<>();
             // get count of pages from first page
-            int pageCount = getPageCount(createJsoupConnection(regionName, 1));
+            int pageCount = 0;
+            try {
+                pageCount = getPageCount(createJsoupConnection(regionName, 1));
+            } catch (ParseException e) {
+                LOGGER.warn(e.getMessage(),e);
+            }
             for (int page = 1; page <= pageCount; page++) {
                 LOGGER.debug(String.format("Region: {%s} page %d/%d", regionName, page, pageCount));
                 Connection connection = createJsoupConnection(regionName, page);
@@ -226,11 +232,11 @@ public final class OschadBankParser implements IParser {
             return m.find() ? m.group(1) + "/" + m.group(2) : null;
         }
 
-        private int getPageCount(final Connection connection) throws IOException {
+        private int getPageCount(final Connection connection) throws IOException, ParseException {
             Connection.Response response = connection.execute();
             Elements elems = response.parse().select(LAST_PAGE_SELECTOR);
             if (elems.size() == 0) {
-                throw new IOException();
+                throw new ParseException("Can't parse last page number",0);
             }
             String lastPageUrl = elems.get(0).attr("href");
             int index = lastPageUrl.lastIndexOf('=');
@@ -277,7 +283,7 @@ public final class OschadBankParser implements IParser {
                 .ignoreContentType(true);
     }
 
-    static void main(final String[] args) {
+    public static void main(final String[] args) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("base_url", "http://www.oschadnybank.com/");
         parameters.put("branch_page", "ua/branches_atms/branches/");
@@ -286,9 +292,9 @@ public final class OschadBankParser implements IParser {
         parameters.put("atm_selector", ".table_block > table:nth-child(1) > tbody:nth-child(1) > .news-item");
 
         //parameters.put("region","");
-        parameters.put("region", "Івано-Франківська область");
+        //parameters.put("region", "Івано-Франківська область");
         //parameters.put("region","АР Крим");
-        //parameters.put("region","Донецька область");
+        parameters.put("region", "Донецька область");
 
         OschadBankParser bankParser = new OschadBankParser();
         bankParser.setParameter(parameters);

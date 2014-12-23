@@ -44,7 +44,7 @@ public final class AdminBanksController {
      *  Show page with list of Banks and ATM Networks.
      */
     @RequestMapping(value = "/adminBanks")
-    public String banksList(ModelMap modelMap) {
+    public String banksList(final ModelMap modelMap) {
         log.debug("GET: banks page");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("active", "adminBanks");
@@ -55,9 +55,8 @@ public final class AdminBanksController {
      *  Get list of ATM networks to AJAX request.
      */
     @RequestMapping(value = "/networksListAjax", method = RequestMethod.GET)
-    public
     @ResponseBody
-    List<AtmNetwork> networksListAjax() {
+    public List<AtmNetwork> networksListAjax() {
         log.debug("GET: list of ATM networks");
         return atmNetworksService.getNetworksList();
     }
@@ -66,9 +65,8 @@ public final class AdminBanksController {
      *  Get list of Banks to AJAX request.
      */
     @RequestMapping(value = "/banksListAjax", method = RequestMethod.GET)
-    public
     @ResponseBody
-    List<Bank> banksListAjax() {
+    public List<Bank> banksListAjax() {
         log.debug("GET: list of banks");
         return banksService.getBanksList();
     }
@@ -79,11 +77,11 @@ public final class AdminBanksController {
      */
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
     public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
-                           @RequestParam(value = "bank_id", required = true) int bank_id,
-                           ModelMap modelMap) {
-        log.debug("GET: bank #" + bank_id);
+                           @RequestParam(value = "bank_id", required = true) int bankId,
+                           final ModelMap modelMap) {
+        log.debug("GET: bank #" + bankId);
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
-        modelMap.addAttribute("bank", banksService.getBank(bank_id));
+        modelMap.addAttribute("bank", banksService.getBank(bankId));
         modelMap.addAttribute("active", "adminBanks");
 
         return "adminBankEdit";
@@ -93,7 +91,7 @@ public final class AdminBanksController {
      *  Show create Bank page for edit
      */
     @RequestMapping(value = "/adminBankCreateNew", method = RequestMethod.GET)
-    public String bankCreateNew(ModelMap modelMap) {
+    public String bankCreateNew(final ModelMap modelMap) {
         log.debug("GET: create new bank");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         Bank bank = banksDAO.newBank();
@@ -113,7 +111,7 @@ public final class AdminBanksController {
                            @RequestParam(value = "imageLogo", required = false) MultipartFile imageLogo,
                            @RequestParam(value = "iconAtmFile", required = false) MultipartFile iconAtmFile,
                            @RequestParam(value = "iconOfficeFile", required = false) MultipartFile iconOfficeFile,
-                           HttpServletRequest request)
+                           final HttpServletRequest request)
     {
         log.debug("AJAX: save bank " + bank.getName() + " #" + bank.getId());
 
@@ -124,7 +122,7 @@ public final class AdminBanksController {
     }
 
     /**
-     *  Update ATM Network information or create new entry if ID=0 by AJAX POST
+     *  Update ATM Network information or create new entry if ID=0 by AJAX POST.
      */
     @RequestMapping(value = "/adminNetworkSaveAjax", method = RequestMethod.POST)
     @ResponseBody
@@ -135,7 +133,7 @@ public final class AdminBanksController {
 
 
     /**
-     *  Delete Bank by Ajax request
+     *  Delete Bank by Ajax request.
      */
     @RequestMapping(value = "/adminBankDeleteAjax", method = RequestMethod.POST)
     @ResponseBody
@@ -166,8 +164,8 @@ public final class AdminBanksController {
      *  Show Bank's ATM and office list.
      */
     @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.POST)
-    public String adminBankAtmList(@ModelAttribute("bank") Bank bank,
-                                   ModelMap modelMap) {
+    public String adminBankAtmList(@ModelAttribute("bank") final Bank bank,
+                                   final ModelMap modelMap) {
         log.debug("AdminBanksController.adminBankAtmList():GET");
 
         modelMap.addAttribute("bank", banksService.getBank(bank.getId()));
