@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +46,11 @@ public final class AdminBanksController {
      *  Show page with list of Banks and ATM Networks.
      */
     @RequestMapping(value = "/adminBanks")
-    public String banksList(final ModelMap modelMap) {
+    public String banksList(ModelMap modelMap, Principal user) {
         log.debug("GET: banks page");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
-        modelMap.addAttribute("active", "adminBanks");
+        modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("userName", user.getName());
         return "adminBanks";
     }
 
@@ -77,13 +80,13 @@ public final class AdminBanksController {
      */
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
     public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
-                           @RequestParam(value = "bank_id", required = true) int bankId,
-                           final ModelMap modelMap) {
-        log.debug("GET: bank #" + bankId);
+                           @RequestParam(value = "bank_id", required = true) int bank_id,
+                           ModelMap modelMap, Principal user) {
+        log.debug("GET: bank #"+bank_id);
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
-        modelMap.addAttribute("bank", banksService.getBank(bankId));
-        modelMap.addAttribute("active", "adminBanks");
-
+        modelMap.addAttribute("bank", banksService.getBank(bank_id));
+        modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("userName", user.getName());
         return "adminBankEdit";
     }
 
@@ -164,12 +167,13 @@ public final class AdminBanksController {
      *  Show Bank's ATM and office list.
      */
     @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.POST)
-    public String adminBankAtmList(@ModelAttribute("bank") final Bank bank,
-                                   final ModelMap modelMap) {
+    public String adminBankAtmList(@ModelAttribute("bank") Bank bank,
+                                   ModelMap modelMap, Principal user) {
         log.debug("AdminBanksController.adminBankAtmList():GET");
 
         modelMap.addAttribute("bank", banksService.getBank(bank.getId()));
-        modelMap.addAttribute("active", "adminBanks");
+        modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("userName", user.getName());
         //TODO: provide list of ATMs and offices
 
         return "adminBankAtmList";

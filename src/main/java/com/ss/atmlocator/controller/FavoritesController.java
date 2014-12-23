@@ -25,7 +25,7 @@ public class FavoritesController {
     @RequestMapping
     public ResponseEntity<Set<AtmOffice>> getFavorites(Principal user) {
         try {
-            int userId = userService.getUserByName(user.getName()).getId();
+            int userId = userService.getUser(user.getName()).getId();
             return new ResponseEntity<>(userService.getFavorites(userId), HttpStatus.OK);
         } catch (NoResultException nre) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -38,7 +38,7 @@ public class FavoritesController {
     public ResponseEntity<Void> addFavorite(@PathVariable int id,
                                             Principal user) {
         try {
-            int userId = userService.getUserByName(user.getName()).getId();
+            int userId = userService.getUser(user.getName()).getId();
             userService.addFavorite(userId, id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (PersistenceException pe) {
@@ -52,7 +52,7 @@ public class FavoritesController {
     public ResponseEntity<Void> delFromFavorites(@PathVariable int id,
                                                  Principal user){
         try {
-            int userId = userService.getUserByName(user.getName()).getId();
+            int userId = userService.getUser(user.getName()).getId();
             userService.deleteFavorite(userId, id);
             return new ResponseEntity<>(HttpStatus.OK);
         }  catch (PersistenceException pe) {

@@ -28,11 +28,15 @@ public class CommentsService {
     @Autowired
     ICommentsDAO commentsDAO;
 
+    public AtmComment getComment(int id){
+        return commentsDAO.getComment(id);
+    }
+
     public void addComment(String userName, int atmId, String text){
         AtmComment atmComment = new AtmComment();
         try {
             logger.info("Fill comment fields");
-            atmComment.setUser(usersDAO.getUserByName(userName));
+            atmComment.setUser(usersDAO.getUser(userName));
             atmComment.setAtmOffice(atmsDAO.getAtmById(atmId));
             atmComment.setText(text);
             atmComment.setTimeCreated(new Timestamp(new Date().getTime()));
@@ -44,4 +48,12 @@ public class CommentsService {
         }
     }
 
+    public void deleteComment(int id){
+        try{
+            logger.debug("Try to delete comment with id = " + id);
+            commentsDAO.deleteComment(id);
+        }catch (PersistenceException pe){
+            logger.error(pe.getMessage(), pe);
+        }
+    }
 }
