@@ -169,16 +169,22 @@ public class SchcedService {
     }
 
     public Map<String,String> getMapParam(String params){
-        Map<String,String> keyMap = new HashMap<>();
-        String[] param = params.split(System.getProperty("line.separator"));
-        for (String template : param){
-            template = template.toLowerCase().replaceAll("\\s","");
-            int index  = template.indexOf(EQUALS_CODE);
-            String key = template.substring(0,index);
-            String val = template.substring(index+1,template.length());
-            keyMap.put(key,val);
+        try{
+            Map<String,String> keyMap = new HashMap<>();
+            String[] param = params.split(System.getProperty("line.separator"));
+            for (String template : param){
+                template = template.replaceAll("\\s+$","");
+                int index  = template.indexOf(EQUALS_CODE);
+                String key = template.substring(0,index);
+                String val = template.substring(index+1,template.length());
+                keyMap.put(key,val);
+            }
+            return keyMap;
         }
-        return keyMap;
+        catch (RuntimeException exp){
+            logger.error(exp.getMessage(),exp);
+            return null;
+        }
     }
 
     public String getStringParam(Map<String,String> map){
