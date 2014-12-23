@@ -96,3 +96,24 @@
     width: 40px;
     height: 40px;
 }
+
+.favorite_marker{
+    position: relative;
+}
+
+.atm-icon{
+    width: 32px;
+    height: 32px;
+}
+
+.favorite-icon{
+    position:absolute;
+    left:20px;
+    top:-4px;
+    width: 16px;
+    height: 16px;
+}
+
+.img-rounded{
+    max-width: 20%
+}
