@@ -26,7 +26,7 @@ public class UsersDAO implements IUsersDAO {
     IAtmsDAO atmsDAO;
 
     @Override
-    public User getUserByName(String name) {
+    public User getUser(String name) {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name OR u.email=:name", User.class);
         query.setParameter("name", name);
         User user = query.getSingleResult();
@@ -34,19 +34,19 @@ public class UsersDAO implements IUsersDAO {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUser(int id) {
         return entityManager.find(User.class, id);
     }
 
 
-    @Override
+/*    @Override
     public User getUserByEmail(String email) {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.email=:email", User.class);
         query.setParameter("email", email);
         User user = query.getSingleResult();
         return user;
 
-    }
+    }*/
 
     @Override
     @Transactional
@@ -155,7 +155,7 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public Set<AtmOffice> getFavorites(int userId) {
-        User user = getUserById(userId);
+        User user = getUser(userId);
         Set<AtmOffice> favorites = user.getAtmFavorites();
         return favorites;
     }
@@ -163,7 +163,7 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void addFavorite(int userId, int atmId){
-        User user = getUserById(userId);
+        User user = getUser(userId);
         Set<AtmOffice> favorites = user.getAtmFavorites();
         favorites.add(atmsDAO.getAtmById(atmId));
         updateUser(user);
@@ -172,7 +172,7 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public void deleteFavorite(int userId, int atmId) {
-        User user = getUserById(userId);
+        User user = getUser(userId);
         Set<AtmOffice> favorites = user.getAtmFavorites();
         favorites.remove(atmsDAO.getAtmById(atmId));
         updateUser(user);

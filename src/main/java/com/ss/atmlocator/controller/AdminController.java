@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,18 +27,24 @@ public class AdminController {
 
 
     @RequestMapping
-    public String adminPage(ModelMap model){
+    public String adminPage(ModelMap model, Principal user){
         model.addAttribute("active","admin");
         List<JobTemplate> jobs = service.getJobs();
         if (jobs != null){model.addAttribute("jobs",jobs);}
         else {model.addAttribute("error",error);}
+        if(user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "admin";
     }
 
 
     @RequestMapping(value = "/addnew")
-    public String addNewJob(ModelMap model) {
+    public String addNewJob(ModelMap model, Principal user) {
         model.addAttribute("add","add");
+        if(user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "jobs";
     }
 
@@ -73,7 +80,7 @@ public class AdminController {
 
     @RequestMapping(value = "/edit/{currentJobName}", method = RequestMethod.GET)
     public String editJob(@PathVariable("currentJobName") String currentJobName,
-    ModelMap model) {
+    ModelMap model, Principal user) {
         List<JobTemplate> jobs = service.getJobs();
         for(JobTemplate job : jobs){
             if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
@@ -88,6 +95,9 @@ public class AdminController {
                 model.addAttribute("job",jobModel);
                 model.addAttribute("edit","edit");
             }
+        }
+        if(user != null) {
+            model.addAttribute("userName", user.getName());
         }
         return "jobs";
     }
@@ -182,8 +192,9 @@ public class AdminController {
 
 
     @RequestMapping(value = "/users")
-    public String adminUsers(ModelMap model) {
+    public String adminUsers(ModelMap model, Principal user) {
         model.addAttribute("active", "adminUsers");
+        model.addAttribute("userName", user.getName());
         return "adminUsers";
     }
 }

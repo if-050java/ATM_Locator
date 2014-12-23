@@ -117,3 +117,28 @@
 .img-rounded{
     max-width: 20%
 }
+
+.commentsContainer{
+    width: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+    border-bottom: 1px solid #c0c0c0 ;
+}
+
+.commentHeader{
+    display: table;
+    width: 100%;
+}
+
+.time{
+    float: right;
+}
+
+.commentText{
+    color: #555;
+    padding-left: 0px;
+}
+
+.right{
+    float: right;
+}

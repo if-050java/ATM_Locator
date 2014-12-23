@@ -8,7 +8,8 @@ import java.util.Set;
 
 
 public interface ICommentsDAO {
+    AtmComment getComment(int id);
     void addComment(AtmComment comment);
-    void deleteComment(AtmComment comment);
-    List<AtmComment> getCommentsByAtmId(int atmId);
+    void deleteComment(int id);
+    List<AtmComment> getComments(int atmId);
 }

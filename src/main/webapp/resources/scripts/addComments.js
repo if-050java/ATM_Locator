@@ -20,7 +20,10 @@ function addComment(){
         statusCode: {
             200: function () {
                 $("#commentModal").modal("hide");
-                updateCommentsCount(atmId);
+                updateCommentsCount(atmId, 1);
+            },
+            404: function(){
+                alert("Comment wasn't added because such atm is not exist ")
             },
             404: function(){
                 alert("Comment wasn't added due to server error ")
@@ -29,17 +32,38 @@ function addComment(){
     })
 }
 
-function updateCommentsCount(markerId){
+function updateCommentsCount(markerId, count){
     markers.forEach(function(value){
         if(value.id == markerId){
-            value.commentsCount++;
-            return;
+            value.commentsCount += count;
         }
     })
     favoriteMarkers.forEach(function(value){
         if(value.id == markerId){
-            value.commentsCount++;
-            return;
+            value.commentsCount += count;
+        }
+    })
+}
+
+function deleteComment(id){
+    var atmId = jQuery("#commentsWindow").prop("atmid");
+    jQuery.ajax({
+        url: getHomeUrl() + "atms/" + atmId + "/comments/" + id,
+        type: "DELETE",
+        context: document.body,
+        dataType: "json",
+        statusCode: {
+            200: function () {
+                var strId = '#'+id;
+                jQuery(strId).remove();
+                updateCommentsCount(atmId, -1);
+            },
+            404: function(){
+                alert("Comment wasn't deleted because such comment not exist ")
+            },
+            500: function(){
+                alert("Comment wasn't deleted due to server error ")
+            }
         }
     })
 }

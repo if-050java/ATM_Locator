@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +42,11 @@ public class AdminBanksController {
      *  Show page with list of Banks and ATM Networks
      */
     @RequestMapping(value = "/adminBanks")
-    public String banksList(ModelMap modelMap) {
+    public String banksList(ModelMap modelMap, Principal user) {
         log.debug("GET: banks page");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("userName", user.getName());
         return "adminBanks";
     }
 
@@ -77,12 +79,12 @@ public class AdminBanksController {
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
     public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
                            @RequestParam(value = "bank_id", required = true) int bank_id,
-                           ModelMap modelMap) {
+                           ModelMap modelMap, Principal user) {
         log.debug("GET: bank #"+bank_id);
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("bank", banksService.getBank(bank_id));
         modelMap.addAttribute("active","adminBanks");
-
+        modelMap.addAttribute("userName", user.getName());
         return "adminBankEdit";
     }
 
@@ -166,11 +168,12 @@ public class AdminBanksController {
      */
     @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.POST)
     public String adminBankAtmList(@ModelAttribute("bank") Bank bank,
-                                   ModelMap modelMap) {
+                                   ModelMap modelMap, Principal user) {
         log.debug("AdminBanksController.adminBankAtmList():GET");
 
         modelMap.addAttribute("bank", banksService.getBank(bank.getId()));
         modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("userName", user.getName());
         //TODO: provide list of ATMs and offices
 
         return "adminBankAtmList";

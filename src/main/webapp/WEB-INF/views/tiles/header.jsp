@@ -38,6 +38,9 @@
                     </sec:authorize>
                 </ul>
             </div>
+            <sec:authorize access="isAuthenticated()">
+                <p style="margin-right: 0px" class="navbar-text navbar-right">Signed in as <a href="<c:url value="/profile" />" id="login" class="navbar-link">${userName}</a></p>
+            </sec:authorize>
         </div>
     </div>
 </nav>
