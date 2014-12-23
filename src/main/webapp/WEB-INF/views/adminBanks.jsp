@@ -8,6 +8,10 @@
             <!-- Default panel contents -->
             <div class="panel-heading">Banks and ATM networks</div>
 
+            <div class="alert" role="alert" style="display: none">
+                <a class="close" onclick="$('.alert').hide()">&times;</a>
+            </div>
+
             <div class="panel-body">
                 <%--<form>--%>
                 <form:form method="get" role="form" cssClass="form-horizontal">
@@ -82,16 +86,15 @@
                             <input type="text" name="net_name" id="net_name" value="" class="form-control"/>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-default btn-block" type="button">Save</button>
+                            <button class="btn btn-default btn-block" id="btn_save_network" type="button">Update name</button>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-default btn-block" type="button">Add new</button>
+                            <button class="btn btn-default btn-block" id="btn_new_network" type="button">Save as new</button>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-default btn-block" type="button">Delete</button>
+                            <button class="btn btn-default btn-block" id="btn_del_network" type="button">Delete</button>
                         </div>
                     </div>
-
                 </form:form>
 
                 <%-- List of Banks generated dynamically in Javascript function showBanks(network_id) --%>
