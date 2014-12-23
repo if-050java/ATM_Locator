@@ -96,8 +96,7 @@ public class KredoBankParser implements IParser {
                     String regionID = regionRow.id().substring(REGION_ID_STRING_START_POSITION);
                     Element regionDiv = regionRow.child(REGION_DIV_CHILD);
                     Element regionNameElement = regionDiv.child(REGION_NAME_ELEMENT);
-                    String preparedRegionName = regionNameElement.text().toLowerCase().replace(" ", "");
-                    if(region.equals(preparedRegionName)){
+                    if(region.equals(regionNameElement.text())){
                         logger.info("Try to parse ATMs from region " + region);
                         parseRegion(bankSite + GET_REGION_URL+regionID);
                         parsedRegions++;
