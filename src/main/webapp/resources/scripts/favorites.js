@@ -1,8 +1,10 @@
 var favoriteMarkers = [];
 
 jQuery(document).ready(function(){
+    //change scroll in favorites
     jQuery("#favorites_list").niceScroll();
 
+    //Show/hide favorites by checker
     jQuery("#showFavorites").change(function() {
         if(jQuery("#showFavorites").prop("checked")) {
             getFavorites();
@@ -10,9 +12,19 @@ jQuery(document).ready(function(){
             clearFavoriteMarkers();
         }
     });
+
+    jQuery("#favorites_list").on("click", ".list-group-item", function(event){
+        atmId = event.currentTarget.getAttribute("atmid")
+        favoriteMarkers.forEach(function(value){
+            if(value.id == atmId){
+                map.panTo(value.position);
+                jampedMarker(atmId);
+            }
+        })
+    })
 });
 
-//send request for favorites t oserver
+//send request for favorites to server and process response
 function getFavorites(){
     jQuery.ajax({
         url: getHomeUrl()+"favorites/",
@@ -21,8 +33,8 @@ function getFavorites(){
         dataType: "json",
         statusCode: {
             200: function(response) {
-                showFavorites(response);
-                deleteFaworitesFromDefaultMarkers();
+                showFavorites(response);                //add favorites to map and favorites list
+                deleteFaworitesFromDefaultMarkers();    //delete default marker if atm  is in favorites
             }
         }
     })
@@ -30,22 +42,21 @@ function getFavorites(){
 
 //add favorites markers and elements to favorites list
 function showFavorites(favorites){
-    clearFavorites();
+    clearFavorites();//clear map and favorites list
     favorites.forEach(function(value){
         favoriteElement = '<div class="list-group-item" atmid="' + value.id +
-                          '" oncontextmenu="favMenu(event, '+ value.id +
-                          ')"  onclick="panToFavorite(event)">'+
+                          '" oncontextmenu="favMenu(event, '+ value.id + ')">'+
                            '<img class="img-rounded" style="max-width: 20%" src="' + getHomeUrl() + 'resources/images/'+((value.type == "IS_OFFICE" || value.type == "IS_ATM_OFFICE") ? value.bank.iconOffice :  value.bank.iconAtm) + '" width="40" height="40" alt=""/>'+
         '<div style="max-width: 80%; display: inline-block; float: right">' + value.address + '</div>' +
                           '</div>';
         jQuery("#favorites_list").append(jQuery.parseHTML(favoriteElement))
-        var favoritePosition = value.geoPosition;
         if(jQuery("#showFavorites").prop("checked")){
             addFavoriteMarker(value);
         }
     })
 }
 
+//Delete default marker if this atm is in favorites
 function deleteFaworitesFromDefaultMarkers(){
     markers.forEach(function(defaultMarker, index){
         favoriteMarkers.forEach(function(favoriteMarker){
@@ -177,18 +188,7 @@ function deleteFavorite(){
     hideMenu();
 }
 
-//canter map on selected favorite
-function panToFavorite(event){
-    atmId = event.currentTarget.getAttribute("atmid")
-    favoriteMarkers.forEach(function(value){
-        if(value.id == atmId){
-            map.panTo(value.position);
-            jampedMarker(atmId);
-        }
-    })
-}
-
-//animate marker on panTo
+//animate marker on click on favorite
 function jampedMarker(id){
     jQuery("#"+id).addClass('animated bounce')
              .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
