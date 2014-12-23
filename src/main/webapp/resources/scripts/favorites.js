@@ -108,15 +108,9 @@ function clearFavoriteMarkers() {
 //Adding favorite marker to map
 function addFavoriteMarker(atm) {
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
-    var iconName;
-    if (atm.type == "IS_OFFICE" || atm.type == "IS_ATM_OFFICE") {
-        iconName = atm.bank.iconOffice;
-    } else {
-        iconName = atm.bank.iconAtm;
-    }
-    var atmIconUrl = getHomeUrl() + 'resources/images/' + iconName;
+    var atmIconUrl = getImageUrl(atm);
     var favIconUrl = getHomeUrl() + 'resources/images/favorite.ico';
-    var favoiteMarker = new RichMarker({
+    var favoriteMarker = new RichMarker({
         id: atm.id,
         commentsCount: atm.commentsCount,
         position: markerPos,
@@ -130,12 +124,11 @@ function addFavoriteMarker(atm) {
                  '</div>'
     });
 
-
-    google.maps.event.addListener(favoiteMarker, 'click', function (event) {
+    google.maps.event.addListener(favoriteMarker, 'click', function (event) {
         var tollTipContent = '<strong>' + atm.bank.name + '</strong><br>' +
             '<div>' + atm.address + '</div>'
-        if (favoiteMarker.commentsCount > 0) {
-            tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + favoiteMarker.commentsCount + ')...</a></div>'
+        if (favoriteMarker.commentsCount > 0) {
+            tollTipContent += '<div><a href="#" atmid="' + atm.id + '" id="showComments">Comments(' + favoriteMarker.commentsCount + ')...</a></div>'
         }
 
         if (infowindow != undefined) {
@@ -145,10 +138,21 @@ function addFavoriteMarker(atm) {
             content: tollTipContent,
             maxWidth: 135
         });
-        infowindow.open(map, favoiteMarker);
+        infowindow.open(map, favoriteMarker);
         setTimeout(initCommentsClick, 200);
     });
-    favoriteMarkers.push(favoiteMarker);
+    favoriteMarkers.push(favoriteMarker);
+}
+
+//get full url for atm image
+function getImageUrl(atm){
+    var iconName;
+    if (atm.type == "IS_ATM") {
+        iconName = atm.bank.iconAtm;
+    } else {
+        iconName = atm.bank.iconOffice;
+    }
+    return getHomeUrl() + 'resources/images/' + iconName;
 }
 
 //show context menu on favorite marker and element of favorites list

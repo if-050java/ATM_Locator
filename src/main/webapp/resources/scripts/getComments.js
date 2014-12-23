@@ -21,17 +21,12 @@ function initCommentsClick(){
 
 function timestamptoFormatedtime(timestamp){
     var date = new Date(timestamp);
-    var day = date.getDate();
-    var month = date.getMonth()+1;
-    var year = date.getYear()-100;
-    var hours = date.getHours();
-    var minutes = "0" + date.getMinutes();
-    var seconds = "0" + date.getSeconds();
-
-    var formattedTime = day + '.' + month + '.' + year + ' ' +
-        hours + ':' + minutes.substr(minutes.length-2) + ':' + seconds.substr(seconds.length-2);
-
-    return formattedTime;
+    var dateFormat = {
+        year:"numeric",
+        month:"long",
+        day: "numeric"
+    }
+    return date.toLocaleTimeString(navigator.language, dateFormat);
 }
 
 function getcomments(atmId){
