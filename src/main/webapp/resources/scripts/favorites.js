@@ -14,13 +14,18 @@ jQuery(document).ready(function(){
     });
 
     jQuery("#favorites_list").on("click", ".list-group-item", function(event){
-        atmId = event.currentTarget.getAttribute("atmid")
+        atmId = event.currentTarget.getAttribute("id")
         favoriteMarkers.forEach(function(value){
             if(value.id == atmId){
                 map.panTo(value.position);
                 jampedMarker(atmId);
             }
         })
+    })
+
+    //show context menu on favorite list item
+    jQuery("#favorites_list").on("contextmenu", ".list-group-item", function(event){
+        favMenu(event);
     })
 });
 
@@ -43,15 +48,23 @@ function getFavorites(){
 //add favorites markers and elements to favorites list
 function showFavorites(favorites){
     clearFavorites();//clear map and favorites list
-    favorites.forEach(function(value){
-        favoriteElement = '<div class="list-group-item" atmid="' + value.id +
-                          '" oncontextmenu="favMenu(event, '+ value.id + ')">'+
-                           '<img class="img-rounded" style="max-width: 20%" src="' + getHomeUrl() + 'resources/images/'+((value.type == "IS_OFFICE" || value.type == "IS_ATM_OFFICE") ? value.bank.iconOffice :  value.bank.iconAtm) + '" width="40" height="40" alt=""/>'+
-        '<div style="max-width: 80%; display: inline-block; float: right">' + value.address + '</div>' +
-                          '</div>';
-        jQuery("#favorites_list").append(jQuery.parseHTML(favoriteElement))
-        if(jQuery("#showFavorites").prop("checked")){
-            addFavoriteMarker(value);
+    favorites.forEach(function(favoriteAtm){
+        var iconName;
+        if(favoriteAtm.type == "IS_OFFICE" || favoriteAtm.type == "IS_ATM_OFFICE"){
+            iconName = favoriteAtm.bank.iconOffice;
+        }else{
+            iconName = favoriteAtm.bank.iconAtm;
+        }
+        var iconUrl = getHomeUrl() + 'resources/images/'+ iconName;
+        var atmId = favoriteAtm.id;
+        var atmAddress = favoriteAtm.address;
+        favoriteElement =   '<div class="list-group-item" id="' + atmId +'">'+
+                                '<img class="img-rounded" style="max-width: 20%" src="' + iconUrl + '"/>'+
+                                '<div class="favorite-item-address">' + atmAddress + '</div>' +
+                            '</div>';
+        jQuery("#favorites_list").append(jQuery.parseHTML(favoriteElement));//append favorite element to list
+        if(jQuery("#showFavorites").prop("checked")){//add marker if need
+            addFavoriteMarker(favoriteAtm);
         }
     })
 }
@@ -102,8 +115,8 @@ function addFavoriteMarker(atm) {
         draggable: false,
         flat: true,
         anchorPoint: {x: 0, y: -32},
-        content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">'+
-                     '<img src="' + getHomeUrl() + 'resources/images/'+ ((atm.type == "IS_OFFICE" || atm.type == "IS_ATM_OFFICE") ? atm.bank.iconOffice :  atm.bank.iconAtm) + '" width="32" height="32" alt=""  oncontextmenu="favMenu(event, '+ atm.id +')"/>'+
+        content: '<div style="position:relative" id="' + atm.id + '" class="favorite favorite_marker"  oncontextmenu="favMenu(event)">'+
+                     '<img src="' + getHomeUrl() + 'resources/images/'+ ((atm.type == "IS_OFFICE" || atm.type == "IS_ATM_OFFICE") ? atm.bank.iconOffice :  atm.bank.iconAtm) + '" width="32" height="32" alt=""/>'+
                     '<img style="position:absolute; left:24px; top:-8px" src="'+getHomeUrl()+'resources/images/favorite.ico" width="16" height="16" alt=""/>'+
                  '</div>'
     });
@@ -131,10 +144,11 @@ function addFavoriteMarker(atm) {
 }
 
 //show context menu on favorite marker and element of favorites list
-function favMenu(event, ATMId){
+function favMenu(event){
     var x = event.pageX;
     var y = event.pageY;
-    jQuery("#favoriteMarkerMenu").attr("atmid", ATMId);
+    var atmid = event.currentTarget.getAttribute("id")
+    jQuery("#favoriteMarkerMenu").attr("atmid", atmid);
     jQuery("#favoriteMarkerMenu")
         .css({top: y + "px", left: x + "px"})
         .show();
