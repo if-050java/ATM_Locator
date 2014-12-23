@@ -60,7 +60,7 @@
                                     <input type="text" class="form-control" id="login" placeholder="login"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
                                            data-original-title="" onclick="hidePopover('inputLogin')"
-                                           onkeyup="setModified()"/>
+                                           onkeyup="setModified()" readonly/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -85,6 +85,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="enabled" class="col-md-3 control-label">Log in</label>
+
                                 <div class="col-md-3">
                                     <!-- custom style to set width of switch -->
                                     <style>
@@ -113,7 +114,8 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2 col-lg-offset-8">
-                        <button id="delete" type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">Delete
+                        <button id="delete" type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">
+                            Delete
                         </button>
                     </div>
                     <div class="col-md-2">
@@ -140,18 +142,18 @@
             </div>
         </div>
     </div>
-    <!--Result of operation -->
-    <div class="container" style=" z-index: 1000;position: fixed; bottom:0%; padding-left: 0px;">
-        <div class="col-md-9">
-            <div class="" role="alert" id="message">
-                <div type="button" class="close" onclick="hideAlert()"><span aria-hidden="true">&times;</span><span
-                        class="sr-only">Close</span></div>
-                <label id="resultDefinition"></label>
+</div>
+<!--Result of operation -->
+<div class="container">
+    <div class="col-md-9">
+        <div class="" role="alert" id="message" style="display: none">
+            <div type="button" class="close" onclick="hideAlert()">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
             </div>
+            <label id="resultDefinition"></label>
         </div>
     </div>
 </div>
-
-
 </body>
 </html>

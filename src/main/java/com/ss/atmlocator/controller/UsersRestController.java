@@ -58,7 +58,7 @@ public class UsersRestController {
     public ResponseEntity<User> findUser(@PathVariable("value") String value) {
         try {
             value = value.replace('*', '.');
-            return new ResponseEntity<>(userService.getUserByName(value), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUser(value), HttpStatus.OK);
         } catch (EntityNotFoundException enfe) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -66,7 +66,7 @@ public class UsersRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
-        if (userService.getUserById(id).getRoles().contains(ADMIN_ROLE)) {//Check want to remove admin
+        if (userService.getUser(id).getRoles().contains(ADMIN_ROLE)) {//Check want to remove admin
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         try {
@@ -92,7 +92,7 @@ public class UsersRestController {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
         try {
-            int currentLoggedUserId = userService.getUserByName(principal.getName()).getId();//id of user who is logged
+            int currentLoggedUserId = userService.getUser(principal.getName()).getId();//id of user who is logged
             userService.editUser(updatedUser, genPassword);//try to update user in database
             if (id == currentLoggedUserId) { //login if change yourself
                 userService.doAutoLogin(updatedUser.getLogin());

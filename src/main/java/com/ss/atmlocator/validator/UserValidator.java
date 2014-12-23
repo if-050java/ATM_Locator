@@ -36,7 +36,7 @@ public class UserValidator implements Validator {
     public void validate(Object object, Errors errors) {
         User updatedUser = (User) object;
 
-        boolean isAdmin = userService.getUserById(updatedUser.getId()).getRoles().contains(ADMIN_ROLE);
+        boolean isAdmin = userService.getUser(updatedUser.getId()).getRoles().contains(ADMIN_ROLE);
         if (isAdmin && UserStatus.DISABLED == updatedUser.getEnabled()) {
             errors.rejectValue(Constants.USER_ENABLED, messages.getMessage("invalid.enabled", null, Locale.ENGLISH));
         }

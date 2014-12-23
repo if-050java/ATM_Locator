@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 /**
  * Created by Olavin on 22.12.2014.
  */
@@ -22,10 +24,11 @@ public class NoticesController {
      *  Show page with list of Banks and ATM Networks
      */
     @RequestMapping(value = "/adminNotices")
-    public String banksList(ModelMap modelMap) {
+    public String banksList(ModelMap modelMap, Principal user) {
         logger.debug("GET: notices page");
         modelMap.addAttribute("notices", logsService.getLogList());
         modelMap.addAttribute("active","adminNotices");
+        modelMap.addAttribute("userName", user.getName());
         return "adminNotices";
     }
 
