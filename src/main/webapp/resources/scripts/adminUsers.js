@@ -4,8 +4,8 @@ var user;               //Instance of current loaded user
 window.onload = function() {
     jQuery("#findName").autocomplete({
         serviceUrl: getHomeUrl() + "users",
-        minChars: 2,
-        deferRequestBy: 200,
+        minChars: 1,
+        deferRequestBy: 50,
         delimiter: /(,|;)\s*/,
         onSelect: function(){
             FindUser();

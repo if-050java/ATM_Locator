@@ -131,6 +131,7 @@
                     </form>
                 </div>
             </div>
+            <%-- Favorites menu--%>
             <sec:authorize access="isAuthenticated()">
                 <div class="panel panel-default">
                     <div class="panel-heading form-group">

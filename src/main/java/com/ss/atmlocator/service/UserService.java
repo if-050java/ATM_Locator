@@ -60,10 +60,10 @@ public class UserService {
     private static final String UPDATING = "Try to update user ";
     private static final String SENDING_EMAIL = "Try to send e-mail to ";
 
-    public User getUserByName(String name) {
+    public User getUser(String name) {
         try {
             logger.debug(FINDING + name);
-            return usersDAO.getUserByName(name);
+            return usersDAO.getUser(name);
         }catch (NoResultException nre){
             logger.warn(nre.getMessage(), nre);
             throw nre;
@@ -74,10 +74,10 @@ public class UserService {
         return usersDAO.getNames(partial);
     }
 
-    public User getUserById(int id) {
+    public User getUser(int id) {
         try {
             logger.debug(FINDING+id);
-            return usersDAO.getUserById(id);
+            return usersDAO.getUser(id);
         }catch (NoResultException nre){
             logger.warn(nre.getMessage(), nre);
             throw nre;
@@ -127,7 +127,7 @@ public class UserService {
     };
 
     private User merge(User user) throws IllegalAccessException {
-        User persistedUser = getUserById(user.getId());
+        User persistedUser = getUser(user.getId());
         for (Field field : User.class.getDeclaredFields()) {
             field.setAccessible(true);
             Object value = field.get(user) != null ? field.get(user) : field.get(persistedUser);

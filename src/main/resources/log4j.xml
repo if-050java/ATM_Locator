@@ -53,7 +53,7 @@
     </appender>
 
     <appender name="springLogs" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="DEBUG" />
+        <param name="Threshold" value="WARN" />
         <param name="MaxFileSize" value="2048KB" />
         <param name="MaxBackupIndex" value="10" />
         <param name="File" value="../logs/spring-logs.log"/>
@@ -95,7 +95,7 @@
 
     <!-- Spring Log -->
     <logger name="org.springframework">
-        <level value="debug" />
+        <level value="error" />
         <appender-ref ref="DB"/>
         <appender-ref ref="springLogs"/>
     </logger>

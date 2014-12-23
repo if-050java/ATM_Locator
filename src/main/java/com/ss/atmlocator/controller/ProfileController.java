@@ -19,8 +19,9 @@ public class ProfileController {
     @RequestMapping
     public String profile(ModelMap model, Principal principal) {
         String userName = principal.getName();
-        model.addAttribute(userService.getUserByName(userName));
+        model.addAttribute(userService.getUser(userName));
         model.addAttribute("active", "profile");
+        model.addAttribute("userName", principal.getName());
         return "profile";
     }
 }
