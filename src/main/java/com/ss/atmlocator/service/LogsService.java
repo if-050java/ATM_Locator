@@ -1,9 +1,7 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.LogsDAO;
-import com.ss.atmlocator.dao.NoticeDAO;
 import com.ss.atmlocator.entity.Logs;
-import com.ss.atmlocator.entity.Notice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
