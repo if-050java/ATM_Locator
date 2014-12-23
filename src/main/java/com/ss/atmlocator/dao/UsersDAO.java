@@ -155,7 +155,8 @@ public class UsersDAO implements IUsersDAO {
     @Override
     @Transactional
     public Set<AtmOffice> getFavorites(int userId) {
-        User user = getUser(userId);
+        User user = entityManager.find(User.class, userId);
+        entityManager.refresh(user);
         Set<AtmOffice> favorites = user.getAtmFavorites();
         return favorites;
     }
