@@ -21,7 +21,7 @@ import static com.ss.atmlocator.utils.ExceptionParser.parseExceptions;
 
 public class SendMails {
 
-    final Logger logger = Logger.getLogger(SendMails.class.getName());
+    private final Logger logger = Logger.getLogger(SendMails.class.getName());
 
     private JavaMailSender mailSender;
     private String from;

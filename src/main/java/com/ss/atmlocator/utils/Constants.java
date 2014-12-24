@@ -29,5 +29,4 @@ public class Constants {
     public static final String UPDATE_TEMPLATE_ENABLED_USER = "update_template";
     public static final String UPDATE_TEMPLATE_DISABLED_USER = "update_template_disabled";
 
-
 }

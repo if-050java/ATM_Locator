@@ -31,17 +31,17 @@ import java.util.Set;
 @Service
 public class UserService {
     @Autowired
-    IUsersDAO usersDAO;
+    private IUsersDAO usersDAO;
 
     @Autowired
-    ATMService atmService;
+    private ATMService atmService;
 
     @Autowired
     private Md5PasswordEncoder passwordEncoder;
 
     @Autowired
     @Qualifier("emailcreator")
-    EmailCreator emailCreator;
+    private EmailCreator emailCreator;
 
     @Autowired
     @Qualifier("mail")
@@ -49,7 +49,7 @@ public class UserService {
 
     @Autowired
     @Qualifier("jdbcUserService")
-    public UserDetailsManager userDetailsManager;
+    private UserDetailsManager userDetailsManager;
 
     private final Logger logger = Logger.getLogger(UserService.class.getName());
 

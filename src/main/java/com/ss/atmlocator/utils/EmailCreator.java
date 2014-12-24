@@ -25,12 +25,12 @@ public class EmailCreator {
     private String dirPath;
     private STGroup stGroup;
 
-    private final char TEMPLATE_DELIMITER = '#';
+    private final static char TEMPLATE_DELIMITER = '#';
 
     public EmailCreator(String path){
         //creating template group  from files in dir
         try {
-            dirPath = new ClassPathResource(path).getURI().getPath();
+            String dirPath = new ClassPathResource(path).getURI().getPath();
             logger.info("Loading StringTemplateGroup from dir "+dirPath);
             stGroup = new STRawGroupDir(dirPath, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
             stGroup.encoding = "UTF-8";
@@ -54,8 +54,7 @@ public class EmailCreator {
         template.add(USER_LOGIN, user.getLogin());
         template.add(USER_EMAIL, user.getEmail());
         template.add(USER_PASSWORD, password != null ? password : "Password didn't change");
-        String s = template.render();
-        return s;
+        return template.render();
     }
 
 }

@@ -34,8 +34,8 @@ public abstract class ParserExecutor implements Job {
         List<AtmOffice> atms = null;
         try {
             atms = parser.parse();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            logger.error(ioe.getMessage(), ioe);
         }
         parserService.update(atms, bankId);
     }

@@ -17,20 +17,19 @@ import java.util.Set;
 @Repository
 public class UsersDAO implements IUsersDAO {
 
-    private final String DEFAULT_USER_ROLE = "USER";
+    private final static String DEFAULT_USER_ROLE = "USER";
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
     @Autowired
-    IAtmsDAO atmsDAO;
+    private IAtmsDAO atmsDAO;
 
     @Override
     public User getUser(String name) {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name OR u.email=:name", User.class);
         query.setParameter("name", name);
-        User user = query.getSingleResult();
-        return user;
+        return query.getSingleResult();
     }
 
     @Override
@@ -66,8 +65,7 @@ public class UsersDAO implements IUsersDAO {
     public Role getDefaultUserRole() {
         TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM Role AS r WHERE r.name=:name", Role.class);
         query.setParameter("name", DEFAULT_USER_ROLE);
-        Role role = query.getSingleResult();
-        return role;
+        return query.getSingleResult();
     }
 
     @Override
@@ -157,8 +155,7 @@ public class UsersDAO implements IUsersDAO {
     public Set<AtmOffice> getFavorites(int userId) {
         User user = entityManager.find(User.class, userId);
         entityManager.refresh(user);
-        Set<AtmOffice> favorites = user.getAtmFavorites();
-        return favorites;
+        return user.getAtmFavorites();
     }
 
     @Override

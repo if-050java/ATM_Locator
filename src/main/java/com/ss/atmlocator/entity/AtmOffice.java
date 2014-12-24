@@ -42,7 +42,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bank_id")
-    Bank bank;
+    private Bank bank;
 
     public AtmOffice() {}
 
@@ -85,7 +85,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
 
     public void setId(int id) {
-        id = id;
+        this.id = id;
     }
 
     public String getAddress() {

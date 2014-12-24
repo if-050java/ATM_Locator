@@ -77,8 +77,7 @@ public class KredoBankParser implements IParser {
 
     private String bankSite;
     private List<String> regions = new ArrayList<String>();
-    private Document mainPage;
-    private List<AtmOffice> ATMs = new ArrayList<>();
+    private List<AtmOffice> atmList = new ArrayList<>();
 
 
     /**
@@ -88,7 +87,7 @@ public class KredoBankParser implements IParser {
     public List<AtmOffice> parse() throws IOException {
         try{
             logger.info("Try to load start page " + bankSite + ATM_PAGE_URL);
-            mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
+            Document mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
             int parsedRegions = 0;
             for(String region : regions){
                 Elements regionRows = mainPage.getElementsByClass(REGION_ELEMENTS_CLASS);
@@ -97,17 +96,17 @@ public class KredoBankParser implements IParser {
                     Element regionDiv = regionRow.child(REGION_DIV_CHILD);
                     Element regionNameElement = regionDiv.child(REGION_NAME_ELEMENT);
                     if(region.equals(regionNameElement.text())){
-                        logger.info("Try to parse ATMs from region " + region);
+                        logger.info("Try to parse atmList from region " + region);
                         parseRegion(bankSite + GET_REGION_URL+regionID);
                         parsedRegions++;
                     }//end if
                 }//end for regionRows
             }//end for regions
-            logger.info("Parsing is done. Was parsed " + ATMs.size() + " ATMs and offices");
+            logger.info("Parsing is done. Was parsed " + atmList.size() + " atmList and offices");
             if(regions.size() != parsedRegions){
                 logger.warn("Regions given " + regions.size() + "regions parsed " + parsedRegions);
             }
-            return ATMs;
+            return atmList;
         }catch(IOException ioe){
             logger.error(ioe.getMessage(), ioe);
             throw ioe;
@@ -127,7 +126,7 @@ public class KredoBankParser implements IParser {
                                                        .execute().parse();
             Elements cityItem = regionXML.getElementsByTag(ATM_HTML_TAG);
             for(Element city : cityItem){
-                logger.info("Try to parse ATMs from city " + city.child(0).text());
+                logger.info("Try to parse atmList from city " + city.child(0).text());
                 parseCity(bankSite+GET_CITY_URL + city.child(CITY_ID_CHILD).text());
             }
         }catch(IOException ioe){
@@ -137,7 +136,7 @@ public class KredoBankParser implements IParser {
 
     /**
      *Parse city that is defined by @param request to kredobank rest api
-     * and add all ATMs from this city to list
+     * and add all atmList from this city to list
      */
     private void parseCity(String request){
         logger.info("Try to connect to URL "+request);
@@ -146,19 +145,19 @@ public class KredoBankParser implements IParser {
                                                      .referrer(bankSite)
                                                      .method(Connection.Method.GET)
                                                      .execute().parse();
-            Elements ATMItems = cityXML.getElementsByTag(ATM_HTML_TAG);
-            for(Element ATMItem : ATMItems){
-                String address = prepareAddress(ATMItem.child(ADDRESS_CHILD).text());
+            Elements atmItems = cityXML.getElementsByTag(ATM_HTML_TAG);
+            for(Element atmItem : atmItems){
+                String address = prepareAddress(atmItem.child(ADDRESS_CHILD).text());
                 if(isAtmAndOffice(address)){
                     continue;
                 }
 
-                AtmOffice ATM = new AtmOffice();
-                ATM.setAddress(address);
-                ATM.setType(ATMItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
-                ATM.setLastUpdated(new Timestamp(new Date().getTime()));
+                AtmOffice atm = new AtmOffice();
+                atm.setAddress(address);
+                atm.setType(atmItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
+                atm.setLastUpdated(new Timestamp(new Date().getTime()));
 
-                ATMs.add(ATM);
+                atmList.add(atm);
             }
 
         }catch(IOException ioe){
@@ -181,12 +180,12 @@ public class KredoBankParser implements IParser {
     /**
      *
      * @return true if already has same @param address
-     * it means that this address has both ATM and office
+     * it means that this address has both atm and office
      */
     private boolean isAtmAndOffice(String address){
-        for(AtmOffice ATM : ATMs){
-            if(ATM.getAddress().equals(address)){
-                ATM.setType(IS_ATM_OFFICE);
+        for(AtmOffice atm : atmList){
+            if(atm.getAddress().equals(address)){
+                atm.setType(IS_ATM_OFFICE);
                 return true;
             }
         }

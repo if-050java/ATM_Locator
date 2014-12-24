@@ -20,8 +20,8 @@ import java.util.Locale;
 @Service
 public class UserValidator implements Validator {
 
-    private final String ADMIN_ROLE_NAME = "ADMIN";
-    private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
+    private final static String ADMIN_ROLE_NAME = "ADMIN";
+    private final static Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
 
     @Autowired
     @Qualifier("usercredmatcher")
