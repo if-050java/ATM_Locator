@@ -141,15 +141,20 @@ public class AdminController {
             ModelMap modelMap) {
 
 
-        JobTemplate jobTemplate = JobTemplateBuilder.newJob()
+        JobTemplateBuilder jobTemplateBuilder = JobTemplateBuilder.newJob()
                  .withJobName(jobModel.getJobName())
                  .withJobGroup(jobModel.getJobGroup())
                  .withTriggerName(jobModel.getJobGroup())
                  .withTriggerGroup(jobModel.getTriggerGroup())
                  .withCronSched(jobModel.getCronSched())
-                 .withJobClass(jobModel.getJobClassName())
-                 .withMap(service.getMapParam(jobModel.getParams()))
-                 .build();
+                 .withJobClass(jobModel.getJobClassName());
+
+        if (jobModel.getParams() != null && !jobModel.getParams().isEmpty() ){
+            jobTemplateBuilder.withMap(service.getMapParam(jobModel.getParams()));
+        }
+
+        JobTemplate jobTemplate = jobTemplateBuilder.build();
+
 
         if(currentJobName == null || currentJobName.isEmpty()){
             JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate);
