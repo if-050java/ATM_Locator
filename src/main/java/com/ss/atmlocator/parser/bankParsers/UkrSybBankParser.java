@@ -25,21 +25,29 @@ public class UkrSybBankParser implements IParser {
     public static final String TOTAL_ATMS_SELECTOR = "#ref_goggle_tab_atms span";
     public static final String BRANCHES_SELECTOR = "#goggle_tab_branches .address";
     public static final String ATMS_SELECTOR = "#goggle_tab_atms .address";
-    public static final String URL = "http://my.ukrsibbank.com/ua/branches_atms/map/index.php";
+    public static final String URL = "http://my.ukrsibbank.com/ua/branches_atms/map/";
     public static final int RECORDS_PER_PAGE = 100;
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
+    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
+    public static final String HOST = "my.ukrsibbank.com";
+    public static final String REGION_ID = "region_id_13";
+    public static final String SHOW_OFFICES = "type_branch_13";
+    public static final String PAGE_OFFICES = "page_b_13";
+    public static final String SHOW_ATMS = "type_atm_13";
+    public static final String TYPE_ATMS_0 = "type_atm_id_13[0]";
+    public static final String TYPE_ATMS_1 = "type_atm_id_13[1]";
+    public static final String PAGE_ATMS = "page_a_13";
+    public static final String REFERRER = "http://my.ukrsibbank.com/ua/branches_atms/map/index.php";
+
     private Map<String, String> initSettings = new HashMap<>();
 
     private Map<String, String> initSettings(String page) {
-        initSettings.put("region_id_13", "0");
-        initSettings.put("type_branch_13", "1");
-        initSettings.put("tab_id", "goggle_tab_branches");
-        initSettings.put("page_b_13", page);
-        initSettings.put("type_atm_13", "1");
-        initSettings.put("type_atm_id_13[0]", "7");
-        initSettings.put("type_atm_id_13[1]", "8");
-        initSettings.put("page_a_13", page);
-        initSettings.put("tab_id", "goggle_tab_atms");
+        initSettings.put(REGION_ID, "13");
+        initSettings.put(SHOW_OFFICES, "1");
+        initSettings.put(PAGE_OFFICES, page);
+        initSettings.put(SHOW_ATMS, "1");
+        initSettings.put(TYPE_ATMS_0, "7");
+        initSettings.put(TYPE_ATMS_1, "8");
+        initSettings.put(PAGE_ATMS, page);
         return initSettings;
     }
 
@@ -58,7 +66,7 @@ public class UkrSybBankParser implements IParser {
 
         List<AtmOffice> branches = getListElements(totalBranchPages, BRANCHES_SELECTOR);
         List<AtmOffice> atms = getListElements(totalAtmPages, ATMS_SELECTOR);
-        AtmOffice atmOffice = null;
+        AtmOffice atmOffice;
         for (AtmOffice branch : branches) {
             atmOffice = branch;
             if (atms.contains(branch)) {
@@ -110,8 +118,8 @@ public class UkrSybBankParser implements IParser {
     private Document getDocument(Map<String, String> params) throws IOException {
         return Jsoup.connect(URL)
                 .data(params)
-                .header("Host", "my.ukrsibbank.com")
-                .referrer("http://my.ukrsibbank.com/ua/branches_atms/map/index.php")
+                .header("Host", HOST)
+                .referrer(REFERRER)
                 .userAgent(USER_AGENT)
                 .timeout(5 * 1000)
                 .get();
