@@ -8,10 +8,6 @@
             <!-- Default panel contents -->
             <div class="panel-heading">Banks and ATM networks</div>
 
-            <div class="alert" role="alert" style="display: none">
-                <a class="close" onclick="$('.alert').hide()">&times;</a>
-            </div>
-
             <div class="panel-body">
                 <%--<form>--%>
                 <form:form method="get" role="form" cssClass="form-horizontal">
@@ -80,6 +76,9 @@
                         --%>
                     </div>
 
+                    <div class="alert" role="alert" style="display: none">
+                        <a class="close" onclick="$('.alert').hide()">&times;</a>
+                    </div>
                     <div id="network_edit" class="form-group collapse">
                         <label for="net_name" class="control-label col-sm-2">Network name:</label>
                         <div class="col-md-3">

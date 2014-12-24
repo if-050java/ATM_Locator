@@ -1,6 +1,13 @@
 /**
  * Created by Olavin on 29.11.2014.
  */
+var SUCCESS_SAVE = "<span>ATM Network name updated.</span>";
+var SUCCESS_NEW = "<span>ATM Network created.</span>";
+var SUCCESS_DELETE = "<span>ATM Network deleted.</span>";
+var ERROR_SAVE = "<span>Error, ATM Network name is not updated!</span>";
+var ERROR_NEW = "<span>Error, ATM Network is not created!</span>";
+var ERROR_DELETE = "<span>Error, ATM Network is not deleted!</span>";
+var WARNING_MESSAGE = "<span>Warning, something goes wrong.</span>";
 
 /* On select item in ATM Network dropdown show in Banks dropdown belonging only
  *  also set dropdown title to name of the ATM Network
@@ -15,14 +22,14 @@ $(document).ready( function () {
         var fd = new FormData();
         fd.append("id","0");
         fd.append("name",$("#net_name").val());
-        saveNetwork(fd);
+        saveNetwork(fd, SUCCESS_NEW, ERROR_NEW);
     });
 
     $("#btn_save_network").click(function () {
         var fd = new FormData();
         fd.append("id",network_id);
         fd.append("name",$("#net_name").val());
-        saveNetwork(fd);
+        saveNetwork(fd, SUCCESS_SAVE, ERROR_SAVE);
     });
 
     $("#btn_del_network").click(function () {
@@ -54,7 +61,7 @@ $(document).ready( function () {
 
 });
 
-function saveNetwork(fd){
+function saveNetwork(fd, msg_succes, msg_error){
     if (fd == undefined) {
         showAlert("alert alert-danger", ERROR_SAVE);
     } else {
@@ -67,14 +74,14 @@ function saveNetwork(fd){
             success: function (response) {
                 console.log(response);
                 if (response.status == 'SUCCESS') {
-                    showAlert("alert alert-success", SUCCESS_SAVE);
+                    showAlert("alert alert-success", msg_succes);
 
                 } else if (response.status == "ERROR") {
-                    showAlert("alert alert-danger", ERROR_SAVE);
+                    showAlert("alert alert-danger", msg_error);
                 }
             },
             error: function () {
-                showAlert("alert alert-danger", ERROR_SAVE);
+                showAlert("alert alert-danger", msg_error);
             }
         });
     }
