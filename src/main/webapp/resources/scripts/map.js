@@ -77,11 +77,17 @@ function hidePopover(element) {
     $('#' + element).popover("destroy");
 }
 function checkShowOtherBanks(bankPropId) {
+    var popover = $('#label');
+    var showOthers = $("#showOtherBanks");
+    popover.popover({trigger: 'hover'});
     if (!bankPropId) {
-        $("#showOtherBanks").removeAttr("checked");
-        $("#showOtherBanks").attr("disabled","disabled");
+        console.log(bankPropId + "if");
+        showOthers.removeAttr("checked");
+        showOthers.attr("disabled","disabled");
+        popover.popover('enable');
     } else {
-        $("#showOtherBanks").removeAttr("disabled");
+        showOthers.removeAttr("disabled");
+        popover.popover('disable');
     }
 }
 function showHideCheckboxOtherBanks(){
@@ -108,10 +114,8 @@ function updateFilter() {
         showOffices: showOffices
     };
     if (networkId == 0 && !showOtherBanks) {
-        console.log("delete");
         delete data.networkId;
     } else if(showOtherBanks) {
-        console.log(bankNetworkId);
         data.networkId = bankNetworkId;
     }
     if (!bankId || (showOtherBanks && bankId && networkId)) delete data.bankId;
@@ -193,6 +197,7 @@ function getBanks() {
 
 //change filters by network and bank
 $(document).ready(function () {
+    showHideCheckboxOtherBanks();
     autocompleteBanks();
     var networksInput = $("#networksDropdownInput");
     var networksList = $("#networksDropdown");
@@ -226,6 +231,8 @@ $(document).ready(function () {
         max: 5000,
         step: 250
     });
+
+
 
 
 });
