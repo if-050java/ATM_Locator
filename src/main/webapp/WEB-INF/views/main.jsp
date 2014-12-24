@@ -99,9 +99,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="showOtherBanks" disabled>
+                            <div class="checkbox" >
+                                <label id="label" data-toggle="popover" data-placement="bottom" data-content="Choose the bank!">
+                                    <input type="checkbox" id="showOtherBanks" disabled >
                                     Show other banks from network
                                 </label>
                             </div>
