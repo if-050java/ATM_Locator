@@ -29,6 +29,7 @@ public class CommentsDAO implements ICommentsDAO {
     @Transactional
     public void deleteComment(int id) {
         AtmComment comment = entityManager.find(AtmComment.class, id);
+        comment.getAtmOffice().getAtmComments().remove(comment);
         entityManager.remove(comment);
     }
 

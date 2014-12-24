@@ -3,16 +3,14 @@ package com.ss.atmlocator.dao;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class UsersDAO implements IUsersDAO {
@@ -37,23 +35,12 @@ public class UsersDAO implements IUsersDAO {
         return entityManager.find(User.class, id);
     }
 
-
-/*    @Override
-    public User getUserByEmail(String email) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.email=:email", User.class);
-        query.setParameter("email", email);
-        User user = query.getSingleResult();
-        return user;
-
-    }*/
-
     @Override
     @Transactional
     public void deleteUser(int id) {
         User deletedUser = entityManager.find(User.class, id);
         entityManager.remove(deletedUser);
     }
-
 
     @Override
     @Transactional
@@ -83,6 +70,7 @@ public class UsersDAO implements IUsersDAO {
         if (value == 0 ) return false;
         return true;
     }
+
     @Override
     public boolean checkExistLoginName(User user) {
         String sqlQuery = "SELECT COUNT(*) FROM users WHERE login = :login and id != :id";
@@ -151,7 +139,6 @@ public class UsersDAO implements IUsersDAO {
     }
 
     @Override
-    @Transactional
     public Set<AtmOffice> getFavorites(int userId) {
         User user = entityManager.find(User.class, userId);
         entityManager.refresh(user);
@@ -175,6 +162,5 @@ public class UsersDAO implements IUsersDAO {
         favorites.remove(atmsDAO.getAtmById(atmId));
         updateUser(user);
     }
-
 
 }

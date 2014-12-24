@@ -2,11 +2,11 @@ package com.ss.atmlocator.utils;
 
 import java.util.List;
 
-public class JQueryAutoCompleteResponse {
+public class jQueryAutoCompleteResponse {
     private String query;
     private List<String> suggestions;
 
-    public JQueryAutoCompleteResponse(String query, List<String> suggestions) {
+    public jQueryAutoCompleteResponse(String query, List<String> suggestions) {
         this.query = query;
         this.suggestions = suggestions;
     }

@@ -4,7 +4,7 @@ import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadedFile;
-import com.ss.atmlocator.utils.JQueryAutoCompleteResponse;
+import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -49,9 +49,9 @@ public class UsersRestController {
     private Validator imageValidator;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<JQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
+    public ResponseEntity<jQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
         List<String> listUsers = userService.getNames(query);
-        return new ResponseEntity<>(new JQueryAutoCompleteResponse(query, listUsers), HttpStatus.OK);
+        return new ResponseEntity<>(new jQueryAutoCompleteResponse(query, listUsers), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)

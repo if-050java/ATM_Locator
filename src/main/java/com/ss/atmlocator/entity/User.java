@@ -21,6 +21,7 @@ public class User {
     @Column(unique=true)
     private String email;
 
+    @JsonIgnore
     @Column
     private String password;
 
@@ -43,7 +44,7 @@ public class User {
     private Set<AtmComment> atmComments;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name="favorites",
                joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
                inverseJoinColumns = {@JoinColumn(name = "atm_id", nullable = false)})
