@@ -9,7 +9,7 @@ function checkIfGrey(bankId){
 //Adding marker to map
 function addMarker(atm) {
     var imgClass = checkIfGrey(atm.bank.id);
-    var iconUrl =getHomeUrl() + 'resources/images/' + (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
+    var iconUrl = getHomeUrl() + 'resources/images/' + (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
         id: atm.id,
