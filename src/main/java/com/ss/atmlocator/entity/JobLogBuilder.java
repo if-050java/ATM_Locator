@@ -1,6 +1,8 @@
 package com.ss.atmlocator.entity;
 
 
+import com.ss.atmlocator.utils.TimeUtil;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -12,36 +14,38 @@ public class JobLogBuilder {
     private DateFormat dateFormat = new SimpleDateFormat("yyMMddHHmmss");
 
     private String jobName;
-    private Date lastRun;
+    private Timestamp lastRun;
     private String state;
     private String message;
 
 
-    protected JobLogBuilder(){}
+    protected JobLogBuilder() {}
 
-    public static JobLogBuilder newJobLog(){return new JobLogBuilder();}
+    public static JobLogBuilder newJobLog()  {
+        return new JobLogBuilder();
+    }
 
     public JobLogBuilder withJobName(String jobName){
         this.jobName = jobName;
         return this;
     }
 
-    public JobLogBuilder withLastRun(){
-        this.lastRun = new Date(Calendar.getInstance().getTimeInMillis());
+    public JobLogBuilder withLastRun() {
+        this.lastRun = TimeUtil.currentTimestamp();
         return this;
     }
 
-    public JobLogBuilder withState(String state){
+    public JobLogBuilder withState(String state) {
         this.state = state;
         return this;
     }
 
-    public JobLogBuilder withMessage(String message){
+    public JobLogBuilder withMessage(String message) {
         this.message = message;
         return this;
     }
 
-    public JobLog build(){
+    public JobLog build() {
         JobLog jobLog = new JobLog();
         jobLog.setJobName(this.jobName);
         jobLog.setLastRun(this.lastRun);

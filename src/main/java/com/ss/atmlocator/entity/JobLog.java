@@ -3,6 +3,7 @@ package com.ss.atmlocator.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 
 @Entity
@@ -17,7 +18,10 @@ public class JobLog {
     private String jobName;
 
     @Column
-    private Date lastRun;
+    private Timestamp lastRun;
+
+    @Column
+    private Timestamp lastFinish;
 
     @Column
     private String state;
@@ -41,12 +45,20 @@ public class JobLog {
         this.jobName = jobName;
     }
 
-    public Date getLastRun() {
+    public Timestamp getLastRun() {
         return lastRun;
     }
 
-    public void setLastRun(Date lastRun) {
+    public void setLastRun(Timestamp lastRun) {
         this.lastRun = lastRun;
+    }
+
+    public Timestamp getLastFinish() {
+        return lastFinish;
+    }
+
+    public void setLastFinish(Timestamp lastFinish) {
+        this.lastFinish = lastFinish;
     }
 
     public String getState() {
