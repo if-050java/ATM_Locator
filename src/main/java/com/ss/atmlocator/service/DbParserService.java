@@ -32,14 +32,14 @@ public class DbParserService implements IDBParserService {
 
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-        bankId = atms.get(0).getBank().getId();     // TODO Bed understand , will changed
+        bankId = atms.get(0).getBank().getId();     // TODO Bad understand , will changed
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
         for(AtmOffice atmDb: atmListFomDb){
             if(atms.contains(atmDb)){
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
                 atmExistList.add(atmDb);
             }else{
-                atmDb.setState(1);
+                atmDb.setState(AtmOffice.AtmState.NORMAL);
                 atmExistList.add(atmDb);
             }
         }
@@ -59,14 +59,14 @@ public class DbParserService implements IDBParserService {
     public void updateWithoutType(List<AtmOffice> atms, int bankId) {
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-//        bankId = atms.get(0).getBank().getId();     // TODO Bed understand , will changed
+//        bankId = atms.get(0).getBank().getId();     // TODO Bad understand , will changed
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
         for(AtmOffice atmDb: atmListFomDb){
             if(atms.contains(atmDb)){
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
                 atmExistList.add(atmDb);
             }else{
-                atmDb.setState(1);
+                atmDb.setState(AtmOffice.AtmState.NORMAL);
                 atmExistList.add(atmDb);
             }
         }

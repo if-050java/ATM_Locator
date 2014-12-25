@@ -26,7 +26,10 @@ public class AtmOffice implements Comparable<AtmOffice>{
     private GeoPosition geoPosition;
 
     @Column
-    private int state; //todo: substitute with enum
+    private AtmState state;
+    //private int state; //todo: substitute with enum
+
+    public enum AtmState {NORMAL, DISABLED, BAD_ADDRESS};
 
     @Enumerated(EnumType.ORDINAL)
     private AtmType type;
@@ -44,12 +47,15 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @JoinColumn(name = "bank_id")
     Bank bank;
 
-    public AtmOffice() {}
+    public AtmOffice() {
+        this.state = AtmState.NORMAL;
+        this.type = AtmType.IS_ATM;
+    }
 
     public AtmOffice(String address, AtmType type) {
         this.address = address;
         this.type = type;
-        this.state = 1;
+        this.state = AtmState.NORMAL;
     }
 
     @Override
@@ -104,11 +110,11 @@ public class AtmOffice implements Comparable<AtmOffice>{
         this.geoPosition = geoPosition;
     }
 
-    public int getState() {
+    public AtmState getState() {
         return state;
     }
 
-    public void setState(int state) {
+    public void setState(AtmState state) {
         this.state = state;
     }
 
@@ -116,6 +122,10 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return type;
     }
 
+    /**
+     * Returns text representation of ATM type to display at web-page
+     * @return ATM type as String
+     */
     public String getTypeString() {
         String str;
         switch (type) {
