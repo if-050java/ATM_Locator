@@ -9,15 +9,36 @@
   Time: 22:30
   To change this template use File | Settings | File Templates.
 --%>
-<div class="container">
-  <form:form method="get">
-      <div class="form-group">
-        <div class="col-md-6">
-          <button type="submit" formaction="<c:url value="/adminBanks" />" class="btn btn-success btn-lg">
-            <span class="sr-only">Close</span>
-            <strong>Bank ATM and office list</strong> page is under construction
-          </button>
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading">${bank.name}</div>
+
+        <%-- List of ATMs --%>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <table class="table">
+              <tr>
+                <th>id#</th>
+                <th>Type</th>
+                <th>Address</th>
+                <th>Geographic Location</th>
+                <th>Last updated</th>
+              </tr>
+              <c:forEach items="${atms}" var="atm">
+                <tr id="${atm.id}">
+                  <td>${atm.id}</td>
+                  <td>${atm.getTypeString()}</td>
+                  <td>${atm.address}</td>
+                  <td>${atm.geoPosition.toString()}</td>
+                  <td>${atm.getTimeString()}</td>
+                </tr>
+              </c:forEach>
+            </table>
+
+          </div>
         </div>
-      </div>
-  </form:form>
+        <%-- List of ATMs --%>
+
+
+    </div>
 </div>

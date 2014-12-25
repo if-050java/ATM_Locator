@@ -1,23 +1,21 @@
 package com.ss.atmlocator.parser.bankParsers;
 
+
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Olavin on 19.12.2014.
  */
-public class OschadBankItem {
-    private final static Logger logger = LoggerFactory.getLogger(OschadBankItem.class);
-
-    private final static String LOCALITY_PATTERN = "(м\\.|с\\.|смт)\\s+(.+?),";
+public final class OschadBankItem {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OschadBankItem.class);
 
     private String address;
+    @Nullable
     private String viddil;
 
-    OschadBankItem(String address, String viddil){
+    OschadBankItem(String address, String viddil) {
         setAddress(address);
         setViddil(viddil);
     }
@@ -26,38 +24,24 @@ public class OschadBankItem {
         return address;
     }
 
-    public String getViddil() {
-        return viddil;
-    }
-
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
-    public void setViddil(String viddil) {
+    public void setViddil(final String viddil) {
         this.viddil = viddil;
     }
 
-    private String getLocality(){
-        //TODO replace with parameter
-        Pattern p = Pattern.compile(LOCALITY_PATTERN);
-        Matcher m = p.matcher(address);
-        return m.find() ? m.group(2) : null;
-    }
-
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         OschadBankItem that = (OschadBankItem) o;
-
         if (viddil != null && viddil.equals(that.viddil)) {
-            if(getLocality().equals(that.getLocality()))
             return true;
+        } else {
+            return address.equals(that.address);
         }
-
-        return address.equals(that.address);
     }
 
     @Override
@@ -67,9 +51,6 @@ public class OschadBankItem {
 
     @Override
     public String toString() {
-        return "OschadBankItem{" +
-                "viddil='" + viddil + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return "{" + "viddil='" + viddil + '\'' + ", address='" + address + '\'' + '}';
     }
 }
