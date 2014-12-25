@@ -14,6 +14,7 @@ import java.util.List;
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM;
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM_OFFICE;
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_OFFICE;
+import static com.ss.atmlocator.entity.AtmState.*;
 
 /**
  * Created by maks on 13.12.2014.
@@ -21,25 +22,23 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_OFFICE;
 @Service
 public class DbParserService implements IDBParserService {
     @Autowired
-    IAtmsDAO atmsDAO;
+    private IAtmsDAO atmsDAO;
     @Autowired
-    IBanksDAO banksDAO;
-    int bankId;
+    private IBanksDAO banksDAO;
+    private int bankId;
 
     @Override
-    public void update(List<AtmOffice> atms) {
-
-
+    public void update(final List<AtmOffice> atms) {
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-        bankId = atms.get(0).getBank().getId();     // TODO Bad understand , will changed
+        bankId = atms.get(0).getBank().getId();     // TODO difficult to understand , must be changed
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
-        for(AtmOffice atmDb: atmListFomDb){
-            if(atms.contains(atmDb)){
+        for (AtmOffice atmDb: atmListFomDb) {
+            if (atms.contains(atmDb)) {
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
                 atmExistList.add(atmDb);
-            }else{
-                atmDb.setState(AtmOffice.AtmState.NORMAL);
+            } else {
+                atmDb.setState(NO_LOCATION);
                 atmExistList.add(atmDb);
             }
         }
@@ -56,17 +55,17 @@ public class DbParserService implements IDBParserService {
     }
 
 
-    public void updateWithoutType(List<AtmOffice> atms, int bankId) {
+    public void updateWithoutType(final List<AtmOffice> atms, final int bankId) {
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-//        bankId = atms.get(0).getBank().getId();     // TODO Bad understand , will changed
+//        bankId = atms.get(0).getBank().getId();     // TODO difficult to understand , must be changed
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
-        for(AtmOffice atmDb: atmListFomDb){
-            if(atms.contains(atmDb)){
+        for (AtmOffice atmDb: atmListFomDb) {
+            if (atms.contains(atmDb)) {
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
                 atmExistList.add(atmDb);
-            }else{
-                atmDb.setState(AtmOffice.AtmState.NORMAL);
+            } else {
+                atmDb.setState(NO_LOCATION);
                 atmExistList.add(atmDb);
             }
         }
@@ -87,30 +86,30 @@ public class DbParserService implements IDBParserService {
     }
     //-----------------------------------------------------------------------------------
 
-    private boolean compareAtm(AtmOffice atmFromDb, AtmOffice atmNew){
-        if(atmFromDb.equals(atmNew)){// equals має бути по адрессі
-            AtmOffice.AtmType typeDb =atmFromDb.getType();
-            AtmOffice.AtmType typeNew =atmNew.getType();
-            if(typeDb.equals(typeNew)){
+    private boolean compareAtm(final AtmOffice atmFromDb, final AtmOffice atmNew) {
+        if (atmFromDb.equals(atmNew)) { // equals має бути по адрессі
+            AtmOffice.AtmType typeDb = atmFromDb.getType();
+            AtmOffice.AtmType typeNew = atmNew.getType();
+            if (typeDb.equals(typeNew)) {
                 return true;
-            }else if(typeDb== IS_ATM&&typeNew== IS_OFFICE){
+            } else if (typeDb == IS_ATM && typeNew == IS_OFFICE) {
                 atmFromDb.setType(IS_OFFICE);
 
                 return true;
-            }else if(typeDb== IS_OFFICE&&typeNew== IS_ATM){
+            } else if (typeDb == IS_OFFICE && typeNew == IS_ATM) {
                 atmFromDb.setType(IS_ATM);
 
                 return true;
-            }else if(typeDb==IS_ATM&&typeNew==IS_ATM_OFFICE){
+            } else if (typeDb == IS_ATM && typeNew == IS_ATM_OFFICE) {
                 atmFromDb.setType(IS_ATM_OFFICE);
                 return true;
-            }else if(typeDb==IS_ATM_OFFICE&&typeNew==IS_ATM){
+            } else if (typeDb == IS_ATM_OFFICE && typeNew == IS_ATM) {
                 atmFromDb.setType(IS_ATM);
                 return true;
-            }else if(typeDb==IS_OFFICE&&typeNew==IS_ATM_OFFICE){
+            } else if (typeDb == IS_OFFICE && typeNew == IS_ATM_OFFICE) {
                 atmFromDb.setType(IS_ATM_OFFICE);
                 return true;
-            }else if(typeDb==IS_ATM_OFFICE&&typeNew==IS_OFFICE){
+            } else if (typeDb == IS_ATM_OFFICE && typeNew == IS_OFFICE) {
                 atmFromDb.setType(IS_OFFICE);
                 return true;
             }
@@ -119,13 +118,13 @@ public class DbParserService implements IDBParserService {
         return false;
     }
     @Override
-    public void update(List<AtmOffice> atms, int bankId) {
+    public void update(final List<AtmOffice> atms, final int bankId) {
         List<AtmOffice> atmListFromDb = atmsDAO.getBankAtms(bankId);
         List<AtmOffice> atmResultList = new ArrayList<>();
 
         Bank currentBank = banksDAO.getBank(bankId);
-        for (AtmOffice atm:atms){
-            for(AtmOffice atmDb:atmListFromDb){
+        for (AtmOffice atm:atms) {
+            for (AtmOffice atmDb:atmListFromDb) {
                 compareAtm(atmDb, atm);
                 continue;
                 /*if(compareAtm(atmDb,atm)) {
@@ -134,11 +133,11 @@ public class DbParserService implements IDBParserService {
                 }*/
             }
         }
-        for(AtmOffice atmDb: atmListFromDb){
-            if(atms.contains(atmDb)){
+        for (AtmOffice atmDb: atmListFromDb) {
+            if (atms.contains(atmDb)) {
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
                 atmResultList.add(atmDb);
-            }else{
+            } else {
                 atmResultList.add(atmDb);
             }
         }

@@ -29,8 +29,6 @@ public class AtmOffice implements Comparable<AtmOffice>{
     private AtmState state;
     //private int state; //todo: substitute with enum
 
-    public enum AtmState {NORMAL, DISABLED, BAD_ADDRESS};
-
     @Enumerated(EnumType.ORDINAL)
     private AtmType type;
 
