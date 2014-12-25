@@ -6,15 +6,13 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
-import static org.apache.commons.lang.ObjectUtils.*;
 
 /**
  * Created by Olavin on 17.11.2014.
  */
 @Entity
-@Table(name="atm")
-public class AtmOffice implements Comparable<AtmOffice>{
+@Table(name = "atm")
+public class AtmOffice implements Comparable<AtmOffice> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -25,8 +23,8 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @Embedded
     private GeoPosition geoPosition;
 
-    @Column
-    private int state; //todo: substitute with enum
+    @Enumerated(EnumType.ORDINAL)
+    private AtmState state;
 
     @Enumerated(EnumType.ORDINAL)
     private AtmType type;
@@ -44,16 +42,19 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @JoinColumn(name = "bank_id")
     private Bank bank;
 
-    public AtmOffice() {}
+    public AtmOffice() {
+        this.state = AtmState.NO_LOCATION;
+        this.type = AtmType.IS_ATM;
+    }
 
-    public AtmOffice(String address, AtmType type) {
+    public AtmOffice(final String address, final AtmType type) {
         this.address = address;
         this.type = type;
-        this.state = 1;
+        this.state = AtmState.NO_LOCATION;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof AtmOffice)) return false;
 
@@ -63,14 +64,14 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
     @Override
     public int hashCode() {
-        if(address == null){
+        if (address == null) {
             return 0;
         }
         return address.hashCode();
     }
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "atmOffice",fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
     private List<AtmComment> atmComments;
 
     @Transient
@@ -84,7 +85,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -92,7 +93,7 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
@@ -104,11 +105,11 @@ public class AtmOffice implements Comparable<AtmOffice>{
         this.geoPosition = geoPosition;
     }
 
-    public int getState() {
+    public AtmState getState() {
         return state;
     }
 
-    public void setState(int state) {
+    public void setState(AtmState state) {
         this.state = state;
     }
 
@@ -116,7 +117,24 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return type;
     }
 
-    public void setType(AtmType type) {   this.type = type;}
+    /**
+     * Returns text representation of ATM type to display at web-page
+     * @return ATM type as String
+     */
+    public String getTypeString() {
+        String str;
+        switch (type) {
+            case IS_ATM: str = "ATM"; break;
+            case IS_OFFICE: str = "Branch"; break;
+            case IS_ATM_OFFICE: str = "Branch, ATM"; break;
+            default: str = "Undefined";
+        }
+        return str;
+    }
+
+    public void setType(AtmType type) {
+        this.type = type;
+    }
 
     public Timestamp getLastUpdated() {
         return lastUpdated;
@@ -124,6 +142,14 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
     public void setLastUpdated(Timestamp lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public String getTimeString() {
+        if (lastUpdated == null) {
+            return "null";
+        } else {
+            return String.format("%1$TD %1$TT", lastUpdated);
+        }
     }
 
     public String getPhoto() {
@@ -150,18 +176,17 @@ public class AtmOffice implements Comparable<AtmOffice>{
     public void setBank(Bank bank) {
         this.bank = bank;
     }
-    
+
     @Override
-    public int compareTo(AtmOffice other){
+    public int compareTo(final AtmOffice other) {
         return this.getAddress().compareTo(other.getAddress());
     }
 
     @Override
     public String toString() {
-        return "AtmOffice{" +
-                "address='" + address + '\'' +
-                ", type=" + type +
-                '}';
+        return "AtmOffice{"
+                + "address='" + address + '\''
+                + ", type=" + type.ordinal() + '}';
     }
 }
 
