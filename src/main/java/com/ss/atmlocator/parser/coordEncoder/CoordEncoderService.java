@@ -57,7 +57,7 @@ public class CoordEncoderService implements Job {
 
         for (String addr : address){
             try{
-
+                logger.debug("Searching address: "+addr);
                 GoogleResponse res = AddressWorker.convertToLatLong(addr);
                 if(res.getStatus().equals("OK")){
                     Result result = res.getResults()[0];

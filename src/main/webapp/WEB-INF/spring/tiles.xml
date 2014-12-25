@@ -31,10 +31,6 @@
         <put-attribute name="content" value="/WEB-INF/views/adminBankEdit.jsp"/>
     </definition>
 
-    <definition name="adminBankDeleted" extends=".mainTemplate">
-        <put-attribute name="content" value="/WEB-INF/views/adminBankDeleted.jsp"/>
-    </definition>
-
     <definition name="adminBankAtmList" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/adminBankAtmList.jsp"/>
     </definition>

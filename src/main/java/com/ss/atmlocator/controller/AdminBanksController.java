@@ -11,16 +11,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -167,14 +162,14 @@ public final class AdminBanksController {
      *  Show Bank's ATM and office list.
      */
     @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.POST)
-    public String adminBankAtmList(@ModelAttribute("bank") Bank bank,
-                                   ModelMap modelMap, Principal user) {
+    public String adminBankAtmList(@ModelAttribute("bank") final Bank bank,
+                                   final ModelMap modelMap, final Principal user) {
         log.debug("AdminBanksController.adminBankAtmList():GET");
 
         modelMap.addAttribute("bank", banksService.getBank(bank.getId()));
+        modelMap.addAttribute("atms",banksService.getBankAtms(bank.getId()));
         modelMap.addAttribute("active","adminBanks");
         modelMap.addAttribute("userName", user.getName());
-        //TODO: provide list of ATMs and offices
 
         return "adminBankAtmList";
     }

@@ -116,6 +116,17 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return type;
     }
 
+    public String getTypeString() {
+        String str;
+        switch (type) {
+            case IS_ATM: str = "ATM"; break;
+            case IS_OFFICE: str = "Branch"; break;
+            case IS_ATM_OFFICE: str = "Branch, ATM"; break;
+            default: throw new RuntimeException();
+        }
+        return str;
+    }
+
     public void setType(AtmType type) {   this.type = type;}
 
     public Timestamp getLastUpdated() {
@@ -124,6 +135,14 @@ public class AtmOffice implements Comparable<AtmOffice>{
 
     public void setLastUpdated(Timestamp lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public String getTimeString() {
+        if(lastUpdated == null) {
+            return "null";
+        } else {
+            return String.format("%1$TD %1$TT", lastUpdated);
+        }
     }
 
     public String getPhoto() {
@@ -152,16 +171,15 @@ public class AtmOffice implements Comparable<AtmOffice>{
     }
     
     @Override
-    public int compareTo(AtmOffice other){
+    public int compareTo(final AtmOffice other){
         return this.getAddress().compareTo(other.getAddress());
     }
 
     @Override
     public String toString() {
-        return "AtmOffice{" +
-                "address='" + address + '\'' +
-                ", type=" + type +
-                '}';
+        return "AtmOffice{"
+                + "address='" + address + '\''
+                + ", type=" + type.ordinal() + '}';
     }
 }
 

@@ -1,9 +1,10 @@
 package com.ss.atmlocator.service;
 
+import com.ss.atmlocator.dao.IAtmsDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.*;
-import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,15 @@ public class BanksService {
     @Autowired
     private IBanksDAO banksDAO;
 
+    @Autowired
+    private IAtmsDAO atmsDAO;
+
     public List<Bank> getBanksByNetworkId(int network_id){
         return banksDAO.getBanksByNetworkId(network_id);
+    }
+
+    public List<AtmOffice> getBankAtms(int id){
+        return atmsDAO.getBankAtms(id);
     }
 
     public List<Bank> getBanksList() {

@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import com.ss.atmlocator.utils.GeoUtil;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -46,6 +48,12 @@ public class GeoPosition {
 
     public final void setLatitude(final double latitude) {
         this.latitude = latitude;
+    }
+
+    @Override
+    public String toString() {
+        //return String.format("% 2.5f % 2.5f",longitude, latitude);
+        return GeoUtil.geoLocationString(this);
     }
 
     public final double getLatInRad() {
