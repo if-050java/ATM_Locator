@@ -8,6 +8,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -195,8 +196,10 @@ public final class OschadBankParser implements IParser {
             int pageCount = 0;
             try {
                 pageCount = getPageCount(createJsoupConnection(regionName, 1));
+            } catch (HttpStatusException e) {
+                LOGGER.error(e.getMessage());
             } catch (ParseException e) {
-                LOGGER.warn(e.getMessage(),e);
+                LOGGER.warn(e.getMessage());
             }
             for (int page = 1; page <= pageCount; page++) {
                 LOGGER.debug(String.format("Region: {%s} page %d/%d", regionName, page, pageCount));
@@ -232,7 +235,7 @@ public final class OschadBankParser implements IParser {
             return m.find() ? m.group(1) + "/" + m.group(2) : null;
         }
 
-        private int getPageCount(final Connection connection) throws IOException, ParseException {
+        private int getPageCount(final Connection connection) throws IOException, ParseException, HttpStatusException {
             Connection.Response response = connection.execute();
             Elements elems = response.parse().select(LAST_PAGE_SELECTOR);
             if (elems.size() == 0) {
