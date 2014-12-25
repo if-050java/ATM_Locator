@@ -35,7 +35,8 @@ public class CommentsDAO implements ICommentsDAO {
 
     @Override
     public List<AtmComment> getComments(int atmId) {
-        TypedQuery<AtmComment> query = entityManager.createQuery("SELECT c FROM AtmComment AS c WHERE c.atmOffice.id=:atmId", AtmComment.class);
+        String queryString = "SELECT c FROM AtmComment AS c WHERE c.atmOffice.id=:atmId";
+        TypedQuery<AtmComment> query = entityManager.createQuery(queryString, AtmComment.class);
         query.setParameter("atmId", atmId);
         return query.getResultList();
     }

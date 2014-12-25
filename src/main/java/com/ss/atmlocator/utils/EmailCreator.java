@@ -1,7 +1,6 @@
 package com.ss.atmlocator.utils;
 
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.entity.UserStatus;
 import org.springframework.core.io.ClassPathResource;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
@@ -42,7 +41,7 @@ public class EmailCreator {
 
     //Method for creating e-mail message to user
     public String toUser(User user, String password) throws MessagingException {
-        String templateName = user.getEnabled() == ENABLED ? UPDATE_TEMPLATE_ENABLED_USER : UPDATE_TEMPLATE_DISABLED_USER;
+        String templateName = user.getEnabled() == ENABLED ? TEMPLATE_ENABLED_USER : TEMPLATE_DISABLED_USER;
 
         logger.info("Loading email message template from file" + templateName + ".st");
         ST template = stGroup.getInstanceOf(templateName);

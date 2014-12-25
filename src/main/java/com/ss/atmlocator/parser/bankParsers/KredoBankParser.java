@@ -47,6 +47,7 @@ public class KredoBankParser implements IParser {
     private static final String ADDRESS_SEPARATOR = "<br />";
 
     private static final String ILLEGAL_ARGUMENT_MESSAGE = "Required parameter not specified or empty: ";
+
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
     private static final String ATM_HTML_TAG = "item";
     private static final String REGION_ELEMENTS_CLASS = "white_back";
@@ -71,7 +72,7 @@ public class KredoBankParser implements IParser {
 
     private static final String POSTAL_CODE_REGEXP = ", \\d{5}";
     private static final String REMOVE_SPACES_REGEXP = "\\s{1,}";
-    private static final String POSTAL_SPACE_AFTER_DOT = "\\. ";
+    private static final String REMOVE_SPACE_AFTER_DOT = "\\. ";
 
     private final Logger logger = Logger.getLogger(KredoBankParser.class);
 
@@ -172,7 +173,7 @@ public class KredoBankParser implements IParser {
         String[] addressArray = rawAddress.split(ADDRESS_SEPARATOR);
         String address = addressArray[STREET_PART]+addressArray[CITY_PART];
         address = address.replaceFirst(POSTAL_CODE_REGEXP,"");
-        address = address.replaceAll(POSTAL_SPACE_AFTER_DOT, ".");
+        address = address.replaceAll(REMOVE_SPACE_AFTER_DOT, ".");
         address = address.replaceAll(REMOVE_SPACES_REGEXP," ");
         return address.trim();
     }
@@ -201,7 +202,7 @@ public class KredoBankParser implements IParser {
         String regionsString = parameters.get(requiredParameters.REGIONS.getValue());
         for(String region : regionsString.split(REGIONS_SEPARATOR)){
             regions.add(region.trim());
-        };
+        }
         bankSite = parameters.get(requiredParameters.URL.getValue());
     }
 
@@ -209,13 +210,13 @@ public class KredoBankParser implements IParser {
      *  Check all @param parameters sanded to parser and  @throws IllegalArgumentException
      *  if any parameters isn't preset, null or empty
      */
-    private void checkParameters(Map<String, String> parameters) throws IllegalArgumentException{
+    private void checkParameters(Map<String, String> parameters){
         for(requiredParameters parameter : requiredParameters.values()){
             if(! isPreset(parameters, parameter.getValue())){
                 IllegalArgumentException iae = new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + parameter);
                 logger.error(iae.getMessage(), iae);
                 throw iae;
-            };
+            }
         }
     }
 

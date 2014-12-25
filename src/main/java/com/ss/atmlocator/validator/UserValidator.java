@@ -9,8 +9,6 @@ import com.ss.atmlocator.utils.UserCredMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -62,13 +60,12 @@ public class UserValidator implements Validator {
 
     public void validateEmail(User user, Errors errors) {
         final String email = user.getEmail();
-        if(userCredMatcher.validateEmail(email)){
-            if(userService.checkExistEmail(user)){
+        if (userCredMatcher.validateEmail(email)) {
+            if (userService.checkExistEmail(user)) {
                 errors.rejectValue(Constants.USER_EMAIL,
                         messages.getMessage("email.exists", null, Locale.ENGLISH));
             }
-        }
-        else{
+        } else {
             errors.rejectValue(Constants.USER_EMAIL,
                     messages.getMessage("invalid.email", null, Locale.ENGLISH));
         }
@@ -76,13 +73,12 @@ public class UserValidator implements Validator {
 
     public void validateLogin(User user, Errors errors) {
         final String login = user.getLogin();
-        if(userCredMatcher.validateLogin(login)){
-            if(userService.checkExistLoginName(user)){
+        if (userCredMatcher.validateLogin(login)) {
+            if (userService.checkExistLoginName(user)) {
                 errors.rejectValue(Constants.USER_LOGIN,
                         messages.getMessage("login.exists", null, Locale.ENGLISH));
             }
-        }
-        else{
+        } else {
             errors.rejectValue(Constants.USER_LOGIN,
                     messages.getMessage("invalid.login", null, Locale.ENGLISH));
         }
@@ -90,7 +86,7 @@ public class UserValidator implements Validator {
 
     public void validatePassword(User user, Errors errors) {
         final String password = user.getPassword();
-        if(!userCredMatcher.validatePassword(password)) {
+        if (!userCredMatcher.validatePassword(password)) {
             errors.rejectValue(Constants.USER_PASSWORD,
                     messages.getMessage("invalid.password", null, Locale.ENGLISH));
         }
@@ -98,7 +94,7 @@ public class UserValidator implements Validator {
 
     private void validateNickName(User user, Errors errors) {
         final String nickName = user.getName();
-        if(!userCredMatcher.validateNickName(nickName)){
+        if (!userCredMatcher.validateNickName(nickName)) {
             errors.rejectValue(Constants.USER_NAME,
                     messages.getMessage("invalid.nickname", null, Locale.ENGLISH));
         }
