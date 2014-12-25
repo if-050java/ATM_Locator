@@ -22,6 +22,32 @@ public class GeoUtil {
     }
 
     public static boolean inRadius(GeoPosition basePoint, GeoPosition checkedPoint, int radius){
+        if(checkedPoint == null || basePoint == null) return false;
         return getDistance(basePoint, checkedPoint) <= radius;
     }
+
+
+    private static int degrees(final double coordinate) {
+        return (int) coordinate;
+    }
+
+    private static double minutes(final double coordinate) {
+        final double minutesInDegree = 60.0;
+        return (coordinate - degrees(coordinate)) * minutesInDegree;
+    }
+
+    public static String geoLocationString(final GeoPosition position) {
+        if (position.getLongitude() == 0 || position.getLatitude() == 0) {
+            return "undefined";
+        }
+
+        char southOrNorth = position.getLatitude() > 0 ? 'N' : 'S';
+        char westOrEast = position.getLongitude() > 0 ? 'E' : 'W';
+
+        // sample: N48°42.2491' E23°50.4972'
+        return String.format("%c%02d\u00B0%02.4f' %c%02d\u00B0%02.4f'",
+                southOrNorth, degrees(position.getLatitude()), minutes(position.getLatitude()),
+                westOrEast, degrees(position.getLongitude()), minutes(position.getLongitude()));
+    }
+
 }

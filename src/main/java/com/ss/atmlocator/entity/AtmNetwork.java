@@ -28,7 +28,7 @@ public class AtmNetwork {
     }
 
     public void setId(int id) {
-        id = id;
+        this.id = id;
     }
 
     public String getName() {

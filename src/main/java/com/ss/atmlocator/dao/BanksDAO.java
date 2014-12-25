@@ -5,21 +5,14 @@ import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;;
-import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +20,7 @@ import java.util.Set;
  * Created by Olavin on 22.11.2014.
  */
 @Repository
-public class BanksDAO implements IBanksDAO {
+public final class BanksDAO implements IBanksDAO {
     private static final int UNASSIGNED_NETWORK = -1;
     private final org.apache.log4j.Logger log = Logger.getLogger(BanksDAO.class);
 
@@ -57,24 +50,24 @@ public class BanksDAO implements IBanksDAO {
     }
 
     @Override
-    public Bank getBank(int id) {
+    public Bank getBank(final int id) {
         return (Bank) entityManager.find(Bank.class, id);
     }
 
     @Override
-    public List<Bank> getBanksByNetworkId(int network_id) {
-        if (network_id == 0) {
+    public List<Bank> getBanksByNetworkId(final int networkId) {
+        if (networkId == 0) {
             return getBanksList();
         }
-        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b " +
-                "where b.network.id=:network_id ORDER BY b.name", Bank.class);
-        query.setParameter("network_id", network_id);
+        TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b "
+                + "where b.network.id=:network_id ORDER BY b.name", Bank.class);
+        query.setParameter("network_id", networkId);
         return query.getResultList();
     }
 
     @Override
     @Transactional
-    public Bank saveBank(Bank bank) {
+    public Bank saveBank(final Bank bank) {
         bank.setLastUpdated(TimeUtil.currentTimestamp());
         Bank saved = (Bank) entityManager.merge(bank);
         log.debug("Saved Bank '" + saved.getName() + "' #" + saved.getId());
@@ -83,16 +76,18 @@ public class BanksDAO implements IBanksDAO {
 
     @Override
     @Transactional
-    public boolean deleteBank(int bank_id) {
+    public boolean deleteBank(final int bankId) {
         try {
-            Bank bank = (Bank) entityManager.find(Bank.class, bank_id);
-            if (bank == null) return false;
+            Bank bank = (Bank) entityManager.find(Bank.class, bankId);
+            if (bank == null) {
+                return false;
+            }
             String delName = bank.getName(); //get name before it will be deleted
             entityManager.remove(bank);
-            log.debug("Deleted Bank '" + delName + "' #" + bank_id);
+            log.debug("Deleted Bank '" + delName + "' #" + bankId);
             return true;
         } catch (PersistenceException e) {
-            log.error("Failed to delete bank " + bank_id);
+            log.error("Failed to delete bank #" + bankId);
             e.printStackTrace();
             return false;
         }
@@ -105,14 +100,15 @@ public class BanksDAO implements IBanksDAO {
 
     @Override
     @Transactional
-    public void saveAllBankNBU(List<Bank> banks) {
+    public void saveAllBankNBU(final List<Bank> banks) {
         Bank tempBank;
         AtmNetwork unassigned = entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
 
         for (Bank bank : banks) {
             int mfoCode = bank.getMfoCode();
             try {
-                TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.mfoCode=:mfoCode", Bank.class);
+                TypedQuery<Bank> query = entityManager.createQuery(
+                        "SELECT b FROM Bank AS b WHERE b.mfoCode=:mfoCode", Bank.class);
                 query.setParameter("mfoCode", mfoCode);
 
                 tempBank = query.getSingleResult();
@@ -133,7 +129,7 @@ public class BanksDAO implements IBanksDAO {
 
     @Override
     @Transactional
-    public void saveAllBanksUbank(List<Bank> banks) {
+    public void saveAllBanksUbank(final List<Bank> banks) {
         int cntBanksUpdated = 0;
         int cntNewAtms = 0;
         log.debug("Parsed " + banks.size() + " banks from Ubanks.com.ua");
@@ -142,7 +138,8 @@ public class BanksDAO implements IBanksDAO {
             boolean bankUpdated = false;
 
             try {
-                TypedQuery<Bank> query = entityManager.createQuery("SELECT b FROM Bank AS b WHERE b.name=:bankName", Bank.class);
+                TypedQuery<Bank> query = entityManager.createQuery(
+                        "SELECT b FROM Bank AS b WHERE b.name=:bankName", Bank.class);
                 query.setParameter("bankName", bank.getName());
 
                 Bank bankOther = query.getSingleResult();

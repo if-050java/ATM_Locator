@@ -1,6 +1,7 @@
-    <div class="navbar navbar-fixed-bottom" style="min-height: 10px">
-        <div class="breadcrumb" style="margin-bottom: 0px; padding-bottom: 0px"><div>Copyright</div> <div id = "addfeedback" align="right">
-            <a href="#" onclick="addFeedback()">add feedback</a>
-        </div></div></div>
+<nav class="navbar navbar-fixed-bottom" style="min-height: 10px; background-color: #c0c0c0">
+    <div class="col-md-3">Copyright</div>
+    <div class="col-md-3 col-md-offset-6" align="right" id="addfeedback">
+        <a href="#" onclick="addFeedback()">add feedback</a>
     </div>
+</nav>
 

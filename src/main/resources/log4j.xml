@@ -20,6 +20,18 @@
         </layout>
 </appender>
 
+    <appender name="DB" class="com.ss.atmlocator.utils.JDBCAppenderPlus">
+        <param name="Threshold" value="INFO" />
+        <param name="URL" value="jdbc:mysql://localhost/atmlocator" />
+        <param name="driver" value="com.mysql.jdbc.Driver" />
+        <param name="user" value="root" />
+        <param name="password" value="root" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="INSERT INTO LOGS (dated, logger, level, message) VALUES ('%d{yyyy-MM-dd HH:mm:ss}', '%c{1}:%L', '%p', '%m')" />
+        </layout>
+    </appender>
+
     <appender name="smtpLogs" class="org.apache.log4j.RollingFileAppender">
         <param name="Threshold" value="DEBUG" />
         <param name="MaxFileSize" value="2048KB" />
@@ -41,7 +53,7 @@
     </appender>
 
     <appender name="springLogs" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="DEBUG" />
+        <param name="Threshold" value="WARN" />
         <param name="MaxFileSize" value="2048KB" />
         <param name="MaxBackupIndex" value="10" />
         <param name="File" value="../logs/spring-logs.log"/>
@@ -83,34 +95,40 @@
 
     <!-- Spring Log -->
     <logger name="org.springframework">
-        <level value="info" />
+        <level value="error" />
+        <appender-ref ref="DB"/>
         <appender-ref ref="springLogs"/>
     </logger>
 
         <!-- SendMails Log -->
     <logger name="com.ss.atmlocator.utils.SendMails">
         <level value="error"/>
+        <appender-ref ref="DB"/>
         <appender-ref ref="smtpLogs"/>
     </logger>
 
     <logger name="com.ss.atmlocator.parser.scheduler">
         <level value="debug"/>
+        <appender-ref ref="DB"/>
         <appender-ref ref="schedLogs"/>
     </logger>
 
     <!-- Controlers Logs -->
     <logger name="com.ss.atmlocator.controller">
         <level value="debug"/>
+        <appender-ref ref="DB"/>
         <appender-ref ref="controllerLogs"/>
     </logger>
     <!-- LogIn Logs -->
     <logger name="com.ss.atmlocator.utils.AuthLogging">
         <level value="debug"/>
+        <appender-ref ref="DB"/>
         <appender-ref ref="logInLogs"/>
     </logger>
     <!-- Parser Logs -->
     <logger name="com.ss.atmlocator.parser">
         <level value="debug"/>
+        <appender-ref ref="DB"/>
         <appender-ref ref="parserLog"/>
     </logger>
 

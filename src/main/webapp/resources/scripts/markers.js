@@ -9,7 +9,7 @@ function checkIfGrey(bankId){
 //Adding marker to map
 function addMarker(atm) {
     var imgClass = checkIfGrey(atm.bank.id);
-    var icon = (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
+    var iconUrl =getHomeUrl() + 'resources/images/' + (atm.type=="IS_ATM" ? atm.bank.iconAtm : atm.bank.iconOffice);
     var markerPos = new google.maps.LatLng(atm.geoPosition.latitude, atm.geoPosition.longitude);
     var marker = new RichMarker({
         id: atm.id,
@@ -19,8 +19,8 @@ function addMarker(atm) {
         draggable: false,
         flat: true,
         anchorPoint: {x: 0, y: -32},
-        content: '<div style="position:relative" id="' + atm.id + '" class="favorite_marker">' +
-        '<img class = "'+ imgClass+'" src="' + getHomeUrl() + 'resources/images/' + icon + '" width="32" height="32" alt=""  oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
+        content: '<div style="position:relative" id="' + atm.id + '" class="marker">' +
+        '<img class = "atm-icon '+ imgClass+'" src="' + iconUrl + '"oncontextmenu="markerMenu(event, ' + atm.id + ')"/>' +
         '</div>'
     });
 
