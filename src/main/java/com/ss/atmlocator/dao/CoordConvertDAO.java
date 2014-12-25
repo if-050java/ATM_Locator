@@ -24,7 +24,7 @@ public class CoordConvertDAO {
 
     public List<String> getCoordNames() {
         List<String> address;
-        String sqlQuery = "SELECT address FROM atm WHERE latitude IS NULL AND longitude IS NULL LIMIT 10";
+        String sqlQuery = "SELECT address FROM atm WHERE  LIMIT 200";
         Query query = entityManager.createNativeQuery(sqlQuery);
         try{
             address = query.getResultList();
