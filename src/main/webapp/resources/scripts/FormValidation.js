@@ -22,6 +22,6 @@ function validateLogin(login){
 };
 
 function validateNickName(nickName){
-    var regExp = /^.*$/;
+    var regExp = /^(\w){2,}[\s]?(\w){2,}$/;
     return regExp.test(nickName);
 };

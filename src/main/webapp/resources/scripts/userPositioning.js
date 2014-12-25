@@ -24,15 +24,10 @@ function addUserMarker(position){
     userPosition = new google.maps.LatLng(position.lat(), position.lng());
     var iconUrl = "/resources/images/userMarker.ico";
     var userAva = "/resources/images/defaultUserAvatar.jpg";
-    userPositionMarker = new RichMarker({
+    userPositionMarker = new google.maps.Marker({
         position: userPosition,
         map: map,
-        draggable: false,
-        flat: true,
-        content: '<div style="position:relative">' +
-        '<img style = "z-index:1000; position: absolute;" src="' + iconUrl + '" width=64 height=64/>' +
-        '<img style = "z-index:999; position: absolute; left:16px; top:8px" src="' + userAva + '" width=32 height=32/>' +
-        '</div>'
+        title: "My position"
     });
     map.panTo(userPosition);
     setPositionCookies();
