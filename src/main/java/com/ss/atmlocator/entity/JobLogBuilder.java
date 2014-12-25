@@ -1,7 +1,7 @@
 package com.ss.atmlocator.entity;
 
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,7 +12,7 @@ public class JobLogBuilder {
     private DateFormat dateFormat = new SimpleDateFormat("yyMMddHHmmss");
 
     private String jobName;
-    private Date lastRun;
+    private Timestamp lastRun;
     private String state;
     private String message;
 
@@ -27,7 +27,7 @@ public class JobLogBuilder {
     }
 
     public JobLogBuilder withLastRun(){
-        this.lastRun = new Date(Calendar.getInstance().getTimeInMillis());
+        this.lastRun = new Timestamp(Calendar.getInstance().getTime().getTime());
         return this;
     }
 
