@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="<c:url value="/resources"/>/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<c:url value="/resources"/>/bootstrap/css/bootstrap-theme.min.css">
     <script src="<c:url value="/resources"/>/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/feedback.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <title>ATM Locator</title>
 </head>
