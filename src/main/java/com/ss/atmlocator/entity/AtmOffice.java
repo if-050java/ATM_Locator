@@ -47,7 +47,10 @@ public class AtmOffice implements Comparable<AtmOffice>{
     @JoinColumn(name = "bank_id")
     Bank bank;
 
-    public AtmOffice() {}
+    public AtmOffice() {
+        this.state = AtmState.NORMAL;
+        this.type = AtmType.IS_ATM;
+    }
 
     public AtmOffice(String address, AtmType type) {
         this.address = address;
@@ -119,6 +122,10 @@ public class AtmOffice implements Comparable<AtmOffice>{
         return type;
     }
 
+    /**
+     * Returns text representation of ATM type to display at web-page
+     * @return ATM type as String
+     */
     public String getTypeString() {
         String str;
         switch (type) {
