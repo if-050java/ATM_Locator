@@ -3,6 +3,7 @@ package com.ss.atmlocator.parser.coordEncoder;
 
 import com.ss.atmlocator.dao.CoordConvertDAO;
 import com.ss.atmlocator.dao.JobLogDAO;
+import com.ss.atmlocator.entity.AtmState;
 import com.ss.atmlocator.entity.JobLog;
 import com.ss.atmlocator.entity.JobLogBuilder;
 import org.quartz.*;
@@ -87,23 +88,29 @@ public class CoordEncoderService implements Job {
             try{
                 logger.debug("Searching address: "+addr);
                 GoogleResponse res = AddressWorker.convertToLatLong(addr);
-                if(res.getStatus().equals(okResponse)){
-                    Result result = res.getResults()[0];
-                    coordList.add(new Coord(addr,
-                            result.getGeometry().getLocation().getLat(),
-                            result.getGeometry().getLocation().getLng()));
-                    requestCoord++;
-                }
-                if(res.getStatus().equals(zeroResponse)){
-                    coordList.add(new Coord(addr,
-                            String.valueOf(Double.valueOf(0.0)),
-                            String.valueOf(Double.valueOf(0.0))) );
-                    logger.info(zeroResult+addr);
-                    jobMessage.append(zeroResult+addr);
-                }
-                else{
-                    logger.info(bedGodeRequest+res.getStatus()+"["+addr+"]");
-                    jobMessage.append(bedGodeRequest+res.getStatus()+"["+addr+"]");
+
+                switch (res.getStatus()){
+                    case okResponse: {
+                        Result result = res.getResults()[0];
+                        coordList.add(new Coord(addr,
+                                result.getGeometry().getLocation().getLat(),
+                                result.getGeometry().getLocation().getLng(),
+                                AtmState.NORMAL));
+                        requestCoord++;
+                        break;
+                    }
+
+                    case zeroResponse:{
+                        coordList.add(new Coord(addr,null,null,AtmState.BAD_ADDRESS));
+                        logger.info(zeroResult+addr);
+                        jobMessage.append(zeroResult+addr);
+                        break;
+                    }
+
+                    default:{
+                        logger.info(bedGodeRequest+res.getStatus()+"["+addr+"]");
+                        jobMessage.append(bedGodeRequest+res.getStatus()+"["+addr+"]");
+                    }
                 }
                 Thread.sleep(500);
             }

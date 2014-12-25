@@ -1,6 +1,7 @@
 package com.ss.atmlocator.dao;
 
 
+import com.ss.atmlocator.entity.AtmState;
 import com.ss.atmlocator.parser.coordEncoder.Coord;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +25,9 @@ public class CoordConvertDAO {
 
     public List<String> getCoordNames() {
         List<String> address;
-        String sqlQuery = "SELECT address FROM atm WHERE  LIMIT 200";
+        String sqlQuery = "SELECT address FROM atm WHERE state = :state LIMIT 200";
         Query query = entityManager.createNativeQuery(sqlQuery);
+        query.setParameter("state", AtmState.NO_LOCATION.ordinal());
         try{
             address = query.getResultList();
         }
@@ -43,7 +45,7 @@ public class CoordConvertDAO {
             error.add(emptyList);
             return;
         }
-        String sqlQuery = "UPDATE atm SET latitude = :lat, longitude = :lon  WHERE address = :address";
+        String sqlQuery = "UPDATE atm SET latitude = :lat, longitude = :lon,  state = :state WHERE address = :address";
         Query query = entityManager.createNativeQuery(sqlQuery);
 
         for(Coord coord : coords){
@@ -52,6 +54,7 @@ public class CoordConvertDAO {
                 query.setParameter("lat", coord.getLatitude());
                 query.setParameter("lon", coord.getLongitude());
                 query.setParameter("address", coord.getAddress());
+                query.setParameter("state", coord.getState().ordinal());
                 query.executeUpdate();
             }
             catch (RuntimeException exp){
