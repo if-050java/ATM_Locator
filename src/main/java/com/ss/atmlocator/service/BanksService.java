@@ -32,8 +32,20 @@ public class BanksService {
         return banksDAO.getBanksByNetworkId(network_id);
     }
 
-    public List<AtmOffice> getBankAtms(int id){
+    public long getBankAtmsCount(final int bankId) {
+        return atmsDAO.getBankAtmsCount(bankId);
+    }
+
+    public long getBankAtmsPages(final int bankId) {
+        return atmsDAO.getBankAtmsPages(bankId);
+    }
+
+    public List<AtmOffice> getBankAtms(int id) {
         return atmsDAO.getBankAtms(id);
+    }
+
+    public List<AtmOffice> getBankAtms(int id, int page) {
+        return atmsDAO.getBankAtms(id, page);
     }
 
     public List<Bank> getBanksList() {

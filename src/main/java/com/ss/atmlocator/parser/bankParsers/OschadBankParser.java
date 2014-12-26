@@ -196,7 +196,7 @@ public final class OschadBankParser implements IParser {
             int pageCount = 0;
             try {
                 pageCount = getPageCount(createJsoupConnection(regionName, 1));
-            } catch (HttpStatusException e) {
+            } catch (IOException e) {
                 LOGGER.error(e.getMessage());
             } catch (ParseException e) {
                 LOGGER.warn(e.getMessage());
@@ -235,11 +235,11 @@ public final class OschadBankParser implements IParser {
             return m.find() ? m.group(1) + "/" + m.group(2) : null;
         }
 
-        private int getPageCount(final Connection connection) throws IOException, ParseException, HttpStatusException {
+        private int getPageCount(final Connection connection) throws ParseException, IOException {
             Connection.Response response = connection.execute();
             Elements elems = response.parse().select(LAST_PAGE_SELECTOR);
             if (elems.size() == 0) {
-                throw new ParseException("Can't parse last page number",0);
+                throw new ParseException("Can't parse last page number", 0);
             }
             String lastPageUrl = elems.get(0).attr("href");
             int index = lastPageUrl.lastIndexOf('=');

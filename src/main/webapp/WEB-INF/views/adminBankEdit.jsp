@@ -133,7 +133,7 @@
                                 Delete bank
                             </button>
 
-                            <button type="submit" id="adminBankAtmList" formaction="<c:url value="/adminBankAtmList" />"
+                            <button type="button" id="adminBankAtmList" <%--formaction="<c:url value="/adminBankAtmList" />"--%>
                                     class="btn btn-primary btn-lg col-md-4 col-md-offset-1" <c:if test="${bank.id == 0}"> disabled="disabled"</c:if>>
                                 <span>ATMs and Office list </span><i class="glyphicon glyphicon-list"></i>
                             </button>
@@ -143,5 +143,23 @@
 
         </form:form>
       </div>
+
+      <!-- modal for request on deleting -->
+      <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+           aria-hidden="true" id="questionModal">
+          <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      Bank will be deleted with all associated ATMs and branches <br>
+                      <strong>Are you sure?</strong>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" onclick="deleteBank()">Yes</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
   </div>
 </div>

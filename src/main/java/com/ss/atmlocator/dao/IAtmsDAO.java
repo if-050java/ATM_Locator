@@ -13,7 +13,13 @@ public interface IAtmsDAO {
 
     AtmOffice getAtmById(int id);
 
+    public long getBankAtmsCount(final int bankId);
+
+    public long getBankAtmsPages(final int bankId);
+
     public List<AtmOffice> getBankAtms(int bank_id);
+
+    public List<AtmOffice> getBankAtms(int bank_id, int page);
 
     void persiste(AtmOffice tempAtm);
 
