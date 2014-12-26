@@ -79,7 +79,7 @@ public class BanksService {
         }
     }
 
-    public Bank newBank(){
+    public Bank newBank() {
         Bank bank = banksDAO.newBank();
         bank.setLogo(defaultLogo);
         bank.setIconAtm(defaultAtm);

@@ -47,6 +47,7 @@ $(document).ready( function () {
                 success: function (response) {
                     console.log(response);
                     if (response.status == 'SUCCESS') {
+                        $("#network_edit").collapse({ toggle: false });
                         showAlert("alert alert-success", SUCCESS_DELETE);
                     } else if (response.status == "ERROR") {
                         showAlert("alert alert-danger", ERROR_DELETE);
@@ -74,6 +75,7 @@ function saveNetwork(fd, msg_succes, msg_error){
             success: function (response) {
                 console.log(response);
                 if (response.status == 'SUCCESS') {
+                    $("#network_edit").collapse({ toggle: false });
                     showAlert("alert alert-success", msg_succes);
 
                 } else if (response.status == "ERROR") {
@@ -93,7 +95,9 @@ function showAlert(className, html) {
     element.addClass(className);
     element.children(".close").nextAll().remove();
     element.append(html);
-    element.show();
+    //element.show();
+    element.fadeIn("slow");
+    element.delay(2000).fadeOut("slow");
 }
 
 function loadBanks() {
