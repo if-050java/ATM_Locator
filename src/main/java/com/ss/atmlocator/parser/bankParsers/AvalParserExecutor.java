@@ -1,12 +1,9 @@
-package com.ss.atmlocator.parser.parserAval;
+package com.ss.atmlocator.parser.bankParsers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ss.atmlocator.parser.ParserExecutor;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class parse Aval Bank
@@ -18,7 +15,7 @@ public class AvalParserExecutor extends ParserExecutor {
     @Override
     protected void setParser() {
         parser = new AvalParser();
-        logger.trace("parser set");
+        logger.trace("[PARSER EXECUTOR] parser set successfully");
     }
 
     /*@Override

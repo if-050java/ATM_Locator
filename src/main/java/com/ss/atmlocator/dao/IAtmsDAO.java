@@ -15,7 +15,7 @@ public interface IAtmsDAO {
 
     public List<AtmOffice> getBankAtms(int bank_id);
 
-    void persiste(AtmOffice tempAtm);
+    void persist(AtmOffice tempAtm);
 
     void update(List<AtmOffice> atmExistList);
 

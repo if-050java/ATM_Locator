@@ -5,6 +5,7 @@ import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +20,21 @@ import static com.ss.atmlocator.entity.AtmState.*;
 /**
  * Created by maks on 13.12.2014.
  */
+@SuppressWarnings("ALL")
 @Service
 public class DbParserService implements IDBParserService {
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(IDBParserService.class);
     @Autowired
     private IAtmsDAO atmsDAO;
     @Autowired
     private IBanksDAO banksDAO;
     private int bankId;
 
-    @Override
-    public void update(final List<AtmOffice> atms) {
+ /*   @Override
+    public void update( List<AtmOffice> atms) {
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-        bankId = atms.get(0).getBank().getId();     // TODO difficult to understand , must be changed
+        bankId = atms.get(0).getBank().getId();
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
         for (AtmOffice atmDb: atmListFomDb) {
             if (atms.contains(atmDb)) {
@@ -49,16 +52,14 @@ public class DbParserService implements IDBParserService {
             }
         }
 
-//        atmsDAO.update(atmListFomDb
         atmsDAO.update(atmExistList);
         atmsDAO.persist(atmNewList);
     }
 
 
-    public void updateWithoutType(final List<AtmOffice> atms, final int bankId) {
+    public void updateWithoutType(List<AtmOffice> atms,  int bankId) {
         List<AtmOffice> atmExistList = new ArrayList<>();
         List<AtmOffice> atmNewList = new ArrayList<>();
-//        bankId = atms.get(0).getBank().getId();     // TODO difficult to understand , must be changed
         ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
         for (AtmOffice atmDb: atmListFomDb) {
             if (atms.contains(atmDb)) {
@@ -83,10 +84,15 @@ public class DbParserService implements IDBParserService {
         atmsDAO.persist(atmNewList);
 
 
-    }
+    }*/
     //-----------------------------------------------------------------------------------
-
-    private boolean compareAtm(final AtmOffice atmFromDb, final AtmOffice atmNew) {
+    /**
+     * The method compare AtmOffices. Change them, if it need, type atm office from db
+     * @param  atmFromDb old atm from database, its type change
+     * @param  atmNew  new atm from parser, its type not change
+     * @return boolean. True if method some changed or types are equals, else return false;
+     * */
+    private boolean compareAtm(AtmOffice atmFromDb, AtmOffice atmNew) {
         if (atmFromDb.equals(atmNew)) { // equals має бути по адрессі
             AtmOffice.AtmType typeDb = atmFromDb.getType();
             AtmOffice.AtmType typeNew = atmNew.getType();
@@ -117,22 +123,26 @@ public class DbParserService implements IDBParserService {
         }
         return false;
     }
+    /**The method prepares an array of ATMs for the correct entries in the database.
+     * compares the new ATMs with ATM communication data- base address,
+     * and replaces them with the type of office or ATM. Updates as they are recorded.
+     * @param atms new list of AtmOfices
+     * @param bankId bank id
+     * */
     @Override
-    public void update(final List<AtmOffice> atms, final int bankId) {
-        List<AtmOffice> atmListFromDb = atmsDAO.getBankAtms(bankId);
-        List<AtmOffice> atmResultList = new ArrayList<>();
+    public void update( List<AtmOffice> atms,  int bankId) {
+        List<AtmOffice> atmListFromDb = atmsDAO.getBankAtms(bankId); // the atms from database
+        List<AtmOffice> atmResultList = new ArrayList<>(); // result list for database
 
         Bank currentBank = banksDAO.getBank(bankId);
+        // this compare oll atms and change type
         for (AtmOffice atm:atms) {
             for (AtmOffice atmDb:atmListFromDb) {
                 compareAtm(atmDb, atm);
-                continue;
-                /*if(compareAtm(atmDb,atm)) {
-                    atmDb.setLastUpdated(TimeUtil.currentTimestamp());
-                    atmResultList.add(atmDb);
-                }*/
+                continue;               // if we found and change some atm we dont need
             }
         }
+        // put in resultList old atms and update their time last update.
         for (AtmOffice atmDb: atmListFromDb) {
             if (atms.contains(atmDb)) {
                 atmDb.setLastUpdated(TimeUtil.currentTimestamp());
@@ -141,6 +151,7 @@ public class DbParserService implements IDBParserService {
                 atmResultList.add(atmDb);
             }
         }
+        //put in resultList new atms
         for (AtmOffice tempAtm : atms) {
             if (!atmListFromDb.contains(tempAtm)) {
                 tempAtm.setLastUpdated(TimeUtil.currentTimestamp());

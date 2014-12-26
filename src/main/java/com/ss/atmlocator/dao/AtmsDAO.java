@@ -56,6 +56,9 @@ public class AtmsDAO implements IAtmsDAO {
     public AtmOffice getAtmById(int id) {
         return entityManager.find(AtmOffice.class, id);
     }
+    /**
+     * @return List<AtmOffice>
+     * @param  bank_id this is id of banks*/
     @Override
     @Transactional
     public List<AtmOffice> getBankAtms(int bank_id){
@@ -64,37 +67,40 @@ public class AtmsDAO implements IAtmsDAO {
         return query.getResultList();
     }
 
-   /* @Override
-    public void updateAtmTime(AtmOffice tempAtm) {
 
-    }*/
 
     @Override
-    public void persiste(AtmOffice Atm) {
+    public void persist (AtmOffice Atm) {
         entityManager.persist(Atm);
     }
-
+    /**
+     * the method updates the array offices or puts the database
+     *  @param   atmExistList - List of atmOffices
+     * */
     @Override
     @Transactional
     public void update(List<AtmOffice> atmExistList) {
-        log.info("[TRANSACTION] update() begin transaction");
+        log.info("[TRANSACTION] update()-- begin transaction");
         for(AtmOffice atm: atmExistList) {
 //            atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.merge(atm);
         }
-        log.info("[TRANSACTION]update() end transaction");
+        log.info("[TRANSACTION]update()-- end transaction, updated or persisted --->"+atmExistList.size()+" elements");
     }
-
+    /**
+     * the method updates the array offices or puts the database
+     *  @param   atmNewList - new List<AtmOffice>
+     * */
     @Override
     @Transactional
     public void persist(List<AtmOffice> atmNewList) {
-        log.info("[TRANSACTION] persist()---> begin transaction");
+        log.info("[TRANSACTION] persist()-- begin transaction");
         for(AtmOffice atm: atmNewList){
             atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.persist(atm);
             entityManager.refresh(atm);
         }
-        log.info("[TRANSACTION] persist()---> end transaction");
+        log.info("[TRANSACTION] persist()-- end transaction, updated or persisted"+atmNewList.size()+" elements");
     }
 
 }

@@ -1,14 +1,20 @@
 function addFeedback(){
-    getUserData();
+    var userDat = getUserData();
+    var defaultName =userDat.name;
+    var defaultEmail =userDat.email;
+    $('#namef').attr("value", defaultName);
+    $('#emailf').attr("value", defaultEmail);
     $("#feedbackModal").modal("show");
 
 }
-function getUserData(){
-    var userData="misterAnonim";
+function getUserData() {
+    var userData={
+        name :"misterAnonim"
+    };
     jQuery.ajax({
 
-        url: getHomeUrl() + "feedbacka",
-        data: JSON.stringify(userData),
+        url: getHomeUrl() + "feedback",
+        //data: JSON.stringify(userData),
         type: "POST",
         contentType: "application/json; charset=utf-8",
         context: document.body,
@@ -26,13 +32,13 @@ function getUserData(){
     return userData;
 }
 function getFeedback(){
-    var userDat = getUserData();
-    var tmp = userDat.isArray();
-    if(!userDat.empty){
-        userDat.forEach(function(data){
-            $('#namef').attr("value", data);
-        })
-    }
+
+//    var tmp = userDat.isArray();
+//    if(!userDat.empty){
+//        userDat.forEach(function(data){
+//            $('#namef').attr("value", data);
+//        })
+//    }
     var feedback = jQuery("#feedback").val();
     var email = jQuery("#emailf").val();
     var name = jQuery("#namef").val();

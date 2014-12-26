@@ -1,4 +1,4 @@
-package com.ss.atmlocator.parser.parserAval;
+package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.parser.IParser;
@@ -21,6 +21,9 @@ import java.util.Map;
 
 public class AvalParser implements IParser {
     Map<String, String> parameters = new HashMap<>();
+    private static  final String  ADDRESS = "address";
+    private static  final String  CITY = "Івано-Франківськ";
+    private static  final String  USERAGENT = "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52";
     private String bankUrl;
     private String officeUrl;
     Document doc = null;
@@ -30,7 +33,6 @@ public class AvalParser implements IParser {
 
     @Override
     public void setParameter(Map<String, String> parameters) {
-
         bankUrl = parameters.get("bankurl");
         officeUrl = parameters.get("officeurl");
     }
@@ -38,26 +40,28 @@ public class AvalParser implements IParser {
     private void parceAtm(String url, boolean isOffice) throws IOException {
         try {
 
-            doc = Jsoup.connect(url).userAgent("Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52").get();
+            doc = Jsoup.connect(url).userAgent(USERAGENT).get();
 
-            Elements addreses = doc.getElementsByClass("address");
+            Elements addreses = doc.getElementsByClass(ADDRESS);
 
             for (Element adres : addreses) {
 
                 AtmOffice tempAtm = new AtmOffice();
 
-                tempAtm.setAddress(adres.text());
+
                 if (isOffice) {
+                    tempAtm.setAddress(adres.text());
                     tempAtm.setType(AtmOffice.AtmType.IS_ATM_OFFICE);
                     tempAtm.setAddress(trimFirsnaber(tempAtm.getAddress()));
                 }else{
+                    tempAtm.setAddress(CITY + adres.text());
                     tempAtm.setType(AtmOffice.AtmType.IS_ATM);
                 }
                 listAtms.add(tempAtm);
             }
 
         } catch (IOException ioe) {
-            logger.error(ioe.getMessage(),ioe);
+            logger.error("[PARSER] Parser cen`t connect to URL"+ioe.getMessage(),ioe);
             throw ioe;
         }
     }

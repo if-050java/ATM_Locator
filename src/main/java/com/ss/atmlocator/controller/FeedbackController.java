@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by maks on 18.12.2014.
+ * The class cann
  */
 @Controller
 public class FeedbackController {
@@ -25,29 +27,29 @@ public class FeedbackController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/feedbacka", method = RequestMethod.PUT)
+    @RequestMapping(value = "/feedback", method = RequestMethod.PUT)
     public ResponseEntity<Void> putFeedback(@RequestBody String feedback,
-                            Principal principal){
+                            Principal principal) {
         System.out.println(feedback);
         User user = userService.getUser(principal.getName());
         System.out.println(principal.getName()+ "  " +user.getEmail());
-
+//        feedBackService.sentFeedbackTuAdminEmail();
         return  new ResponseEntity<Void>(HttpStatus.OK);
 
     }
     @RequestMapping(value = "/feedback", method = RequestMethod.POST)
-    public ResponseEntity<List<String>> postFeedback(@RequestBody
+    public ResponseEntity<Map<String, String>> postFeedback(
                                             Principal principal){
-        List<String> data = new ArrayList();
-        if(principal==null){
-            return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+        Map<String, String> data = new HashMap();
+        if (principal==null) {
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         }
         User user = userService.getUser(principal.getName());
         String name = user.getName();
         String email = user.getEmail();
 
-        data.add(name);
-        data.add(email);
+        data.put("name",name);
+        data.put("email",email);
         System.out.println(principal.getName()+ "  " +user.getEmail());
         return new ResponseEntity<>(data, HttpStatus.OK);
 

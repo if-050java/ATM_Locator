@@ -2,9 +2,9 @@
 
     <div class="breadcrumb" style="margin-bottom: 0px; padding-bottom: 0px">
         <div>Copyright</div>
-        <div id="addfeedback" align="left">
-            <a href="#" onclick="addFeedback()">add feedback</a>
-        </div>
+    </div>
+    <div id="addfeedback" align="left">
+        <a href="#" onclick="addFeedback()">add feedback</a>
     </div>
 </div>
 
@@ -20,14 +20,14 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" data-placement="left" for="namef">name</label>
                 <div class="col-md-4">
-                    <input id="namef" name="textinput" type="text" data-placement="left" data-content="name isn't valid, or is too short(min 4 letters), or has unsupported character" placeholder="placeholder" data-toggle="popover" onclick="hidePopover('name')" class="form-control input-md">
+                    <input id="namef" name="textinput" type="text" data-placement="left" value="" data-content="name isn't valid, or is too short(min 4 letters), or has unsupported character" placeholder="name" data-toggle="popover" onclick="hidePopover('name')" class="form-control input-md">
                 </div>
             </div><br>
 
             <div class="form-group">
                 <label class="col-md-4 control-label" data-placement="left" for="emailf">email</label>
                 <div class="col-md-4">
-                    <input id="emailf" name="textinput" type="text" data-placement="left" data-content="E-mail isn't valid" data-toggle="popover" onclick="hidePopover('email')" placeholder="placeholder" class="form-control input-md">
+                    <input id="emailf" name="textinput" type="text" data-placement="left" value="" data-content="E-mail isn't valid" data-toggle="popover" onclick="hidePopover('email')" placeholder="email" class="form-control input-md">
                 </div>
             </div>
 
