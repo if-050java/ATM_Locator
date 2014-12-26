@@ -1,6 +1,5 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmNetwork;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.service.AtmNetworksService;
@@ -26,11 +25,7 @@ public final class AdminBanksController {
     private final org.apache.log4j.Logger log = Logger.getLogger(AdminBanksController.class);
 
     @Autowired
-    private IBanksDAO banksDAO;
-    @Autowired
     private BanksService banksService;
-    //@Autowired
-    //AtmNetworksDAO networksDAO;
     @Autowired
     private ParserService parserService;
     @Autowired
@@ -92,7 +87,7 @@ public final class AdminBanksController {
     public String bankCreateNew(final ModelMap modelMap) {
         log.debug("GET: create new bank");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
-        Bank bank = banksDAO.newBank();
+        Bank bank = banksService.newBank();
         modelMap.addAttribute("bank", bank);
         modelMap.addAttribute("active", "adminBanks");
 
@@ -105,15 +100,15 @@ public final class AdminBanksController {
     @RequestMapping(value = "/adminBankSaveAjax", method = RequestMethod.POST)
     @ResponseBody
     public OutResponse bankSaveAjax(@ModelAttribute("bank") Bank bank,
-                           @RequestParam(value = "network_id", required = true) int network_id,
-                           @RequestParam(value = "imageLogo", required = false) MultipartFile imageLogo,
-                           @RequestParam(value = "iconAtmFile", required = false) MultipartFile iconAtmFile,
-                           @RequestParam(value = "iconOfficeFile", required = false) MultipartFile iconOfficeFile,
+                           @RequestParam(value = "network_id", required = true) final int networkId,
+                           @RequestParam(value = "imageLogo", required = false) final MultipartFile imageLogo,
+                           @RequestParam(value = "iconAtmFile", required = false) final MultipartFile iconAtmFile,
+                           @RequestParam(value = "iconOfficeFile", required = false) final MultipartFile iconOfficeFile,
                            final HttpServletRequest request)
     {
         log.debug("AJAX: save bank " + bank.getName() + " #" + bank.getId());
 
-        bank.setNetwork(atmNetworksService.getNetwork(network_id));
+        bank.setNetwork(atmNetworksService.getNetwork(networkId));
 
         return banksService.saveBank(bank, imageLogo, iconAtmFile, iconOfficeFile, request);
 
@@ -124,7 +119,7 @@ public final class AdminBanksController {
      */
     @RequestMapping(value = "/adminNetworkSaveAjax", method = RequestMethod.POST)
     @ResponseBody
-    public OutResponse networkSaveAjax(@ModelAttribute("network") AtmNetwork network, HttpServletRequest request) {
+    public OutResponse networkSaveAjax(@ModelAttribute("network") AtmNetwork network, final HttpServletRequest request) {
         log.debug("AJAX request: save network " + network.getName() + " #" + network.getId());
         return atmNetworksService.saveNetwork(network);
     }
@@ -161,16 +156,24 @@ public final class AdminBanksController {
     /**
      *  Show Bank's ATM and office list.
      */
-    @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.POST)
-    public String adminBankAtmList(@ModelAttribute("bank") final Bank bank,
+    @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.GET)
+    public String adminBankAtmList(@RequestParam(value = "id", required = true) final int bankId,
+                                   @RequestParam(value = "page", required = false) Integer page, // first page #1
                                    final ModelMap modelMap, final Principal user) {
-        log.debug("AdminBanksController.adminBankAtmList():GET");
+        //log.debug("GET: ATMs list for bank #"+bankId);
+        log.debug(String.format("GET request: ATMs list, Bank #%d, page %d", bankId, page));
 
-        modelMap.addAttribute("bank", banksService.getBank(bank.getId()));
-        modelMap.addAttribute("atms",banksService.getBankAtms(bank.getId()));
-        modelMap.addAttribute("active","adminBanks");
+        int pageNum = (page == null) ? 0 : page - 1; // first page will be 0
+        long pageCount = banksService.getBankAtmsPages(bankId);
+
+        modelMap.addAttribute("bank", banksService.getBank(bankId));
+        modelMap.addAttribute("atms", banksService.getBankAtms(bankId, pageNum));
+        modelMap.addAttribute("page", pageNum + 1);
+        modelMap.addAttribute("page_count", pageCount);
+        modelMap.addAttribute("active", "adminBanks");
         modelMap.addAttribute("userName", user.getName());
 
+        log.debug(String.format("GET response: ATMs list, Bank #%d, page %d of %d", bankId, pageNum + 1, pageCount));
         return "adminBankAtmList";
     }
 

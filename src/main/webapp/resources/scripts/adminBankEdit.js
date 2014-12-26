@@ -154,4 +154,7 @@ $(document).ready(function () {
         $("#questionModal").modal("show");
     });
 
+    $("#adminBankAtmList").click(function () {
+        window.location.href = getHomeUrl() + "adminBankAtmList?id="+$("#id").val();
+    });
 });

@@ -133,7 +133,7 @@
                                 Delete bank
                             </button>
 
-                            <button type="submit" id="adminBankAtmList" formaction="<c:url value="/adminBankAtmList" />"
+                            <button type="button" id="adminBankAtmList" <%--formaction="<c:url value="/adminBankAtmList" />"--%>
                                     class="btn btn-primary btn-lg col-md-4 col-md-offset-1" <c:if test="${bank.id == 0}"> disabled="disabled"</c:if>>
                                 <span>ATMs and Office list </span><i class="glyphicon glyphicon-list"></i>
                             </button>
