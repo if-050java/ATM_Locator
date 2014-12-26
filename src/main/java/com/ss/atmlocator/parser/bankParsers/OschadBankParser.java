@@ -8,7 +8,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.jsoup.Connection;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,7 +41,6 @@ public final class OschadBankParser implements IParser {
     private static final String USER_AGENT_PARAM =
             "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0";
     private static final String LAST_PAGE_SELECTOR = "font.text > a:nth-last-child(1)";
-    //private static final String SET_FILTER_VALUE = "\u0428\u0443\u043A\u0430\u0442\u0438"; //"Шукати"
     private static final String SET_FILTER_VALUE = "Шукати";
     private static final String SET_FILTER_PARAM = "set_filter";
     private static final String REGION_PARAM = "arrFilter_pf[RegionName]";

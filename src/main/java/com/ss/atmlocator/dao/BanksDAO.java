@@ -5,6 +5,7 @@ import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,8 @@ import java.util.Set;
  */
 @Repository
 public final class BanksDAO implements IBanksDAO {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BanksDAO.class);
     private static final int UNASSIGNED_NETWORK = -1;
-    private final org.apache.log4j.Logger log = Logger.getLogger(BanksDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -43,7 +44,7 @@ public final class BanksDAO implements IBanksDAO {
         if (network != null) {
             bank.setNetwork(network);
         } else {
-            log.error("Failed to fetch UNASSIGNED_NETWORK from database");
+            LOGGER.error("Failed to fetch UNASSIGNED_NETWORK from database");
             // TODO: throw exception
         }
         return bank;
@@ -69,8 +70,8 @@ public final class BanksDAO implements IBanksDAO {
     @Transactional
     public Bank saveBank(final Bank bank) {
         bank.setLastUpdated(TimeUtil.currentTimestamp());
-        Bank saved = (Bank) entityManager.merge(bank);
-        log.debug("Saved Bank '" + saved.getName() + "' #" + saved.getId());
+        Bank saved = entityManager.merge(bank);
+        LOGGER.debug("Saved Bank '" + saved.getName() + "' #" + saved.getId());
         return saved;
     }
 
@@ -78,16 +79,16 @@ public final class BanksDAO implements IBanksDAO {
     @Transactional
     public boolean deleteBank(final int bankId) {
         try {
-            Bank bank = (Bank) entityManager.find(Bank.class, bankId);
+            Bank bank = entityManager.find(Bank.class, bankId);
             if (bank == null) {
                 return false;
             }
             String delName = bank.getName(); //get name before it will be deleted
             entityManager.remove(bank);
-            log.debug("Deleted Bank '" + delName + "' #" + bankId);
+            LOGGER.debug("Deleted Bank '" + delName + "' #" + bankId);
             return true;
         } catch (PersistenceException e) {
-            log.error("Failed to delete bank #" + bankId);
+            LOGGER.error("Failed to delete bank #" + bankId);
             e.printStackTrace();
             return false;
         }
@@ -117,9 +118,7 @@ public final class BanksDAO implements IBanksDAO {
                     continue;
                 }
             } catch (NoResultException nre) {
-                log.warn("he bank with mfo code not found" + nre.getMessage());
-                //if the bank with mfo code not found , catch this exception
-//                continue;
+                LOGGER.warn("he bank with mfo code not found" + nre.getMessage());
             }
             bank.setLastUpdated(TimeUtil.currentTimestamp());
             bank.setNetwork(unassigned);
@@ -132,7 +131,7 @@ public final class BanksDAO implements IBanksDAO {
     public void saveAllBanksUbank(final List<Bank> banks) {
         int cntBanksUpdated = 0;
         int cntNewAtms = 0;
-        log.debug("Parsed " + banks.size() + " banks from Ubanks.com.ua");
+        LOGGER.debug("Parsed " + banks.size() + " banks from Ubanks.com.ua");
         for (Bank bank : banks) {
 
             boolean bankUpdated = false;
@@ -160,24 +159,18 @@ public final class BanksDAO implements IBanksDAO {
 
                     }
                     entityManager.merge(bankOther);
-                    //continue;
                 }
             } catch (NoResultException nre) {
                 System.out.println();
-                //if the bank with mfo code not found , catch this exception
-//                continue;
             }
 
 
-//            for(AtmOffice atmOffice:officeSet){
-//                atmOffice.setBank(bank);
-//            }
             if (bankUpdated) {
                 cntBanksUpdated++;
             }
 
         }
-        log.debug("Added " + cntNewAtms + " new ATMs and bank offices, for " + cntBanksUpdated + " banks.");
+        LOGGER.debug("Added " + cntNewAtms + " new ATMs and bank offices, for " + cntBanksUpdated + " banks.");
 
     }
 
