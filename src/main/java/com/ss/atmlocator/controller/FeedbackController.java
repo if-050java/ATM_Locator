@@ -3,6 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.FeedBackService;
 import com.ss.atmlocator.service.UserService;
+import com.ss.atmlocator.utils.FeedBack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +29,12 @@ public class FeedbackController {
     private UserService userService;
 
     @RequestMapping(value = "/feedback", method = RequestMethod.PUT)
-    public ResponseEntity<Void> putFeedback(@RequestBody String feedback,
+    public ResponseEntity<Void> putFeedback(@RequestBody FeedBack feedback,
                             Principal principal) {
         System.out.println(feedback);
         User user = userService.getUser(principal.getName());
-        System.out.println(principal.getName()+ "  " +user.getEmail());
-//        feedBackService.sentFeedbackTuAdminEmail();
+//        System.out.println(principal.getName()+ "  " +user.getEmail());
+        feedBackService.sentFeedbackTuAdminEmail(feedback.getName()+"\n\r"+feedback.getEmail()+"\n\r"+feedback.getFeedback());
         return  new ResponseEntity<Void>(HttpStatus.OK);
 
     }

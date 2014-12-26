@@ -18,7 +18,7 @@ public final class AddressWorker {
         URL url = new URL(URL + "?address="
                 + URLEncoder.encode(fullAddress, "UTF-8") + "&sensor=false");
         URLConnection conn = url.openConnection();
-        InputStream in = conn.getInputStream() ;
+        InputStream in = conn.getInputStream();
         ObjectMapper mapper = new ObjectMapper();
         GoogleResponse response = (GoogleResponse)mapper.readValue(in,GoogleResponse.class);
         in.close();

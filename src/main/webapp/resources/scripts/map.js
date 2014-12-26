@@ -61,7 +61,9 @@ function initializeMap() {
     autocompleteMap();
     //if user has cookies with his position set map to this position else get position from browser
     if ($.cookie("position")) {
-        setLocationByLatLng(JSON.parse($.cookie("position")));
+        var cookiePosition = JSON.parse($.cookie("position"));
+        var latLngPosition = new google.maps.LatLng(cookiePosition.lat, cookiePosition.lng);
+        setLocationByLatLng(latLngPosition);
     } else {
         getLocation();
     }
@@ -108,8 +110,8 @@ function updateFilter() {
         networkId: networkId,
         bankId: bankId,
         radius: radius,
-        userLat: userPosition.lat,
-        userLng: userPosition.lng,
+        userLat: userPosition.lat(),
+        userLng: userPosition.lng(),
         showAtms: showAtms,
         showOffices: showOffices
     };
@@ -138,7 +140,9 @@ function displayAtms(data) {
         var atmDescription = data.name + "\n" + ATMs[i].address;
         var atmIcon = ATMs[i].bank.iconAtm;
         var atmId = ATMs[i].id;
-        addMarker(ATMs[i], atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
+        addMarker(ATMs[i], atmId,
+            {"lat": atmPosition.latitude, "lng": atmPosition.longitude},
+            atmDescription, atmIcon);
     }
 
     //exclude favorites from result

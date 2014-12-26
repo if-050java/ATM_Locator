@@ -1,5 +1,6 @@
 function addFeedback(){
     var userDat = getUserData();
+
     var defaultName =userDat.name;
     var defaultEmail =userDat.email;
     $('#namef').attr("value", defaultName);
@@ -9,7 +10,7 @@ function addFeedback(){
 }
 function getUserData() {
     var userData={
-        name :"misterAnonim"
+        name :"misterAnonymus"
     };
     jQuery.ajax({
 
@@ -18,27 +19,19 @@ function getUserData() {
         type: "POST",
         contentType: "application/json; charset=utf-8",
         context: document.body,
+        async: false,
         dataType: "json",
         statusCode: {
             200: function (resp) {
-                userData = resp;
-            },
-            404: function(){
-                /*alert("feedback wasn't added due to server error ")*/
-                userData
+            userData = resp;
             }
         }
+
     });
     return userData;
 }
 function getFeedback(){
 
-//    var tmp = userDat.isArray();
-//    if(!userDat.empty){
-//        userDat.forEach(function(data){
-//            $('#namef').attr("value", data);
-//        })
-//    }
     var feedback = jQuery("#feedback").val();
     var email = jQuery("#emailf").val();
     var name = jQuery("#namef").val();
@@ -80,27 +73,14 @@ function getFeedback(){
         }
     })
 }
-/*function validateForm(){
- //checking login
- if(! validateNickName($('#name').prop("value"))){
- //        $('#name').attr("data-content", "NickName is too short(min 4 letters) or has unsupported character");
- $('#name').popover("show");
- return;
- }
- //checking E-Mail
- if(!validateEmail($('#email').prop("value"))){
- $('#email').popover("show");
- return;
- };
- }*/
-//show alert about result of operation
+
 function showAlert(className, html) {
     $("#message").removeClass();
     $("#message").addClass(className);
     $("#resultDefinition").empty();
     $("#resultDefinition").append(html);
-    $("#message").slideDown(1400);
-    setTimeout(hideAlert, 14000)
+    $("#message").slideDown(700);
+    setTimeout(hideAlert, 1000)
 }
 
 //hide alert about result of operation

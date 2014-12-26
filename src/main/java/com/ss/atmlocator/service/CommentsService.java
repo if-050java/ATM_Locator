@@ -22,11 +22,11 @@ public class CommentsService {
     final static Logger logger = LoggerFactory.getLogger(CommentsService.class);
 
     @Autowired
-    IUsersDAO usersDAO;
+    private IUsersDAO usersDAO;
     @Autowired
-    IAtmsDAO atmsDAO;
+    private IAtmsDAO atmsDAO;
     @Autowired
-    ICommentsDAO commentsDAO;
+    private ICommentsDAO commentsDAO;
 
     public AtmComment getComment(int id){
         return commentsDAO.getComment(id);

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
-import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
@@ -30,55 +29,48 @@ import java.util.Set;
  */
 @Service
 public class UserService {
-    @Autowired
-    IUsersDAO usersDAO;
-
-    @Autowired
-    ATMService atmService;
-
-    @Autowired
-    private Md5PasswordEncoder passwordEncoder;
-
-    @Autowired
-    @Qualifier("emailcreator")
-    EmailCreator emailCreator;
-
-    @Autowired
-    @Qualifier("mail")
-    private SendMails sendMails;
-
-    @Autowired
-    @Qualifier("jdbcUserService")
-    public UserDetailsManager userDetailsManager;
-
-    private final Logger logger = Logger.getLogger(UserService.class.getName());
-
     private static final String EMAIL_SUBJECT = "Change user credentials";
     private static final int GEN_PASSWORD_LENGTH = 6;
     private static final String DELETING = "Try to delete user ";
     private static final String FINDING = "Try to find user with login or email ";
     private static final String UPDATING = "Try to update user ";
     private static final String SENDING_EMAIL = "Try to send e-mail to ";
+    private final Logger logger = Logger.getLogger(UserService.class.getName());
+    @Autowired
+    private IUsersDAO usersDAO;
+    @Autowired
+    private ATMService atmService;
+    @Autowired
+    private Md5PasswordEncoder passwordEncoder;
+    @Autowired
+    @Qualifier("emailcreator")
+    private EmailCreator emailCreator;
+    @Autowired
+    @Qualifier("mail")
+    private SendMails sendMails;
+    @Autowired
+    @Qualifier("jdbcUserService")
+    private UserDetailsManager userDetailsManager;
 
     public User getUser(String name) {
         try {
             logger.debug(FINDING + name);
             return usersDAO.getUser(name);
-        }catch (NoResultException nre){
+        } catch (NoResultException nre) {
             logger.warn(nre.getMessage(), nre);
             throw nre;
         }
     }
 
-    public List<String> getNames(String partial){
+    public List<String> getNames(String partial) {
         return usersDAO.getNames(partial);
     }
 
     public User getUser(int id) {
         try {
-            logger.debug(FINDING+id);
+            logger.debug(FINDING + id);
             return usersDAO.getUser(id);
-        }catch (NoResultException nre){
+        } catch (NoResultException nre) {
             logger.warn(nre.getMessage(), nre);
             throw nre;
         }
@@ -89,42 +81,47 @@ public class UserService {
         usersDAO.createUser(user);
     }
 
-    public void editUser(User user, boolean genPassword) throws MessagingException{
+    public void editUser(User user, boolean genPassword) throws MessagingException {
         try {
             if (genPassword) {
                 user.setPassword(GenString.genString(GEN_PASSWORD_LENGTH));
-            };
+            }
             User mergedUser = merge(user);
             if (user.getPassword() != null) {
                 mergedUser.setPassword(passwordEncoder.encodePassword(user.getPassword(), null));
             }
-            logger.info(UPDATING+mergedUser.getId());
+            logger.info(UPDATING + mergedUser.getId());
             usersDAO.updateUser(merge(mergedUser));
-            logger.info(SENDING_EMAIL+mergedUser.getEmail());
-            sendMails.sendMail(mergedUser.getEmail() , EMAIL_SUBJECT, emailCreator.toUser(mergedUser, user.getPassword()));
+            logger.info(SENDING_EMAIL + mergedUser.getEmail());
+            String message = emailCreator.toUser(mergedUser, user.getPassword());
+            sendMails.sendMail(mergedUser.getEmail(), EMAIL_SUBJECT, message);
         } catch (IllegalAccessException iae) {
             logger.error(iae.getMessage(), iae);
             throw new PersistenceException(iae);
-        }catch (MessagingException me){
+        } catch (MessagingException me) {
             logger.error(me.getMessage(), me);
             throw me;
-        }catch (PersistenceException pe){
+        } catch (PersistenceException pe) {
             logger.error(pe.getMessage(), pe);
             throw pe;
         }
     }
 
-    public void updateAvatar(int user_id, String avatar){
+    public void updateAvatar(int user_id, String avatar) {
         usersDAO.updateAvatar(user_id, avatar);
     }
 
-    public boolean checkExistLoginName(User user){
+    public boolean checkExistLoginName(User user) {
         return usersDAO.checkExistLoginName(user);
-    };
+    }
 
-    public boolean checkExistEmail(User user){
+    ;
+
+    public boolean checkExistEmail(User user) {
         return usersDAO.checkExistEmail(user);
-    };
+    }
+
+    ;
 
     private User merge(User user) throws IllegalAccessException {
         User persistedUser = getUser(user.getId());
@@ -138,12 +135,12 @@ public class UserService {
 
     public void deleteUser(int id) {
         try {
-            logger.info(DELETING+id);
+            logger.info(DELETING + id);
             usersDAO.deleteUser(id);
-        }catch (NoResultException nre){
+        } catch (NoResultException nre) {
             logger.error(nre.getMessage(), nre);
             throw nre;
-        }catch (PersistenceException pe){
+        } catch (PersistenceException pe) {
             logger.error(pe.getMessage(), pe);
             throw pe;
         }
@@ -155,25 +152,25 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
-    public Set<AtmOffice> getFavorites(int userId){
+    public Set<AtmOffice> getFavorites(int userId) {
         return usersDAO.getFavorites(userId);
     }
 
-    public void addFavorite(int userId, int atmId){
+    public void addFavorite(int userId, int atmId) {
         try {
             logger.info("Try to add to favorites ATM with id " + atmId);
             usersDAO.addFavorite(userId, atmId);
-        } catch (PersistenceException pe){
+        } catch (PersistenceException pe) {
             logger.error(pe.getMessage(), pe);
         }
 
     }
 
-    public void deleteFavorite(int userId, int atmId){
+    public void deleteFavorite(int userId, int atmId) {
         try {
             logger.info("Try to delete atm with id = " + atmId + "from favorites for user_id " + userId);
             usersDAO.deleteFavorite(userId, atmId);
-        } catch (PersistenceException pe){
+        } catch (PersistenceException pe) {
             logger.error(pe.getMessage(), pe);
         }
     }

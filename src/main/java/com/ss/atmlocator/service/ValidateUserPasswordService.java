@@ -1,6 +1,5 @@
 package com.ss.atmlocator.service;
 
-import com.ss.atmlocator.dao.IUsersDAO;
 import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.UserCredMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +32,16 @@ public class ValidateUserPasswordService implements Validator {
 
     @Override
     public void validate(Object object, Errors errors) {
-        final String password = (String)object;
-        if(!validatePassword(password)){
+        final String password = (String) object;
+        if (!validatePassword(password)) {
             errors.rejectValue(Constants.USER_PASSWORD,
                     messages.getMessage("invalid.password", null, Locale.ENGLISH));
         }
     }
 
-    private boolean validatePassword(String password){
+    private boolean validatePassword(String password) {
         return userCredMatcher.validatePassword(password);
     }
-
-
 
 
 }
