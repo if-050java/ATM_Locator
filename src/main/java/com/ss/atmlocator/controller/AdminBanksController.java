@@ -6,7 +6,7 @@ import com.ss.atmlocator.service.AtmNetworksService;
 import com.ss.atmlocator.service.BanksService;
 import com.ss.atmlocator.service.ParserService;
 import com.ss.atmlocator.utils.OutResponse;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,22 +22,25 @@ import java.util.List;
  */
 @Controller
 public final class AdminBanksController {
-    private final org.apache.log4j.Logger log = Logger.getLogger(AdminBanksController.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminBanksController.class);
 
-    @Autowired
     private BanksService banksService;
-    @Autowired
     private ParserService parserService;
-    @Autowired
     private AtmNetworksService atmNetworksService;
 
+    @Autowired
+    AdminBanksController(BanksService banksService, ParserService parserService, AtmNetworksService atmNetworksService) {
+        this.banksService = banksService;
+        this.parserService = parserService;
+        this.atmNetworksService = atmNetworksService;
+    }
 
     /**
      *  Show page with list of Banks and ATM Networks.
      */
     @RequestMapping(value = "/adminBanks")
     public String banksList(ModelMap modelMap, Principal user) {
-        log.debug("GET: banks page");
+        LOGGER.debug("GET: banks page");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("active","adminBanks");
         modelMap.addAttribute("userName", user.getName());
@@ -50,7 +53,7 @@ public final class AdminBanksController {
     @RequestMapping(value = "/networksListAjax", method = RequestMethod.GET)
     @ResponseBody
     public List<AtmNetwork> networksListAjax() {
-        log.debug("GET: list of ATM networks");
+        LOGGER.debug("GET: list of ATM networks");
         return atmNetworksService.getNetworksList();
     }
 
@@ -60,7 +63,7 @@ public final class AdminBanksController {
     @RequestMapping(value = "/banksListAjax", method = RequestMethod.GET)
     @ResponseBody
     public List<Bank> banksListAjax() {
-        log.debug("GET: list of banks");
+        LOGGER.debug("GET: list of banks");
         return banksService.getBanksList();
     }
 
@@ -70,11 +73,12 @@ public final class AdminBanksController {
      */
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
     public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
-                           @RequestParam(value = "bank_id", required = true) int bank_id,
+                           @RequestParam(value = "bank_id", required = true) int bankId,
                            ModelMap modelMap, Principal user) {
-        log.debug("GET: bank #"+bank_id);
+        LOGGER.debug("GET: bank #" + bankId);
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
-        modelMap.addAttribute("bank", banksService.getBank(bank_id));
+        modelMap.addAttribute("bank", banksService.getBank(bankId));
+        modelMap.addAttribute("atm_count",banksService.getBankAtmsCount(bankId));
         modelMap.addAttribute("active","adminBanks");
         modelMap.addAttribute("userName", user.getName());
         return "adminBankEdit";
@@ -84,12 +88,14 @@ public final class AdminBanksController {
      *  Show create Bank page for edit
      */
     @RequestMapping(value = "/adminBankCreateNew", method = RequestMethod.GET)
-    public String bankCreateNew(final ModelMap modelMap) {
-        log.debug("GET: create new bank");
+    public String bankCreateNew(final ModelMap modelMap, Principal user) {
+        LOGGER.debug("GET: create new bank");
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         Bank bank = banksService.newBank();
         modelMap.addAttribute("bank", bank);
+        modelMap.addAttribute("atm_count", 0);
         modelMap.addAttribute("active", "adminBanks");
+        modelMap.addAttribute("userName", user.getName());
 
         return "adminBankEdit";
     }
@@ -106,7 +112,11 @@ public final class AdminBanksController {
                            @RequestParam(value = "iconOfficeFile", required = false) final MultipartFile iconOfficeFile,
                            final HttpServletRequest request)
     {
-        log.debug("AJAX: save bank " + bank.getName() + " #" + bank.getId());
+        if (bank.getId() == 0) {
+            LOGGER.debug("AJAX: save new bank " + bank.getName());
+        } else {
+            LOGGER.debug(String.format("AJAX: save bank %s #%d", bank.getName(), bank.getId()));
+        }
 
         bank.setNetwork(atmNetworksService.getNetwork(networkId));
 
@@ -120,7 +130,7 @@ public final class AdminBanksController {
     @RequestMapping(value = "/adminNetworkSaveAjax", method = RequestMethod.POST)
     @ResponseBody
     public OutResponse networkSaveAjax(@ModelAttribute("network") AtmNetwork network, final HttpServletRequest request) {
-        log.debug("AJAX request: save network " + network.getName() + " #" + network.getId());
+        LOGGER.debug("AJAX request: save network " + network.getName() + " #" + network.getId());
         return atmNetworksService.saveNetwork(network);
     }
 
@@ -130,8 +140,9 @@ public final class AdminBanksController {
      */
     @RequestMapping(value = "/adminBankDeleteAjax", method = RequestMethod.POST)
     @ResponseBody
-    public OutResponse bankDeleteAjax(@RequestParam final int id) {
-        return banksService.deleteBank(id);
+    public OutResponse bankDeleteAjax(@RequestParam final int id, final HttpServletRequest request) {
+        LOGGER.debug("AJAX: delete bank #" + id);
+        return banksService.deleteBank(id, request);
     }
 
     /**
@@ -140,6 +151,7 @@ public final class AdminBanksController {
     @RequestMapping(value = "/adminNetworkDeleteAjax", method = RequestMethod.POST)
     @ResponseBody
     public OutResponse networkDeleteAjax(@RequestParam final int id) {
+        LOGGER.debug("AJAX: delete ATM network #" + id);
         return atmNetworksService.deleteNetwork(id);
     }
 
@@ -160,8 +172,7 @@ public final class AdminBanksController {
     public String adminBankAtmList(@RequestParam(value = "id", required = true) final int bankId,
                                    @RequestParam(value = "page", required = false) Integer page, // first page #1
                                    final ModelMap modelMap, final Principal user) {
-        //log.debug("GET: ATMs list for bank #"+bankId);
-        log.debug(String.format("GET request: ATMs list, Bank #%d, page %d", bankId, page));
+        LOGGER.debug(String.format("GET request: ATMs list, Bank #%d, page %d", bankId, page));
 
         int pageNum = (page == null) ? 0 : page - 1; // first page will be 0
         long pageCount = banksService.getBankAtmsPages(bankId);
@@ -173,7 +184,7 @@ public final class AdminBanksController {
         modelMap.addAttribute("active", "adminBanks");
         modelMap.addAttribute("userName", user.getName());
 
-        log.debug(String.format("GET response: ATMs list, Bank #%d, page %d of %d", bankId, pageNum + 1, pageCount));
+        LOGGER.debug(String.format("GET response: ATMs list, Bank #%d, page %d of %d", bankId, pageNum + 1, pageCount));
         return "adminBankAtmList";
     }
 

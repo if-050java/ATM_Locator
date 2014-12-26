@@ -23,6 +23,7 @@
                 <value>/WEB-INF/spring/properties/jdbc.properties</value>
                 <value>/WEB-INF/spring/properties/email.properties</value>
                 <value>/WEB-INF/spring/properties/matcher.properties</value>
+                <value>/WEB-INF/spring/properties/banks.properties</value>
             </list>
         </property>
     </bean>
@@ -96,6 +97,16 @@
     <bean id="mail" class="com.ss.atmlocator.utils.SendMails" scope="singleton">
         <property name="mailSender" ref="mailSender" />
         <property name="from" value="${email.from}" />
+    </bean>
+
+    <bean id="banksService" class="com.ss.atmlocator.service.BanksService">
+        <property name="defaultLogo" value="${banks.default_logo}" />
+        <property name="defaultAtm" value="${banks.default_atm}" />
+        <property name="defaultOffice" value="${banks.default_office}" />
+        <property name="prefixLogo" value="${banks.prefix_logo}" />
+        <property name="prefixAtm" value="${banks.prefix_atm}" />
+        <property name="prefixOffice" value="${banks.prefix_office}" />
+
     </bean>
 
     <bean id="emailcreator" class="com.ss.atmlocator.utils.EmailCreator">
