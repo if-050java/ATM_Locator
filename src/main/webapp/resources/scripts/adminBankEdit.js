@@ -130,8 +130,9 @@ $(document).ready(function () {
 
                     if (response.status == 'SUCCESS') {
                         showAlert("alert alert-success", SUCCESS_SAVE);
-                        $("#adminBankDelete").removeProp("disabled");
-                        $("#adminBankAtmList").removeProp("disabled");
+                        $("#adminBankSave").prop("disabled","disabled");
+                        //$("#adminBankDelete").removeProp("disabled");
+                        //$("#adminBankAtmList").removeProp("disabled");
 
                     } else if (response.status == "ERROR") {
                         showAlert("alert alert-danger", ERROR_SAVE);
