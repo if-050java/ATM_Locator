@@ -20,7 +20,7 @@ import java.util.Set;
 public class FavoritesController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping
     public ResponseEntity<Set<AtmOffice>> getFavorites(Principal user) {

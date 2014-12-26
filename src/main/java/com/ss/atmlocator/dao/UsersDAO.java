@@ -17,20 +17,20 @@ import java.util.Set;
 @Repository
 public class UsersDAO implements IUsersDAO {
 
-    private final String DEFAULT_USER_ROLE = "USER";
+    private final static String DEFAULT_USER_ROLE = "USER";
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
 
     @Autowired
-    IAtmsDAO atmsDAO;
+    private IAtmsDAO atmsDAO;
 
     @Override
     public User getUser(String name) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.login=:name OR u.email=:name", User.class);
+        String queryString = "SELECT u FROM User AS u WHERE u.login=:name OR u.email=:name";
+        TypedQuery<User> query = entityManager.createQuery(queryString, User.class);
         query.setParameter("name", name);
-        User user = query.getSingleResult();
-        return user;
+        return query.getSingleResult();
     }
 
     @Override
@@ -38,23 +38,12 @@ public class UsersDAO implements IUsersDAO {
         return entityManager.find(User.class, id);
     }
 
-
-/*    @Override
-    public User getUserByEmail(String email) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User AS u WHERE u.email=:email", User.class);
-        query.setParameter("email", email);
-        User user = query.getSingleResult();
-        return user;
-
-    }*/
-
     @Override
     @Transactional
     public void deleteUser(int id) {
         User deletedUser = entityManager.find(User.class, id);
         entityManager.remove(deletedUser);
     }
-
 
     @Override
     @Transactional
@@ -66,8 +55,7 @@ public class UsersDAO implements IUsersDAO {
     public Role getDefaultUserRole() {
         TypedQuery<Role> query = entityManager.createQuery("SELECT r FROM Role AS r WHERE r.name=:name", Role.class);
         query.setParameter("name", DEFAULT_USER_ROLE);
-        Role role = query.getSingleResult();
-        return role;
+        return query.getSingleResult();
     }
 
     @Override
@@ -81,18 +69,19 @@ public class UsersDAO implements IUsersDAO {
         String sqlQuery = "SELECT COUNT(*) FROM users WHERE login = :login";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("login", login);
-        int value =  ((BigInteger) query.getSingleResult()).intValue();
-        if (value == 0 ) return false;
+        int value = ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0) return false;
         return true;
     }
+
     @Override
     public boolean checkExistLoginName(User user) {
         String sqlQuery = "SELECT COUNT(*) FROM users WHERE login = :login and id != :id";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("id", user.getId());
         query.setParameter("login", user.getLogin());
-        int value =  ((BigInteger) query.getSingleResult()).intValue();
-        if (value == 0 ) return false;
+        int value = ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0) return false;
         return true;
     }
 
@@ -101,8 +90,8 @@ public class UsersDAO implements IUsersDAO {
         String sqlQuery = "SELECT COUNT(*) FROM users WHERE email = :email";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("email", email);
-        int value =  ((BigInteger) query.getSingleResult()).intValue();
-        if (value == 0 ) return false;
+        int value = ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0) return false;
         return true;
     }
 
@@ -112,24 +101,25 @@ public class UsersDAO implements IUsersDAO {
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("id", user.getId());
         query.setParameter("email", user.getEmail());
-        int value =  ((BigInteger) query.getSingleResult()).intValue();
-        if (value == 0 ) return false;
+        int value = ((BigInteger) query.getSingleResult()).intValue();
+        if (value == 0) return false;
         return true;
     }
 
     @Override
     public List<String> getNames(String partial) {
         List<String> result = new ArrayList<String>();
-        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial UNION SELECT email FROM users WHERE email LIKE :partial LIMIT 5";
+        String sqlQuery = "SELECT login FROM users WHERE login LIKE :partial UNION " +
+                "SELECT email FROM users WHERE email LIKE :partial";
         Query query = entityManager.createNativeQuery(sqlQuery);
-        query.setParameter("partial", "%"+partial+"%");
+        query.setParameter("partial", "%" + partial + "%");
         result.addAll(query.getResultList());
         return result;
     }
 
     @Override
     @Transactional
-    public void writeLoginTime(String userName){
+    public void writeLoginTime(String userName) {
 
         java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
 
@@ -144,7 +134,7 @@ public class UsersDAO implements IUsersDAO {
 
     @Override
     @Transactional
-    public void updateAvatar(int user_id, String avatar){
+    public void updateAvatar(int user_id, String avatar) {
         String sqlQuery = "UPDATE users SET avatar = :avatar WHERE id = :id";
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.setParameter("avatar", avatar);
@@ -153,17 +143,15 @@ public class UsersDAO implements IUsersDAO {
     }
 
     @Override
-    @Transactional
     public Set<AtmOffice> getFavorites(int userId) {
         User user = entityManager.find(User.class, userId);
         entityManager.refresh(user);
-        Set<AtmOffice> favorites = user.getAtmFavorites();
-        return favorites;
+        return user.getAtmFavorites();
     }
 
     @Override
     @Transactional
-    public void addFavorite(int userId, int atmId){
+    public void addFavorite(int userId, int atmId) {
         User user = getUser(userId);
         Set<AtmOffice> favorites = user.getAtmFavorites();
         favorites.add(atmsDAO.getAtmById(atmId));
@@ -178,6 +166,5 @@ public class UsersDAO implements IUsersDAO {
         favorites.remove(atmsDAO.getAtmById(atmId));
         updateUser(user);
     }
-
 
 }

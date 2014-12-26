@@ -31,11 +31,11 @@ public interface IUsersDAO {
     boolean checkExistEmail(User user);
     /* Get user names and emails*/
     List<String> getNames (String partial);
-    public void writeLoginTime(String userName);
-    public void updateAvatar(int user_id, String avatar);
+    void writeLoginTime(String userName);
+    void updateAvatar(int user_id, String avatar);
 
     //favorites
-    public Set<AtmOffice> getFavorites(int userId);
-    public void addFavorite(int userId, int atmId);
-    public void deleteFavorite(int userId, int atmId);
+    Set<AtmOffice> getFavorites(int userId);
+    void addFavorite(int userId, int atmId);
+    void deleteFavorite(int userId, int atmId);
 }

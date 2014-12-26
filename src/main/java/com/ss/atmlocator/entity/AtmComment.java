@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class AtmComment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String text;
@@ -32,11 +32,11 @@ public class AtmComment {
     private User user;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getText() {
