@@ -138,7 +138,9 @@ function displayAtms(data) {
         var atmDescription = data.name + "\n" + ATMs[i].address;
         var atmIcon = ATMs[i].bank.iconAtm;
         var atmId = ATMs[i].id;
-        addMarker(ATMs[i], atmId, {"lat": atmPosition.latitude, "lng": atmPosition.longitude}, atmDescription, atmIcon);
+        addMarker(ATMs[i], atmId,
+            {"lat": atmPosition.latitude, "lng": atmPosition.longitude},
+            atmDescription, atmIcon);
     }
 
     //exclude favorites from result
