@@ -2,7 +2,6 @@ package com.ss.atmlocator.entity;
 
 
 import javax.persistence.*;
-import java.util.Date;
 import java.sql.Timestamp;
 
 
