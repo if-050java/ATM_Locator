@@ -33,7 +33,7 @@ jQuery(document).ready(function () {
 //send request for favorites to server and process response
 function getFavorites() {
     jQuery.ajax({
-        url: getHomeUrl() + "favorites/",
+        url: getHomeUrl() + "users/favorites/",
         type: "GET",
         context: document.body,
         dataType: "json",
@@ -171,7 +171,7 @@ function favMenu(event) {
 function addFavorite() {
     var ATMId = jQuery("#defaultMarkerMenu").attr("atmid");
     jQuery.ajax({
-        url: getHomeUrl() + "favorites/" + ATMId,
+        url: getHomeUrl() + "users/favorites/" + ATMId,
         type: "PUT",
         context: document.body,
         dataType: "json",
@@ -196,7 +196,7 @@ function addFavorite() {
 function deleteFavorite() {
     var ATMId = jQuery("#favoriteMarkerMenu").attr("atmid");
     jQuery.ajax({
-        url: getHomeUrl() + "favorites/" + ATMId,
+        url: getHomeUrl() + "users/favorites/" + ATMId,
         type: "DELETE",
         context: document.body,
         dataType: "json",

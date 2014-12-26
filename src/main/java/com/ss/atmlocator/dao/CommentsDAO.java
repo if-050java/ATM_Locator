@@ -29,12 +29,14 @@ public class CommentsDAO implements ICommentsDAO {
     @Transactional
     public void deleteComment(int id) {
         AtmComment comment = entityManager.find(AtmComment.class, id);
+        comment.getAtmOffice().getAtmComments().remove(comment);
         entityManager.remove(comment);
     }
 
     @Override
     public List<AtmComment> getComments(int atmId) {
-        TypedQuery<AtmComment> query = entityManager.createQuery("SELECT c FROM AtmComment AS c WHERE c.atmOffice.id=:atmId", AtmComment.class);
+        String queryString = "SELECT c FROM AtmComment AS c WHERE c.atmOffice.id=:atmId";
+        TypedQuery<AtmComment> query = entityManager.createQuery(queryString, AtmComment.class);
         query.setParameter("atmId", atmId);
         return query.getResultList();
     }

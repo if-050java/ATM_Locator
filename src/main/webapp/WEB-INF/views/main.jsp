@@ -180,7 +180,7 @@
     </div><!-- /.modal -->
 </sec:authorize>
 <%--show feedback modal window  --%>
-    <div class="modal fade" id="feedbackModal">
+   <%-- <div class="modal fade" id="feedbackModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -199,7 +199,7 @@
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
-    </div>
+    </div>--%>
 
 <%--Show comments modal--%>
 <div class="modal fade" id="commentsWindow">

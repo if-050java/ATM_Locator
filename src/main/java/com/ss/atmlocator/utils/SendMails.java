@@ -1,27 +1,18 @@
 package com.ss.atmlocator.utils;
 
 
-
-
 import org.apache.log4j.Logger;
-import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static com.ss.atmlocator.utils.ExceptionParser.parseExceptions;
-
-
 
 public class SendMails {
 
-    final Logger logger = Logger.getLogger(SendMails.class.getName());
+    private final Logger logger = Logger.getLogger(SendMails.class.getName());
 
     private JavaMailSender mailSender;
     private String from;
@@ -34,9 +25,9 @@ public class SendMails {
         this.mailSender = mailSender;
     }
 
-    public void sendMail(String to, String subject, String msg) throws MessagingException,MailSendException {
+    public void sendMail(String to, String subject, String msg) throws MessagingException, MailSendException {
 
-        try{
+        try {
             MimeMessage message = mailSender.createMimeMessage();
             message.setText(msg, "UTF-8");
             MimeMessageHelper messageHelper = new MimeMessageHelper(message);
@@ -44,14 +35,12 @@ public class SendMails {
             messageHelper.setTo(to);
             messageHelper.setSubject(subject);
 
-        mailSender.send(message);
+            mailSender.send(message);
 
-        }
-        catch (MailSendException exp){
+        } catch (MailSendException exp) {
             logger.error(exp.getMessage(), exp);
             throw exp;
-        }
-        catch (MessagingException exp){
+        } catch (MessagingException exp) {
             logger.error(exp.getMessage(), exp);
             throw exp;
         }

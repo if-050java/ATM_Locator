@@ -1,10 +1,11 @@
 package com.ss.atmlocator.controller;
 
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
 import com.ss.atmlocator.utils.UploadedFile;
-import com.ss.atmlocator.utils.jQueryAutoCompleteResponse;
+import com.ss.atmlocator.utils.JQueryAutoCompleteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 import static com.ss.atmlocator.utils.Constants.USER_AVATAR_PREFIX;
 
@@ -33,8 +36,8 @@ import static com.ss.atmlocator.utils.Constants.USER_AVATAR_PREFIX;
 @RequestMapping("/users")
 public class UsersRestController {
 
-    private final String ADMIN_ROLE_NAME = "ADMIN";
-    private final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
+    private static final String ADMIN_ROLE_NAME = "ADMIN";
+    private static final Role ADMIN_ROLE = new Role(ADMIN_ROLE_NAME);
 
 
     @Autowired
@@ -49,9 +52,9 @@ public class UsersRestController {
     private Validator imageValidator;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<jQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
+    public ResponseEntity<JQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
         List<String> listUsers = userService.getNames(query);
-        return new ResponseEntity<>(new jQueryAutoCompleteResponse(query, listUsers), HttpStatus.OK);
+        return new ResponseEntity<>(new JQueryAutoCompleteResponse(query, listUsers), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)
@@ -125,5 +128,45 @@ public class UsersRestController {
             }
         }
         return new ResponseEntity<>(result.getAllErrors(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //Users favorites
+    @RequestMapping(value = "/favorites/", method = RequestMethod.GET)
+    public ResponseEntity<Set<AtmOffice>> getFavorites(Principal user) {
+        try {
+            int userId = userService.getUser(user.getName()).getId();
+            return new ResponseEntity<>(userService.getFavorites(userId), HttpStatus.OK);
+        } catch (NoResultException nre) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PersistenceException pe) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/favorites/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> addFavorite(@PathVariable int id,
+                                            Principal user) {
+        try {
+            int userId = userService.getUser(user.getName()).getId();
+            userService.addFavorite(userId, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (PersistenceException pe) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    @RequestMapping(value = "/favorites/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> delFromFavorites(@PathVariable int id,
+                                                 Principal user){
+        try {
+            int userId = userService.getUser(user.getName()).getId();
+            userService.deleteFavorite(userId, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }  catch (PersistenceException pe) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

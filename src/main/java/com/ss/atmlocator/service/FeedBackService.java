@@ -1,25 +1,28 @@
 package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.utils.SendMails;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 
 /**
- * Created by maks on 18.12.2014.
+ * This method can sent some message to admin email;
  */
 @Service
 public class FeedBackService {
-    private String email = "www.hroback-admin@gmail.com";
-    private String subject = "user feedback";
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(FeedBackService.class);
+    private static String email = "www.hroback-admin@gmail.com";// admin email
+    private static String subject = "user feedback";
     @Autowired
     SendMails sendMails;
-    public void sentFedbackTuAdminEmail(String message) {
+    public void sentFeedbackTuAdminEmail(String message) {
         try {
             sendMails.sendMail(email ,subject , message);
         } catch (MessagingException messageEx) {
-            messageEx.printStackTrace();
+            log.error("[ADMIN MESSAGE] exception"+messageEx.getMessage());
+            //messageEx.printStackTrace();
         }
 
     }

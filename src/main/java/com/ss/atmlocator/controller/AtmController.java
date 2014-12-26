@@ -26,9 +26,9 @@ import java.util.List;
 public class AtmController {
 
     @Autowired
-    CommentsService commentsService;
+    private CommentsService commentsService;
     @Autowired
-    ATMService atmService;
+    private ATMService atmService;
 
     @RequestMapping(value = "/{id}/comments", method = RequestMethod.GET)
     public ResponseEntity<List<AtmComment>> getComments(@PathVariable(value = "id") int atmId) {

@@ -13,9 +13,21 @@ public interface IAtmsDAO {
 
     AtmOffice getAtmById(int id);
 
+    public long getBankAtmsCount(final int bankId);
+
+    public long getBankAtmsPages(final int bankId);
+
     public List<AtmOffice> getBankAtms(int bank_id);
 
-    void persiste(AtmOffice tempAtm);
+
+    void persist(AtmOffice tempAtm);
+
+    public List<AtmOffice> getBankAtms(int bank_id, int page);
+
+
+    public int deleteBanksAtms(final int bankId);
+
+
 
     void update(List<AtmOffice> atmExistList);
 

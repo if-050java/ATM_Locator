@@ -41,7 +41,6 @@ public final class OschadBankParser implements IParser {
     private static final String USER_AGENT_PARAM =
             "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0";
     private static final String LAST_PAGE_SELECTOR = "font.text > a:nth-last-child(1)";
-    //private static final String SET_FILTER_VALUE = "\u0428\u0443\u043A\u0430\u0442\u0438"; //"Шукати"
     private static final String SET_FILTER_VALUE = "Шукати";
     private static final String SET_FILTER_PARAM = "set_filter";
     private static final String REGION_PARAM = "arrFilter_pf[RegionName]";
@@ -195,8 +194,10 @@ public final class OschadBankParser implements IParser {
             int pageCount = 0;
             try {
                 pageCount = getPageCount(createJsoupConnection(regionName, 1));
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
             } catch (ParseException e) {
-                LOGGER.warn(e.getMessage(),e);
+                LOGGER.warn(e.getMessage());
             }
             for (int page = 1; page <= pageCount; page++) {
                 LOGGER.debug(String.format("Region: {%s} page %d/%d", regionName, page, pageCount));
@@ -232,11 +233,11 @@ public final class OschadBankParser implements IParser {
             return m.find() ? m.group(1) + "/" + m.group(2) : null;
         }
 
-        private int getPageCount(final Connection connection) throws IOException, ParseException {
+        private int getPageCount(final Connection connection) throws ParseException, IOException {
             Connection.Response response = connection.execute();
             Elements elems = response.parse().select(LAST_PAGE_SELECTOR);
             if (elems.size() == 0) {
-                throw new ParseException("Can't parse last page number",0);
+                throw new ParseException("Can't parse last page number", 0);
             }
             String lastPageUrl = elems.get(0).attr("href");
             int index = lastPageUrl.lastIndexOf('=');

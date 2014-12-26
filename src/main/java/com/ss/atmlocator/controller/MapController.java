@@ -26,7 +26,7 @@ import java.util.*;
 @RequestMapping("/map")
 public class MapController {
     @Autowired
-    ATMService atmService;
+    private ATMService atmService;
     @Autowired
     private BanksService banksService;
     @Autowired

@@ -1,6 +1,5 @@
 var userPosition;
 var userPositionMarker;
-var USER_MARKER_TITLE = "My position"
 
 //Getting location from browser
 function getLocation() {
@@ -11,20 +10,25 @@ function getLocation() {
 
 //Setting current location to position received from browser
 function setLocation(position) {
-    userPosition = { lat: position.coords.latitude, lng: position.coords.longitude};
+    userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     setLocationByLatLng(userPosition);
 };
 
 //Setting current location to position defined by LatLng value
 function setLocationByLatLng(position) {
-    userPosition = position;
     deleteMarker(userPositionMarker);
+    addUserMarker(position)
+}
+
+function addUserMarker(position){
+    userPosition = new google.maps.LatLng(position.lat(), position.lng());
+    var iconUrl = "/resources/images/userMarker.ico";
+    var userAva = "/resources/images/defaultUserAvatar.jpg";
     userPositionMarker = new google.maps.Marker({
         position: userPosition,
         map: map,
-        title: USER_MARKER_TITLE
+        title: "My position"
     });
-    userPositionMarker.setMap(map);
     map.panTo(userPosition);
     setPositionCookies();
 }
@@ -43,15 +47,8 @@ function setLocationByAddress() {
 function setMapByGeocode(data, status) {
     if (status == google.maps.GeocoderStatus.OK) {//if google found this address
         deleteMarker(userPositionMarker);
-        userPosition = {lat: data[0].geometry.location.lat(), lng: data[0].geometry.location.lng()};
-        userPositionMarker = new google.maps.Marker({
-            position: userPosition,
-            map: map,
-            title: USER_MARKER_TITLE
-        });
-        userPositionMarker.setMap(map);
-        map.panTo(userPosition);
-        setPositionCookies();
+        var position = new google.maps.LatLng(data[0].geometry.location.lat(), data[0].geometry.location.lng());
+        addUserMarker(position);
     } else {//if address is invalid or google didn't find it
         $('#userAddress').attr("data-content", "Can't find this address");
         $('#userAddress').popover("show");
@@ -60,5 +57,6 @@ function setMapByGeocode(data, status) {
 
 //Setting cookies about user's position
 function setPositionCookies() {
-    $.cookie("position", JSON.stringify(userPosition));
+    var cookiesPosition = {lat: userPosition.lat(), lng: userPosition.lng()};
+    $.cookie("position", JSON.stringify(cookiesPosition));
 }

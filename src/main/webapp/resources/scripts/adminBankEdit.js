@@ -7,15 +7,15 @@ var ERROR_SAVE = "<span>Error, bank data is not saved!</span>";
 var ERROR_DELETE = "<span>Error, bank is not deleted!</span>";
 var WARNING_MESSAGE = "<span>Warning, something goes wrong.</span>";
 
-//var INFO_MESSAGE = "<strong>Info!</strong> <span>Nothing to update!</span>";
-
 function showAlert(className, html) {
     var element = $("div.alert");
     element.removeClass();
     element.addClass(className);
     element.children(".close").nextAll().remove();
     element.append(html);
-    element.show();
+    //element.show();
+    element.fadeIn("slow");
+    element.delay(2000).fadeOut("slow");
 }
 
 // get uploaded file from input control
@@ -41,6 +41,49 @@ function bankFormData(){
     fd.append("iconAtmFile",getFile("#iconAtmFile"));
     fd.append("iconOfficeFile",getFile("#iconOfficeFile"));
     return fd;
+}
+
+
+function deleteBank() {
+    var fd = new FormData();
+    form_bank_id = $("#id").val();
+    fd.append("id", form_bank_id);
+    if (form_bank_id == 0 || form_bank_id == undefined) {
+        showAlert("alert alert-danger", ERROR_DELETE);
+    } else {
+        $.ajax({
+            url: getHomeUrl() + "adminBankDeleteAjax",
+            type: "POST",
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response);
+
+                if (response.status == 'SUCCESS') {
+                    showAlert("alert alert-success", SUCCESS_DELETE);
+                    $("#adminBankDelete").prop("disabled","disabled");
+                    //$("#adminBankSave").prop("disabled","disabled");
+                    $("#adminBankAtmList").prop("disabled","disabled");
+                } else if (response.status == "ERROR") {
+                    showAlert("alert alert-danger", ERROR_DELETE);
+                } else {
+                    showAlert("alert alert-warning", WARNING_MESSAGE);
+                    for (var i = 0; i < response.errorMessageList.length; i++) {
+                        var item = response.errorMessageList[i];
+                        $('#' + item.cause).attr("data-content", item.message);
+                        $('#' + item.cause).popover("show");
+                    }
+                }
+            },
+            error: function () {
+                showAlert("alert alert-danger", ERROR_DELETE);
+            }
+        });
+    }
+    //hide the confirm window
+    $("#questionModal").modal("hide");
+
 }
 
 
@@ -87,8 +130,9 @@ $(document).ready(function () {
 
                     if (response.status == 'SUCCESS') {
                         showAlert("alert alert-success", SUCCESS_SAVE);
-                        $("#adminBankDelete").removeProp("disabled");
-                        $("#adminBankAtmList").removeProp("disabled");
+                        $("#adminBankSave").prop("disabled","disabled");
+                        //$("#adminBankDelete").removeProp("disabled");
+                        //$("#adminBankAtmList").removeProp("disabled");
 
                     } else if (response.status == "ERROR") {
                         showAlert("alert alert-danger", ERROR_SAVE);
@@ -108,44 +152,12 @@ $(document).ready(function () {
         }
     });
 
-
+    //shows confirm window before delete bank
     $("#adminBankDelete").click(function () {
-        var fd = new FormData();
-        form_bank_id = $("#id").val();
-        fd.append("id", form_bank_id);
-        if (form_bank_id == 0 || form_bank_id == undefined) {
-            showAlert("alert alert-danger", ERROR_DELETE);
-        } else {
-            $.ajax({
-                url: getHomeUrl() + "adminBankDeleteAjax",
-                type: "POST",
-                data: fd,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    console.log(response);
-
-                    if (response.status == 'SUCCESS') {
-                        showAlert("alert alert-success", SUCCESS_DELETE);
-                        $("#adminBankDelete").prop("disabled","disabled");
-                        //$("#adminBankSave").prop("disabled","disabled");
-                        $("#adminBankAtmList").prop("disabled","disabled");
-                    } else if (response.status == "ERROR") {
-                        showAlert("alert alert-danger", ERROR_DELETE);
-                    } else {
-                        showAlert("alert alert-warning", WARNING_MESSAGE);
-                        for (var i = 0; i < response.errorMessageList.length; i++) {
-                            var item = response.errorMessageList[i];
-                            $('#' + item.cause).attr("data-content", item.message);
-                            $('#' + item.cause).popover("show");
-                        }
-                    }
-                },
-                error: function () {
-                    showAlert("alert alert-danger", ERROR_DELETE);
-                }
-            });
-        }
+        $("#questionModal").modal("show");
     });
 
+    $("#adminBankAtmList").click(function () {
+        window.location.href = getHomeUrl() + "adminBankAtmList?id="+$("#id").val();
+    });
 });

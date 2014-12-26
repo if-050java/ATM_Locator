@@ -43,14 +43,14 @@ public class AtmOffice implements Comparable<AtmOffice> {
     private Bank bank;
 
     public AtmOffice() {
-        this.state = AtmState.NORMAL;
+        this.state = AtmState.NO_LOCATION;
         this.type = AtmType.IS_ATM;
     }
 
     public AtmOffice(final String address, final AtmType type) {
         this.address = address;
         this.type = type;
-        this.state = AtmState.NORMAL;
+        this.state = AtmState.NO_LOCATION;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AtmOffice implements Comparable<AtmOffice> {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
@@ -127,7 +127,7 @@ public class AtmOffice implements Comparable<AtmOffice> {
             case IS_ATM: str = "ATM"; break;
             case IS_OFFICE: str = "Branch"; break;
             case IS_ATM_OFFICE: str = "Branch, ATM"; break;
-            default: throw new RuntimeException();
+            default: str = "Undefined";
         }
         return str;
     }

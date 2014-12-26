@@ -47,6 +47,7 @@ public class KredoBankParser implements IParser {
     private static final String ADDRESS_SEPARATOR = "<br />";
 
     private static final String ILLEGAL_ARGUMENT_MESSAGE = "Required parameter not specified or empty: ";
+
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
     private static final String ATM_HTML_TAG = "item";
     private static final String REGION_ELEMENTS_CLASS = "white_back";
@@ -71,14 +72,13 @@ public class KredoBankParser implements IParser {
 
     private static final String POSTAL_CODE_REGEXP = ", \\d{5}";
     private static final String REMOVE_SPACES_REGEXP = "\\s{1,}";
-    private static final String POSTAL_SPACE_AFTER_DOT = "\\. ";
+    private static final String REMOVE_SPACE_AFTER_DOT = "\\. ";
 
     private final Logger logger = Logger.getLogger(KredoBankParser.class);
 
     private String bankSite;
     private List<String> regions = new ArrayList<String>();
-    private Document mainPage;
-    private List<AtmOffice> ATMs = new ArrayList<>();
+    private List<AtmOffice> atmList = new ArrayList<>();
 
 
     /**
@@ -88,7 +88,7 @@ public class KredoBankParser implements IParser {
     public List<AtmOffice> parse() throws IOException {
         try{
             logger.info("Try to load start page " + bankSite + ATM_PAGE_URL);
-            mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
+            Document mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
             int parsedRegions = 0;
             for(String region : regions){
                 Elements regionRows = mainPage.getElementsByClass(REGION_ELEMENTS_CLASS);
@@ -97,17 +97,17 @@ public class KredoBankParser implements IParser {
                     Element regionDiv = regionRow.child(REGION_DIV_CHILD);
                     Element regionNameElement = regionDiv.child(REGION_NAME_ELEMENT);
                     if(region.equals(regionNameElement.text())){
-                        logger.info("Try to parse ATMs from region " + region);
+                        logger.info("Try to parse atmList from region " + region);
                         parseRegion(bankSite + GET_REGION_URL+regionID);
                         parsedRegions++;
                     }//end if
                 }//end for regionRows
             }//end for regions
-            logger.info("Parsing is done. Was parsed " + ATMs.size() + " ATMs and offices");
+            logger.info("Parsing is done. Was parsed " + atmList.size() + " atmList and offices");
             if(regions.size() != parsedRegions){
                 logger.warn("Regions given " + regions.size() + "regions parsed " + parsedRegions);
             }
-            return ATMs;
+            return atmList;
         }catch(IOException ioe){
             logger.error(ioe.getMessage(), ioe);
             throw ioe;
@@ -127,7 +127,7 @@ public class KredoBankParser implements IParser {
                                                        .execute().parse();
             Elements cityItem = regionXML.getElementsByTag(ATM_HTML_TAG);
             for(Element city : cityItem){
-                logger.info("Try to parse ATMs from city " + city.child(0).text());
+                logger.info("Try to parse atmList from city " + city.child(0).text());
                 parseCity(bankSite+GET_CITY_URL + city.child(CITY_ID_CHILD).text());
             }
         }catch(IOException ioe){
@@ -137,7 +137,7 @@ public class KredoBankParser implements IParser {
 
     /**
      *Parse city that is defined by @param request to kredobank rest api
-     * and add all ATMs from this city to list
+     * and add all atmList from this city to list
      */
     private void parseCity(String request){
         logger.info("Try to connect to URL "+request);
@@ -146,19 +146,19 @@ public class KredoBankParser implements IParser {
                                                      .referrer(bankSite)
                                                      .method(Connection.Method.GET)
                                                      .execute().parse();
-            Elements ATMItems = cityXML.getElementsByTag(ATM_HTML_TAG);
-            for(Element ATMItem : ATMItems){
-                String address = prepareAddress(ATMItem.child(ADDRESS_CHILD).text());
+            Elements atmItems = cityXML.getElementsByTag(ATM_HTML_TAG);
+            for(Element atmItem : atmItems){
+                String address = prepareAddress(atmItem.child(ADDRESS_CHILD).text());
                 if(isAtmAndOffice(address)){
                     continue;
                 }
 
-                AtmOffice ATM = new AtmOffice();
-                ATM.setAddress(address);
-                ATM.setType(ATMItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
-                ATM.setLastUpdated(new Timestamp(new Date().getTime()));
+                AtmOffice atm = new AtmOffice();
+                atm.setAddress(address);
+                atm.setType(atmItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
+                atm.setLastUpdated(new Timestamp(new Date().getTime()));
 
-                ATMs.add(ATM);
+                atmList.add(atm);
             }
 
         }catch(IOException ioe){
@@ -173,7 +173,7 @@ public class KredoBankParser implements IParser {
         String[] addressArray = rawAddress.split(ADDRESS_SEPARATOR);
         String address = addressArray[STREET_PART]+addressArray[CITY_PART];
         address = address.replaceFirst(POSTAL_CODE_REGEXP,"");
-        address = address.replaceAll(POSTAL_SPACE_AFTER_DOT, ".");
+        address = address.replaceAll(REMOVE_SPACE_AFTER_DOT, ".");
         address = address.replaceAll(REMOVE_SPACES_REGEXP," ");
         return address.trim();
     }
@@ -181,12 +181,12 @@ public class KredoBankParser implements IParser {
     /**
      *
      * @return true if already has same @param address
-     * it means that this address has both ATM and office
+     * it means that this address has both atm and office
      */
     private boolean isAtmAndOffice(String address){
-        for(AtmOffice ATM : ATMs){
-            if(ATM.getAddress().equals(address)){
-                ATM.setType(IS_ATM_OFFICE);
+        for(AtmOffice atm : atmList){
+            if(atm.getAddress().equals(address)){
+                atm.setType(IS_ATM_OFFICE);
                 return true;
             }
         }
@@ -202,7 +202,7 @@ public class KredoBankParser implements IParser {
         String regionsString = parameters.get(requiredParameters.REGIONS.getValue());
         for(String region : regionsString.split(REGIONS_SEPARATOR)){
             regions.add(region.trim());
-        };
+        }
         bankSite = parameters.get(requiredParameters.URL.getValue());
     }
 
@@ -210,13 +210,13 @@ public class KredoBankParser implements IParser {
      *  Check all @param parameters sanded to parser and  @throws IllegalArgumentException
      *  if any parameters isn't preset, null or empty
      */
-    private void checkParameters(Map<String, String> parameters) throws IllegalArgumentException{
+    private void checkParameters(Map<String, String> parameters){
         for(requiredParameters parameter : requiredParameters.values()){
             if(! isPreset(parameters, parameter.getValue())){
                 IllegalArgumentException iae = new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + parameter);
                 logger.error(iae.getMessage(), iae);
                 throw iae;
-            };
+            }
         }
     }
 
