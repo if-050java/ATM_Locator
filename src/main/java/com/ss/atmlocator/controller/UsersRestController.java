@@ -1,5 +1,6 @@
 package com.ss.atmlocator.controller;
 
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
@@ -20,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 import static com.ss.atmlocator.utils.Constants.USER_AVATAR_PREFIX;
 
@@ -125,5 +128,45 @@ public class UsersRestController {
             }
         }
         return new ResponseEntity<>(result.getAllErrors(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    //Users favorites
+    @RequestMapping(value = "/favorites/", method = RequestMethod.GET)
+    public ResponseEntity<Set<AtmOffice>> getFavorites(Principal user) {
+        try {
+            int userId = userService.getUser(user.getName()).getId();
+            return new ResponseEntity<>(userService.getFavorites(userId), HttpStatus.OK);
+        } catch (NoResultException nre) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (PersistenceException pe) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/favorites/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> addFavorite(@PathVariable int id,
+                                            Principal user) {
+        try {
+            int userId = userService.getUser(user.getName()).getId();
+            userService.addFavorite(userId, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (PersistenceException pe) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    @RequestMapping(value = "/favorites/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<Void> delFromFavorites(@PathVariable int id,
+                                                 Principal user){
+        try {
+            int userId = userService.getUser(user.getName()).getId();
+            userService.deleteFavorite(userId, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }  catch (PersistenceException pe) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
