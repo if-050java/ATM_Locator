@@ -8,7 +8,7 @@ import com.ss.atmlocator.utils.Constants;
 import com.ss.atmlocator.utils.ErrorMessage;
 import com.ss.atmlocator.utils.OutResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Service
 public class AtmNetworksService {
-    private final org.apache.log4j.Logger log = Logger.getLogger(AtmNetworksService.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AtmNetworksService.class);
 
     @Autowired
     private IAtmNetworksDAO atmNetworksDAO;
@@ -55,7 +55,7 @@ public class AtmNetworksService {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-        log.debug("Delete ATM network #" + id);
+        LOGGER.debug("Delete ATM network #" + id);
 
         if (atmNetworksDAO.deleteNetwork(id)) {
             response.setStatus(Constants.SUCCESS);
