@@ -6,6 +6,7 @@ import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,9 @@ public final class BanksDAO implements IBanksDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private IAtmsDAO atmsDAO;
 
     @Override
     public List<Bank> getBanksList() {
@@ -84,14 +88,19 @@ public final class BanksDAO implements IBanksDAO {
                 return false;
             }
             String delName = bank.getName(); //get name before it will be deleted
+
+            int deletedAtms = atmsDAO.deleteBanksAtms(bankId);
+            LOGGER.debug(String.format("Deleted Bank '%s' #%d ATMs: %d", delName, bankId, deletedAtms));
+
             entityManager.remove(bank);
             LOGGER.debug("Deleted Bank '" + delName + "' #" + bankId);
-            return true;
+
         } catch (PersistenceException e) {
             LOGGER.error("Failed to delete bank #" + bankId);
             e.printStackTrace();
             return false;
         }
+        return true;
     }
 
     @Override

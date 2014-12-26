@@ -13,7 +13,9 @@ function showAlert(className, html) {
     element.addClass(className);
     element.children(".close").nextAll().remove();
     element.append(html);
-    element.show();
+    //element.show();
+    element.fadeIn("slow");
+    element.delay(2000).fadeOut("slow");
 }
 
 // get uploaded file from input control
