@@ -65,25 +65,23 @@ public class BanksService {
         return bank;
     }
 
-    private void setBankDefaultImages(Bank bank) {
-        if ("".equals(bank.getLogo())) {
+    private void setBankDefaultImages(final Bank bank) {
+        if (bank.getLogo() == null || "".equals(bank.getLogo())) {
             bank.setLogo(defaultLogo);
         }
 
-        if ("".equals(bank.getIconAtm())) {
+        if (bank.getIconAtm() == null || "".equals(bank.getIconAtm())) {
             bank.setIconAtm(defaultAtm);
         }
 
-        if ("".equals(bank.getIconOffice())) {
+        if (bank.getIconOffice() == null || "".equals(bank.getIconOffice())) {
             bank.setIconOffice(defaultOffice);
         }
     }
 
-    public Bank newBank(){
+    public Bank newBank() {
         Bank bank = banksDAO.newBank();
-        bank.setLogo(defaultLogo);
-        bank.setIconAtm(defaultAtm);
-        bank.setIconOffice(defaultOffice);
+        setBankDefaultImages(bank);
         bank.setLastUpdated(TimeUtil.currentTimestamp());
 
         return bank;

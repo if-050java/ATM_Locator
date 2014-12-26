@@ -25,6 +25,9 @@ public interface IAtmsDAO {
     public List<AtmOffice> getBankAtms(int bank_id, int page);
 
 
+    public int deleteBanksAtms(final int bankId);
+
+
 
     void update(List<AtmOffice> atmExistList);
 

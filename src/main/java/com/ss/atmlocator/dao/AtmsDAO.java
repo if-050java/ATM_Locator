@@ -111,6 +111,18 @@ public class AtmsDAO implements IAtmsDAO {
 
 
 
+    @Override
+    @Transactional
+    public int deleteBanksAtms(final int bankId) {
+        List<AtmOffice> atms = getBankAtms(bankId);
+        int removed = 0;
+        for (AtmOffice atm : atms) {
+            entityManager.remove(atm);
+            removed++;
+        }
+        return removed;
+    }
+
 
     @Override
     public void persist (AtmOffice Atm) {
