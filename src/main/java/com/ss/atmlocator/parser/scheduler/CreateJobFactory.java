@@ -12,7 +12,7 @@ public final class CreateJobFactory {
     final static Logger logger = LoggerFactory.getLogger(SchcedService.class);
     private CreateJobFactory(){}
 
-    public static JobTrigerHolder createJob(JobTemplate jobTemplate){
+    public static JobTrigerHolder createJob(JobTemplate jobTemplate, List<String> error){
         try{
         Map<String,String> map = jobTemplate.getMap();
 
@@ -46,6 +46,7 @@ public final class CreateJobFactory {
     }
         catch (Exception exp){
             logger.error(exp.getMessage(), exp);
+            error.add(exp.toString());
             return null;
         }
     }

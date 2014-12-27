@@ -1,35 +1,42 @@
 package com.ss.atmlocator.parser.coordEncoder;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Result {
 
-    private String formatted_address;
+    @JsonProperty(value = "formatted_address")
+    private String formattedAddress;
 
-    private boolean partial_match;
+    @JsonProperty(value = "partial_match")
+    private boolean partialMatch;
 
     private Geometry geometry;
 
+
+    @JsonProperty(value = "address_components")
     @JsonIgnore
-    private Object address_components;
+    private Object addressComponents;
 
     @JsonIgnore
     private Object types;
 
-    public String getFormatted_address() {
-        return formatted_address;
+    public String getFormattedAddress() {
+        return formattedAddress;
     }
 
-    public void setFormatted_address(String formatted_address) {
-        this.formatted_address = formatted_address;
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
     }
 
-    public boolean isPartial_match() {
-        return partial_match;
+    public boolean isPartialMatch() {
+        return partialMatch;
     }
 
-    public void setPartial_match(boolean partial_match) {
-        this.partial_match = partial_match;
+    public void setPartialMatch(boolean partialMatch) {
+        this.partialMatch = partialMatch;
     }
 
     public Geometry getGeometry() {
@@ -40,12 +47,12 @@ public class Result {
         this.geometry = geometry;
     }
 
-    public Object getAddress_components() {
-        return address_components;
+    public Object getAddressComponents() {
+        return addressComponents;
     }
 
-    public void setAddress_components(Object address_components) {
-        this.address_components = address_components;
+    public void setAddressComponents(Object addressComponents) {
+        this.addressComponents = addressComponents;
     }
 
     public Object getTypes() {

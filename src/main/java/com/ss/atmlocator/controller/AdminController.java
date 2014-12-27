@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private static final String error = "Internal error. See logs for details";
+    private static final String ERROR = "Internal error. ";
 
     @Autowired
     SchcedService service;
@@ -31,7 +32,7 @@ public class AdminController {
         model.addAttribute("active","admin");
         List<JobTemplate> jobs = service.getJobs();
         if (jobs != null){model.addAttribute("jobs",jobs);}
-        else {model.addAttribute("error",error);}
+        else {model.addAttribute("error",ERROR);}
         if(user != null) {
             model.addAttribute("userName", user.getName());
         }
@@ -157,12 +158,13 @@ public class AdminController {
 
 
         if(currentJobName == null || currentJobName.isEmpty()){
-            JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate);
+            List<String> errorList = new LinkedList<>();
+            JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate, errorList);
 
             if(jobHolder == null){
                 modelMap.addAttribute("add", "add");
                 modelMap.addAttribute("job",jobModel);
-                modelMap.addAttribute("error",error);
+                modelMap.addAttribute("error",ERROR+errorList.get(0));
                 return "jobs";
             }
 
@@ -171,10 +173,10 @@ public class AdminController {
         }
 
         List<JobTemplate> jobs = service.getJobs();
-
+        List<String> errorList = new LinkedList<>();
         for(JobTemplate job : jobs){
                 if(job.getJobName().toLowerCase().equals(currentJobName.toLowerCase())){
-                    JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate);
+                    JobTrigerHolder jobHolder = CreateJobFactory.createJob(jobTemplate,errorList);
                     if(jobHolder != null){
                         service.removeJob(jobTemplate);
                         service.addJob(jobHolder);
@@ -185,7 +187,7 @@ public class AdminController {
 
         modelMap.addAttribute("add","add");
         modelMap.addAttribute("job",jobModel);
-        modelMap.addAttribute("error",error);
+        modelMap.addAttribute("error",ERROR+errorList.get(0));
         return "jobs";
     }
 
