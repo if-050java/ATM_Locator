@@ -1,20 +1,23 @@
 package com.ss.atmlocator.parser.coordEncoder;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Result {
 
-    @JsonProperty("formatted_address")
+    @JsonProperty(value = "formatted_address")
     private String formattedAddress;
 
-    @JsonProperty("partial_match")
+    @JsonProperty(value = "partial_match")
     private boolean partialMatch;
 
     private Geometry geometry;
 
+
+    @JsonProperty(value = "address_components")
     @JsonIgnore
-    @JsonProperty("address_components")
     private Object addressComponents;
 
     @JsonIgnore
@@ -32,7 +35,7 @@ public class Result {
         return partialMatch;
     }
 
-    public void setpartialMatch(boolean partialMatch) {
+    public void setPartialMatch(boolean partialMatch) {
         this.partialMatch = partialMatch;
     }
 
