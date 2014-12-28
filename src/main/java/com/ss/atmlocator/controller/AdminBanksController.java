@@ -28,6 +28,8 @@ public final class AdminBanksController {
     private ParserService parserService;
     private AtmNetworksService atmNetworksService;
 
+    AdminBanksController() { }
+
     @Autowired
     AdminBanksController(BanksService banksService, ParserService parserService, AtmNetworksService atmNetworksService) {
         this.banksService = banksService;
@@ -78,8 +80,8 @@ public final class AdminBanksController {
         LOGGER.debug("GET: bank #" + bankId);
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("bank", banksService.getBank(bankId));
-        modelMap.addAttribute("atm_count",banksService.getBankAtmsCount(bankId));
-        modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("atm_count", banksService.getBankAtmsCount(bankId));
+        modelMap.addAttribute("active", "adminBanks");
         modelMap.addAttribute("userName", user.getName());
         return "adminBankEdit";
     }
