@@ -1,10 +1,9 @@
 function addFeedback(){
     var userDat = getUserData();
 
-    var defaultName =userDat.name;
-    var defaultEmail =userDat.email;
-    $('#namef').attr("value", defaultName);
-    $('#emailf').attr("value", defaultEmail);
+    /*var defaultName =userDat.name;
+    var defaultEmail =userDat.email;*/
+
     $("#feedbackModal").modal("show");
 
 }
@@ -19,11 +18,14 @@ function getUserData() {
         type: "POST",
         contentType: "application/json; charset=utf-8",
         context: document.body,
-        async: false,
+       /* async: false,*/
         dataType: "json",
         statusCode: {
             200: function (resp) {
-            userData = resp;
+
+                $('#namef').attr("value", resp.name);
+                $('#emailf').attr("value", resp.email);
+
             }
         }
 
@@ -67,6 +69,12 @@ function getFeedback(){
                 showAlert("alert alert-success", "Operation successfully processed")
             },
             404: function(){
+                $("#feedbackModal").modal("hide");
+                /*alert("feedback wasn't added due to server error ")*/
+                showAlert("alert alert-danger", "Sorry, try again later!")
+            },
+            500: function(){
+                $("#feedbackModal").modal("hide");
                 /*alert("feedback wasn't added due to server error ")*/
                 showAlert("alert alert-danger", "Sorry, try again later!")
             }
@@ -80,13 +88,13 @@ function showAlert(className, html) {
     $("#resultDefinition").empty();
     $("#resultDefinition").append(html);
     $("#message").slideDown(700);
-    setTimeout(hideAlert, 1000)
+    setTimeout(hideAlert, 11000)
 }
 
 //hide alert about result of operation
 function hideAlert(){
 
-    $("#message").slideUp(1500);
+    $("#message").slideUp(100);
 }
 
 
