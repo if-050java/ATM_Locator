@@ -91,7 +91,7 @@
                     dataType: "json",
                     statusCode: {
                         200: function(){
-                            alert("Job successfully run");
+                            alert("Job successfully start");
                         },
                         500: function(){alert("Error. See logs for details");}
                     }
