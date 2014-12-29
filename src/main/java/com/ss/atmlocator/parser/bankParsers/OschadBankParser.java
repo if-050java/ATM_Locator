@@ -35,7 +35,7 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
  * Created by Olavin on 14.12.2014.
  * Parse OschadBank web-site to gel list of branches and ATMs
  */
-public final class OschadBankParser implements IParser {
+public class OschadBankParser implements IParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(OschadBankParser.class);
 
     private static final String USER_AGENT_PARAM =
