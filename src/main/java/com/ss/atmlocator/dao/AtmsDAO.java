@@ -26,7 +26,7 @@ import static java.util.Arrays.asList;
  * Created by Olavin on 10.12.2014.
  */
 @Repository
-public final class AtmsDAO implements IAtmsDAO {
+public class AtmsDAO implements IAtmsDAO {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(AtmsDAO.class);
 
     //TODO: get count from parameters file;

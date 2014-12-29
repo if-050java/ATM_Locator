@@ -19,7 +19,7 @@ import java.util.List;
  * Created by us8610 on 12/3/2014.
  */
 @Service
-public final class BanksService {
+public class BanksService {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BanksService.class);
 
     private String defaultLogo;

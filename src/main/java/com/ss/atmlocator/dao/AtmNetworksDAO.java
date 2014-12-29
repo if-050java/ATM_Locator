@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Olavin on 22.11.2014.
  */
 @Repository
-public final class AtmNetworksDAO implements IAtmNetworksDAO {
+public class AtmNetworksDAO implements IAtmNetworksDAO {
     private final org.apache.log4j.Logger log = Logger.getLogger(AtmNetworksDAO.class);
 
     @PersistenceContext

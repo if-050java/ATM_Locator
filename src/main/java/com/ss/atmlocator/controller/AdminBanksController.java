@@ -21,7 +21,7 @@ import java.util.List;
  * Created by Olavin on 21.11.2014.
  */
 @Controller
-public final class AdminBanksController {
+public class AdminBanksController {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminBanksController.class);
 
     @Autowired
