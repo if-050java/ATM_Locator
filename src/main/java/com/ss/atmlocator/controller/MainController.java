@@ -26,7 +26,7 @@ public class MainController {
         model.addAttribute("networks", atmNetworksService.getNetworksList());
         model.addAttribute("banks", banksService.getBanksList());
         model.addAttribute("active", "main");
-        if(user != null) {
+        if (user != null) {
             model.addAttribute("userName", user.getName());
         }
         return "main";

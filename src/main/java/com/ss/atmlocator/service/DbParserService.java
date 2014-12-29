@@ -96,30 +96,10 @@ public class DbParserService implements IDBParserService {
         if (atmFromDb.equals(atmNew)) { // equals має бути по адрессі
             AtmOffice.AtmType typeDb = atmFromDb.getType();
             AtmOffice.AtmType typeNew = atmNew.getType();
-            if (typeDb.equals(typeNew)) {
-                return true;
-            } else if (typeDb == IS_ATM && typeNew == IS_OFFICE) {
-                atmFromDb.setType(IS_OFFICE);
-
-                return true;
-            } else if (typeDb == IS_OFFICE && typeNew == IS_ATM) {
-                atmFromDb.setType(IS_ATM);
-
-                return true;
-            } else if (typeDb == IS_ATM && typeNew == IS_ATM_OFFICE) {
-                atmFromDb.setType(IS_ATM_OFFICE);
-                return true;
-            } else if (typeDb == IS_ATM_OFFICE && typeNew == IS_ATM) {
-                atmFromDb.setType(IS_ATM);
-                return true;
-            } else if (typeDb == IS_OFFICE && typeNew == IS_ATM_OFFICE) {
-                atmFromDb.setType(IS_ATM_OFFICE);
-                return true;
-            } else if (typeDb == IS_ATM_OFFICE && typeNew == IS_OFFICE) {
-                atmFromDb.setType(IS_OFFICE);
-                return true;
+            if(typeNew!= null){
+                atmFromDb.setType(typeNew);
             }
-
+           return true;
         }
         return false;
     }
