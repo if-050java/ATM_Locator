@@ -25,7 +25,6 @@ public class UkrSybBankParser implements IParser {
     public static final String TOTAL_ATMS_SELECTOR = "#ref_goggle_tab_atms span";
     public static final String BRANCHES_SELECTOR = "#goggle_tab_branches .address";
     public static final String ATMS_SELECTOR = "#goggle_tab_atms .address";
-    public static final String CITY_PREFIX = "м.";
     public static final int RECORDS_PER_PAGE = 100;
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
     public static final String REGION_ID = "region_id_13";
@@ -122,7 +121,7 @@ public class UkrSybBankParser implements IParser {
             }
             Elements elements = document.select(selector);
             for (Element element : elements) {
-                listElements.add(new AtmOffice(CITY_PREFIX + element.text(), atmType));
+                listElements.add(new AtmOffice(element.text(), atmType));
             }
         }
         return listElements;
@@ -147,18 +146,5 @@ public class UkrSybBankParser implements IParser {
                 .userAgent(USER_AGENT)
                 .timeout(CONNECTION_TIMEOUT)
                 .get();
-    }
-
-    //It's method is used only for parser testing
-    public static void main(String[] args) {
-        UkrSybBankParser ukrSybBankParser = new UkrSybBankParser();
-        Map<String,String> testParams = new HashMap<>();
-        testParams.put("region", "13");
-        ukrSybBankParser.setParameter(testParams);
-        try {
-            System.out.println(ukrSybBankParser.parse());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
     }
 }

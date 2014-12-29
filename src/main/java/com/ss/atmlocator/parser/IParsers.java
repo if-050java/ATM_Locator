@@ -15,5 +15,4 @@ import java.util.Set;
 public interface IParsers {
     public void setParameter(Map<String, String> parameters);
     public List<Bank> parse();
-    //public Set<AtmOffice> parseAtms();
 }
