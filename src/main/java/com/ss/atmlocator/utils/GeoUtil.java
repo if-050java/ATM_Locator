@@ -2,6 +2,8 @@ package com.ss.atmlocator.utils;
 
 import com.ss.atmlocator.entity.GeoPosition;
 
+import java.util.Locale;
+
 import static java.lang.Math.*;
 
 /**
@@ -24,8 +26,8 @@ public class GeoUtil {
         return round(AVERAGE_LENGTH_ONE_DEGREE * acos(angle) * RAD_TO_DEGREE);
     }
 
-    public static boolean inRadius(GeoPosition basePoint, GeoPosition checkedPoint, int radius){
-        if(checkedPoint == null || basePoint == null) {
+    public static boolean inRadius(final GeoPosition basePoint, final GeoPosition checkedPoint, int radius) {
+        if (checkedPoint == null || basePoint == null) {
             return false;
         }
         return getDistance(basePoint, checkedPoint) <= radius;
@@ -50,7 +52,7 @@ public class GeoUtil {
         char westOrEast = position.getLongitude() > 0 ? 'E' : 'W';
 
         // sample: N48°42.2491' E23°50.4972'
-        return String.format("%c%02d\u00B0%02.4f' %c%02d\u00B0%02.4f'",
+        return String.format(Locale.US, "%c%02d\u00B0%02.4f' %c%02d\u00B0%02.4f'",
                 southOrNorth, degrees(position.getLatitude()), minutes(position.getLatitude()),
                 westOrEast, degrees(position.getLongitude()), minutes(position.getLongitude()));
     }

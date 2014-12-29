@@ -1,11 +1,8 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.dao.BanksDAO;
-import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.entity.GeoPosition;
-import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.ATMService;
 import com.ss.atmlocator.service.BanksService;
 import com.ss.atmlocator.service.UserService;
@@ -16,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Vasyl Danylyuk on 29.11.2014.
@@ -45,7 +43,7 @@ public class MapController {
                                          Principal principal
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
-        Collection<AtmOffice> atmOffices = atmService.getATMs(networkId, bankId,showAtms,showOffices, userPosition, radius);
+        Collection<AtmOffice> atmOffices = atmService.getATMs(networkId, bankId, showAtms, showOffices, userPosition, radius);
         return atmOffices;
     }
 
