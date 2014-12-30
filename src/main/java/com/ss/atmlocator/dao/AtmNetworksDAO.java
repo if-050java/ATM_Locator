@@ -14,10 +14,11 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
+ * Data access class for ATM Networks entity
  * Created by Olavin on 22.11.2014.
  */
 @Repository
-public final class AtmNetworksDAO implements IAtmNetworksDAO {
+public class AtmNetworksDAO implements IAtmNetworksDAO {
     private final org.apache.log4j.Logger log = Logger.getLogger(AtmNetworksDAO.class);
 
     @PersistenceContext
@@ -40,7 +41,7 @@ public final class AtmNetworksDAO implements IAtmNetworksDAO {
     @Override
     @Transactional
     public AtmNetwork saveNetwork(final AtmNetwork network) {
-        AtmNetwork saved = (AtmNetwork) entityManager.merge(network);
+        AtmNetwork saved = entityManager.merge(network);
         log.debug(String.format("Saved ATM Network '%s' %d#", saved.getName(), saved.getId()));
         return saved;
     }
@@ -49,7 +50,7 @@ public final class AtmNetworksDAO implements IAtmNetworksDAO {
     @Transactional
     public boolean deleteNetwork(final int id) {
         try {
-            AtmNetwork network = (AtmNetwork) entityManager.find(AtmNetwork.class, id);
+            AtmNetwork network = entityManager.find(AtmNetwork.class, id);
             if (network == null) {
                 return false;
             }

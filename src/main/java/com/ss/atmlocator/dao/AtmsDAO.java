@@ -22,32 +22,36 @@ import static java.util.Arrays.asList;
 ;
 
 /**
+ * Data access class for ATM entity
  * Created by Olavin on 10.12.2014.
  */
 @Repository
 public class AtmsDAO implements IAtmsDAO {
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(AtmsDAO.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AtmsDAO.class);
 
     //TODO: get count from parameters file;
-    final static int COUNT_ATMS_AT_PAGE = 20;
+    private static final int COUNT_ATMS_AT_PAGE = 20;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(final Integer network_id, final Integer bank_id, final boolean showAtms, final boolean showOffices) {
+    public List<AtmOffice> getBankAtms(final Integer networkId,
+                                       final Integer bankId,
+                                       final boolean showAtms,
+                                       final boolean showOffices) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AtmOffice> criteria = builder.createQuery(AtmOffice.class);
         Root<AtmOffice> atmOfficeRoot = criteria.from(AtmOffice.class);
         criteria.select(atmOfficeRoot);
         Predicate where = builder.conjunction();
 
-        if (network_id != null) {
-            where = builder.and(where, builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), network_id));
+        if (networkId != null) {
+            where = builder.and(where, builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), networkId));
         }
-        if (bank_id != null) {
-            where = builder.and(where, builder.equal(atmOfficeRoot.join("bank").get("id"), bank_id));
+        if (bankId != null) {
+            where = builder.and(where, builder.equal(atmOfficeRoot.join("bank").get("id"), bankId));
         }
         if (showAtms && !showOffices) {
             where = builder.and(where, atmOfficeRoot.get("type").in(asList(IS_ATM, IS_ATM_OFFICE)));
@@ -73,7 +77,8 @@ public class AtmsDAO implements IAtmsDAO {
     @Override
     @Transactional
     public long getBankAtmsCount(final int bankId) {
-        TypedQuery<Long> query = entityManager.createQuery("SELECT count(a.id) FROM AtmOffice AS a WHERE a.bank.id=:bank_id", Long.class);
+        TypedQuery<Long> query = entityManager
+                .createQuery("SELECT count(a.id) FROM AtmOffice AS a WHERE a.bank.id=:bank_id", Long.class);
         query.setParameter("bank_id", bankId);
         return query.getSingleResult();
     }
@@ -89,7 +94,8 @@ public class AtmsDAO implements IAtmsDAO {
     @Override
     @Transactional
     public List<AtmOffice> getBankAtms(final int bankId) {
-        TypedQuery<AtmOffice> query = entityManager.createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+        TypedQuery<AtmOffice> query = entityManager
+                .createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
         query.setParameter("bank_id", bankId);
         return query.getResultList();
     }
@@ -102,7 +108,8 @@ public class AtmsDAO implements IAtmsDAO {
         if (page > 0) {
             offset = page * COUNT_ATMS_AT_PAGE;
         }
-        TypedQuery<AtmOffice> query = entityManager.createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+        TypedQuery<AtmOffice> query = entityManager
+                .createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
         query.setParameter("bank_id", bankId);
         query.setFirstResult(offset);
         query.setMaxResults(COUNT_ATMS_AT_PAGE);
@@ -125,7 +132,7 @@ public class AtmsDAO implements IAtmsDAO {
 
 
     @Override
-    public void persist (AtmOffice Atm) {
+    public void persist(AtmOffice Atm) {
         entityManager.persist(Atm);
     }
     /**
@@ -134,15 +141,15 @@ public class AtmsDAO implements IAtmsDAO {
      * */
     @Override
     @Transactional
-    public void update(List<AtmOffice> atmExistList) {
+    public void update(final List<AtmOffice> atmExistList) {
 
         log.info("[TRANSACTION] update()-- begin transaction");
-        for(AtmOffice atm: atmExistList) {
+        for (AtmOffice atm: atmExistList) {
 
 //            atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.merge(atm);
         }
-        log.info("[TRANSACTION]update()-- end transaction, updated or persisted --->"+atmExistList.size()+" elements");
+        log.info("[TRANSACTION]update()-- end transaction, updated or persisted --->" + atmExistList.size() + " elements");
     }
     /**
      * the method updates the array offices or puts the database
@@ -150,17 +157,15 @@ public class AtmsDAO implements IAtmsDAO {
      * */
     @Override
     @Transactional
-    public void persist(List<AtmOffice> atmNewList) {
+    public void persist(final List<AtmOffice> atmNewList) {
         log.info("[TRANSACTION] persist()-- begin transaction");
-        for(AtmOffice atm: atmNewList){
-
-
+        for (AtmOffice atm: atmNewList) {
 
             atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.persist(atm);
             entityManager.refresh(atm);
         }
-        log.info("[TRANSACTION] persist()-- end transaction, updated or persisted"+atmNewList.size()+" elements");
+        log.info("[TRANSACTION] persist()-- end transaction, updated or persisted" + atmNewList.size() + " elements");
     }
 
 }

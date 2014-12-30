@@ -18,20 +18,22 @@ import java.util.List;
 
 @DisallowConcurrentExecution
 public class CoordEncoderService implements Job {
+
     private final static Logger logger = LoggerFactory.getLogger(CoordEncoderService.class);
-    private final static String nullContext = "Application context is null ";
-    private final static String nullAddress = "Address list is null";
-    private final static String addressCount = "Start getting ccordinats. Number of addresses is: ";
-    private final static String bedGodeRequest = "Cant geocode request, request status: ";
-    private final static String geoGodeCount = "Number of geocoding address: ";
-    private final static String beginUpdate = "Start inserting data ";
-    private final static String allDone = "End of running job ";
-    private final static String emptyAddress = "Address list is empty. Nothing to update ";
-    private final static String zeroResult = "Geocoder get zero result. Address: ";
-    private final static String okResponse = "OK";
-    private final static String zeroResponse = "ZERO_RESULTS";
-    private final static String jobErrorCode = "error";
-    private final static String jobInfoCode = "info";
+
+    private final static String NULL_CONTEXT = "Application context is null ";
+    private final static String NULL_ADDRESS = "Address list is null";
+    private final static String ADDRESS_COUNT = "Start getting cordinats. Number of addresses is: ";
+    private final static String BED_CODE_REQUEST = "Cant geocode request, request status: ";
+    private final static String GEO_CODE_COUNT = "Number of geocoding address: ";
+    private final static String BEGIN_UPDATE = "Start inserting data ";
+    private final static String ALL_DONE = "End of running job ";
+    private final static String EMPTY_ADDRESS = "Address list is empty. Nothing to update ";
+    private final static String ZERO_RESULT = "Geocoder get zero result. Address: ";
+    private final static String OK_RESPONSE = "OK";
+    private final static String ZERO_RESPONSE = "ZERO_RESULTS";
+    private final static String JOB_ERROR_CODE = "error";
+    private final static String JOB_INFO_CODE = "info";
 
 
     private final static int listCount = 10;
@@ -46,7 +48,7 @@ public class CoordEncoderService implements Job {
         ApplicationContext applicationContext = initAppContext(context);
 
         if(applicationContext == null) {
-            logger.error(nullContext);
+            logger.error(NULL_CONTEXT);
             return;
         }
 
@@ -60,28 +62,28 @@ public class CoordEncoderService implements Job {
         List<String> address = dao.getCoordNames();
 
         if(address == null){
-            logger.error(nullAddress);
-            jobMessage.append(nullAddress);
+            logger.error(NULL_ADDRESS);
+            jobMessage.append(NULL_ADDRESS);
             jobDAO.saveLog(JobLogBuilder.newJobLog()
                     .withJobName(jobName)
                     .withLastRun()
-                    .withState(jobErrorCode)
-                    .withMessage(nullAddress)
+                    .withState(JOB_ERROR_CODE)
+                    .withMessage(NULL_ADDRESS)
                     .build());
             return;
         }
         if(address.isEmpty()){
-            logger.info(emptyAddress);
+            logger.info(EMPTY_ADDRESS);
             jobDAO.saveLog(JobLogBuilder.newJobLog()
                     .withJobName(jobName)
                     .withLastRun()
-                    .withState(jobInfoCode)
-                    .withMessage(emptyAddress)
+                    .withState(JOB_INFO_CODE)
+                    .withMessage(EMPTY_ADDRESS)
                     .build());
             return;
         }
 
-        logger.info(addressCount+address.size());
+        logger.info(ADDRESS_COUNT+address.size());
         List<Coord> coordList = new ArrayList<>(listCount);
 
         for (String addr : address){
@@ -90,7 +92,7 @@ public class CoordEncoderService implements Job {
                 GoogleResponse res = AddressWorker.convertToLatLong(addr);
 
                 switch (res.getStatus()){
-                    case okResponse: {
+                    case OK_RESPONSE: {
                         Result result = res.getResults()[0];
                         coordList.add(new Coord(addr,
                                 result.getGeometry().getLocation().getLat(),
@@ -100,16 +102,16 @@ public class CoordEncoderService implements Job {
                         break;
                     }
 
-                    case zeroResponse:{
+                    case ZERO_RESPONSE:{
                         coordList.add(new Coord(addr,null,null,AtmState.BAD_ADDRESS));
-                        logger.info(zeroResult+addr);
-                        jobMessage.append(zeroResult+addr);
+                        logger.info(ZERO_RESULT+addr);
+                        jobMessage.append(ZERO_RESULT+addr);
                         break;
                     }
 
                     default:{
-                        logger.info(bedGodeRequest+res.getStatus()+"["+addr+"]");
-                        jobMessage.append(bedGodeRequest+res.getStatus()+"["+addr+"]");
+                        logger.info(BED_CODE_REQUEST+res.getStatus()+"["+addr+"]");
+                        jobMessage.append(BED_CODE_REQUEST+res.getStatus()+"["+addr+"]");
                     }
                 }
                 Thread.sleep(500);
@@ -120,12 +122,12 @@ public class CoordEncoderService implements Job {
             }
 
         }
-        logger.info(geoGodeCount+requestCoord);
-        jobMessage.append(geoGodeCount+requestCoord);
+        logger.info(GEO_CODE_COUNT+requestCoord);
+        jobMessage.append(GEO_CODE_COUNT+requestCoord);
 
         if(!coordList.isEmpty()){
-            logger.info(beginUpdate);
-            jobMessage.append(beginUpdate);
+            logger.info(BEGIN_UPDATE);
+            jobMessage.append(BEGIN_UPDATE);
             List<String> error = new LinkedList<>();
             dao.updateCoord(coordList,error);
 
@@ -139,10 +141,10 @@ public class CoordEncoderService implements Job {
         jobDAO.saveLog(JobLogBuilder.newJobLog()
                 .withJobName(jobName)
                 .withLastRun()
-                .withState(jobInfoCode)
+                .withState(JOB_INFO_CODE)
                 .withMessage(jobMessage.toString())
                 .build());
-        logger.info(allDone);
+        logger.info(ALL_DONE);
 
     }
 

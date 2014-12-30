@@ -29,16 +29,16 @@ public class AtmNetworksService {
         return atmNetworksDAO.getNetworksList();
     }
 
-    public AtmNetwork getNetwork(int id) {
+    public AtmNetwork getNetwork(final int id) {
         return atmNetworksDAO.getNetwork(id);
     }
 
-    public OutResponse saveNetwork(AtmNetwork network) {
+    public OutResponse saveNetwork(final AtmNetwork network) {
 
         OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
+        List<ErrorMessage> errorMessages = new ArrayList<>();
 
-        AtmNetwork savedNetwork = atmNetworksDAO.saveNetwork(network); // TODO: check for save error
+        AtmNetwork savedNetwork = atmNetworksDAO.saveNetwork(network);
         if (savedNetwork != null && savedNetwork.getId() != 0) {
             response.setStatus(Constants.SUCCESS);
         } else {
@@ -51,9 +51,9 @@ public class AtmNetworksService {
     }
 
 
-    public OutResponse deleteNetwork(int id) {
+    public OutResponse deleteNetwork(final int id) {
         OutResponse response = new OutResponse();
-        List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
+        List<ErrorMessage> errorMessages = new ArrayList<>();
 
         LOGGER.debug("Delete ATM network #" + id);
 

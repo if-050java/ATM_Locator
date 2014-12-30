@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Service
 public class BanksService {
-    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(BanksService.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BanksService.class);
 
     private String defaultLogo;
     private String defaultAtm;
@@ -35,7 +35,7 @@ public class BanksService {
     @Autowired
     private IAtmsDAO atmsDAO;
 
-    public List<Bank> getBanksByNetworkId(int networkId){
+    public List<Bank> getBanksByNetworkId(final int networkId) {
         return banksDAO.getBanksByNetworkId(networkId);
     }
 
@@ -47,7 +47,7 @@ public class BanksService {
         return atmsDAO.getBankAtmsPages(bankId);
     }
 
-    public List<AtmOffice> getBankAtms(int bankId, int page) {
+    public List<AtmOffice> getBankAtms(final int bankId, final int page) {
         return atmsDAO.getBankAtms(bankId, page);
     }
 
@@ -91,14 +91,14 @@ public class BanksService {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
-        logger.debug("Delete bank #" + bankId);
+        LOGGER.debug("Delete bank #" + bankId);
         Bank bankToDel = banksDAO.getBank(bankId);
 
         if (banksDAO.deleteBank(bankId)) {
             deleteBankImages(bankToDel, request);
             response.setStatus(Constants.SUCCESS);
         } else {
-            logger.error("Failed to delete bank #" + bankId);
+            LOGGER.error("Failed to delete bank #" + bankId);
             response.setStatus(Constants.ERROR);
         }
         response.setErrorMessageList(errorMessages);
@@ -123,11 +123,11 @@ public class BanksService {
         }
     }
 
-    public OutResponse saveBank(Bank bank,
-                         MultipartFile imageLogo,
-                         MultipartFile iconAtmFile,
-                         MultipartFile iconOfficeFile,
-                         HttpServletRequest request) {
+    public OutResponse saveBank(final Bank bank,
+                                final MultipartFile imageLogo,
+                                final MultipartFile iconAtmFile,
+                                final MultipartFile iconOfficeFile,
+                                final HttpServletRequest request) {
 
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
@@ -142,7 +142,7 @@ public class BanksService {
                 String newLogo = UploadedFile.saveImage(imageLogo, prefixLogo, savedBank.getId(), request);
                 savedBank.setLogo(newLogo);
             } catch (IOException e) {
-                logger.error(FAIL_SAVE_MSG + imageLogo.getOriginalFilename(), e);
+                LOGGER.error(FAIL_SAVE_MSG + imageLogo.getOriginalFilename(), e);
             }
         }
 
@@ -151,7 +151,7 @@ public class BanksService {
                 String newIconAtm = UploadedFile.saveImage(iconAtmFile, prefixAtm, savedBank.getId(), request);
                 savedBank.setIconAtm(newIconAtm);
             } catch (IOException e) {
-                logger.error(FAIL_SAVE_MSG + iconAtmFile.getOriginalFilename(), e);
+                LOGGER.error(FAIL_SAVE_MSG + iconAtmFile.getOriginalFilename(), e);
             }
         }
 
@@ -160,7 +160,7 @@ public class BanksService {
                 String newIconOffice = UploadedFile.saveImage(iconOfficeFile, prefixOffice, savedBank.getId(), request);
                 savedBank.setIconOffice(newIconOffice);
             } catch (IOException e) {
-                logger.error(FAIL_SAVE_MSG + iconOfficeFile.getOriginalFilename(), e);
+                LOGGER.error(FAIL_SAVE_MSG + iconOfficeFile.getOriginalFilename(), e);
             }
         }
 

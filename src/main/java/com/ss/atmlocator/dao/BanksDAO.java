@@ -22,7 +22,7 @@ import java.util.Set;
  * Created by Olavin on 22.11.2014.
  */
 @Repository
-public final class BanksDAO implements IBanksDAO {
+public class BanksDAO implements IBanksDAO {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BanksDAO.class);
     private static final int UNASSIGNED_NETWORK = -1;
 

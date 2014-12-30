@@ -21,19 +21,15 @@ import java.util.List;
  * Created by Olavin on 21.11.2014.
  */
 @Controller
-public final class AdminBanksController {
+public class AdminBanksController {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AdminBanksController.class);
 
-    private BanksService banksService;
-    private ParserService parserService;
-    private AtmNetworksService atmNetworksService;
-
     @Autowired
-    AdminBanksController(BanksService banksService, ParserService parserService, AtmNetworksService atmNetworksService) {
-        this.banksService = banksService;
-        this.parserService = parserService;
-        this.atmNetworksService = atmNetworksService;
-    }
+    private BanksService banksService;
+    @Autowired
+    private ParserService parserService;
+    @Autowired
+    private AtmNetworksService atmNetworksService;
 
     /**
      *  Show page with list of Banks and ATM Networks.
@@ -67,19 +63,17 @@ public final class AdminBanksController {
         return banksService.getBanksList();
     }
 
-
     /**
      *  Show Bank information page for edit.
      */
     @RequestMapping(value = "/adminBankEdit", method = RequestMethod.GET)
-    public String bankEdit(/*@ModelAttribute("bank") Bank bank,*/
-                           @RequestParam(value = "bank_id", required = true) int bankId,
+    public String bankEdit(@RequestParam(value = "bank_id", required = true) int bankId,
                            ModelMap modelMap, Principal user) {
         LOGGER.debug("GET: bank #" + bankId);
         modelMap.addAttribute("networks", atmNetworksService.getNetworksList());
         modelMap.addAttribute("bank", banksService.getBank(bankId));
-        modelMap.addAttribute("atm_count",banksService.getBankAtmsCount(bankId));
-        modelMap.addAttribute("active","adminBanks");
+        modelMap.addAttribute("atm_count", banksService.getBankAtmsCount(bankId));
+        modelMap.addAttribute("active", "adminBanks");
         modelMap.addAttribute("userName", user.getName());
         return "adminBankEdit";
     }

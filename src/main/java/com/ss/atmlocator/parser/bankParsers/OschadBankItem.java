@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Olavin on 19.12.2014.
  */
-public final class OschadBankItem {
+public class OschadBankItem {
     private static final Logger LOGGER = LoggerFactory.getLogger(OschadBankItem.class);
 
     private String address;
