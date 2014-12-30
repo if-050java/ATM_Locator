@@ -95,9 +95,9 @@ public class UsersRestController {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.NOT_ACCEPTABLE);
         }
         try {
-            int currentLoggedUserId = userService.getUser(principal.getName()).getId();//id of user who is logged
+            User loggedUser = userService.getUser(principal.getName());
             userService.editUser(updatedUser, genPassword);//try to update user in database
-            if (id == currentLoggedUserId) { //login if change yourself
+            if (id == loggedUser.getId() && updatedUser.getLogin() != null) { //login if change yourself
                 userService.doAutoLogin(updatedUser.getLogin());
             }
             return new ResponseEntity<>(HttpStatus.OK);
