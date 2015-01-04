@@ -4,8 +4,8 @@ import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import com.ss.atmlocator.service.UserService;
-import com.ss.atmlocator.utils.UploadedFile;
 import com.ss.atmlocator.utils.JQueryAutoCompleteResponse;
+import com.ss.atmlocator.utils.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,20 +61,20 @@ public class UsersRestController {
         try {
             value = value.replace('*', '.');
             return new ResponseEntity<>(userService.getUser(value), HttpStatus.OK);
-        } catch (EntityNotFoundException enfe) {
+        } catch (NoResultException nre) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
-        if (userService.getUser(id).getRoles().contains(ADMIN_ROLE)) {//Check want to remove admin
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
         try {
+            if (userService.getUser(id) != null && userService.getUser(id).getRoles().contains(ADMIN_ROLE)) {//Check want to remove admin
+                return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+            }
             userService.deleteUser(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (EntityNotFoundException enfe) {
+        } catch (NoResultException nre) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (PersistenceException pe) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
