@@ -35,7 +35,6 @@ function getUser() {
 }
 function validateForm() {
     var result = true;
-    return true;
     var updatedUser = getUser();
     if (!validateLogin(updatedUser.login)) {
         showPopover("login", INVALID_LOGIN, result);
@@ -100,7 +99,6 @@ function changeImage(input) {
                 message += ("<div>" + INVALID_FILE_EXTENTION + "</div>");
                 showAlert("alert alert-warning", message);
             } else if (!checkFileSize(e.total)) {
-                console.log("size");
                 message += ("<div>" + FILE_SIZE_LIMIT + "</div>");
                 showAlert("alert alert-warning", message);
             } else {
