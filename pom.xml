@@ -240,9 +240,9 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>0.8.1</version>
-            <optional>true</optional>
+            <version>0.9.1</version>
         </dependency>
+
     </dependencies>
     <build>
         <finalName>atmlocator</finalName>
