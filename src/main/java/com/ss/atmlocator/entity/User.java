@@ -54,6 +54,13 @@ public class User {
         this.enabled = enabled;
     }
 
+    public User(String login, String name, String email, String password) {
+        this.login = login;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     public User() {
     }
 
@@ -147,7 +154,6 @@ public class User {
                 ", avatar='" + avatar + '\'' +
                 ", roles=" + roles +
                 ", enabled=" + enabled +
-                //", atmComments=" + atmComments +
                 ", atmFavorites=" + atmFavorites +
                 '}';
     }
