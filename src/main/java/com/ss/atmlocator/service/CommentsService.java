@@ -54,6 +54,7 @@ public class CommentsService {
             commentsDAO.deleteComment(id);
         }catch (PersistenceException pe){
             logger.error(pe.getMessage(), pe);
+            throw pe;
         }
     }
 }

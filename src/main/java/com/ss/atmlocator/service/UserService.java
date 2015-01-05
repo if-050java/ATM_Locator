@@ -39,8 +39,6 @@ public class UserService {
     @Autowired
     private IUsersDAO usersDAO;
     @Autowired
-    private ATMService atmService;
-    @Autowired
     private Md5PasswordEncoder passwordEncoder;
     @Autowired
     @Qualifier("emailcreator")
@@ -81,7 +79,7 @@ public class UserService {
         usersDAO.createUser(user);
     }
 
-    public void editUser(User user, boolean genPassword) throws MessagingException {
+    public User editUser(User user, boolean genPassword) throws MessagingException {
         try {
             if (genPassword) {
                 user.setPassword(GenString.genString(GEN_PASSWORD_LENGTH));
@@ -95,6 +93,7 @@ public class UserService {
             logger.info(SENDING_EMAIL + mergedUser.getEmail());
             String message = emailCreator.toUser(mergedUser, user.getPassword());
             sendMails.sendMail(mergedUser.getEmail(), EMAIL_SUBJECT, message);
+            return mergedUser;
         } catch (IllegalAccessException iae) {
             logger.error(iae.getMessage(), iae);
             throw new PersistenceException(iae);
