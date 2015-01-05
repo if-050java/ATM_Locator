@@ -14,5 +14,4 @@ import java.util.Map;
 public interface IParser {
 void setParameter(Map<String, String> parameters);
 List<AtmOffice> parse() throws IOException;
-//List<AtmOffice> parse();
 }

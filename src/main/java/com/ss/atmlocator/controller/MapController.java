@@ -39,8 +39,7 @@ public class MapController {
                                          @RequestParam double userLng,
                                          @RequestParam int radius,
                                          @RequestParam boolean showAtms,
-                                         @RequestParam boolean showOffices,
-                                         Principal principal
+                                         @RequestParam boolean showOffices
                                          ) {
         GeoPosition userPosition = new GeoPosition(userLng, userLat);
         Collection<AtmOffice> atmOffices = atmService.getATMs(networkId, bankId, showAtms, showOffices, userPosition, radius);
