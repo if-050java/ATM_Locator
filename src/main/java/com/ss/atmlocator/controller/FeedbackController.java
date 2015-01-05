@@ -32,7 +32,7 @@ public class FeedbackController {
     public ResponseEntity<Void> putFeedback(@RequestBody FeedBack feedback,
                             Principal principal) {
         System.out.println(feedback);
-        User user = userService.getUser(principal.getName());
+//        User user = userService.getUser(principal.getName());
 //        System.out.println(principal.getName()+ "  " +user.getEmail());
         feedBackService.sentFeedbackTuAdminEmail(feedback.getName()+"\n\r"+feedback.getEmail()+"\n\r"+feedback.getFeedback());
         return  new ResponseEntity<Void>(HttpStatus.OK);
@@ -42,8 +42,8 @@ public class FeedbackController {
     public ResponseEntity<Map<String, String>> postFeedback(
                                             Principal principal){
         Map<String, String> data = new HashMap();
-        if (principal==null) {
-            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        if(principal==null){
+            return new ResponseEntity<>(data, HttpStatus.OK);
         }
         User user = userService.getUser(principal.getName());
         String name = user.getName();
