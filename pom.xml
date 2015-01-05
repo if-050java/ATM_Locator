@@ -242,7 +242,6 @@
             <artifactId>json-path</artifactId>
             <version>0.9.1</version>
         </dependency>
-
     </dependencies>
     <build>
         <finalName>atmlocator</finalName>
