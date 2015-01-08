@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The class cann
+ * The class is controller for feedback page
  */
 @Controller
 public class FeedbackController {
@@ -27,20 +27,22 @@ public class FeedbackController {
     private FeedBackService feedBackService;
     @Autowired
     private UserService userService;
-
+    /**
+     * This method returns http status 200 and send feedback to admin email.
+     * */
     @RequestMapping(value = "/feedback", method = RequestMethod.PUT)
     public ResponseEntity<Void> putFeedback(@RequestBody FeedBack feedback,
                             Principal principal) {
-        System.out.println(feedback);
-//        User user = userService.getUser(principal.getName());
-//        System.out.println(principal.getName()+ "  " +user.getEmail());
         feedBackService.sentFeedbackTuAdminEmail(feedback.getName()+"\n\r"+feedback.getEmail()+"\n\r"+feedback.getFeedback());
         return  new ResponseEntity<Void>(HttpStatus.OK);
 
     }
+    /**
+     * This method returns http status 200 and   information about the user.
+     * */
     @RequestMapping(value = "/feedback", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> postFeedback(
-                                            Principal principal){
+    public ResponseEntity<Map<String, String>> aboutUser(
+            Principal principal){
         Map<String, String> data = new HashMap();
         if(principal==null){
             return new ResponseEntity<>(data, HttpStatus.OK);
@@ -48,10 +50,8 @@ public class FeedbackController {
         User user = userService.getUser(principal.getName());
         String name = user.getName();
         String email = user.getEmail();
-
         data.put("name",name);
         data.put("email",email);
-        System.out.println(principal.getName()+ "  " +user.getEmail());
         return new ResponseEntity<>(data, HttpStatus.OK);
 
 

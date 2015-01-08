@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 
 /**
- * This method can sent some message to admin email;
+ * This class can sent some message to admin email;
  */
 @Service
 public class FeedBackService {
@@ -20,9 +20,10 @@ public class FeedBackService {
     public void sentFeedbackTuAdminEmail(String message) {
         try {
             sendMails.sendMail(email ,subject , message);
+            log.info("[ADMIN MESSAGE] send from ");
         } catch (MessagingException messageEx) {
             log.error("[ADMIN MESSAGE] exception"+messageEx.getMessage());
-            //messageEx.printStackTrace();
+
         }
 
     }

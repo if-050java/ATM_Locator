@@ -18,7 +18,7 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_OFFICE;
 import static com.ss.atmlocator.entity.AtmState.*;
 
 /**
- * Created by maks on 13.12.2014.
+ * This servise prepare Collections atms from parser, and persiste their in Database
  */
 @SuppressWarnings("ALL")
 @Service
@@ -30,62 +30,7 @@ public class DbParserService implements IDBParserService {
     private IBanksDAO banksDAO;
     private int bankId;
 
- /*   @Override
-    public void update( List<AtmOffice> atms) {
-        List<AtmOffice> atmExistList = new ArrayList<>();
-        List<AtmOffice> atmNewList = new ArrayList<>();
-        bankId = atms.get(0).getBank().getId();
-        ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
-        for (AtmOffice atmDb: atmListFomDb) {
-            if (atms.contains(atmDb)) {
-                atmDb.setLastUpdated(TimeUtil.currentTimestamp());
-                atmExistList.add(atmDb);
-            } else {
-                atmDb.setState(NO_LOCATION);
-                atmExistList.add(atmDb);
-            }
-        }
-        for (AtmOffice tempAtm : atms) {
-            if (!atmListFomDb.contains(tempAtm)) {
-                atmNewList.add(tempAtm);
 
-            }
-        }
-
-        atmsDAO.update(atmExistList);
-        atmsDAO.persist(atmNewList);
-    }
-
-
-    public void updateWithoutType(List<AtmOffice> atms,  int bankId) {
-        List<AtmOffice> atmExistList = new ArrayList<>();
-        List<AtmOffice> atmNewList = new ArrayList<>();
-        ArrayList<AtmOffice> atmListFomDb = new ArrayList<>(atmsDAO.getBankAtms(bankId));
-        for (AtmOffice atmDb: atmListFomDb) {
-            if (atms.contains(atmDb)) {
-                atmDb.setLastUpdated(TimeUtil.currentTimestamp());
-                atmExistList.add(atmDb);
-            } else {
-                atmDb.setState(NO_LOCATION);
-                atmExistList.add(atmDb);
-            }
-        }
-        for (AtmOffice tempAtm : atms) {
-            if (!atmListFomDb.contains(tempAtm)) {
-                Bank curentBank = banksDAO.getBank(bankId);
-                tempAtm.setBank(curentBank);
-                atmNewList.add(tempAtm);
-
-            }
-        }
-
-        atmsDAO.update(atmExistList);
-
-        atmsDAO.persist(atmNewList);
-
-
-    }*/
-    //-----------------------------------------------------------------------------------
     /**
      * The method compare AtmOffices. Change them, if it need, type atm office from db
      * @param  atmFromDb old atm from database, its type change
@@ -119,7 +64,7 @@ public class DbParserService implements IDBParserService {
         for (AtmOffice atm:atms) {
             for (AtmOffice atmDb:atmListFromDb) {
                 compareAtm(atmDb, atm);
-                continue;               // if we found and change some atm we dont need
+                break;               // if we found and change some atm we dont need
             }
         }
         // put in resultList old atms and update their time last update.
@@ -140,6 +85,7 @@ public class DbParserService implements IDBParserService {
             }
         }
         atmsDAO.update(atmResultList);
+        log.info(" All atms put in database. Number of atm "+atmResultList.size());
 
     }
 
