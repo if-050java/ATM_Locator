@@ -40,10 +40,6 @@ public class User {
     private Set<Role> roles;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<AtmComment> atmComments;
-
-    @JsonIgnore //Ignoring this field in JSON serializing
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name="favorites",
                joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
@@ -56,6 +52,13 @@ public class User {
         this.email = email;
         this.password = password;
         this.enabled = enabled;
+    }
+
+    public User(String login, String name, String email, String password) {
+        this.login = login;
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     public User() {
@@ -117,14 +120,6 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Set<AtmComment> getAtmComments() {
-        return atmComments;
-    }
-
-    public void setAtmComments(Set<AtmComment> atmComments) {
-        this.atmComments = atmComments;
-    }
-
     public Set<AtmOffice> getAtmFavorites() {
         return atmFavorites;
     }
@@ -159,7 +154,6 @@ public class User {
                 ", avatar='" + avatar + '\'' +
                 ", roles=" + roles +
                 ", enabled=" + enabled +
-                ", atmComments=" + atmComments +
                 ", atmFavorites=" + atmFavorites +
                 '}';
     }

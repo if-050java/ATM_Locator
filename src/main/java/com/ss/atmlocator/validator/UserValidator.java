@@ -92,7 +92,7 @@ public class UserValidator implements Validator {
         }
     }
 
-    private void validateNickName(User user, Errors errors) {
+    public void validateNickName(User user, Errors errors) {
         final String nickName = user.getName();
         if (!userCredMatcher.validateNickName(nickName)) {
             errors.rejectValue(Constants.USER_NAME,

@@ -59,6 +59,9 @@ public class AtmOffice implements Comparable<AtmOffice> {
         if (!(o instanceof AtmOffice)) return false;
 
         AtmOffice atmOffice = (AtmOffice) o;
+        if(address == "Авдеевка, ул Молодежная 7"){
+            int i = 1+2;
+        }
         return address.equals(atmOffice.address);
     }
 

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
+import static com.ss.atmlocator.entity.AtmState.NO_LOCATION;
 
 /**
  * Created by Vasyl Danylyuk on 05.11.2014.
@@ -157,6 +158,7 @@ public class KredoBankParser implements IParser {
                 atm.setAddress(address);
                 atm.setType(atmItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
                 atm.setLastUpdated(new Timestamp(new Date().getTime()));
+                atm.setState(NO_LOCATION);
 
                 atmList.add(atm);
             }
@@ -179,7 +181,6 @@ public class KredoBankParser implements IParser {
     }
 
     /**
-     *
      * @return true if already has same @param address
      * it means that this address has both atm and office
      */
