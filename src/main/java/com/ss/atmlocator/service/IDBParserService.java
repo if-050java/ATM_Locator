@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IDBParserService {
    // public void update(List<AtmOffice> atms);
-    public void update(List<AtmOffice> atms, int bankId);
+    public List<AtmOffice> update(List<AtmOffice> atms, int bankId);
 }

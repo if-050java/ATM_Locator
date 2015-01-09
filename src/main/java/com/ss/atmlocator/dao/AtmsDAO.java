@@ -145,8 +145,6 @@ public class AtmsDAO implements IAtmsDAO {
 
         log.info("[TRANSACTION] update()-- begin transaction");
         for (AtmOffice atm: atmExistList) {
-
-//            atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.merge(atm);
         }
         log.info("[TRANSACTION]update()-- end transaction, updated or persisted --->" + atmExistList.size() + " elements");
