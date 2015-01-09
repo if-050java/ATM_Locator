@@ -54,11 +54,11 @@ public class User {
         this.enabled = enabled;
     }
 
-    public User(String login, String name, String email, String password) {
+    public User(int id, String login, String name, String email) {
+        this.id = id;
         this.login = login;
         this.name = name;
         this.email = email;
-        this.password = password;
     }
 
     public User() {
