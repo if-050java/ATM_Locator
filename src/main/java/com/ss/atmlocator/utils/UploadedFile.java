@@ -21,6 +21,13 @@ public class UploadedFile {
 
     private MultipartFile file;
 
+    public UploadedFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public UploadedFile() {
+    }
+
     /**
      * Save image with a new filename based on subject id
      */
