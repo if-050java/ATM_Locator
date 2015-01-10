@@ -159,7 +159,9 @@ public class KredoBankParser implements IParser {
     }
 
     /**
-     * Setting @param parameters for parser
+     * Setting parameters to parser from property file or given map
+     * Properties that are set by admin page override properties from file if the names are same
+     * @param parameters that will by set to parser
      */
     @Override
     public void setParameter(Map<String, String> parameters){

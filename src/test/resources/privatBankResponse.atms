@@ -1,0 +1,18 @@
+<html>
+       <header>
+       </header>
+       <body>
+              {"items":[
+                     {"id":"CADO4101","lat":"41.744598388671875","lng":"45.797100067138670","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAVI2608","lat":"42.163368225097656","lng":"42.348541259765625","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAVI7872","lat":"41.757839202880860","lng":"44.772308349609375","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAOD2995","lat":"46.474689483642580","lng":"30.750188827514650","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAOD1326","lat":"47.200901031494140","lng":"30.910587310791016","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAVO1375","lat":"50.758762359619140","lng":"25.353681564331055","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAZH8939","lat":"50.268905639648440","lng":"28.664314270019530","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAZH8938","lat":"50.245540618896484","lng":"28.640716552734375","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAZH8908","lat":"50.248706817626950","lng":"28.673629760742188","type":"atm","is_active":1,"distance":-1},
+                     {"id":"CAZH8905","lat":"50.758689880371094","lng":"29.225711822509766","type":"atm","is_active":1,"distance":-1}
+              ]}
+       </body>
+</html>
