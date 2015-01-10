@@ -27,11 +27,11 @@ import static com.ss.atmlocator.entity.AtmState.NORMAL;
 
 public class PrivatBankParser implements IParser {
 
-    private Properties propertiesFromFile = new Properties();
-
     private Properties parserProperties = new Properties();
 
     private List<AtmOffice> atmList = new ArrayList<>();
+
+    private String[] requiredParams = {"url.data", "url.details", "user.agent", "reading.timeout", "address.element.xpath", "", "", ""};
 
     final static Logger logger = LoggerFactory.getLogger(PrivatBankParser.class);
 
@@ -42,14 +42,16 @@ public class PrivatBankParser implements IParser {
      */
     @Override
     public void setParameter(Map<String, String> parameters){
-        loadProperties();
-        for(String paramName : propertiesFromFile.stringPropertyNames()){
+        Properties fromFile = loadProperties();
+        for(String paramName : fromFile.stringPropertyNames()){
             if(parameters.containsKey(paramName)){
                 parserProperties.put(paramName, parameters.get(paramName));
+                parameters.remove(paramName);
             }else {
-                parserProperties.put(paramName, propertiesFromFile.get(paramName));
+                parserProperties.put(paramName, fromFile.get(paramName));
             }
         }
+        parserProperties.putAll(parameters);
     }
 
     /**
@@ -74,7 +76,7 @@ public class PrivatBankParser implements IParser {
      * loading ATMs from Privatbank site
      * @throws IOException if cant load ATMs page or address page
      */
-    protected List<AtmOffice> parseAtms() throws IOException {
+    private List<AtmOffice> parseAtms() throws IOException {
         List<AtmOffice> atmList = new ArrayList<>();
         int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
         logger.info("Try to parse ATMs");
@@ -99,7 +101,7 @@ public class PrivatBankParser implements IParser {
      * loading offices from Privatbank site
      * @throws IOException if cant load offices's page or address page
      */
-    protected List<AtmOffice> parseOffices() throws IOException {
+    private List<AtmOffice> parseOffices() throws IOException {
         List<AtmOffice> atmList = new ArrayList<>();
         int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
         logger.info("Try to parse offices");
@@ -154,16 +156,19 @@ public class PrivatBankParser implements IParser {
      * Load properties from file
      * @throws IOException if can't load
      */
-    protected void loadProperties(){
+    private Properties loadProperties(){
         try {
+            Properties properties = new Properties();
             String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
             String filePath = dirPath + "/privatBankParser.properties";
             logger.info("Try to load properties from file " + filePath);
             InputStream propFile = new FileInputStream(filePath);
-            propertiesFromFile.load(propFile);
+            properties.load(propFile);
             logger.info("File successfully loaded.");
+            return properties;
         }catch (IOException ioe){
-            logger.error("Loading file failed.");
+            logger.error("Loading file failed. Properties from admin page will be used");
+            return new Properties();
         }
     }
 
@@ -171,7 +176,7 @@ public class PrivatBankParser implements IParser {
      * @param type defines atm or office
      * @return map that define request parameters for loading ATMs or offices
      */
-    protected Map<String, String> getPostParameters(AtmOffice.AtmType type) throws IOException {
+    private Map<String, String> getPostParameters(AtmOffice.AtmType type) throws IOException {
         Map<String, String> postData = new HashMap<>();
         //add params
         for(String paramName : parserProperties.stringPropertyNames()){
@@ -227,7 +232,7 @@ public class PrivatBankParser implements IParser {
      * @return formatted address string based on rawAddress
      * parameters for formatting get from properties
      */
-    protected String  prepareAddress(String rawAddress){
+    private String  prepareAddress(String rawAddress){
         String result = rawAddress;
         for(String paramName : parserProperties.stringPropertyNames()){
             if(paramName.matches("replace\\.regexp\\..*")){
@@ -243,7 +248,7 @@ public class PrivatBankParser implements IParser {
      * @return true and mark atm as ATM_OFFICE if already has same address
      * it means that this address has both atm and office
      */
-    protected boolean isAtmAndOffice(String address){
+    private boolean isAtmAndOffice(String address){
         for(AtmOffice atm : atmList){
             if(atm.getAddress().equals(address)){
                 atm.setType(IS_ATM_OFFICE);
