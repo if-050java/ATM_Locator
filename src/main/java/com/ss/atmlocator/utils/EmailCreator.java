@@ -1,15 +1,14 @@
 package com.ss.atmlocator.utils;
 
 import com.ss.atmlocator.entity.User;
+import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STRawGroupDir;
 
-import java.io.IOException;
-import org.apache.log4j.Logger;
-
 import javax.mail.MessagingException;
+import java.io.IOException;
 
 import static com.ss.atmlocator.entity.UserStatus.ENABLED;
 import static com.ss.atmlocator.utils.Constants.*;
@@ -29,7 +28,7 @@ public class EmailCreator {
     public EmailCreator(String path){
         //creating template group  from files in dir
         try {
-            String dirPath = new ClassPathResource(path).getURI().getPath();
+            dirPath = new ClassPathResource(path).getURI().getPath();
             logger.info("Loading StringTemplateGroup from dir "+dirPath);
             stGroup = new STRawGroupDir(dirPath, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
             stGroup.encoding = "UTF-8";

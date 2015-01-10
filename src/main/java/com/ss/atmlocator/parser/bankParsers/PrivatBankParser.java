@@ -11,78 +11,72 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM;
-import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM_OFFICE;
-import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_OFFICE;
+import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 import static com.ss.atmlocator.entity.AtmState.NORMAL;
 
 
 public class PrivatBankParser implements IParser {
 
-    private enum requiredParameters{
-        URL("get_atm_url"),
-        GET_DETAILS_URL("get_details_url");
+    private Properties propertiesFromFile = new Properties();
 
-        private String value;
+    private Properties parserProperties = new Properties();
 
-        requiredParameters(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return getValue();
-        }
-    }
-
-    private String url;
-    private String getDetailsUrl;
-    private static final String ILLEGAL_ARGUMENT_MESSAGE = "Required parameter not specified or empty: ";
+    private static final String DATA_CONTAINER = "body";
 
     private List<AtmOffice> atmList = new ArrayList<>();
-
-    int i=0;
 
     final static Logger logger = LoggerFactory.getLogger(PrivatBankParser.class);
 
     @Override
-    public void setParameter(Map<String, String> parameters) {
-        checkParameters(parameters);
-        url = parameters.get(requiredParameters.URL.getValue());
-        getDetailsUrl = parameters.get(requiredParameters.GET_DETAILS_URL.getValue());
+    public void setParameter(Map<String, String> parameters){
+        loadProperties();
+        for(String paramName : propertiesFromFile.stringPropertyNames()){
+            if(parameters.containsKey(paramName)){
+                parserProperties.put(paramName, parameters.get(paramName));
+            }else {
+                parserProperties.put(paramName, propertiesFromFile.get(paramName));
+            }
+        }
     }
 
     @Override
-    public List<AtmOffice> parse() throws IOException {
-        parseAtms();
-        parseOffices();
-        return atmList;
+    public List<AtmOffice> parse(){
+        try {
+            parseAtms();
+            parseOffices();
+            logger.info("Parsing is done. Were parsed " + atmList.size());
+            return atmList;
+        }catch(IOException ioe){
+            logger.error("Parsing failed by followed exception");
+            logger.error(ioe.getMessage(), ioe);
+            return Collections.EMPTY_LIST;
+        }
     }
 
+
     private void parseAtms() throws IOException {
-        Map<String, String> postData = new HashMap<>();
-        postData.put("countries", "ua");
-        postData.put("day_work", "all");
-        postData.put("link_lang", "ua");
-        postData.put("search_string", "all");
-        postData.put("type", "atm");
-        Document document = Jsoup.connect(url)
-                .userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")
-                .data(postData)
+        int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
+        logger.info("Try to parse ATMs");
+        Document document = Jsoup.connect(parserProperties.getProperty("url.data"))
+                .userAgent(parserProperties.getProperty("user.agent"))
+                .data(getPostParameters(IS_ATM))
+                .timeout(timeout)
                 .post();
-        String jsonResponse = document.getElementsByTag("body").text();
+        logger.info("Page " + parserProperties.getProperty("url.data") + " loaded");
+        logger.info("Try to get ATMs from response");
+        String jsonResponse = document.getElementsByTag(DATA_CONTAINER).text();
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
-        for(AtmItem atmItem : Arrays.copyOfRange(privatBankApiResponse.getItems(), 0, 20)){
+        logger.info("Loaded " + privatBankApiResponse.getItems().length + " ATMs");
+        for(AtmItem atmItem : privatBankApiResponse.getItems()){
             if(atmItem.getIs_active() == 1) {
                 String rawAddress = getAddress(atmItem.getId());
                 AtmOffice atm = new AtmOffice();
@@ -97,20 +91,20 @@ public class PrivatBankParser implements IParser {
     }
 
     private void parseOffices() throws IOException {
-        Map<String, String> postData = new HashMap<>();
-        postData.put("countries", "ua");
-        postData.put("day_work", "all");
-        postData.put("link_lang", "ua");
-        postData.put("search_string", "all");
-        postData.put("type", "branch");
-        Document document = Jsoup.connect(url)
-                .userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")
-                .data(postData)
+        int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
+        logger.info("Try to parse offices");
+        Document document = Jsoup.connect(parserProperties.getProperty("url.data"))
+                .userAgent(parserProperties.getProperty("user.agent"))
+                .data(getPostParameters(IS_OFFICE))
+                .timeout(timeout)
                 .post();
-        String jsonResponse = document.getElementsByTag("body").text();
+        logger.info("Page " + parserProperties.getProperty("url.data") + " loaded");
+        logger.info("Try to load offices from response");
+        String jsonResponse = document.getElementsByTag(DATA_CONTAINER).text();
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
-        for(AtmItem atmItem : Arrays.copyOfRange(privatBankApiResponse.getItems(), 0, 20)){
+        logger.info("Loaded " + privatBankApiResponse.getItems().length + " offices");
+        for(AtmItem atmItem : privatBankApiResponse.getItems()){
             if(atmItem.getIs_active() == 1) {
                 String address = prepareAddress(getAddress(atmItem.getId()));
                 if(isAtmAndOffice(address)){
@@ -127,37 +121,101 @@ public class PrivatBankParser implements IParser {
         }
     }
 
+    /**
+     * Load properties from file
+     * @throws IOException if can't load
+     */
+    private void loadProperties(){
+        try {
+            String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
+            String filePath = dirPath + "/privatBankParser.properties";
+            logger.info("Try to load properties from file " + filePath);
+            InputStream propFile = new FileInputStream(filePath);
+            propertiesFromFile.load(propFile);
+            logger.info("File successfully loaded.");
+        }catch (IOException ioe){
+            logger.error("Loading file failed.");
+        }
+    }
+
+    /**
+     *
+     * @param type (atm or office)
+     * @return map that define request parameters
+     */
+    private Map<String, String> getPostParameters(AtmOffice.AtmType type) throws IOException {
+        Map<String, String> postData = new HashMap<>();
+        //add params
+        for(String paramName : parserProperties.stringPropertyNames()){
+            if(paramName.matches("^post\\.parameter\\.name\\..{1,}")){
+                String postParamName = parserProperties.getProperty(paramName);
+                String postParamValue = parserProperties.getProperty(paramName.replace("name", "value"));
+                postData.put(postParamName, postParamValue);
+            }
+        }
+        //Add type parameter
+        String typeString;
+        if(type == IS_ATM){
+            typeString = (String)parserProperties.get("post.parameter.value.type.atm");
+        }else {
+            typeString = (String)parserProperties.get("post.parameter.value.type.office");
+        }
+        postData.put(parserProperties.getProperty("post.parameter.name.type"), typeString);
+        return postData;
+    }
+
+    /**
+     *
+     * @param id
+     * @return address of atm or office that is defined by id
+     * @throws IOException if cant load page
+     */
     private String getAddress(String id) throws IOException {
         Map<String, String> postData = new HashMap<>();
-        postData.put("distance", "-1");
+        postData.put(parserProperties.getProperty("post.parameter.name.distance"), parserProperties.getProperty("post.parameter.value.distance"));
         postData.put("id", id);
-        postData.put("link_lang", "ua");
+        postData.put(parserProperties.getProperty("post.parameter.name.language"), parserProperties.getProperty("post.parameter.value.language"));
 
-
-        System.out.println("send request for " + id + " " + i++);
-        Document detailsDocument = Jsoup.connect(getDetailsUrl)
-                .userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko")
+        int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
+        System.out.println("Try to get address for " + id);
+        Document detailsDocument = Jsoup.connect(parserProperties.getProperty("url.details"))
+                .userAgent(parserProperties.getProperty("user.agent"))
                 .data(postData)
+                .timeout(timeout)
                 .post();
 
-        Element addressElement = detailsDocument.select("html > body > div.adr_box > div.center > div.adr").get(0);
+        Element addressElement = detailsDocument.select(parserProperties.getProperty("address.element.xpath")).get(0);
 
         String result = addressElement.child(0).text() + " " + addressElement.child(1).text();
+        System.out.println(result);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
     public static void main(String[] args) throws IOException {
         IParser privatParser = new PrivatBankParser();
+        privatParser.setParameter(Collections.EMPTY_MAP);
         privatParser.parse();
     }
 
     /**
-     * @return formated address string based on @param rawAddress from site
+     * @return formatted address string based on rawAddress
+     * parameters for formatting get from properties
      */
     private String  prepareAddress(String rawAddress){
-        String address = rawAddress.replaceAll(",[\\s]*", ", ");
-        address = address.replaceFirst(", \\d{5}", "");
-        return address.trim();
+        String result = rawAddress;
+        for(String paramName : parserProperties.stringPropertyNames()){
+            if(paramName.matches("replace\\.regexp\\..*")){
+                String regexp = parserProperties.getProperty(paramName);
+                String replaceValue = parserProperties.getProperty(paramName.replace("regexp", "value"));
+                result = result.replaceAll(regexp, replaceValue);
+            }
+        }
+        return result.trim();
     }
     /**
      * @return true and mark atm as ATM_OFFICE if already has same @param address
@@ -171,36 +229,6 @@ public class PrivatBankParser implements IParser {
             }
         }
         return false;
-    }
-
-    /**
-     *  Check all @param parameters sanded to parser and  @throws IllegalArgumentException
-     *  if any parameters isn't preset, null or empty
-     */
-    private void checkParameters(Map<String, String> parameters){
-        for(requiredParameters parameter : requiredParameters.values()){
-            if(! isPreset(parameters, parameter.getValue())){
-                IllegalArgumentException iae = new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + parameter);
-                logger.error(iae.getMessage(), iae);
-                throw iae;
-            }
-        }
-    }
-
-    /**
-     * @return true if @param parameter is in map @param parameters, isn't null and not empty
-     */
-    private boolean isPreset( Map<String, String> parameters, String parameter){
-        if(! parameters.containsKey(parameter)){
-            return false;
-        }
-        if(parameters.get(parameter) == null){
-            return false;
-        }
-        if(parameters.get(parameter).isEmpty()){
-            return false;
-        }
-        return true;
     }
 
 }
