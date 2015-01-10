@@ -8,78 +8,31 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 import static com.ss.atmlocator.entity.AtmState.NO_LOCATION;
 
-/**
- * Created by Vasyl Danylyuk on 05.11.2014.
- */
 public class KredoBankParser implements IParser {
 
-    private enum requiredParameters{
-        REGIONS("regions"),
-        URL("url");
-
-        private String value;
-
-        requiredParameters(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return getValue();
-        }
-    }
-
-    private static final String REGIONS_SEPARATOR = ",";
-    private static final String ADDRESS_SEPARATOR = "<br />";
-
-    private static final String ILLEGAL_ARGUMENT_MESSAGE = "Required parameter not specified or empty: ";
-
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko";
-    private static final String ATM_HTML_TAG = "item";
-    private static final String REGION_ELEMENTS_CLASS = "white_back";
-
-    private static final String GET_REGION_URL = "/xml/coord_data/s/";
-    private static final String GET_CITY_URL = "/xml/coord_data/a/";
-    private static final String ATM_PAGE_URL = "/our_coordinates.html";
-
-    private static final String ATM_TYPE_ATM = "банкомат";
-    private static final int CITY_ID_CHILD = 1;
-
-
-    private static final int TYPE_CHILD = 0;
-    private static final int ADDRESS_CHILD = 1;
-
-    private static final int STREET_PART = 0;
-    private static final int CITY_PART = 1;
-
-    private static final int REGION_ID_STRING_START_POSITION = 2;
-    private static final int REGION_DIV_CHILD = 0;
-    private static final int REGION_NAME_ELEMENT = 1;
-
-    private static final String POSTAL_CODE_REGEXP = ", \\d{5}";
-    private static final String REMOVE_SPACES_REGEXP = "\\s{1,}";
-    private static final String REMOVE_SPACE_AFTER_DOT = "\\. ";
 
     private final Logger logger = Logger.getLogger(KredoBankParser.class);
 
+    private Properties propertiesFromFile = new Properties();
+
+    private Properties properties = new Properties();
+
     private String bankSite;
     private List<String> regions = new ArrayList<String>();
+    private boolean parseAllRegions;
     private List<AtmOffice> atmList = new ArrayList<>();
+
 
 
     /**
@@ -88,22 +41,27 @@ public class KredoBankParser implements IParser {
      */
     public List<AtmOffice> parse() throws IOException {
         try{
-            logger.info("Try to load start page " + bankSite + ATM_PAGE_URL);
-            Document mainPage = Jsoup.connect(bankSite + ATM_PAGE_URL).get();
+            String url = bankSite + properties.getProperty("url.atm");
+            logger.info("Try to load start page " + url);
+            Document mainPage = Jsoup.connect(url)
+                                     .method(Connection.Method.GET)
+                                     .userAgent(properties.getProperty("user.agent"))
+                                     .referrer(bankSite)
+                                     .execute()
+                                     .parse();
+                                     //.get();
             int parsedRegions = 0;
-            for(String region : regions){
-                Elements regionRows = mainPage.getElementsByClass(REGION_ELEMENTS_CLASS);
-                for(Element regionRow : regionRows){
-                    String regionID = regionRow.id().substring(REGION_ID_STRING_START_POSITION);
-                    Element regionDiv = regionRow.child(REGION_DIV_CHILD);
-                    Element regionNameElement = regionDiv.child(REGION_NAME_ELEMENT);
-                    if(region.equals(regionNameElement.text())){
-                        logger.info("Try to parse atmList from region " + region);
-                        parseRegion(bankSite + GET_REGION_URL+regionID);
-                        parsedRegions++;
-                    }//end if
-                }//end for regionRows
-            }//end for regions
+            Elements regionRows = mainPage.getElementsByClass(properties.getProperty("region.element.class"));
+            for(Element regionRow : regionRows){
+                String regionID = regionRow.id().substring(Integer.parseInt(properties.getProperty("region.id.start.position")));
+                Element regionDiv = regionRow.child(Integer.parseInt(properties.getProperty("region.div.child")));
+                Element regionNameElement = regionDiv.child(Integer.parseInt(properties.getProperty("region.name.element")));
+                if(regions.contains(regionNameElement.text()) || parseAllRegions){
+                    logger.info("Try to parse atmList from region " + regionNameElement.text());
+                    parseRegion(bankSite + properties.getProperty("url.region")+regionID);
+                    parsedRegions++;
+                }//end if
+            }//end for regionRows
             logger.info("Parsing is done. Was parsed " + atmList.size() + " atmList and offices");
             if(regions.size() != parsedRegions){
                 logger.warn("Regions given " + regions.size() + "regions parsed " + parsedRegions);
@@ -122,14 +80,14 @@ public class KredoBankParser implements IParser {
     private void parseRegion(String request){
         logger.info("Try to connect to URL "+request);
         try{
-            Document regionXML = Jsoup.connect(request).userAgent(USER_AGENT)
-                                                       .referrer(bankSite)
-                                                       .method(Connection.Method.GET)
+            Document regionXML = Jsoup.connect(request).userAgent(properties.getProperty("user.agent"))
+                    .referrer(bankSite)
+                    .method(Connection.Method.GET)
                                                        .execute().parse();
-            Elements cityItem = regionXML.getElementsByTag(ATM_HTML_TAG);
+            Elements cityItem = regionXML.getElementsByTag(properties.getProperty("atm.container.tag"));
             for(Element city : cityItem){
                 logger.info("Try to parse atmList from city " + city.child(0).text());
-                parseCity(bankSite+GET_CITY_URL + city.child(CITY_ID_CHILD).text());
+                parseCity(bankSite+properties.getProperty("url.city") + city.child(Integer.parseInt(properties.getProperty("city.child"))).text());
             }
         }catch(IOException ioe){
             logger.error(ioe.getMessage(), ioe);
@@ -143,20 +101,22 @@ public class KredoBankParser implements IParser {
     private void parseCity(String request){
         logger.info("Try to connect to URL "+request);
         try{
-            Document cityXML = Jsoup.connect(request).userAgent(USER_AGENT)
+            Document cityXML = Jsoup.connect(request).userAgent(properties.getProperty("user.agent"))
                                                      .referrer(bankSite)
                                                      .method(Connection.Method.GET)
                                                      .execute().parse();
-            Elements atmItems = cityXML.getElementsByTag(ATM_HTML_TAG);
+            Elements atmItems = cityXML.getElementsByTag(properties.getProperty("atm.container.tag"));
             for(Element atmItem : atmItems){
-                String address = prepareAddress(atmItem.child(ADDRESS_CHILD).text());
+                String address = prepareAddress(atmItem.child(Integer.parseInt(properties.getProperty("address.child"))).text());
                 if(isAtmAndOffice(address)){
                     continue;
                 }
 
                 AtmOffice atm = new AtmOffice();
                 atm.setAddress(address);
-                atm.setType(atmItem.child(TYPE_CHILD).text().matches(ATM_TYPE_ATM) ? IS_ATM : IS_OFFICE);
+                int typeChild = Integer.parseInt(properties.getProperty("type.child"));
+                String atmTypeName = properties.getProperty("atm.type.name");
+                atm.setType(atmItem.child(typeChild).text().matches(atmTypeName) ? IS_ATM : IS_OFFICE);
                 atm.setLastUpdated(new Timestamp(new Date().getTime()));
                 atm.setState(NO_LOCATION);
 
@@ -172,11 +132,15 @@ public class KredoBankParser implements IParser {
      * @return formated address string based on @param rawAddress from site
      */
     private String  prepareAddress(String rawAddress){
-        String[] addressArray = rawAddress.split(ADDRESS_SEPARATOR);
-        String address = addressArray[STREET_PART]+addressArray[CITY_PART];
-        address = address.replaceFirst(POSTAL_CODE_REGEXP,"");
-        address = address.replaceAll(REMOVE_SPACE_AFTER_DOT, ".");
-        address = address.replaceAll(REMOVE_SPACES_REGEXP," ");
+        String[] addressArray = rawAddress.split(properties.getProperty("separator.address"));
+        String address = addressArray[0]+addressArray[1];
+        for(String paramName : properties.stringPropertyNames()){
+            if(paramName.matches("replace\\.regexp\\..*")){
+                String regexp = properties.getProperty(paramName);
+                String replaceValue = properties.getProperty(paramName.replace("regexp", "value"));
+                address = address.replaceAll(regexp, replaceValue);
+            }
+        }
         return address.trim();
     }
 
@@ -198,42 +162,39 @@ public class KredoBankParser implements IParser {
      * Setting @param parameters for parser
      */
     @Override
-    public void setParameter(Map<String, String> parameters) {
-        checkParameters(parameters);
-        String regionsString = parameters.get(requiredParameters.REGIONS.getValue());
-        for(String region : regionsString.split(REGIONS_SEPARATOR)){
-            regions.add(region.trim());
-        }
-        bankSite = parameters.get(requiredParameters.URL.getValue());
-    }
-
-    /**
-     *  Check all @param parameters sanded to parser and  @throws IllegalArgumentException
-     *  if any parameters isn't preset, null or empty
-     */
-    private void checkParameters(Map<String, String> parameters){
-        for(requiredParameters parameter : requiredParameters.values()){
-            if(! isPreset(parameters, parameter.getValue())){
-                IllegalArgumentException iae = new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + parameter);
-                logger.error(iae.getMessage(), iae);
-                throw iae;
+    public void setParameter(Map<String, String> parameters){
+        loadProperties();
+        for(String paramName : propertiesFromFile.stringPropertyNames()){
+            if(parameters.containsKey(paramName)){
+                properties.put(paramName, parameters.get(paramName));
+            }else {
+                properties.put(paramName, propertiesFromFile.get(paramName));
             }
         }
+        String separator = properties.getProperty("separator.regions");
+        for(String region : properties.getProperty("regions").split(separator)){
+            if(region.isEmpty()){
+                parseAllRegions = true;
+                break;
+            }
+            regions.add(region.trim());
+        }
+        bankSite = properties.getProperty("url.base");
     }
 
     /**
-     * @return true if @param parameter is in map @param parameters, isn't null and not empty
+     *Load properties from file
      */
-    private boolean isPreset( Map<String, String> parameters, String parameter){
-        if(! parameters.containsKey(parameter)){
-            return false;
+    private void loadProperties(){
+        try {
+            String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
+            String filePath = dirPath + "/kredoBankParser.properties";
+            logger.info("Try to load properties from file " + filePath);
+            InputStream propFile = new FileInputStream(filePath);
+            propertiesFromFile.load(propFile);
+            logger.info("File successfully loaded.");
+        }catch (IOException ioe){
+            logger.error("Loading file failed.");
         }
-        if(parameters.get(parameter) == null){
-            return false;
-        }
-        if(parameters.get(parameter).isEmpty()){
-            return false;
-        }
-        return true;
     }
 }
