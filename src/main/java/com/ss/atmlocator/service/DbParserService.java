@@ -42,7 +42,10 @@ public class DbParserService implements IDBParserService {
                 atmFromDb.setType(typeNew);
             }
 
-            if()
+            if(atmNew.getState()==AtmState.DISABLED){
+                atmFromDb.setState(AtmState.DISABLED);
+            }
+
            return true;
         }
         return false;
@@ -80,8 +83,6 @@ public class DbParserService implements IDBParserService {
             if (!atmListFromDb.contains(tempAtm)) {
                 tempAtm.setLastUpdated(TimeUtil.currentTimestamp());
                 tempAtm.setBank(currentBank);
-                tempAtm.setState(AtmState.NO_LOCATION);
-                tempAtm.;
                 atmResultList.add(tempAtm);
             }
         }
