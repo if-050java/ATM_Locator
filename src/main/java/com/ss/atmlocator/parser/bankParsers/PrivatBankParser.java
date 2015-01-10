@@ -61,8 +61,12 @@ public class PrivatBankParser implements IParser {
     @Override
     public List<AtmOffice> parse(){
         try {
-            atmList.addAll(parseAtms());
-            atmList.addAll(parseOffices());
+            if(Boolean.parseBoolean(parserProperties.getProperty("parse.atms"))){
+                atmList.addAll(parseAtms());
+            }
+            if(Boolean.parseBoolean(parserProperties.getProperty("parse.offices"))) {
+                atmList.addAll(parseOffices());
+            }
             logger.info("Parsing is done. Were parsed " + atmList.size());
             return atmList;
         }catch(IOException ioe){
@@ -125,7 +129,6 @@ public class PrivatBankParser implements IParser {
     }
 
     /**
-     *
      * @param atmItem data about one atm or office received from PrivatBank
      * @param type atm or office
      * @return new atm made from atmItem data
