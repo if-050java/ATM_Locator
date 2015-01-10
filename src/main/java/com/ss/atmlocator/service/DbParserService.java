@@ -3,6 +3,7 @@ package com.ss.atmlocator.service;
 import com.ss.atmlocator.dao.IAtmsDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
+import com.ss.atmlocator.entity.AtmState;
 import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.utils.TimeUtil;
 import org.slf4j.LoggerFactory;
@@ -35,10 +36,13 @@ public class DbParserService implements IDBParserService {
     protected boolean compareAtm(AtmOffice atmFromDb, AtmOffice atmNew) {// private modificator is changed to protected for test
         if (atmFromDb.equals(atmNew)) { // equals має бути по адрессі
 //            AtmOffice.AtmType typeDb = atmFromDb.getType();
+            atmNew.setState(AtmState.NO_LOCATION);
             AtmOffice.AtmType typeNew = atmNew.getType();
             if(typeNew!= null){
                 atmFromDb.setType(typeNew);
             }
+
+            if()
            return true;
         }
         return false;
@@ -76,6 +80,8 @@ public class DbParserService implements IDBParserService {
             if (!atmListFromDb.contains(tempAtm)) {
                 tempAtm.setLastUpdated(TimeUtil.currentTimestamp());
                 tempAtm.setBank(currentBank);
+                tempAtm.setState(AtmState.NO_LOCATION);
+                tempAtm.;
                 atmResultList.add(tempAtm);
             }
         }
