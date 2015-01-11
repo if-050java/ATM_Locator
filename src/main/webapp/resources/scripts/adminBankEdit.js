@@ -7,7 +7,7 @@ var ERROR_SAVE = "<span>Error, bank data is not saved!</span>";
 var ERROR_DELETE = "<span>Error, bank is not deleted!</span>";
 var WARNING_MESSAGE = "<span>Warning, something goes wrong.</span>";
 
-function showAlert(className, html) {
+function showAlertOld(className, html) {
     var element = $("div.alert");
     element.removeClass();
     element.addClass(className);

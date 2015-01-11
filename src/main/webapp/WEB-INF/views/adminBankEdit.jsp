@@ -4,6 +4,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <link rel="stylesheet" href="<c:url value="/resources"/>/styles/bankedit.css">
+<link rel="stylesheet" href="<c:url value="/resources"/>/styles/alert.css">
+<script src="<c:url value="/resources"/>/scripts/showAlert.js"></script>
 <script src="<c:url value="/resources"/>/scripts/adminBankEdit.js"></script>
 
 <div class="col-md-12" role="main" id="bankData">
@@ -117,9 +119,11 @@
            </div>
            <input type="hidden" name="bank_id" id="bank_id" value="${bank.id}" cssClass="form-control">
 
+<%--
            <div class="alert" role="alert" style="display: none">
                <a class="close" onclick="$('.alert').hide()">&times;</a>
            </div>
+--%>
 
     <%-- Submit buttons --%>
            <div class="panel-footer">

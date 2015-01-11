@@ -2,6 +2,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<link rel="stylesheet" href="<c:url value="/resources"/>/styles/alert.css">
+<script src="<c:url value="/resources"/>/scripts/showAlert.js"></script>
+
 <div class="container">
     <div class="col-md-12" role="main" id="networksList">
         <div class="panel panel-default">
@@ -12,19 +15,11 @@
                 <%--<form>--%>
                 <form:form method="get" role="form" cssClass="form-horizontal">
 
-                    <div class="form-group">
+                    <div class="form-group" style="margin-left: 0">
                         <%-- Select ATM Network dropdown menu --%>
-                        <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Filter by ATM network<span class="caret"></span></a>
+                        <div class="btn-group"> <a class="btn btn-default dropdown-toggle btn-select" style="width: 200px" data-toggle="dropdown" href="#">Filter by ATM network<span class="caret"></span></a>
                             <ul class="dropdown-menu" id="networks_menu">
-                                <li><a href="#" id="isnet0"><span class="glyphicon glyphicon-star"></span>All networks</a></li>
-                                <li class="divider"></li>
-                                <c:forEach items="${networks}" var="net">
-                                    <c:if test="${net.id > 0}">
-                                        <li><a href="#" id="isnet${net.id}">${net.name}</a></li>
-                                    </c:if>
-                                </c:forEach>
-                                <li class="divider"></li>
-                                <li><a href="#" id="isnet-1"><span class="glyphicon glyphicon-question-sign"></span> Unassigned</a></li>
+                                <%-- List of Networks generated dynamically in Javascript function loadNetworks() --%>
                             </ul>
                         </div>
                         <%-- Select ATM Network dropdown menu --%>
@@ -56,29 +51,13 @@
                             </button>
                         </div>
 
-
-                        <%--
-                        Select Bank dropdown menu
-                                            <div class="btn-group"> <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Select a Bank <span class="caret"></span></a>
-                                                <ul class="dropdown-menu" id="banks_menu">
-                                                    <c:forEach items="${banks}" var="bank">
-                                                        <li class="bankitem isnet${bank.network.id}"><a href="#" id="${bank.id}">${bank.name}</a></li>
-                                                    </c:forEach>
-                                                </ul>
-                                            </div>
-                        Select Bank dropdown menu
-
-                        Go to Edit Bank page
-                                            <div class="btn-group">
-                                                <button type="submit" formaction="<c:url value="./adminBankEdit" />" id="btnBankEdit" class="btn btn-primary" disabled="true">Edit</button>
-                                            </div>
-                        Go to Edit Bank page
-                        --%>
                     </div>
 
+<%--
                     <div class="alert" role="alert" style="display: none">
                         <a class="close" onclick="$('.alert').hide()">&times;</a>
                     </div>
+--%>
                     <div id="network_edit" class="form-group collapse">
                         <label for="net_name" class="control-label col-sm-2">Network name:</label>
                         <div class="col-md-3">
@@ -96,17 +75,23 @@
                     </div>
                 </form:form>
 
-                <%-- List of Banks generated dynamically in Javascript function showBanks(network_id) --%>
+                <%-- List of Banks --%>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="col-md-4">
-                            <ul class="nav nav-pills nav-stacked" id="bankslist1"></ul>
+                            <ul class="nav nav-pills nav-stacked" id="bankslist1">
+                                <%-- generated dynamically in Javascript function showBanks(network_id) --%>
+                            </ul>
                         </div>
                         <div class="col-md-4">
-                            <ul class="nav nav-pills nav-stacked" id="bankslist2"></ul>
+                            <ul class="nav nav-pills nav-stacked" id="bankslist2">
+                                <%-- generated dynamically in Javascript function showBanks(network_id) --%>
+                            </ul>
                         </div>
                         <div class="col-md-4">
-                            <ul class="nav nav-pills nav-stacked" id="bankslist3"></ul>
+                            <ul class="nav nav-pills nav-stacked" id="bankslist3">
+                                <%-- generated dynamically in Javascript function showBanks(network_id) --%>
+                            </ul>
                         </div>
                     </div>
                 </div>
