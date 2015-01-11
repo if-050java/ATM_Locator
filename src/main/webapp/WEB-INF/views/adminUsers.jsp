@@ -60,7 +60,7 @@
                                     <input type="text" class="form-control" id="login" placeholder="login"
                                            title="" data-content="" data-placement="left" data-toggle="popover"
                                            data-original-title="" onclick="hidePopover('inputLogin')"
-                                           onkeyup="setModified()" readonly/>
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">

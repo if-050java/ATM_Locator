@@ -2,6 +2,7 @@ package com.ss.atmlocator.utils;
 
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AtmItem{
@@ -9,7 +10,8 @@ public class AtmItem{
     private double lat;
     private double lng;
     private String type;
-    private byte is_active;
+    @JsonProperty("is_active")
+    private byte isActive;
 
     public String getId() {
         return id;
@@ -43,11 +45,11 @@ public class AtmItem{
         this.type = type;
     }
 
-    public byte getIs_active() {
-        return is_active;
+    public byte getIsActive() {
+        return isActive;
     }
 
-    public void setIs_active(byte is_active) {
-        this.is_active = is_active;
+    public void setIsActive(byte isActive) {
+        this.isActive = isActive;
     }
 }
