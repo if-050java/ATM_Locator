@@ -31,8 +31,6 @@ public class PrivatBankParser implements IParser {
 
     private List<AtmOffice> atmList = new ArrayList<>();
 
-    private String[] requiredParams = {"url.data", "url.details", "user.agent", "reading.timeout", "address.element.xpath", "", "", ""};
-
     final static Logger logger = LoggerFactory.getLogger(PrivatBankParser.class);
 
     /**
@@ -260,7 +258,6 @@ public class PrivatBankParser implements IParser {
         }
         return false;
     }
-
 }
 
 
