@@ -15,8 +15,8 @@
     <div class="panel panel-default">
         <div class="panel-heading">${bank.name}</div>
 
-        <nav>
-            <ul class="pagination">
+        <nav class="navbar-form">
+                <ul class="pagination">
                 <%--For displaying Previous Page --%>
                 <c:choose>
                     <c:when test="${page == 1}">
@@ -65,16 +65,31 @@
           <div class="panel-body">
             <table class="table">
               <tr>
+                <th></th>
                 <th>id#</th>
                 <th>Type</th>
+                <th>
+                    <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">State<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu" id="state_menu">
+                            <li><a href="#" id="normal">All</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" id="normal">Normal</a></li>
+                            <li><a href="#" id="disabled">Disabled</a></li>
+                            <li><a href="#" id="nolocation">No location</a></li>
+                            <li><a href="#" id="badaddress">Bad Address</a></li>
+                        </ul>
+                    </div>
+                </th>
                 <th>Address</th>
                 <th>Geographic Location</th>
                 <th>Last updated</th>
               </tr>
               <c:forEach items="${atms}" var="atm">
                 <tr id="${atm.id}">
+                  <td><input type="checkbox" name="${atm.id}"></td>
                   <td>${atm.id}</td>
                   <td>${atm.getTypeString()}</td>
+                  <td>${atm.getStateString()}</td>
                   <td>${atm.address}</td>
                   <td>${atm.geoPosition.toString()}</td>
                   <td>${atm.getTimeString()}</td>

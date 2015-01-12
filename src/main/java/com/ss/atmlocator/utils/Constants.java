@@ -5,7 +5,7 @@ package com.ss.atmlocator.utils;
  */
 public class Constants {
 
-    public static final String RESOURCES_FOLDER = "\\resources\\images\\";
+    public static final String RESOURCES_FOLDER = "/resources/images/";
 
     public static final String USER_AVATAR_PREFIX = "avatar_";
     //Request parameters for user fields

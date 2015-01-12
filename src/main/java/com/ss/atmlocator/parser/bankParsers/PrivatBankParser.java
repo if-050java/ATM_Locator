@@ -2,7 +2,7 @@ package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.GeoPosition;
-import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.ParserExecutor;
 import com.ss.atmlocator.utils.AtmItem;
 import com.ss.atmlocator.utils.PrivatBankApiResponse;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -11,46 +11,21 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
-import static com.ss.atmlocator.entity.AtmState.BAD_ADDRESS;
-import static com.ss.atmlocator.entity.AtmState.DISABLED;
-import static com.ss.atmlocator.entity.AtmState.NORMAL;
+import static com.ss.atmlocator.entity.AtmState.*;
 
 
-public class PrivatBankParser implements IParser {
+public class PrivatBankParser extends ParserExecutor {
 
-    private Properties parserProperties = new Properties();
 
     private List<AtmOffice> atmList = new ArrayList<>();
 
     final static Logger logger = LoggerFactory.getLogger(PrivatBankParser.class);
-
-    /**
-     * Setting parameters to parser from property file or given map
-     * Properties that are set by admin page override properties from file if the names are same
-     * @param parameters that will by set to parser
-     */
-    @Override
-    public void setParameter(Map<String, String> parameters){
-        Properties fromFile = loadProperties();
-        for(String paramName : fromFile.stringPropertyNames()){
-            if(parameters.containsKey(paramName)){
-                parserProperties.put(paramName, parameters.get(paramName));
-                parameters.remove(paramName);
-            }else {
-                parserProperties.put(paramName, fromFile.get(paramName));
-            }
-        }
-        parserProperties.putAll(parameters);
-    }
 
     /**
      * Load all ATMs and offices and addresses for  them
@@ -153,25 +128,6 @@ public class PrivatBankParser implements IParser {
         return atm;
     }
 
-    /**
-     * Load properties from file
-     * @throws IOException if can't load
-     */
-    private Properties loadProperties(){
-        try {
-            Properties properties = new Properties();
-            String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
-            String filePath = dirPath + "/privatBankParser.properties";
-            logger.info("Try to load properties from file " + filePath);
-            InputStream propFile = new FileInputStream(filePath);
-            properties.load(propFile);
-            logger.info("File successfully loaded.");
-            return properties;
-        }catch (IOException ioe){
-            logger.error("Loading file failed. Properties from admin page will be used");
-            return new Properties();
-        }
-    }
 
     /**
      * @param type defines atm or office
