@@ -1,7 +1,9 @@
 package com.ss.atmlocator.controller;
 
 import com.ss.atmlocator.entity.AtmNetwork;
+import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.service.ATMService;
 import com.ss.atmlocator.service.AtmNetworksService;
 import com.ss.atmlocator.service.BanksService;
 import com.ss.atmlocator.service.ParserService;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -181,5 +184,30 @@ public class AdminBanksController {
         LOGGER.debug(String.format("GET response: ATMs list, Bank #%d, page %d of %d", bankId, pageNum + 1, pageCount));
         return "adminBankAtmList";
     }
+
+    @RequestMapping(value = "/adminBankAtmList2", method = RequestMethod.GET)
+    public String adminBankAtmList2(@RequestParam(value = "id", required = true) final int bankId,
+                                   final ModelMap modelMap, final Principal user) {
+        LOGGER.debug(String.format("GET request: ATMs list, Bank #%d", bankId));
+
+        modelMap.addAttribute("bank", banksService.getBank(bankId));
+        modelMap.addAttribute("active", "adminBanks");
+        modelMap.addAttribute("userName", user.getName());
+
+        LOGGER.debug(String.format("GET response: ATMs list 2, Bank #%d", bankId));
+        return "adminBankAtmList2";
+    }
+
+
+    @RequestMapping(value = "/getBankATMs")
+    @ResponseBody
+    public List<AtmOffice> getBankATMs(@RequestParam(required = false) Integer bankId,
+                                       @RequestParam boolean showAtms,
+                                       @RequestParam boolean showOffices
+    ) {
+        List<AtmOffice> atmOffices = banksService.getBankAtms(bankId, 0);
+        return atmOffices;
+    }
+
 
 }
