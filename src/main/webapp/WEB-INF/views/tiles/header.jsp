@@ -24,22 +24,19 @@
                     <li class="login"><a href="<c:url value="/login"/>">Login</a></li>
                     <li class="signup"><a href="<c:url value="/signup"/>">Sign up</a></li>
                     </sec:authorize>
+                    <sec:authorize access="isAuthenticated()">
+                        <li class="profile"><a href="<c:url value="/profile" />">Profile</a></li>
+                    </sec:authorize>
                     <sec:authorize access="hasRole('ADMIN')">
                         <li class="adminBanks"><a href="<c:url value="/adminBanks" />">Banks</a></li>
                         <li class="admin"><a href="<c:url value="/admin" />">Parsers</a></li>
                         <li class="adminUsers"><a href="<c:url value="/admin/users" />">Users</a></li>
-                    </sec:authorize>
-                    <sec:authorize access="isAuthenticated()">
-                        <li class="profile"><a href="<c:url value="/profile" />">Profile</a></li>
-                        <li><a href="<c:url value="/j_spring_security_logout" />">Logout</a></li>
-                    </sec:authorize>
-                    <sec:authorize access="hasRole('ADMIN')">
                         <li class="adminNotices"><a href="<c:url value="/adminNotices" />">Notices</a></li>
                     </sec:authorize>
                 </ul>
             </div>
             <sec:authorize access="isAuthenticated()">
-                <p style="margin-right: 0px" class="navbar-text navbar-right">Signed in as <a href="<c:url value="/profile" />" id="userLogin">${userName}</a></p>
+                <p style="margin-right: 0px" class="navbar-text navbar-right">Signed in as <a href="<c:url value="/profile" />" id="userLogin">${userName}</a>(<a href="<c:url value="/j_spring_security_logout" />">logout</a>)</p>
             </sec:authorize>
 
         </div>

@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
+import static com.ss.atmlocator.entity.AtmState.*;
+import static com.ss.atmlocator.entity.AtmState.NORMAL;
+
 /**
  * Created by Olavin on 17.11.2014.
  */
@@ -43,14 +46,14 @@ public class AtmOffice implements Comparable<AtmOffice> {
     private Bank bank;
 
     public AtmOffice() {
-        this.state = AtmState.NO_LOCATION;
+        this.state = NO_LOCATION;
         this.type = AtmType.IS_ATM;
     }
 
     public AtmOffice(final String address, final AtmType type) {
         this.address = address;
         this.type = type;
-        this.state = AtmState.NO_LOCATION;
+        this.state = NO_LOCATION;
     }
 
     @Override
@@ -59,9 +62,6 @@ public class AtmOffice implements Comparable<AtmOffice> {
         if (!(o instanceof AtmOffice)) return false;
 
         AtmOffice atmOffice = (AtmOffice) o;
-        if(address == "Авдеевка, ул Молодежная 7"){
-            int i = 1+2;
-        }
         return address.equals(atmOffice.address);
     }
 
@@ -130,6 +130,18 @@ public class AtmOffice implements Comparable<AtmOffice> {
             case IS_ATM: str = "ATM"; break;
             case IS_OFFICE: str = "Branch"; break;
             case IS_ATM_OFFICE: str = "Branch, ATM"; break;
+            default: str = "Undefined";
+        }
+        return str;
+    }
+
+    public String getStateString() {
+        String str;
+        switch (state) {
+            case NORMAL: str = "Normal"; break;
+            case DISABLED: str = "Disabled"; break;
+            case BAD_ADDRESS: str = "Bad Address"; break;
+            case NO_LOCATION: str = "No location"; break;
             default: str = "Undefined";
         }
         return str;

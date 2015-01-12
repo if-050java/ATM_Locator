@@ -7,6 +7,7 @@ var SUCCESS_DELETE = "<span>ATM Network deleted.</span>";
 var ERROR_SAVE = "<span>Error, ATM Network name is not updated!</span>";
 var ERROR_NEW = "<span>Error, ATM Network is not created!</span>";
 var ERROR_DELETE = "<span>Error, ATM Network is not deleted!</span>";
+var FORBID_DELETE = "<span>Error, Network is forbidden to delete!</span>";
 var WARNING_MESSAGE = "<span>Warning, something goes wrong.</span>";
 
 /* On select item in ATM Network dropdown show in Banks dropdown belonging only
@@ -16,6 +17,7 @@ var network_id = 0;
 var bankslist;
 
 $(document).ready( function () {
+    loadNetworks();
     loadBanks();
 
     $("#btn_new_network").click(function () {
@@ -30,13 +32,14 @@ $(document).ready( function () {
         fd.append("id",network_id);
         fd.append("name",$("#net_name").val());
         saveNetwork(fd, SUCCESS_SAVE, ERROR_SAVE);
+        $('.dropdown-toggle').html($("#net_name").val()+' <span class="caret"></span>');
     });
 
     $("#btn_del_network").click(function () {
         var fd = new FormData();
         fd.append("id", network_id);
-        if (network_id == 0 || network_id == undefined) {
-            showAlert("alert alert-danger", ERROR_DELETE);
+        if (network_id == 0 || network_id == -1 || network_id == undefined) {
+            showAlert("alert alert-danger", FORBID_DELETE);
         } else {
             $.ajax({
                 url: getHomeUrl() + "adminNetworkDeleteAjax",
@@ -48,6 +51,9 @@ $(document).ready( function () {
                     console.log(response);
                     if (response.status == 'SUCCESS') {
                         $("#network_edit").collapse({ toggle: false });
+                        loadNetworks();
+                        $('.dropdown-toggle').html('Filter by ATM network <span class="caret"></span>');
+                        showBanks(0);
                         showAlert("alert alert-success", SUCCESS_DELETE);
                     } else if (response.status == "ERROR") {
                         showAlert("alert alert-danger", ERROR_DELETE);
@@ -57,6 +63,8 @@ $(document).ready( function () {
                     showAlert("alert alert-danger", ERROR_DELETE);
                 }
             });
+            //$("#networks_menu").empty();
+
         }
     });
 
@@ -76,6 +84,7 @@ function saveNetwork(fd, msg_succes, msg_error){
                 console.log(response);
                 if (response.status == 'SUCCESS') {
                     $("#network_edit").collapse({ toggle: false });
+                    loadNetworks();
                     showAlert("alert alert-success", msg_succes);
 
                 } else if (response.status == "ERROR") {
@@ -89,7 +98,7 @@ function saveNetwork(fd, msg_succes, msg_error){
     }
 }
 
-function showAlert(className, html) {
+function showAlertOld(className, html) {
     var element = $("div.alert");
     element.removeClass();
     element.addClass(className);
@@ -104,6 +113,49 @@ function loadBanks() {
     $.get(getHomeUrl()+"banksListAjax", function(banks){
         bankslist=banks;
         showBanks(0);
+    });
+}
+
+function loadNetworks() {
+    $.get(getHomeUrl()+"networksListAjax", function(networks){
+        var ul_networks = $("#networks_menu");
+
+        ul_networks.empty();
+        var li = $('<li/>').appendTo(ul_networks);
+        var aaa = $('<a/>').attr('href',"#")
+            .attr("id","isnet0")
+            .text('All networks ')
+            .appendTo(li);
+        $('<span class="glyphicon glyphicon-star"></span>').appendTo(aaa);
+
+        var li = $('<li class="divider"></li>').appendTo(ul_networks);
+
+        for(i = 0; i < networks.length; i++){
+            if(networks[i].id > 0) {
+                var li = $('<li/>').appendTo(ul_networks);
+                var aaa = $('<a/>').attr('href',"#")
+                    .attr("id","isnet"+networks[i].id)
+                    .text(networks[i].name)
+                    .appendTo(li);
+            }
+        }
+        var li = $('<li class="divider"></li>').appendTo(ul_networks);
+
+        var li = $('<li/>').appendTo(ul_networks);
+        var aaa = $('<a/>').attr('href',"#")
+            .attr("id","isnet-1")
+            .text('Unassigned ')
+            .appendTo(li);
+        $('<span class="glyphicon glyphicon-question-sign"></span>').appendTo(aaa);
+
+        $("#networks_menu li a").click(function(){
+            var selText = $(this).text();
+            $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+            network_id = $(this).attr("id").substr(5);
+            $("#net_name").val(selText);
+            showBanks(network_id);
+        });
+
     });
 }
 
@@ -141,38 +193,3 @@ function showBanks(network) {
 }
 
 
-$("#networks_menu li a").click(function(){
-    var selText = $(this).text();
-    /* $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+' <span class="caret"></span>'); */
-    $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-    network_id = $(this).attr("id").substr(5);
-    $("#net_name").val(selText);
-    showBanks(network_id);
-});
-
-/*
-    var netbanks = document.getElementsByClassName("bankitem");
-    for(i=0; i<netbanks.length; i++)
-    {
-        bankitem = netbanks[i];
-        if(network_id==="isnet0" || $(bankitem).hasClass(network_id)){
-            bankitem.style.display = "block";
-        } else {
-            bankitem.style.display = "none";
-        }
-    }
-*/
-
-/*  set bank_id variable to further edit
- *   set Banks dropdown title to name of the bank
- * */
-/*
-var bank_id = 0;
-$("#banks_menu li a").click(function(){
-    var selText = $(this).text();
-    $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-    bank_id = $(this).attr("id");
-    document.getElementById("bank_id").value = bank_id;
-    $("#btnBankEdit").removeAttr('disabled');
-});
-*/

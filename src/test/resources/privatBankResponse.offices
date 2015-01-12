@@ -1,0 +1,18 @@
+<html>
+       <header>
+       </header>
+       <body>
+                {"items":[
+                        {"id":"TGGU","lat":"41.744598388671875","lng":"45.797100067138670","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGI1","lat":"42.163368225097656","lng":"42.348541259765625","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGSX","lat":"41.757839202880860","lng":"44.772308349609375","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGSV","lat":"41.691711425781250","lng":"44.871601104736330","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGAX","lat":"41.724891662597656","lng":"44.775619506835940","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGAT","lat":"41.810878753662110","lng":"41.779300689697266","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGS1","lat":"42.257282257080080","lng":"42.694450378417970","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGA0","lat":"41.412052154541016","lng":"43.483062744140625","type":"branch","is_active":1,"distance":-1},
+                        {"id":"TGSG","lat":"41.685642242431640","lng":"44.851650238037110","type":"branch","is_active":0,"distance":-1},
+                        {"id":"TGSB","lat":"41.726379394531250","lng":"44.766689300537110","type":"branch","is_active":1,"distance":-1}
+                ]}
+       </body>
+</html>

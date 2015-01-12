@@ -35,14 +35,13 @@ public class DbParserService implements IDBParserService {
      * */
     protected boolean compareAtm(AtmOffice atmFromDb, AtmOffice atmNew) {// private modificator is changed to protected for test
         if (atmFromDb.equals(atmNew)) { // equals має бути по адрессі
-//            AtmOffice.AtmType typeDb = atmFromDb.getType();
 
             AtmOffice.AtmType typeNew = atmNew.getType();
             if(typeNew!= null){
                 atmFromDb.setType(typeNew);
             }
 
-            if(atmNew.getState()!=AtmState.NO_LOCATION){
+            if(atmNew.getState() != AtmState.NO_LOCATION){
                 atmFromDb.setState(atmNew.getState());
             }
 

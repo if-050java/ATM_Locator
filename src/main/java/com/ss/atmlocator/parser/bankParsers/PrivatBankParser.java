@@ -20,38 +20,53 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
+import static com.ss.atmlocator.entity.AtmState.BAD_ADDRESS;
+import static com.ss.atmlocator.entity.AtmState.DISABLED;
 import static com.ss.atmlocator.entity.AtmState.NORMAL;
 
 
 public class PrivatBankParser implements IParser {
 
-    private Properties propertiesFromFile = new Properties();
-
     private Properties parserProperties = new Properties();
-
-    private static final String DATA_CONTAINER = "body";
 
     private List<AtmOffice> atmList = new ArrayList<>();
 
+    private String[] requiredParams = {"url.data", "url.details", "user.agent", "reading.timeout", "address.element.xpath", "", "", ""};
+
     final static Logger logger = LoggerFactory.getLogger(PrivatBankParser.class);
 
+    /**
+     * Setting parameters to parser from property file or given map
+     * Properties that are set by admin page override properties from file if the names are same
+     * @param parameters that will by set to parser
+     */
     @Override
     public void setParameter(Map<String, String> parameters){
-        loadProperties();
-        for(String paramName : propertiesFromFile.stringPropertyNames()){
+        Properties fromFile = loadProperties();
+        for(String paramName : fromFile.stringPropertyNames()){
             if(parameters.containsKey(paramName)){
                 parserProperties.put(paramName, parameters.get(paramName));
+                parameters.remove(paramName);
             }else {
-                parserProperties.put(paramName, propertiesFromFile.get(paramName));
+                parserProperties.put(paramName, fromFile.get(paramName));
             }
         }
+        parserProperties.putAll(parameters);
     }
 
+    /**
+     * Load all ATMs and offices and addresses for  them
+     * @return list of ATMs and offices that were received from Privatbank site
+     */
     @Override
     public List<AtmOffice> parse(){
         try {
-            parseAtms();
-            parseOffices();
+            if(Boolean.parseBoolean(parserProperties.getProperty("parse.atms"))){
+                atmList.addAll(parseAtms());
+            }
+            if(Boolean.parseBoolean(parserProperties.getProperty("parse.offices"))) {
+                atmList.addAll(parseOffices());
+            }
             logger.info("Parsing is done. Were parsed " + atmList.size());
             return atmList;
         }catch(IOException ioe){
@@ -61,8 +76,12 @@ public class PrivatBankParser implements IParser {
         }
     }
 
-
-    private void parseAtms() throws IOException {
+    /**
+     * loading ATMs from Privatbank site
+     * @throws IOException if cant load ATMs page or address page
+     */
+    private List<AtmOffice> parseAtms() throws IOException {
+        List<AtmOffice> atmList = new ArrayList<>();
         int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
         logger.info("Try to parse ATMs");
         Document document = Jsoup.connect(parserProperties.getProperty("url.data"))
@@ -72,25 +91,22 @@ public class PrivatBankParser implements IParser {
                 .post();
         logger.info("Page " + parserProperties.getProperty("url.data") + " loaded");
         logger.info("Try to get ATMs from response");
-        String jsonResponse = document.getElementsByTag(DATA_CONTAINER).text();
+        String jsonResponse = document.body().text();
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
         logger.info("Loaded " + privatBankApiResponse.getItems().length + " ATMs");
         for(AtmItem atmItem : privatBankApiResponse.getItems()){
-            if(atmItem.getIs_active() == 1) {
-                String rawAddress = getAddress(atmItem.getId());
-                AtmOffice atm = new AtmOffice();
-                atm.setAddress(prepareAddress(rawAddress));
-                atm.setType(IS_ATM);
-                atm.setGeoPosition(new GeoPosition(atmItem.getLng(), atmItem.getLat()));
-                atm.setLastUpdated(new Timestamp(new Date().getTime()));
-                atm.setState(NORMAL);
-                atmList.add(atm);
-            }
+                atmList.add(createAtm(atmItem, IS_ATM));
         }
+        return atmList;
     }
 
-    private void parseOffices() throws IOException {
+    /**
+     * loading offices from Privatbank site
+     * @throws IOException if cant load offices's page or address page
+     */
+    private List<AtmOffice> parseOffices() throws IOException {
+        List<AtmOffice> atmList = new ArrayList<>();
         int timeout = Integer.parseInt(parserProperties.getProperty("reading.timeout"));
         logger.info("Try to parse offices");
         Document document = Jsoup.connect(parserProperties.getProperty("url.data"))
@@ -100,48 +116,68 @@ public class PrivatBankParser implements IParser {
                 .post();
         logger.info("Page " + parserProperties.getProperty("url.data") + " loaded");
         logger.info("Try to load offices from response");
-        String jsonResponse = document.getElementsByTag(DATA_CONTAINER).text();
+        String jsonResponse = document.body().text();
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
         logger.info("Loaded " + privatBankApiResponse.getItems().length + " offices");
         for(AtmItem atmItem : privatBankApiResponse.getItems()){
-            if(atmItem.getIs_active() == 1) {
-                String address = prepareAddress(getAddress(atmItem.getId()));
-                if(isAtmAndOffice(address)){
-                    continue;
-                }
-                AtmOffice office = new AtmOffice();
-                office.setAddress(prepareAddress(address));
-                office.setType(IS_OFFICE);
-                office.setGeoPosition(new GeoPosition(atmItem.getLng(), atmItem.getLat()));
-                office.setLastUpdated(new Timestamp(new Date().getTime()));
-                office.setState(NORMAL);
+            AtmOffice office = createAtm(atmItem, IS_OFFICE);
+            if(office != null)
                 atmList.add(office);
-            }
         }
+        return atmList;
+    }
+
+    /**
+     * @param atmItem data about one atm or office received from PrivatBank
+     * @param type atm or office
+     * @return new atm made from atmItem data
+     * @throws IOException if cant receive address from PrivatBank
+     */
+    private AtmOffice createAtm(AtmItem atmItem, AtmOffice.AtmType type){
+        AtmOffice atm = new AtmOffice();
+        atm.setType(type);
+        atm.setGeoPosition(new GeoPosition(atmItem.getLng(), atmItem.getLat()));
+        atm.setLastUpdated(new Timestamp(new Date().getTime()));
+        atm.setState(atmItem.getIsActive() == 1 ? NORMAL : DISABLED);
+        String address = null;
+        try {
+            address = prepareAddress(getAddress(atmItem.getId()));
+        } catch (IOException ioe) {
+            atm.setState(BAD_ADDRESS);
+            logger.error("Parser can't receive address for item with id" + atmItem.getId() + "because of followed exception");
+            logger.error(ioe.getMessage(), ioe);
+        }
+        if(address != null && isAtmAndOffice(address)){
+            return null;
+        }
+        atm.setAddress(address);
+        return atm;
     }
 
     /**
      * Load properties from file
      * @throws IOException if can't load
      */
-    private void loadProperties(){
+    private Properties loadProperties(){
         try {
+            Properties properties = new Properties();
             String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
             String filePath = dirPath + "/privatBankParser.properties";
             logger.info("Try to load properties from file " + filePath);
             InputStream propFile = new FileInputStream(filePath);
-            propertiesFromFile.load(propFile);
+            properties.load(propFile);
             logger.info("File successfully loaded.");
+            return properties;
         }catch (IOException ioe){
-            logger.error("Loading file failed.");
+            logger.error("Loading file failed. Properties from admin page will be used");
+            return new Properties();
         }
     }
 
     /**
-     *
-     * @param type (atm or office)
-     * @return map that define request parameters
+     * @param type defines atm or office
+     * @return map that define request parameters for loading ATMs or offices
      */
     private Map<String, String> getPostParameters(AtmOffice.AtmType type) throws IOException {
         Map<String, String> postData = new HashMap<>();
@@ -165,12 +201,11 @@ public class PrivatBankParser implements IParser {
     }
 
     /**
-     *
      * @param id
      * @return address of atm or office that is defined by id
      * @throws IOException if cant load page
      */
-    private String getAddress(String id) throws IOException {
+    public String getAddress(String id) throws IOException {
         Map<String, String> postData = new HashMap<>();
         postData.put(parserProperties.getProperty("post.parameter.name.distance"), parserProperties.getProperty("post.parameter.value.distance"));
         postData.put("id", id);
@@ -189,17 +224,11 @@ public class PrivatBankParser implements IParser {
         String result = addressElement.child(0).text() + " " + addressElement.child(1).text();
         System.out.println(result);
         try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.sleep(200);
+        } catch (InterruptedException ie) {
+            logger.error(ie.getMessage(), ie);
         }
         return result;
-    }
-
-    public static void main(String[] args) throws IOException {
-        IParser privatParser = new PrivatBankParser();
-        privatParser.setParameter(Collections.EMPTY_MAP);
-        privatParser.parse();
     }
 
     /**
@@ -217,8 +246,9 @@ public class PrivatBankParser implements IParser {
         }
         return result.trim();
     }
+
     /**
-     * @return true and mark atm as ATM_OFFICE if already has same @param address
+     * @return true and mark atm as ATM_OFFICE if already has same address
      * it means that this address has both atm and office
      */
     private boolean isAtmAndOffice(String address){
