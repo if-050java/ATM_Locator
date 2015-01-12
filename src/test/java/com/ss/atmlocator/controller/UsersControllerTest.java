@@ -108,7 +108,7 @@ public class UsersControllerTest {
         adminRoles.add(new Role("ADMIN"));
         admin.setRoles(adminRoles);
 
-        List<AtmComment> comments = new ArrayList<>();
+        Set<AtmComment> comments = new HashSet<>();
         AtmComment comment = new AtmComment();
         comment.setUser(admin);
         comment.setId(1);
@@ -120,7 +120,7 @@ public class UsersControllerTest {
         atmOffice.setAtmComments(comments);
         favorites.add(atmOffice);
         AtmOffice atmOffice1 = new AtmOffice("Львів", IS_ATM);
-        atmOffice1.setAtmComments(Collections.EMPTY_LIST);
+        atmOffice1.setAtmComments(Collections.EMPTY_SET);
         favorites.add(atmOffice1);
 
         when(userService.getUser(1)).thenReturn(user);

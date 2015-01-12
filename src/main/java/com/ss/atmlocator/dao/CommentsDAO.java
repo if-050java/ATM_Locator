@@ -1,6 +1,7 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmComment;
+import com.ss.atmlocator.entity.AtmOffice;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,10 @@ public class CommentsDAO implements ICommentsDAO {
 
     @Override
     @Transactional
-    public void addComment(AtmComment comment) {
-        entityManager.persist(comment);
+    public void addComment(AtmComment comment, int atmId) {
+        AtmOffice atmOffice = entityManager.find(AtmOffice.class, atmId);
+        comment.setAtmOffice(atmOffice);
+        atmOffice.getAtmComments().add(comment);
     }
 
     @Override

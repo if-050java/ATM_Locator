@@ -70,7 +70,10 @@ public abstract class ParserExecutor implements Job, IParser {
         try {
             Properties properties = new Properties();
             String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
-            String filePath = dirPath + "/privatBankParser.properties";
+            String className = this.getClass().getSimpleName();
+            String propertyFileName = className.substring(0,1).toLowerCase() + className.substring(1) + ".properties";
+            String filePath = dirPath + "/" + propertyFileName;
+
             logger.info("Try to load properties from file " + filePath);
             InputStream propFile = new FileInputStream(filePath);
             properties.load(propFile);

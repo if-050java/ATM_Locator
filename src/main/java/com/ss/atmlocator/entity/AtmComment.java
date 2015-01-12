@@ -70,4 +70,24 @@ public class AtmComment {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AtmComment comment = (AtmComment) o;
+
+        if (!timeCreated.equals(comment.timeCreated)) return false;
+        if (!user.equals(comment.user)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = timeCreated.hashCode();
+        result = 31 * result + user.hashCode();
+        return result;
+    }
 }

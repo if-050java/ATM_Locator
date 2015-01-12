@@ -201,6 +201,12 @@ public class PrivatBankParser extends ParserExecutor {
         return result.trim();
     }
 
+    public static void main(String[] args) {
+        PrivatBankParser privatBankParser = new PrivatBankParser();
+        String s = privatBankParser.getClass().getSimpleName();
+        String file  =s.substring(0,1).toLowerCase() + s.substring(1) + ".properties";
+        System.out.println(file);
+    }
     /**
      * @return true and mark atm as ATM_OFFICE if already has same address
      * it means that this address has both atm and office

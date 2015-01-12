@@ -152,7 +152,12 @@ public class UserService {
     }
 
     public Set<AtmOffice> getFavorites(int userId) {
-        return usersDAO.getFavorites(userId);
+        try {
+            return usersDAO.getFavorites(userId);
+        }catch (PersistenceException pe){
+            logger.error(pe.getMessage(), pe);
+            throw pe;
+        }
     }
 
     public void addFavorite(int userId, int atmId) {
@@ -161,6 +166,7 @@ public class UserService {
             usersDAO.addFavorite(userId, atmId);
         } catch (PersistenceException pe) {
             logger.error(pe.getMessage(), pe);
+            throw pe;
         }
 
     }
@@ -171,6 +177,7 @@ public class UserService {
             usersDAO.deleteFavorite(userId, atmId);
         } catch (PersistenceException pe) {
             logger.error(pe.getMessage(), pe);
+            throw pe;
         }
     }
 
