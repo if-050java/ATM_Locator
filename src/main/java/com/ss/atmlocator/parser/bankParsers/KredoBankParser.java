@@ -1,25 +1,25 @@
 package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.ParserExecutor;
 import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 import static com.ss.atmlocator.entity.AtmState.NO_LOCATION;
 
-public class KredoBankParser implements IParser {
+public class KredoBankParser extends ParserExecutor {
 
 
     private final Logger logger = Logger.getLogger(KredoBankParser.class);
@@ -158,45 +158,6 @@ public class KredoBankParser implements IParser {
         return false;
     }
 
-    /**
-     * Setting parameters to parser from property file or given map
-     * Properties that are set by admin page override properties from file if the names are same
-     * @param parameters that will by set to parser
-     */
-    @Override
-    public void setParameter(Map<String, String> parameters){
-        loadProperties();
-        for(String paramName : propertiesFromFile.stringPropertyNames()){
-            if(parameters.containsKey(paramName)){
-                properties.put(paramName, parameters.get(paramName));
-            }else {
-                properties.put(paramName, propertiesFromFile.get(paramName));
-            }
-        }
-        String separator = properties.getProperty("separator.regions");
-        for(String region : properties.getProperty("regions").split(separator)){
-            if(region.isEmpty()){
-                parseAllRegions = true;
-                break;
-            }
-            regions.add(region.trim());
-        }
-        bankSite = properties.getProperty("url.base");
-    }
 
-    /**
-     *Load properties from file
-     */
-    private void loadProperties(){
-        try {
-            String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
-            String filePath = dirPath + "/kredoBankParser.properties";
-            logger.info("Try to load properties from file " + filePath);
-            InputStream propFile = new FileInputStream(filePath);
-            propertiesFromFile.load(propFile);
-            logger.info("File successfully loaded.");
-        }catch (IOException ioe){
-            logger.error("Loading file failed.");
-        }
-    }
+
 }
