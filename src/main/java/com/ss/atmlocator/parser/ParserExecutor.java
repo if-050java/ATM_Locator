@@ -34,10 +34,11 @@ public abstract class ParserExecutor implements Job {
         List<AtmOffice> atms = null;
         try {
             atms = parser.parse();
+            parserService.update(atms, bankId);
         } catch (IOException ioe) {
             logger.error(ioe.getMessage(), ioe);
         }
-        parserService.update(atms, bankId);
+
     }
 
     protected  abstract void setParser() ;// Set there  implementation of IParser
