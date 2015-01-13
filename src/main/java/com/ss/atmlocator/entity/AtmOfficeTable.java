@@ -46,12 +46,13 @@ public class AtmOfficeTable {
         this.data = new ArrayList<>(atmOfficeList.size());
         for(AtmOffice atm : atmOfficeList){
             String[] row = {
-                String.valueOf(atm.getId()),
-                atm.getTypeString(),
-                atm.getStateString(),
-                atm.getAddress(),
-                GeoUtil.geoLocationString(atm.getGeoPosition()),
-                atm.getTimeString()
+                    String.valueOf(atm.getId()),
+                    String.valueOf(atm.getId()),
+                    atm.getTypeString(),
+                    atm.getStateString(),
+                    atm.getAddress(),
+                    GeoUtil.geoLocationString(atm.getGeoPosition()),
+                    atm.getTimeString()
             };
             data.add(row);
         }

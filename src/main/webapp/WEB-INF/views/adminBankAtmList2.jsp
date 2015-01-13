@@ -4,54 +4,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <script src="<c:url value="/resources"/>/jquery/jquery.dataTables.min.js"></script>
+<script src="<c:url value="/resources"/>/scripts/adminBankAtmList.js"></script>
 <link rel="stylesheet" href="<c:url value="/resources"/>/jquery/jquery.dataTables.css">
-
-<script type="text/javascript">
-  $(document).ready(function () {
-    $("#atmsgrid").dataTable({
-      "serverSide": true,
-      "pageLength": 20,
-      "ajax": {
-        "url": "/getBankATMs",
-        "data": function ( data ) {
-          planify(data);
-          data.bankId = "${bank.id}";
-        },
-        "columns": [
-          { "data":"id"},
-          { "data":"type"},
-          { "data":"state"},
-          { "data":"address"},
-          { "data":"geoPosition"},
-          { "data":"lastUpdated"}
-        ]
-
-
-      },
-      "processing": true
-    });
-  });
-
-  function planify(data) {
-    for (var i = 0; i < data.columns.length; i++) {
-      column = data.columns[i];
-      column.searchRegex = column.search.regex;
-      column.searchValue = column.search.value;
-      delete(column.search);
-    }
-  }
-</script>
 
 <div>
   <div class="panel panel-default">
     <div class="panel-heading">${bank.name}</div>
-
+    <input type="hidden" id="bankid" name="bankid" value="${bank.id}">
     <%-- List of ATMs --%>
     <div class="panel panel-default">
       <div class="panel-body">
         <table id="atmsgrid" class="display compact">
           <thead>
             <tr role="row">
+              <th>Select</th>
               <th>id#</th>
               <th>Type</th>
               <th>State</th>
