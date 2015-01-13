@@ -3,12 +3,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%--
-http://www.codeproject.com/Articles/359750/jQuery-DataTables-in-Java-Web-Applications
---%>
-
 <script src="<c:url value="/resources"/>/jquery/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="<c:url value="/resources"/>/jquery/jquery.dataTables.min.css">
+<link rel="stylesheet" href="<c:url value="/resources"/>/jquery/jquery.dataTables.css">
 
 <script type="text/javascript">
   $(document).ready(function () {
@@ -53,7 +49,7 @@ http://www.codeproject.com/Articles/359750/jQuery-DataTables-in-Java-Web-Applica
     <%-- List of ATMs --%>
     <div class="panel panel-default">
       <div class="panel-body">
-        <table id="atmsgrid" class="display">
+        <table id="atmsgrid" class="display compact">
           <thead>
             <tr role="row">
               <th>id#</th>

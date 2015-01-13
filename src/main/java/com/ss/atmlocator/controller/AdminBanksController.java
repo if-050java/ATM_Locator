@@ -208,7 +208,9 @@ public class AdminBanksController {
         int bankId = criteries.getBankId();
         int start = criteries.getStart();
         int length = criteries.getLength();
-        LOGGER.debug(String.format("GET: ATMs list, Bank #%d, offset %d, count %d", bankId, start, length));
+        String orderColumn = criteries.getOrder().get(0).get(DataTableCriteria.OrderCriteria.column);
+        String orderDirect = criteries.getOrder().get(0).get(DataTableCriteria.OrderCriteria.dir);
+        LOGGER.debug(String.format("GET: ATMs list, Bank #%d, offset %d, count %d, order %s %s", bankId, start, length, orderColumn, orderDirect));
 
         AtmOfficeTable table = new AtmOfficeTable();
         table.setDraw(criteries.getDraw());
