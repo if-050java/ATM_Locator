@@ -49,28 +49,17 @@ public abstract class ParserExecutor implements Job, IParser {
      * @param parameters that will by set to parser
      */
     @Override
-    public void setParameter(Map<String, String> parameters){
-        Properties fromFile = loadProperties();
-        for(String paramName : fromFile.stringPropertyNames()){
-            if(parameters.containsKey(paramName)){
-                parserProperties.put(paramName, parameters.get(paramName));
-                parameters.remove(paramName);
-            }else {
-                parserProperties.put(paramName, fromFile.get(paramName));
-            }
-        }
-        parserProperties.putAll(parameters);
-    }
+    public abstract void setParameter(Map<String,String> parameters);
 
     /**
      * Load properties from file
      * @throws IOException if can't load
      */
-    private Properties loadProperties(){
+    public Properties loadProperties(String filename){
         try {
             Properties properties = new Properties();
             String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
-            String filePath = dirPath + "/privatBankParser.properties";
+            String filePath = dirPath + "/" + filename;
             logger.info("Try to load properties from file " + filePath);
             InputStream propFile = new FileInputStream(filePath);
             properties.load(propFile);

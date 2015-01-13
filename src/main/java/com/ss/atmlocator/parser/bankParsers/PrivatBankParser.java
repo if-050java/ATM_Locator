@@ -217,6 +217,18 @@ public class PrivatBankParser extends ParserExecutor {
         return false;
     }
 
+    public void setParameter(Map<String, String> parameters){
+        Properties fromFile = loadProperties("privatBankParser.properties");
+        for(String paramName : fromFile.stringPropertyNames()){
+            if(parameters.containsKey(paramName)){
+                parserProperties.put(paramName, parameters.get(paramName));
+                parameters.remove(paramName);
+            }else {
+                parserProperties.put(paramName, fromFile.get(paramName));
+            }
+        }
+        parserProperties.putAll(parameters);
+    }
 }
 
 
