@@ -51,6 +51,10 @@ public class BanksService {
         return atmsDAO.getBankAtms(bankId, page);
     }
 
+    public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length) {
+        return atmsDAO.getBankAtms(bankId, start, length);
+    }
+
     public List<Bank> getBanksList() {
         List<Bank> banks = banksDAO.getBanksList();
         for (Bank bank : banks) {

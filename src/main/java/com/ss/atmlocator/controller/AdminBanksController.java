@@ -1,15 +1,13 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.service.ATMService;
+import com.ss.atmlocator.entity.*;
 import com.ss.atmlocator.service.AtmNetworksService;
 import com.ss.atmlocator.service.BanksService;
 import com.ss.atmlocator.service.ParserService;
 import com.ss.atmlocator.utils.OutResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -199,14 +196,26 @@ public class AdminBanksController {
     }
 
 
-    @RequestMapping(value = "/getBankATMs")
+    /**
+     * information from http://stackoverflow.com/questions/23704352/cant-map-a-query-string-parameters-to-my-javabean-using-spring-4-and-datatable
+     * @param criteries
+     * @return
+     */
+    @RequestMapping(value = "/getBankATMs", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<AtmOffice> getBankATMs(@RequestParam(required = false) Integer bankId,
-                                       @RequestParam boolean showAtms,
-                                       @RequestParam boolean showOffices
-    ) {
-        List<AtmOffice> atmOffices = banksService.getBankAtms(bankId, 0);
-        return atmOffices;
+    public AtmOfficeTable getBankATMs(@ModelAttribute DataTableCriteria criteries) {
+        int bankId = criteries.getBankId();
+        int start = criteries.getStart();
+        int length = criteries.getLength();
+        LOGGER.debug(String.format("GET: ATMs list, Bank #%d, offset %d, count %d", bankId, start, length));
+
+        AtmOfficeTable table = new AtmOfficeTable();
+        table.setDraw(criteries.getDraw());
+        table.setData(banksService.getBankAtms(bankId, start, length));
+        table.setRecordsTotal(banksService.getBankAtmsCount(bankId));
+        table.setRecordsFiltered(table.getRecordsTotal());
+        return table;
     }
 
 

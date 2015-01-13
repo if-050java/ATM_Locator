@@ -116,6 +116,17 @@ public class AtmsDAO implements IAtmsDAO {
         return query.getResultList();
     }
 
+    @Override
+    @Transactional
+    public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length) {
+        TypedQuery<AtmOffice> query = entityManager
+                .createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+        query.setParameter("bank_id", bankId);
+        query.setFirstResult(start);
+        query.setMaxResults(length);
+        return query.getResultList();
+    }
+
 
 
     @Override

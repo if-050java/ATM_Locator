@@ -44,7 +44,7 @@ public class GeoUtil {
     }
 
     public static String geoLocationString(final GeoPosition position) {
-        if (position.getLongitude() == 0 || position.getLatitude() == 0) {
+        if (position == null || position.getLongitude() == 0 || position.getLatitude() == 0) {
             return "undefined";
         }
 
