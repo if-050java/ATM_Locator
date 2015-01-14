@@ -2,6 +2,7 @@ package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.ParserExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -17,15 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,65 +28,61 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
  * Created by Olavin on 14.12.2014.
  * Parse OschadBank web-site to gel list of branches and ATMs
  */
-public class OschadBankParser implements IParser {
+public class OschadBankParser extends ParserExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(OschadBankParser.class);
 
-    private static final String USER_AGENT_PARAM =
-            "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0";
-    private static final String LAST_PAGE_SELECTOR = "font.text > a:nth-last-child(1)";
-    private static final String SET_FILTER_VALUE = "Шукати";
-    private static final String SET_FILTER_PARAM = "set_filter";
-    private static final String REGION_PARAM = "arrFilter_pf[RegionName]";
-    private static final String PAGE_PARAM = "PAGEN_1";
-    private static final int ADDRESS_COLUMN_BRANCH = 1;
-    private static final int VIDDIL_COLUMN_BRANCH = 0;
-    private static final int ADDRESS_COLUMN_ATM = 0;
-    private static final int VIDDIL_COLUMN_ATM = 2;
-    private static final int MAX_ROWS_AT_PAGE = 20;
-    private static final String REGION_SEPARATOR = ", ";
-    private static final String VIDDIL_PATTERN = "(\\d{5})\\s*/+0*(\\d+)";
-    private static final String LOCALITY_PATTERN = "(м\\.|с\\.|смт)\\s+(.+?),";
-    private static final String ADDRESS_PATTERN = "Ів\\.-.*Франківськ";
-    private static final String ADDRESS_SUBSTITUTE = "Івано-Франківськ";
-
-    private Map<String, String> parameters;
+    //private Map<String, String> parameters;
 
     @Override
-    public void setParameter(final Map<String, String> parameters) {
-        this.parameters = parameters;
+    public void setParameter(Map<String, String> parameters) {
+        Properties fromFile = loadProperties("oschadBankParser.properties");
+        for(String paramName : fromFile.stringPropertyNames()) {
+            if (parameters.containsKey(paramName)) {
+                parserProperties.put(paramName, parameters.get(paramName));
+                parameters.remove(paramName);
+            } else {
+                parserProperties.put(paramName, fromFile.get(paramName));
+            }
+        }
+        parserProperties.putAll(parameters);
     }
+
 
     @Override
     public List<AtmOffice> parse() {
-        List<AtmOffice> atms = new ArrayList<>();
-
-        String branchPage = parameters.get("base_url") + parameters.get("branch_page");
-        String branchSelector = parameters.get("branch_selector");
-
-        String atmPage = parameters.get("base_url") + parameters.get("atm_page");
-        String atmSelector = parameters.get("atm_selector");
 
         List<String> regions = new ArrayList<>();
 
-        String testRegion = parameters.get("region");
+        String singleRegion = parserProperties.getProperty("region");
         // if empty - parse all regions subsequently
-        if (testRegion.equals("")) {
+        if (singleRegion.equals("")) {
             try {
                 // get Branch Page before fetching regions list to satisfy the bank's web server
-                Jsoup.connect(parameters.get("base_url")).execute();
+                Jsoup.connect(parserProperties.getProperty("url.base")).execute();
                 regions = getRegionList();
             } catch (IOException e) {
                 //e.printStackTrace();
                 LOGGER.error("Cannot fetch regions list: " + e.getMessage(), e);
             }
         } else {
-            regions.add(testRegion);
+            regions.add(singleRegion);
         }
 
-        RegionParser branchParser =
-                new RegionParser(branchPage, branchSelector, ADDRESS_COLUMN_BRANCH, VIDDIL_COLUMN_BRANCH);
-        RegionParser atmParser =
-                new RegionParser(atmPage, atmSelector, ADDRESS_COLUMN_ATM, VIDDIL_COLUMN_ATM);
+        RegionParser branchParser = new RegionParser(
+                        parserProperties.getProperty("url.base") + parserProperties.getProperty("page.branch"),
+                        parserProperties.getProperty("selector.branch"),
+                        Integer.parseInt(parserProperties.getProperty("column.address.branch")),
+                        Integer.parseInt(parserProperties.getProperty("column.viddil.branch"))
+                );
+
+        RegionParser atmParser = new RegionParser(
+                        parserProperties.getProperty("url.base") + parserProperties.getProperty("page.atm"),
+                        parserProperties.getProperty("selector.atm"),
+                        Integer.parseInt(parserProperties.getProperty("column.address.atm")),
+                        Integer.parseInt(parserProperties.getProperty("column.viddil.atm"))
+                );
+
+        List<AtmOffice> atms = new ArrayList<>();
 
         for (int i = 0; i < regions.size(); i++) {
             String region = regions.get(i);
@@ -107,13 +96,23 @@ public class OschadBankParser implements IParser {
                 LOGGER.error("Connection error: " + e.getMessage(), e);
             }
             LOGGER.info("End parse region");
+
+            // Sleep only if have more then one region to parse
+            if(regions.size() > 1) {
+                try {
+                    Thread.sleep(Integer.parseInt(parserProperties.getProperty("regions.delay")));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
 
         return atms;
     }
 
     private boolean equalLocality(@NotNull final OschadBankItem item1, @NotNull final OschadBankItem item2) {
-        Pattern p = Pattern.compile(LOCALITY_PATTERN);
+        Pattern p = Pattern.compile(parserProperties.getProperty("pattern.locality"));
         Matcher m1 = p.matcher(item1.getAddress());
 
         if (m1.find()) {
@@ -136,7 +135,7 @@ public class OschadBankParser implements IParser {
         for (OschadBankItem branchItem : branchList) {
             if (branchItem != null) {
                 AtmOffice atmOffice = new AtmOffice();
-                atmOffice.setAddress(regionName + REGION_SEPARATOR + branchItem.getAddress());
+                atmOffice.setAddress(regionName + parserProperties.getProperty("separator.region") + branchItem.getAddress());
                 int index = atmList.indexOf(branchItem);
                 if (index >= 0 && equalLocality(branchItem, atmList.get(index))) {
                     LOGGER.debug(String.format("Found branch and ATM at same address: %s and %s",
@@ -156,7 +155,7 @@ public class OschadBankParser implements IParser {
         for (OschadBankItem atmItem : atmList) {
             if (atmItem != null) {
                 AtmOffice atmOffice = new AtmOffice();
-                atmOffice.setAddress(regionName + REGION_SEPARATOR + atmItem.getAddress());
+                atmOffice.setAddress(regionName + parserProperties.getProperty("separator.region") + atmItem.getAddress());
                 atmOffice.setType(IS_ATM);
                 atms.add(atmOffice);
             }
@@ -182,10 +181,11 @@ public class OschadBankParser implements IParser {
 
         Connection createJsoupConnection(final String regionName, final int pageNum) {
             return Jsoup.connect(pageUrl)
-                    .data(REGION_PARAM, regionName)
-                    .data("ib", "atms_ua")
-                    .data(SET_FILTER_PARAM, SET_FILTER_VALUE)
-                    .data(PAGE_PARAM, (pageNum > 1) ? String.valueOf(pageNum) : "");
+                .data(parserProperties.getProperty("region.param"), regionName)
+                .data("ib", "atms_ua")
+                .data(parserProperties.getProperty("setfilter.param"), parserProperties.getProperty("setfilter.value"))
+                .data(parserProperties.getProperty("page.param"), (pageNum > 1) ? String.valueOf(pageNum) : "")
+                .timeout(Integer.parseInt(parserProperties.getProperty("reading.timeout")));
         }
 
         private LinkedList<OschadBankItem> parseRegion(@NotNull final String regionName) throws IOException {
@@ -208,7 +208,8 @@ public class OschadBankParser implements IParser {
         }
 
         private List<OschadBankItem> parseTable(final Connection connection) throws IOException {
-            List<OschadBankItem> addressList = new ArrayList<>(MAX_ROWS_AT_PAGE);
+            List<OschadBankItem> addressList
+                    = new ArrayList<>(Integer.parseInt(parserProperties.getProperty("page.maxrows")));
             Connection.Response response = connection.execute();
             LOGGER.trace("Request URL: " + connection.request().url());
             Elements rows = response.parse().select(selector);
@@ -223,19 +224,32 @@ public class OschadBankParser implements IParser {
             return addressList;
         }
 
-        private String prepareAddress(final String address) {
-            return (address == null) ? null : address.replaceFirst(ADDRESS_PATTERN, ADDRESS_SUBSTITUTE).trim();
+        /**
+         * @return formatted address string based on rawAddress
+         * parameters for formatting get from properties
+         */
+        private String  prepareAddress(String rawAddress) {
+            String result = rawAddress;
+            for (String paramName : parserProperties.stringPropertyNames()) {
+                if (paramName.matches("replace\\.regexp\\..*")) {
+                    String regexp = parserProperties.getProperty(paramName);
+                    String replaceValue = parserProperties.getProperty(paramName.replace("regexp", "value"));
+                    result = result.replaceAll(regexp, replaceValue);
+                }
+            }
+            return result.trim();
         }
+
 
         @Nullable
         private String prepareViddil(final String viddil) {
-            Matcher m = Pattern.compile(VIDDIL_PATTERN).matcher(viddil);
+            Matcher m = Pattern.compile(parserProperties.getProperty("pattern.viddil")).matcher(viddil);
             return m.find() ? m.group(1) + "/" + m.group(2) : null;
         }
 
         private int getPageCount(final Connection connection) throws ParseException, IOException {
             Connection.Response response = connection.execute();
-            Elements elems = response.parse().select(LAST_PAGE_SELECTOR);
+            Elements elems = response.parse().select(parserProperties.getProperty("selector.lastpage"));
             if (elems.size() == 0) {
                 throw new ParseException("Can't parse last page number", 0);
             }
@@ -272,7 +286,6 @@ public class OschadBankParser implements IParser {
     private Connection createRegionListRequest() {
         return Jsoup.connect("http://www.oschadnybank.com/handlers/region1.php")
                 .data("contentType", "application/json; charset=utf-8")
-                //.data("ib", "atms_ua")
                 .data("p", "1")
                 .data("s", "15")
                 .method(Connection.Method.GET)
@@ -280,22 +293,16 @@ public class OschadBankParser implements IParser {
                 .header("Host", "www.oschadnybank.com")
                 .referrer("http://www.oschadnybank.com/ua/branches_atms/atms/")
                 .header("X-Requested-With", "XMLHttpRequest")
-                .userAgent(USER_AGENT_PARAM)
+                .userAgent(parserProperties.getProperty("user.agent"))
                 .ignoreContentType(true);
     }
 
     public static void main(final String[] args) {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("base_url", "http://www.oschadnybank.com/");
-        parameters.put("branch_page", "ua/branches_atms/branches/");
-        parameters.put("atm_page", "ua/branches_atms/atms/");
-        parameters.put("branch_selector", ".table_block > table:nth-child(1) > tbody:nth-child(1) > .news-item");
-        parameters.put("atm_selector", ".table_block > table:nth-child(1) > tbody:nth-child(1) > .news-item");
 
-        //parameters.put("region","");
-        //parameters.put("region", "Івано-Франківська область");
+        parameters.put("region", "Івано-Франківська область");
         //parameters.put("region","АР Крим");
-        parameters.put("region", "Донецька область");
+        //parameters.put("region", "Донецька область");
 
         OschadBankParser bankParser = new OschadBankParser();
         bankParser.setParameter(parameters);

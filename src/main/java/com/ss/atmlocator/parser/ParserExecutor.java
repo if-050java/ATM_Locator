@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -62,7 +63,8 @@ public abstract class ParserExecutor implements Job, IParser {
             String filePath = dirPath + "/" + filename;
             logger.info("Try to load properties from file " + filePath);
             InputStream propFile = new FileInputStream(filePath);
-            properties.load(propFile);
+            InputStreamReader isr = new InputStreamReader(propFile, "UTF8");
+            properties.load(isr);
             logger.info("File successfully loaded.");
             return properties;
         }catch (IOException ioe){
