@@ -5,10 +5,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.Set;
 
-import static com.ss.atmlocator.entity.AtmState.*;
-import static com.ss.atmlocator.entity.AtmState.NORMAL;
+import static com.ss.atmlocator.entity.AtmState.NO_LOCATION;
 
 /**
  * Created by Olavin on 17.11.2014.
@@ -40,6 +39,12 @@ public class AtmOffice implements Comparable<AtmOffice> {
     @Column
     private String photo;  // filename of real street photo
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
+    private Set<AtmComment> atmComments;
+
+    @Transient
+    private int commentsCount;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bank_id")
@@ -72,13 +77,6 @@ public class AtmOffice implements Comparable<AtmOffice> {
         }
         return address.hashCode();
     }
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmOffice", fetch = FetchType.EAGER)
-    private List<AtmComment> atmComments;
-
-    @Transient
-    private int commentsCount;
 
     public int getCommentsCount() {
         return atmComments.size();
@@ -176,11 +174,11 @@ public class AtmOffice implements Comparable<AtmOffice> {
     }
 
 
-    public List<AtmComment> getAtmComments() {
+    public Set<AtmComment> getAtmComments() {
         return atmComments;
     }
 
-    public void setAtmComments(List<AtmComment> atmComments) {
+    public void setAtmComments(Set<AtmComment> atmComments) {
         this.atmComments = atmComments;
     }
 
