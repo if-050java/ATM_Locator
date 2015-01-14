@@ -33,7 +33,7 @@
             </div>
 
             <div class="modal-body">
-                <textarea class="form-control" id="feedback" style="max-width: 100%"></textarea>
+                <textarea class="form-control" id="feedback" data-content="feedback must be greater than 20 characters" style="max-width: 100%"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

@@ -9,18 +9,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by Ivanna Terletska on 26.10.2014.
  */
-public class AtmParserServise {
+public class ParserUbank {
     protected String url;
     protected String listSelector;
     protected Bank bank;
-    protected Set<AtmOffice> atmsList;
+    protected Set<AtmOffice> atmsSet;
     private  AtmOffice.AtmType atmType;
 
 
@@ -38,8 +36,8 @@ public void setParam(Map<String, Object> params) {
 }
 
 
-    public Set<AtmOffice> getItems() {
-        atmsList = new TreeSet<AtmOffice>();
+    public List<AtmOffice> getItems() {
+        atmsSet = new TreeSet<AtmOffice>();
         String atmAdress;
 
        //System.out.println(listSelector);
@@ -77,13 +75,13 @@ public void setParam(Map<String, Object> params) {
                 atm.setType(atmType);
 
 
-                atmsList.add(atm);
+                atmsSet.add(atm);
 
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return atmsList;
+        return new ArrayList<>(atmsSet);
     }
 
 }

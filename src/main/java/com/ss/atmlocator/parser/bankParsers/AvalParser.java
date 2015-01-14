@@ -2,6 +2,7 @@ package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.parser.IParser;
+import com.ss.atmlocator.parser.ParserExecutor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,18 +14,19 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * This class parses ATMs and branches Bank Aval
+ * This class parses ATMs and branches  Raiffeizen Bank Aval
  */
-public class AvalParser implements IParser{
+public class AvalParser extends ParserExecutor{
     Map<String, String> parameters = new HashMap<>();
-    private static final String URL_PART_1 = "http://api.finlocator.com/features/?filters=&theme=aval&section=";
-    private static final String URL_PART_2 = "&city=";
-    private static final String URL_PART_3 = "&lang=ru&filters_atm=&filters_branch=&filters_all=,&_=1420804304902";
-    private static  final String  ADDRESS = "address";
-    private static  final String  ATM = "atm";
-    private static  final String  BRANCH = "branch";
-    private static  final String URL_FOR_CITY_CODES = "http://api.finlocator.com/features/?filters=&theme=aval&section=atm&city=317&lang=ru&filters_atm=&filters_branch=&filters_all=,&_=1420804304902";
-    private static  final String USER_AGENT = "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52";
+
+//    private static final String URL_PART_1 = "http://api.finlocator.com/features/?filters=&theme=aval&section=";
+//    private static final String URL_PART_2 = "&city=";
+//    private static final String URL_PART_3 = "&lang=ru&filters_atm=&filters_branch=&filters_all=,&_=1420804304902";
+//    private static  final String  ADDRESS = "address";
+//    private static  final String  ATM = "atm";
+//    private static  final String  BRANCH = "branch";
+//    private static  final String URL_FOR_CITY_CODES = "http://api.finlocator.com/features/?filters=&theme=aval&section=atm&city=317&lang=ru&filters_atm=&filters_branch=&filters_all=,&_=1420804304902";
+//    private static  final String USER_AGENT = "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52";
     Document doc = null;
     private static final boolean   IS_OFFICE = false;
     private static final boolean   IS_ATM = true;
@@ -32,11 +34,12 @@ public class AvalParser implements IParser{
     private Map<String, String> cityCodeName=null;
 
     public AvalParser(){
+        parserProperties=loadProperties("avalParser.properties");
         cityCodeName = parseCityNameAndKey();
     }
 
     /**
-     * method using zhsoup parses branches and ATMs in a particular city
+     * method using jsoup parses branches and ATMs in a particular city
      * @param url - url where are atm`s or branches
      * @param  isOffice - type of atm (atm or branch)
      * @param  city - city name, city where we parse atm`s
@@ -45,16 +48,17 @@ public class AvalParser implements IParser{
     private Set<AtmOffice> parseAtm(String url, boolean isOffice, String city) throws IOException {
         Set<AtmOffice> atms=new HashSet<>(); // set, because the page may contain duplicate addresses.
         try {
-            doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
-            Elements addresses = doc.getElementsByClass(ADDRESS);
+            doc = Jsoup.connect(url).userAgent(parserProperties.getProperty("user.agent")).get();
+            Elements addresses = doc.getElementsByClass(parserProperties.getProperty("address"));
             for (Element address : addresses) {
                 AtmOffice tempAtm = new AtmOffice();
                 if (isOffice) {
                     tempAtm.setAddress(city+" "+address.text());
-                    tempAtm.setType(AtmOffice.AtmType.IS_ATM_OFFICE);
+                    tempAtm.setType(AtmOffice.AtmType.IS_OFFICE);
                     tempAtm.setAddress(trimFirstNaber(tempAtm.getAddress()));
                 }else {
-                    tempAtm.setAddress(city + " " + address.text());
+//                    tempAtm.setAddress(city + " " + address.text());
+                    tempAtm.setAddress( trimFirstNaber(address.text()));
                     tempAtm.setType(AtmOffice.AtmType.IS_ATM);
                 }
                 atms.add(tempAtm);
@@ -63,10 +67,11 @@ public class AvalParser implements IParser{
          return atms;
 
         } catch (IOException ioe) {
-            logger.error("[PARSER] Parser cen`t connect to URL"+ioe.getMessage(),ioe);
+            logger.error("[PARSER] Parser cen`t connect to URL %s", ioe.getMessage(),ioe);
             throw ioe;
         }
     }
+
 
     private String trimFirstNaber(String address) {
         return address.replaceFirst("\\d+,"," ");
@@ -78,7 +83,7 @@ public class AvalParser implements IParser{
 //        String URL = "http://aval.ua/ru/finlokator/";
         Map<String, String> cityCodeName=null;
         try {
-            doc = Jsoup.connect(URL_FOR_CITY_CODES).userAgent(USER_AGENT).get();
+            doc = Jsoup.connect(parserProperties.getProperty("url.for.city.codes")).userAgent(parserProperties.getProperty("address")).get();
             Elements addresses = doc.getElementsByClass("chzn-select");
             Elements address = addresses.select("option");
             cityCodeName = new HashMap<>();
@@ -100,9 +105,10 @@ public class AvalParser implements IParser{
         String cityKey=cityCodeName.get(cityName);
         String resultUrl;
         if(isAtm){
-            resultUrl = URL_PART_1+ATM+URL_PART_2+cityKey+URL_PART_3;
+            resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("atm")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
         }else{
-            resultUrl = URL_PART_1+BRANCH+URL_PART_2+cityKey+URL_PART_3;
+            resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("branch")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
+
         }
 
         atms = new ArrayList<>(parseAtm(resultUrl, isAtm, cityName));
@@ -115,7 +121,10 @@ public class AvalParser implements IParser{
     }
     public static void main(String[] args) throws IOException {
         AvalParser avalParser2=new AvalParser();
-        List<AtmOffice> atmOffices =avalParser2.parseCity("Киев", IS_ATM);
+        Map<String, String> param = new HashMap<>();
+        param.put("cityName", "Ивано-Франковск");
+        avalParser2.setParameter(param);
+        List<AtmOffice> atmOffices =avalParser2.parse();
         System.out.println("------------------------------------------------------");
         for (AtmOffice atm: atmOffices){
             System.out.println(atm);
@@ -131,21 +140,22 @@ public class AvalParser implements IParser{
     public  List<AtmOffice> parseAllCity(boolean isAtm) throws IOException {
         String type;
         if(isAtm){
-            type = ATM;
+            type = parserProperties.getProperty("atm");
         }else{
-            type= BRANCH;
+            type= parserProperties.getProperty("branch");
         }
         List<AtmOffice> resultList=new ArrayList<AtmOffice>();
         Set<String> cityNames = cityCodeName.keySet();
         for(String cityName: cityNames){
             String cityKey=cityCodeName.get(cityName);
-            String resultUrl =URL_PART_1+type+URL_PART_2+cityKey+URL_PART_3;
+            String resultUrl =parserProperties.getProperty("url.part1")+type+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
+
             resultList.addAll(parseAtm(resultUrl, IS_ATM, cityName));
-/*            try {
-                Thread.sleep(800);
+            try {
+                Thread.sleep(300);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
         return resultList;
     }

@@ -1,5 +1,6 @@
 function addFeedback(){
-    var userDat = getUserData();
+    //var userDat = getUserData();
+    getUserData();
 
     /*var defaultName =userDat.name;
     var defaultEmail =userDat.email;*/
@@ -8,9 +9,9 @@ function addFeedback(){
 
 }
 function getUserData() {
-    var userData={
-        name :"misterAnonymus"
-    };
+//    var userData={
+//        name :"misterAnonymus"
+//    };
     jQuery.ajax({
 
         url: getHomeUrl() + "feedback",
@@ -30,7 +31,7 @@ function getUserData() {
         }
 
     });
-    return userData;
+//    return userData;
 }
 function getFeedback(){
 
@@ -50,8 +51,14 @@ function getFeedback(){
         $('#emailf').popover("show");
         return;
     };
+    if(feedback.length<=20){
+        $('#feedback').attr("data-content", "field must be greater than 20 characters");
+        $('#feedback').popover("show");
+        return;
+    }
 
-    var result = {"feedback":feedback,
+    var result = {
+        "feedback":feedback,
         "email":email,
         "name":name
     };
