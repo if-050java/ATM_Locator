@@ -12,12 +12,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 
-import java.util.Locale;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.*;
 
 /**
  * Created by roman on 05.01.15.
@@ -34,6 +34,7 @@ public class UserValidatorTest {
     User invalidEmailUser;
     User loginExists;
     User emailExists;
+    User emailAndLoginExists;
     @Autowired
     private MessageSource messages;
 
@@ -44,6 +45,7 @@ public class UserValidatorTest {
         invalidEmailUser = new User(1, "user", "nickname", "user123dfwfewfwfw");
         loginExists = new User(1, "user", "nickname", "test@gmail.com");
         emailExists = new User(1, "test", "nickname", "user@mail.com");
+        emailAndLoginExists = new User(1, "user", "nickname", "user@mail.com");
     }
 
     @Test
@@ -89,5 +91,20 @@ public class UserValidatorTest {
         String actualMessage = errors.getFieldError(Constants.USER_EMAIL).getCode();
         String expectedMessage = messages.getMessage("email.exists", null, Locale.ENGLISH);
         assertEquals(actualMessage, expectedMessage);
+    }
+    @Test
+    public void testEmailAndLoginExists() {
+        Errors errors = new BeanPropertyBindingResult(emailAndLoginExists, VALIDATED_OBJ_NAME);
+        userValidator.validate(emailAndLoginExists, errors);
+
+        String loginExists = errors.getFieldError(Constants.USER_LOGIN).getCode();
+        String emailExists = errors.getFieldError(Constants.USER_EMAIL).getCode();
+        List<String> actualMessages = Arrays.asList(loginExists,emailExists);
+        String email_exists = messages.getMessage("email.exists", null, Locale.ENGLISH);
+        String invalid_email = messages.getMessage("login.exists", null, Locale.ENGLISH);
+        List<String> expectedMessages = Arrays.asList(email_exists, invalid_email);
+
+        assertTrue(errors.hasErrors());
+        assertTrue(actualMessages.containsAll(expectedMessages));
     }
 }
