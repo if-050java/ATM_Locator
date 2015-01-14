@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -18,8 +16,6 @@ import java.util.List;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 import static java.util.Arrays.asList;
-
-;
 
 /**
  * Data access class for ATM entity
@@ -86,13 +82,6 @@ public class AtmsDAO implements IAtmsDAO {
 
     @Override
     @Transactional
-    public long getBankAtmsPages(final int bankId) {
-        long atms = getBankAtmsCount(bankId);
-        return  (atms + COUNT_ATMS_AT_PAGE - 1) / COUNT_ATMS_AT_PAGE;
-    }
-
-    @Override
-    @Transactional
     public List<AtmOffice> getBankAtms(final int bankId) {
         TypedQuery<AtmOffice> query = entityManager
                 .createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
@@ -103,20 +92,32 @@ public class AtmsDAO implements IAtmsDAO {
 
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(final int bankId, final int page) {
-        int offset = 0;
-        if (page > 0) {
-            offset = page * COUNT_ATMS_AT_PAGE;
+    public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length, final String order, final String filter) {
+        String queryString = "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id";
+        if(!filter.isEmpty()) {
+            queryString += " and a.address like :filter";
         }
-        TypedQuery<AtmOffice> query = entityManager
-                .createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
+
+        Query query = entityManager.createQuery(queryString + order, AtmOffice.class);
         query.setParameter("bank_id", bankId);
-        query.setFirstResult(offset);
-        query.setMaxResults(COUNT_ATMS_AT_PAGE);
+        if(!filter.isEmpty()) {
+            query.setParameter("filter", filter);
+        }
+        query.setFirstResult(start);
+        query.setMaxResults(length);
+
         return query.getResultList();
     }
 
-
+    @Override
+    @Transactional
+    public long getBankAtmsFilteredCount(final int bankId, final String filter) {
+        TypedQuery<Long>  query = entityManager.createQuery(
+                "SELECT count(a.id) FROM AtmOffice AS a WHERE a.bank.id=:bank_id and a.address like :filter", Long.class);
+        query.setParameter("bank_id", bankId);
+        query.setParameter("filter", filter);
+        return query.getSingleResult();
+    }
 
     @Override
     @Transactional
@@ -135,6 +136,8 @@ public class AtmsDAO implements IAtmsDAO {
     public void persist(AtmOffice Atm) {
         entityManager.persist(Atm);
     }
+
+
     /**
      * the method updates the array offices or puts the database
      *  @param   atmExistList - List of atmOffices
@@ -149,6 +152,7 @@ public class AtmsDAO implements IAtmsDAO {
         }
         log.info("[TRANSACTION]update()-- end transaction, updated or persisted --->" + atmExistList.size() + " elements");
     }
+
     /**
      * the method updates the array offices or puts the database
      *  @param   atmNewList - new List<AtmOffice>
