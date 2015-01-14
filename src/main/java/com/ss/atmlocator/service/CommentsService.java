@@ -37,11 +37,11 @@ public class CommentsService {
         try {
             logger.info("Fill comment fields");
             atmComment.setUser(usersDAO.getUser(userName));
-            atmComment.setAtmOffice(atmsDAO.getAtmById(atmId));
+            //atmComment.setAtmOffice(atmsDAO.getAtmById(atmId));
             atmComment.setText(text);
             atmComment.setTimeCreated(new Timestamp(new Date().getTime()));
             logger.info("Try to save comment");
-            commentsDAO.addComment(atmComment);
+            commentsDAO.addComment(atmComment, atmId);
         }catch (PersistenceException pe){
             logger.error(pe.getMessage(), pe);
             throw pe;

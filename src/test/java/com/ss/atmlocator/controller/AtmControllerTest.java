@@ -3,7 +3,6 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.entity.AtmComment;
 import com.ss.atmlocator.entity.AtmOffice;
 import com.ss.atmlocator.entity.User;
-import com.ss.atmlocator.entity.UserStatus;
 import com.ss.atmlocator.service.ATMService;
 import com.ss.atmlocator.service.CommentsService;
 import org.junit.Before;
@@ -20,24 +19,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
-import java.beans.PersistenceDelegate;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM;
 import static com.ss.atmlocator.entity.UserStatus.ENABLED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,7 +55,7 @@ public class AtmControllerTest {
     Principal adminPrincipal;
     AtmOffice atmOffice;
     AtmOffice atmOffice1;
-    List<AtmComment> comments;
+    Set<AtmComment> comments;
     AtmComment comment, comment1;
     @Before
     public void setup(){
@@ -94,7 +88,7 @@ public class AtmControllerTest {
         comment1.setText("Some text");
         comment1.setUser(admin);
         comment1.setAtmOffice(atmOffice);
-        comments = new ArrayList<>();
+        comments = new HashSet<>();
         comments.add(comment);
         comments.add(comment1);
 
@@ -102,7 +96,7 @@ public class AtmControllerTest {
         atmOffice.setId(1);
         atmOffice.setAtmComments(comments);
         atmOffice1 = new AtmOffice("Львів", IS_ATM);
-        atmOffice1.setAtmComments(Collections.<AtmComment>emptyList());
+        atmOffice1.setAtmComments(Collections.<AtmComment>emptySet());
         atmOffice1.setId(2);
     }
 

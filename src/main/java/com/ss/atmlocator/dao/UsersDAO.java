@@ -19,7 +19,7 @@ public class UsersDAO implements IUsersDAO {
 
     private final static String DEFAULT_USER_ROLE = "USER";
 
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
@@ -145,7 +145,6 @@ public class UsersDAO implements IUsersDAO {
     @Override
     public Set<AtmOffice> getFavorites(int userId) {
         User user = entityManager.find(User.class, userId);
-        entityManager.refresh(user);
         return user.getAtmFavorites();
     }
 

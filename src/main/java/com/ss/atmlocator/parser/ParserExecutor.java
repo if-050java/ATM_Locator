@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,20 +50,29 @@ public abstract class ParserExecutor implements Job, IParser {
      * @param parameters that will by set to parser
      */
     @Override
-    public abstract void setParameter(Map<String,String> parameters);
+    public void setParameter(Map<String, String> parameters){
+        Properties fromFile = loadProperties();
+        for(String paramName : fromFile.stringPropertyNames()){
+            if(parameters.containsKey(paramName)){
+                parserProperties.put(paramName, parameters.get(paramName));
+                parameters.remove(paramName);
+            }else {
+                parserProperties.put(paramName, fromFile.get(paramName));
+            }
+        }
+        parserProperties.putAll(parameters);
+    }
 
     /**
      * Load properties from file
-     * @throws IOException if can't load
      */
-    public Properties loadProperties(String filename){
+    private Properties loadProperties(){
         try {
             Properties properties = new Properties();
-            String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
-            String filePath = dirPath + "/" + filename;
-            logger.info("Try to load properties from file " + filePath);
-            InputStream propFile = new FileInputStream(filePath);
-            properties.load(propFile);
+            logger.info("Try to load properties from file " + getFilePath());
+            InputStream propFile = new FileInputStream(getFilePath());
+            InputStreamReader isr = new InputStreamReader(propFile, "UTF8");
+            properties.load(isr);
             logger.info("File successfully loaded.");
             return properties;
         }catch (IOException ioe){
@@ -71,6 +81,24 @@ public abstract class ParserExecutor implements Job, IParser {
         }
     }
 
+    /**
+     *
+     * @return path to property file based on parser class name
+     * @throws IOException if can't find directory
+     */
+    private String getFilePath() throws IOException {
+        String dirPath = new ClassPathResource("parserProperties").getURI().getPath();
+        String className = this.getClass().getSimpleName();
+        String propertyFileName = className.substring(0,1).toLowerCase() + className.substring(1) + ".properties";
+        return dirPath + "/" + propertyFileName;
+    }
+
+
+    /**
+     *
+     * @param context
+     * @return spring app context for using in non spring beens
+     */
     private ApplicationContext initAppContext(JobExecutionContext context){
         ApplicationContext applicationContext;
         try{
