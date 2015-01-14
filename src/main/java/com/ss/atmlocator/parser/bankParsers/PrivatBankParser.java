@@ -25,8 +25,6 @@ public class PrivatBankParser extends ParserExecutor {
 
     private List<AtmOffice> atmList = new ArrayList<>();
 
-    private String[] requiredParams = {"url.data", "url.details", "user.agent", "reading.timeout", "address.element.xpath", "", "", ""};
-
     final static Logger logger = LoggerFactory.getLogger(PrivatBankParser.class);
 
     /**
@@ -70,7 +68,7 @@ public class PrivatBankParser extends ParserExecutor {
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
         logger.info("Loaded " + privatBankApiResponse.getItems().length + " ATMs");
-        for(AtmItem atmItem : privatBankApiResponse.getItems()){
+        for(AtmItem atmItem : Arrays.copyOfRange(privatBankApiResponse.getItems(),0,20)){
                 atmList.add(createAtm(atmItem, IS_ATM));
         }
         return atmList;
@@ -95,7 +93,7 @@ public class PrivatBankParser extends ParserExecutor {
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
         logger.info("Loaded " + privatBankApiResponse.getItems().length + " offices");
-        for(AtmItem atmItem : privatBankApiResponse.getItems()){
+        for(AtmItem atmItem : Arrays.copyOfRange(privatBankApiResponse.getItems(), 0, 20)){
             AtmOffice office = createAtm(atmItem, IS_OFFICE);
             if(office != null)
                 atmList.add(office);
@@ -217,18 +215,6 @@ public class PrivatBankParser extends ParserExecutor {
         return false;
     }
 
-    public void setParameter(Map<String, String> parameters){
-        Properties fromFile = loadProperties("privatBankParser.properties");
-        for(String paramName : fromFile.stringPropertyNames()){
-            if(parameters.containsKey(paramName)){
-                parserProperties.put(paramName, parameters.get(paramName));
-                parameters.remove(paramName);
-            }else {
-                parserProperties.put(paramName, fromFile.get(paramName));
-            }
-        }
-        parserProperties.putAll(parameters);
-    }
 }
 
 

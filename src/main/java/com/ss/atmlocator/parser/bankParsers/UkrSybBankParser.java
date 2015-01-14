@@ -1,23 +1,17 @@
 package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.parser.IParser;
 import com.ss.atmlocator.parser.ParserExecutor;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
-import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM;
-import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_ATM_OFFICE;
-import static com.ss.atmlocator.entity.AtmOffice.AtmType.IS_OFFICE;
+import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 
 /**
  * Created by Roman Vintonyak on 05.11.2014.
@@ -40,20 +34,6 @@ public class UkrSybBankParser extends ParserExecutor {
         initSettings.put(getProp("url.page_offices"), page);
         initSettings.put(getProp("url.page_atms"), page);
         return initSettings;
-    }
-
-    @Override
-    public void setParameter(Map<String, String> parameters){
-        Properties fromFile = loadProperties("ukrSybBankParser.properties");
-        for(String paramName : fromFile.stringPropertyNames()){
-            if(parameters.containsKey(paramName)){
-                parserProperties.put(paramName, parameters.get(paramName));
-                parameters.remove(paramName);
-            }else {
-                parserProperties.put(paramName, fromFile.get(paramName));
-            }
-        }
-        parserProperties.putAll(parameters);
     }
 
     @Override

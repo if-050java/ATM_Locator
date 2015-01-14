@@ -99,9 +99,9 @@ function deleteUser(){
         context: document.body,
         dataType: "json",
         statusCode: {
-            200: showAlert("alert alert-success", "Operation successfully processed"),
-            404: showAlert("alert alert-warning", "No such user"),
-            422: showAlert("alert alert-warning", "Can't delete administrator")
+            200: function(){showAlert("alert alert-success", "Operation successfully processed")},
+            404: function(){showAlert("alert alert-warning", "No such user")},
+            422: function(){showAlert("alert alert-warning", "Can't delete administrator")}
         }
     })
     //hide user form

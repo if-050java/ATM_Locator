@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.security.Principal;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Vasyl Danylyuk on 17.12.2014.
@@ -28,10 +28,10 @@ public class AtmController {
     private ATMService atmService;
 
     @RequestMapping(value = "/{id}/comments", method = RequestMethod.GET)
-    public ResponseEntity<List<AtmComment>> getComments(@PathVariable(value = "id") int atmId) {
+    public ResponseEntity<Set<AtmComment>> getComments(@PathVariable(value = "id") int atmId) {
         try {
             AtmOffice atmOffice = atmService.getAtmById(atmId);
-            List<AtmComment> comments = atmOffice.getAtmComments();
+            Set<AtmComment> comments = atmOffice.getAtmComments();
             return new ResponseEntity<>(comments, HttpStatus.OK);
         } catch (NoResultException nre) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
