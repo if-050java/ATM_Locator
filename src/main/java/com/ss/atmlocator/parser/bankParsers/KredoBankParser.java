@@ -154,19 +154,4 @@ public class KredoBankParser extends ParserExecutor {
         }
         return false;
     }
-
-
-    @Override
-    public void setParameter(Map<String, String> parameters){
-        Properties fromFile = loadProperties("kredoBankParser.properties");
-        for(String paramName : fromFile.stringPropertyNames()){
-            if(parameters.containsKey(paramName)){
-                parserProperties.put(paramName, parameters.get(paramName));
-                parameters.remove(paramName);
-            }else {
-                parserProperties.put(paramName, fromFile.get(paramName));
-            }
-        }
-        parserProperties.putAll(parameters);
     }
-}

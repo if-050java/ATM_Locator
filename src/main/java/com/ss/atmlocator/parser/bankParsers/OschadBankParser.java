@@ -30,22 +30,6 @@ import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 public class OschadBankParser extends ParserExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(OschadBankParser.class);
 
-    //private Map<String, String> parameters;
-
-    @Override
-    public void setParameter(Map<String, String> parameters) {
-        Properties fromFile = loadProperties("oschadBankParser.properties");
-        for(String paramName : fromFile.stringPropertyNames()) {
-            if (parameters.containsKey(paramName)) {
-                parserProperties.put(paramName, parameters.get(paramName));
-                parameters.remove(paramName);
-            } else {
-                parserProperties.put(paramName, fromFile.get(paramName));
-            }
-        }
-        parserProperties.putAll(parameters);
-    }
-
 
     @Override
     public List<AtmOffice> parse() {
