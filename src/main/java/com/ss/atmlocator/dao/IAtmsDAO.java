@@ -15,20 +15,15 @@ public interface IAtmsDAO {
 
     public long getBankAtmsCount(final int bankId);
 
-    public long getBankAtmsPages(final int bankId);
-
     public List<AtmOffice> getBankAtms(int bank_id);
-
 
     void persist(AtmOffice tempAtm);
 
-    public List<AtmOffice> getBankAtms(int bank_id, int page);
+    public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length, final String order, final String filter);
 
-    public List<AtmOffice> getBankAtms(int bank_id, int start, int length);
+    public long getBankAtmsFilteredCount(final int bankId, final String filter);
 
     public int deleteBanksAtms(final int bankId);
-
-
 
     void update(List<AtmOffice> atmExistList);
 

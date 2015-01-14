@@ -34,9 +34,6 @@
     <definition name="adminBankAtmList" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/adminBankAtmList.jsp"/>
     </definition>
-    <definition name="adminBankAtmList2" extends=".mainTemplate">
-        <put-attribute name="content" value="/WEB-INF/views/adminBankAtmList2.jsp"/>
-    </definition>
 
     <definition name="profile" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/profile.jsp"/>

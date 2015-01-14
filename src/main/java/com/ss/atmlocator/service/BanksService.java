@@ -3,8 +3,11 @@ package com.ss.atmlocator.service;
 import com.ss.atmlocator.dao.IAtmsDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
+import com.ss.atmlocator.entity.AtmOfficeTable;
 import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.entity.DataTableCriteria;
 import com.ss.atmlocator.utils.*;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ss.atmlocator.entity.DataTableCriteria.*;
 
 /**
  * Created by us8610 on 12/3/2014.
@@ -43,16 +48,44 @@ public class BanksService {
         return atmsDAO.getBankAtmsCount(bankId);
     }
 
-    public long getBankAtmsPages(final int bankId) {
-        return atmsDAO.getBankAtmsPages(bankId);
+    public AtmOfficeTable getBankAtms(DataTableCriteria criteria) {
+        int bankId = criteria.getBankId();
+        int start = criteria.getStart();
+        int length = criteria.getLength();
+        int orderColumn = Integer.parseInt(criteria.getOrder().get(0).get(OrderCriteria.column));
+        String orderDirect = criteria.getOrder().get(0).get(OrderCriteria.dir);
+        String filter = "%" + criteria.getSearch().get(SearchCriteria.value) + "%";
+        LOGGER.debug(String.format("GET: ATMs list, Bank #%d, offset %d, count %d, order %s %s, filter {%s}",
+                bankId, start, length, orderColumn, orderDirect, filter));
+
+        AtmOfficeTable table = new AtmOfficeTable();
+
+        table.setData(atmsDAO.getBankAtms(bankId, start, length, buildOrderExpression(orderColumn, orderDirect), filter));
+
+        table.setDraw(criteria.getDraw());
+        table.setRecordsTotal(atmsDAO.getBankAtmsCount(bankId));
+
+        long filteredCount = filter.isEmpty() ? table.getRecordsTotal() : atmsDAO.getBankAtmsFilteredCount(bankId, filter);
+        table.setRecordsFiltered(filteredCount);
+
+        return table;
     }
 
-    public List<AtmOffice> getBankAtms(final int bankId, final int page) {
-        return atmsDAO.getBankAtms(bankId, page);
-    }
+    // Column names in AtmOffice entity class corresponding to columns order at Web-page:
+    static final String[] fieldNames = {"", "id", "type", "state", "address", "", "lastUpdated"};
 
-    public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length) {
-        return atmsDAO.getBankAtms(bankId, start, length);
+    /**
+     *
+     * @param column Column numbers at Web-page: 0:checkbox, 1:id#, 2:type, 3:state, 4:address, 5:location, 6:updated
+     * @param order can be 'asc' or 'desc'
+     * @return SQL "ORDER BY {fieldName} {order}" expression
+     */
+    private String buildOrderExpression(int column, String order) {
+        if(column >= 0 && column < fieldNames.length && !fieldNames[column].isEmpty()) {
+            return " ORDER BY " + fieldNames[column] + " " + order;
+        } else {
+            return "";
+        }
     }
 
     public List<Bank> getBanksList() {

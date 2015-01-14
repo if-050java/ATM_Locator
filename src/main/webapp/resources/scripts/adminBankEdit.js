@@ -158,6 +158,6 @@ $(document).ready(function () {
     });
 
     $("#adminBankAtmList").click(function () {
-        window.location.href = getHomeUrl() + "adminBankAtmList2?id="+$("#id").val();
+        window.location.href = getHomeUrl() + "adminBankAtmList?id="+$("#id").val();
     });
 });

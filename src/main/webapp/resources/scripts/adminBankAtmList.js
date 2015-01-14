@@ -11,7 +11,8 @@ $(document).ready(function () {
             data: function ( data ) {
                 planify(data);
                 data.bankId = $("#bankid").val();
-            }
+            },
+            type: "POST"
         },
         columnDefs: [
             {
@@ -25,10 +26,8 @@ $(document).ready(function () {
                 width: "25px",
                 targets: 0
             },
-            {
-                orderable: false,
-                targets: [ 0, 5 ]
-            }
+            { orderable: false, targets: [ 0, 5 ] },
+            { searchable: false, targets: [ 0, 2, 3, 5, 6 ] }
         ],
         order: [ 1, 'asc' ],
         orderMulti: false,
