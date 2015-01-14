@@ -1,7 +1,6 @@
 package com.ss.atmlocator.parser.bankParsers;
 
 import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.parser.IParser;
 import com.ss.atmlocator.parser.ParserExecutor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,14 +18,6 @@ import java.util.*;
 public class AvalParser extends ParserExecutor{
     Map<String, String> parameters = new HashMap<>();
 
-//    private static final String URL_PART_1 = "http://api.finlocator.com/features/?filters=&theme=aval&section=";
-//    private static final String URL_PART_2 = "&city=";
-//    private static final String URL_PART_3 = "&lang=ru&filters_atm=&filters_branch=&filters_all=,&_=1420804304902";
-//    private static  final String  ADDRESS = "address";
-//    private static  final String  ATM = "atm";
-//    private static  final String  BRANCH = "branch";
-//    private static  final String URL_FOR_CITY_CODES = "http://api.finlocator.com/features/?filters=&theme=aval&section=atm&city=317&lang=ru&filters_atm=&filters_branch=&filters_all=,&_=1420804304902";
-//    private static  final String USER_AGENT = "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52";
     Document doc = null;
     private static final boolean   IS_OFFICE = false;
     private static final boolean   IS_ATM = true;
@@ -34,7 +25,9 @@ public class AvalParser extends ParserExecutor{
     private Map<String, String> cityCodeName=null;
 
     public AvalParser(){
-//        parserProperties=loadProperties("avalParser.properties");
+        Map<String, String> param = new HashMap<>();
+        param.put("cityName", "Ивано-Франковск");
+        setParameter(param);
         cityCodeName = parseCityNameAndKey();
     }
 
@@ -55,10 +48,10 @@ public class AvalParser extends ParserExecutor{
                 if (isOffice) {
                     tempAtm.setAddress(city+" "+address.text());
                     tempAtm.setType(AtmOffice.AtmType.IS_OFFICE);
-                    tempAtm.setAddress(trimFirstNaber(tempAtm.getAddress()));
+                    tempAtm.setAddress(trimFirstNuber(tempAtm.getAddress()));
                 }else {
-//                    tempAtm.setAddress(city + " " + address.text());
-                    tempAtm.setAddress( trimFirstNaber(address.text()));
+
+                    tempAtm.setAddress( trimFirstNuber(address.text()));
                     tempAtm.setType(AtmOffice.AtmType.IS_ATM);
                 }
                 atms.add(tempAtm);
@@ -73,14 +66,13 @@ public class AvalParser extends ParserExecutor{
     }
 
 
-    private String trimFirstNaber(String address) {
+    private String trimFirstNuber(String address) {
         return address.replaceFirst("\\d+,"," ");
     }
     /**
      * Method create map of parameters where key - city name, value - city key.
      * @return map of parameters where key - city name, value - city key*/
      Map<String, String> parseCityNameAndKey(){
-//        String URL = "http://aval.ua/ru/finlokator/";
         Map<String, String> cityCodeName=null;
         try {
             doc = Jsoup.connect(parserProperties.getProperty("url.for.city.codes")).userAgent(parserProperties.getProperty("address")).get();
@@ -108,7 +100,6 @@ public class AvalParser extends ParserExecutor{
             resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("atm")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
         }else{
             resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("branch")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
-
         }
 
         atms = new ArrayList<>(parseAtm(resultUrl, isAtm, cityName));
@@ -120,11 +111,11 @@ public class AvalParser extends ParserExecutor{
 
     }
     public static void main(String[] args) throws IOException {
-        AvalParser avalParser2=new AvalParser();
+        AvalParser avalParser=new AvalParser();
         Map<String, String> param = new HashMap<>();
         param.put("cityName", "Ивано-Франковск");
-        avalParser2.setParameter(param);
-        List<AtmOffice> atmOffices =avalParser2.parse();
+        avalParser.setParameter(param);
+        List<AtmOffice> atmOffices =avalParser.parse();
         System.out.println("------------------------------------------------------");
         for (AtmOffice atm: atmOffices){
             System.out.println(atm);
@@ -152,10 +143,11 @@ public class AvalParser extends ParserExecutor{
 
             resultList.addAll(parseAtm(resultUrl, IS_ATM, cityName));
             try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.sleep(30);
+            } catch (InterruptedException ioe) {
+                logger.info(ioe.getMessage(), ioe);
             }
+
         }
         return resultList;
     }
@@ -172,10 +164,6 @@ public class AvalParser extends ParserExecutor{
         return resultList;
     }
 
-    @Override
-    public void setParameter(Map<String, String> parameters) {
-        this.parameters = parameters;
-    }
 
     @Override
     public List<AtmOffice> parse() throws IOException {
@@ -183,7 +171,7 @@ public class AvalParser extends ParserExecutor{
         if(parameters.isEmpty()) {
             return parseAllCity();
         }else{
-            String cityName = parameters.get("cityName");// Назва міста має бути з великої літери й російською мовою
+            String cityName = parameters.get("cityName");
             resultList.addAll(parseCity(cityName, IS_ATM));
             resultList.addAll(parseCity(cityName, IS_OFFICE));
             return resultList;

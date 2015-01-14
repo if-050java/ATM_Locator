@@ -24,8 +24,8 @@
         <param name="Threshold" value="INFO" />
         <param name="URL" value="jdbc:mysql://localhost/atmlocator" />
         <param name="driver" value="com.mysql.jdbc.Driver" />
-        <param name="user" value="atm" />
-        <param name="password" value="atm" />
+        <param name="user" value="root" />
+        <param name="password" value="root" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
                    value="INSERT INTO LOGS (dated, logger, level, message) VALUES ('%d{yyyy-MM-dd HH:mm:ss}', '%c{1}:%L', '%p', '%m')" />
