@@ -69,9 +69,8 @@ public abstract class ParserExecutor implements Job, IParser {
     private Properties loadProperties(){
         try {
             Properties properties = new Properties();
-            String filePath = getFilePath();
-            logger.info("Try to load properties from file " + filePath);
-            InputStream propFile = new FileInputStream(filePath);
+            logger.info("Try to load properties from file " + getFilePath());
+            InputStream propFile = new FileInputStream(getFilePath());
             InputStreamReader isr = new InputStreamReader(propFile, "UTF8");
             properties.load(isr);
             logger.info("File successfully loaded.");
