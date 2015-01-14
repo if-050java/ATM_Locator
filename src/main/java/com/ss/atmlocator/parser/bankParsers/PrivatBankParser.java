@@ -68,8 +68,11 @@ public class PrivatBankParser extends ParserExecutor {
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
         logger.info("Loaded " + privatBankApiResponse.getItems().length + " ATMs");
-        for(AtmItem atmItem : Arrays.copyOfRange(privatBankApiResponse.getItems(),0,20)){
-                atmList.add(createAtm(atmItem, IS_ATM));
+        for(AtmItem atmItem : privatBankApiResponse.getItems()){
+            AtmOffice atm = createAtm(atmItem, IS_ATM);
+            if(atm != null) {
+                atmList.add(atm);
+            }
         }
         return atmList;
     }
@@ -93,7 +96,7 @@ public class PrivatBankParser extends ParserExecutor {
         ObjectMapper objectMapper = new ObjectMapper();
         PrivatBankApiResponse privatBankApiResponse = objectMapper.readValue(jsonResponse, PrivatBankApiResponse.class);
         logger.info("Loaded " + privatBankApiResponse.getItems().length + " offices");
-        for(AtmItem atmItem : Arrays.copyOfRange(privatBankApiResponse.getItems(), 0, 20)){
+        for(AtmItem atmItem : privatBankApiResponse.getItems()){
             AtmOffice office = createAtm(atmItem, IS_OFFICE);
             if(office != null)
                 atmList.add(office);
@@ -116,16 +119,17 @@ public class PrivatBankParser extends ParserExecutor {
         String address = null;
         try {
             address = prepareAddress(getAddress(atmItem.getId()));
+            if(type == IS_OFFICE && isAtmAndOffice(address)){
+                return null;
+            }
+            atm.setAddress(address);
+            return atm;
         } catch (IOException ioe) {
             atm.setState(BAD_ADDRESS);
             logger.error("Parser can't receive address for item with id" + atmItem.getId() + "because of followed exception");
             logger.error(ioe.getMessage(), ioe);
-        }
-        if(address != null && isAtmAndOffice(address)){
             return null;
         }
-        atm.setAddress(address);
-        return atm;
     }
 
 
@@ -178,7 +182,7 @@ public class PrivatBankParser extends ParserExecutor {
         String result = addressElement.child(0).text() + " " + addressElement.child(1).text();
         System.out.println(result);
         try {
-            Thread.sleep(200);
+            Thread.sleep(50);
         } catch (InterruptedException ie) {
             logger.error(ie.getMessage(), ie);
         }
@@ -207,7 +211,7 @@ public class PrivatBankParser extends ParserExecutor {
      */
     private boolean isAtmAndOffice(String address){
         for(AtmOffice atm : atmList){
-            if(atm.getAddress().equals(address)){
+            if(atm.getAddress() != null && atm.getAddress().equals(address)){
                 atm.setType(IS_ATM_OFFICE);
                 return true;
             }
