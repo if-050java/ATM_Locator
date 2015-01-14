@@ -31,42 +31,22 @@ public class AdminParserController {
     @Autowired
     ParserParamService paramService;
 
-//    @RequestMapping
-//    public String viewJsp(){
-//        System.out.println("asdf");
-//        return "changeParser";
-//    }
-
-
-//    @RequestMapping(value = "/change",method = RequestMethod.POST)
-    @RequestMapping("/bankParser")
-    public String showParsers(@ModelAttribute("bank") Bank bank,
-                              ModelMap modelMap){
-        List<AtmParser> parsers = parserService.getParserByBankId(bank.getId());
-        System.out.println(parsers);
-        modelMap.addAttribute("parsers", parsers);
-        modelMap.addAttribute("bank", bank);
-        return "changeParser";
-    }
-
     @RequestMapping(value = "/saveChanges", method = RequestMethod.GET)
-    public String saveChanges(/*@ModelAttribute("bank") Bank bank,*/
-                              @RequestParam(value = "bankId") String bankId,
+    public String saveChanges(@RequestParam(value = "bankId") String bankId,
                               @RequestParam(value="parametrValue") String newValue,
                               @RequestParam(value="parserParamId") String parserParamId,
-                              /*@RequestParam(value="bankId") int bankId,*/
                               @RequestParam(value="state", required = false) Integer state,
                               @RequestParam(value = "parserId") int parserId,
                               ModelMap modelMap
-                              ){
+                              ) {
 
 
         Bank bank = banksDAO.getBank(Integer.valueOf(bankId));
         paramService.saveChanges(newValue, parserParamId);
-        if(state==null){
+        if (state == null) {
             parserService.changeState(parserId, 1);
             log.trace("parser state changed (disable)");
-        }else{
+        } else {
             parserService.changeState(parserId, state);
             log.trace("parser state changed (enable)");
         }
@@ -78,7 +58,7 @@ public class AdminParserController {
     }
 
     @RequestMapping(value = "tes")
-    public String testParser(){
+    public String testParser() {
 //        TestParserExecutor parserExecutor1 = new TestParserExecutor();
         /*try {
             parserExecutor.execute();

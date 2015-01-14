@@ -3,46 +3,32 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-  <div class="panel panel-default">
-      <div class="panel-heading">List of notices</div>
+<script src="<c:url value="/resources"/>/jquery/jquery.dataTables.min.js"></script>
+<script src="<c:url value="/resources"/>/scripts/adminNotices.js"></script>
+<link rel="stylesheet" href="<c:url value="/resources"/>/jquery/jquery.dataTables.css">
 
-      <div class="panel-body">
-
-    <%--
-        <form:form method="get" role="form" cssClass="form-horizontal">
-          <div class="form-group">
-            <div class="btn-group">
-              <button type="button" class="btn btn-primary">
-                Erase all Notices <i class="glyphicon glyphicon-trash"></i>
-              </button>
-            </div>
-          </div>
-        </form:form>
-    --%>
-
+<div>
+    <div class="panel panel-default">
+        <div class="panel-heading">List of notices</div>
         <%-- List of notices --%>
         <div class="panel panel-default">
-          <div class="panel-body">
-            <table class="table">
-                <tr>
-                    <th>Time</th>
-                    <th>Type</th>
-                    <th>Source</th>
-                    <th>Message</th>
-                </tr>
-              <c:forEach items="${notices}" var="note">
-                  <tr id="${note.id}">
-                      <td>${note.getTimeString()}</td>
-                      <td>${note.level}</td>
-                      <td class="wordwrap">${note.logger}</td>
-                      <td class="wordwrap">${note.message}</td>
-                  </tr>
-              </c:forEach>
-            </table>
+            <div class="panel-body">
+                <table id="noticesgrid" class="display compact">
+                    <thead>
+                    <tr role="row">
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Source</th>
+                        <th>Message</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
 
-          </div>
+            </div>
         </div>
         <%-- List of notices --%>
 
-      </div>
-  </div>
+    </div>
+</div>
