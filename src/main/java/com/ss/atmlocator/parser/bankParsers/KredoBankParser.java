@@ -11,10 +11,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
 import static com.ss.atmlocator.entity.AtmState.NO_LOCATION;
@@ -159,5 +156,17 @@ public class KredoBankParser extends ParserExecutor {
     }
 
 
-
+    @Override
+    public void setParameter(Map<String, String> parameters){
+        Properties fromFile = loadProperties("kredoBankParser.properties");
+        for(String paramName : fromFile.stringPropertyNames()){
+            if(parameters.containsKey(paramName)){
+                parserProperties.put(paramName, parameters.get(paramName));
+                parameters.remove(paramName);
+            }else {
+                parserProperties.put(paramName, fromFile.get(paramName));
+            }
+        }
+        parserProperties.putAll(parameters);
+    }
 }

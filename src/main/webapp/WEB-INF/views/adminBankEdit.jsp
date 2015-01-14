@@ -119,12 +119,6 @@
            </div>
            <input type="hidden" name="bank_id" id="bank_id" value="${bank.id}" cssClass="form-control">
 
-<%--
-           <div class="alert" role="alert" style="display: none">
-               <a class="close" onclick="$('.alert').hide()">&times;</a>
-           </div>
---%>
-
     <%-- Submit buttons --%>
            <div class="panel-footer">
                     <div class="form-group">
