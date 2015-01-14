@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by maks on 15.12.2014.
+ *
  */
 @Service
 public interface IParser {

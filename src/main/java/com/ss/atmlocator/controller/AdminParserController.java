@@ -3,7 +3,7 @@ package com.ss.atmlocator.controller;
 import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmParser;
 import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.parser.bankParsers.AvalParserExecutor;
+
 import com.ss.atmlocator.service.ParserParamService;
 import com.ss.atmlocator.service.ParserService;
 import org.apache.log4j.Logger;
@@ -30,8 +30,7 @@ public class AdminParserController {
     ParserService parserService;
     @Autowired
     ParserParamService paramService;
-    @Autowired
-    AvalParserExecutor parserExecutor;
+
 //    @RequestMapping
 //    public String viewJsp(){
 //        System.out.println("asdf");

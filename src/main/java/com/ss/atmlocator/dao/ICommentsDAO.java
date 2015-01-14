@@ -1,15 +1,18 @@
 package com.ss.atmlocator.dao;
 
 import com.ss.atmlocator.entity.AtmComment;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 
 public interface ICommentsDAO {
     AtmComment getComment(int id);
-    void addComment(AtmComment comment);
+   // void addComment(AtmComment comment);
+
+    @Transactional
+    void addComment(AtmComment comment, int atmId);
+
     void deleteComment(int id);
     List<AtmComment> getComments(int atmId);
 }
