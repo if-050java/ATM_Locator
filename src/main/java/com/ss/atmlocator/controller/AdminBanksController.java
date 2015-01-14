@@ -1,13 +1,13 @@
 package com.ss.atmlocator.controller;
 
-import com.ss.atmlocator.entity.AtmNetwork;
-import com.ss.atmlocator.entity.Bank;
+import com.ss.atmlocator.entity.*;
 import com.ss.atmlocator.service.AtmNetworksService;
 import com.ss.atmlocator.service.BanksService;
 import com.ss.atmlocator.service.ParserService;
 import com.ss.atmlocator.utils.OutResponse;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -163,23 +163,39 @@ public class AdminBanksController {
      *  Show Bank's ATM and office list.
      */
     @RequestMapping(value = "/adminBankAtmList", method = RequestMethod.GET)
-    public String adminBankAtmList(@RequestParam(value = "id", required = true) final int bankId,
-                                   @RequestParam(value = "page", required = false) Integer page, // first page #1
+    public String adminBankAtmList2(@RequestParam(value = "id", required = true) final int bankId,
                                    final ModelMap modelMap, final Principal user) {
-        LOGGER.debug(String.format("GET request: ATMs list, Bank #%d, page %d", bankId, page));
-
-        int pageNum = (page == null) ? 0 : page - 1; // first page will be 0
-        long pageCount = banksService.getBankAtmsPages(bankId);
+        LOGGER.debug(String.format("GET request: ATMs list, Bank #%d", bankId));
 
         modelMap.addAttribute("bank", banksService.getBank(bankId));
-        modelMap.addAttribute("atms", banksService.getBankAtms(bankId, pageNum));
-        modelMap.addAttribute("page", pageNum + 1);
-        modelMap.addAttribute("page_count", pageCount);
         modelMap.addAttribute("active", "adminBanks");
         modelMap.addAttribute("userName", user.getName());
 
-        LOGGER.debug(String.format("GET response: ATMs list, Bank #%d, page %d of %d", bankId, pageNum + 1, pageCount));
+        LOGGER.debug(String.format("GET response: ATMs list 2, Bank #%d", bankId));
         return "adminBankAtmList";
     }
+
+
+    /**
+     * information from http://stackoverflow.com/questions/23704352/cant-map-a-query-string-parameters-to-my-javabean-using-spring-4-and-datatable
+     * @param criteria
+     * @return
+     */
+    @RequestMapping(value = "/getBankATMs", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public AtmOfficeTable getBankATMs(@ModelAttribute DataTableCriteria criteria) {
+        int bankId = criteria.getBankId();
+        int start = criteria.getStart();
+        int length = criteria.getLength();
+        String orderColumn = criteria.getOrder().get(0).get(DataTableCriteria.OrderCriteria.column);
+        String orderDirect = criteria.getOrder().get(0).get(DataTableCriteria.OrderCriteria.dir);
+        String filter = criteria.getSearch().get(DataTableCriteria.SearchCriteria.value);
+        LOGGER.debug(String.format("GET: ATMs list, Bank #%d, offset %d, count %d, order %s %s, filter {%s}",
+                bankId, start, length, orderColumn, orderDirect, filter));
+
+        return banksService.getBankAtms(criteria);
+    }
+
 
 }
