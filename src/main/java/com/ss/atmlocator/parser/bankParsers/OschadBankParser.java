@@ -75,7 +75,6 @@ public class OschadBankParser extends ParserExecutor {
                 LinkedList<OschadBankItem> atmList = atmParser.parseRegion(region);
                 atms.addAll(mergeOschadBankItems(region, branchList, atmList));
             } catch (IOException e) {
-                //e.printStackTrace();
                 LOGGER.error("Connection error: " + e.getMessage(), e);
             }
             LOGGER.info("End parse region");
@@ -213,7 +212,7 @@ public class OschadBankParser extends ParserExecutor {
          */
         private String  prepareAddress(String rawAddress) {
             String result = rawAddress;
-            for (String paramName : parserProperties.stringPropertyNames()) {
+            for (String paramName : new TreeSet<>(parserProperties.stringPropertyNames())) {
                 if (paramName.matches("replace\\.regexp\\..*")) {
                     String regexp = parserProperties.getProperty(paramName);
                     String replaceValue = parserProperties.getProperty(paramName.replace("regexp", "value"));
