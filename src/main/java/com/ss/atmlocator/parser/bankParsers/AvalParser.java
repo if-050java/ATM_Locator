@@ -34,7 +34,7 @@ public class AvalParser extends ParserExecutor{
     private Map<String, String> cityCodeName=null;
 
     public AvalParser(){
-        parserProperties=loadProperties("avalParser.properties");
+//        parserProperties=loadProperties("avalParser.properties");
         cityCodeName = parseCityNameAndKey();
     }
 
