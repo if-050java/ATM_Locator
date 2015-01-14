@@ -169,6 +169,8 @@ public class BanksService {
         OutResponse response = new OutResponse();
         List<ErrorMessage> errorMessages = new ArrayList<ErrorMessage>();
 
+        setBankDefaultImages(bank);
+
         // save bank and obtain its ID
         Bank savedBank = banksDAO.saveBank(bank);
 
