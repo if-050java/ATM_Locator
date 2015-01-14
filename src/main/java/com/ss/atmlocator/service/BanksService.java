@@ -2,10 +2,7 @@ package com.ss.atmlocator.service;
 
 import com.ss.atmlocator.dao.IAtmsDAO;
 import com.ss.atmlocator.dao.IBanksDAO;
-import com.ss.atmlocator.entity.AtmOffice;
-import com.ss.atmlocator.entity.AtmOfficeTable;
-import com.ss.atmlocator.entity.Bank;
-import com.ss.atmlocator.entity.DataTableCriteria;
+import com.ss.atmlocator.entity.*;
 import com.ss.atmlocator.utils.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.LoggerFactory;
@@ -48,7 +45,7 @@ public class BanksService {
         return atmsDAO.getBankAtmsCount(bankId);
     }
 
-    public AtmOfficeTable getBankAtms(DataTableCriteria criteria) {
+    public DataTableResponse getBankAtms(AtmDataTableCriteria criteria) {
         int bankId = criteria.getBankId();
         int start = criteria.getStart();
         int length = criteria.getLength();
@@ -71,8 +68,10 @@ public class BanksService {
         return table;
     }
 
-    // Column names in AtmOffice entity class corresponding to columns order at Web-page:
-    static final String[] fieldNames = {"", "id", "type", "state", "address", "", "lastUpdated"};
+    /**
+     * Column names in AtmOffice entity class corresponding to columns order at Web-page:
+     */
+    private static final String[] fieldNames = {"", "id", "type", "state", "address", "", "lastUpdated"};
 
     /**
      *

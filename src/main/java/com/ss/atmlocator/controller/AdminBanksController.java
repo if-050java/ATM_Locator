@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
+import static com.ss.atmlocator.entity.DataTableCriteria.*;
+
 /**
  * Created by Olavin on 21.11.2014.
  */
@@ -184,14 +186,14 @@ public class AdminBanksController {
     @RequestMapping(value = "/getBankATMs", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public AtmOfficeTable getBankATMs(@ModelAttribute DataTableCriteria criteria) {
+    public DataTableResponse getBankATMs(@ModelAttribute AtmDataTableCriteria criteria) {
         int bankId = criteria.getBankId();
         int start = criteria.getStart();
         int length = criteria.getLength();
-        String orderColumn = criteria.getOrder().get(0).get(DataTableCriteria.OrderCriteria.column);
-        String orderDirect = criteria.getOrder().get(0).get(DataTableCriteria.OrderCriteria.dir);
-        String filter = criteria.getSearch().get(DataTableCriteria.SearchCriteria.value);
-        LOGGER.debug(String.format("GET: ATMs list, Bank #%d, offset %d, count %d, order %s %s, filter {%s}",
+        String orderColumn = criteria.getOrder().get(0).get(OrderCriteria.column);
+        String orderDirect = criteria.getOrder().get(0).get(OrderCriteria.dir);
+        String filter = criteria.getSearch().get(SearchCriteria.value);
+        LOGGER.debug(String.format("POST: ATMs list, Bank #%d, offset %d, count %d, order %s %s, filter {%s}",
                 bankId, start, length, orderColumn, orderDirect, filter));
 
         return banksService.getBankAtms(criteria);
