@@ -1,6 +1,8 @@
 package com.ss.atmlocator.parser;
 
+import com.ss.atmlocator.dao.IBanksDAO;
 import com.ss.atmlocator.entity.AtmOffice;
+import com.ss.atmlocator.entity.Bank;
 import com.ss.atmlocator.service.DbParserService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -28,11 +30,11 @@ public abstract class ParserExecutor implements Job, IParser {
 
     private DbParserService parserService;
 
-
     public  void execute(JobExecutionContext executionContext){
         parserService = (DbParserService)initAppContext(executionContext).getBean("dbParserService");
         Map parameters = executionContext.getJobDetail().getJobDataMap();
         setParameter(parameters);
+
         int bankId = Integer.valueOf((String)parameters.get("bankid"));
         List<AtmOffice> atms = null;
         try {

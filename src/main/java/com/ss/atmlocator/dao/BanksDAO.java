@@ -123,7 +123,6 @@ public class BanksDAO implements IBanksDAO {
 
                 tempBank = query.getSingleResult();
                 if (bank.getMfoCode() == tempBank.getMfoCode()) {
-
                     continue;
                 }
             } catch (NoResultException nre) {

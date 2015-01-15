@@ -10,24 +10,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**
  * This class parses ATMs and branches  Raiffeizen Bank Aval
  */
 public class AvalParser extends ParserExecutor{
-    Map<String, String> parameters = new HashMap<>();
+//    Map<String, String> parameters = new HashMap<>();
 
     Document doc = null;
-    private static final boolean   IS_OFFICE = false;
-    private static final boolean   IS_ATM = true;
+    private static final boolean IT_IS_OFFICE = true;
+    private static final boolean IT_IS_ATM = false;
     final static Logger logger = LoggerFactory.getLogger(AvalParser.class);
     private Map<String, String> cityCodeName=null;
 
     public AvalParser(){
         Map<String, String> param = new HashMap<>();
-        param.put("cityName", "Ивано-Франковск");
+//        param.put("cityName", "Ивано-Франковск");
         setParameter(param);
         cityCodeName = parseCityNameAndKey();
     }
@@ -47,11 +46,11 @@ public class AvalParser extends ParserExecutor{
             for (Element address : addresses) {
                 AtmOffice tempAtm = new AtmOffice();
                 if (isOffice) {
-                    tempAtm.setAddress(city+" "+address.text());
+                    tempAtm.setAddress(address.text());
                     tempAtm.setType(AtmOffice.AtmType.IS_OFFICE);
                     tempAtm.setAddress(trimFirstNuber(tempAtm.getAddress()));
                 }else {
-                    tempAtm.setAddress( trimFirstNuber(address.text()));
+                    tempAtm.setAddress(city+" "+trimFirstNuber(address.text()));
                     tempAtm.setType(AtmOffice.AtmType.IS_ATM);
                 }
                 atms.add(tempAtm);
@@ -91,28 +90,27 @@ public class AvalParser extends ParserExecutor{
     }
     /**
      * @param cityName - it is a name of city
-     * @param isAtm - type. if it is atm - true, else branch - false
+     * @param isOffice - type. if it is atm - true, else branch - false
      * @return method parseCity return list of atm`s by city name*/
-    public List<AtmOffice> parseCity(String cityName, boolean isAtm){
-        logger.info("try parse atm`s");
+    public List<AtmOffice> parseCity(String cityName, boolean isOffice){
+        logger.info("try parse atm`s in city "+cityName);
         List<AtmOffice> atms=null;
         try {
         String cityKey=cityCodeName.get(cityName);
         String resultUrl;
-        if(isAtm){
-            resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("atm")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
-        }else{
+        if(isOffice){
             resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("branch")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
+        }else{
+            resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("atm")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
         }
 
-        atms = new ArrayList<>(parseAtm(resultUrl, isAtm, cityName));
+        atms = new ArrayList<>(parseAtm(resultUrl, isOffice, cityName));
 
         } catch (IOException ioe) {
            logger.error("parse city [ %s ] error ", cityName, ioe.getMessage());
         }
-        logger.info(" %d  atm`s are parsed", atms.size());
+        logger.info( atms.size()+" - atm`s are parsed");
         return atms;
-
     }
 
     /**
@@ -125,18 +123,18 @@ public class AvalParser extends ParserExecutor{
     public  List<AtmOffice> parseAllCity(boolean isAtm) throws IOException {
         String type;
         if(isAtm){
-            type = parserProperties.getProperty("atm");
+            type = getProp("branch");
         }else{
-            type= parserProperties.getProperty("branch");
+            type= getProp("atm");
         }
         List<AtmOffice> resultList=new ArrayList<AtmOffice>();
         Set<String> cityNames = cityCodeName.keySet();
         for(String cityName: cityNames){
             String cityKey=cityCodeName.get(cityName);
 
-            String resultUrl =parserProperties.getProperty("url.part1")+type+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
+            String resultUrl =getProp("url.part1")+type+getProp("url.part2")+cityKey+getProp("url.part3");
 
-            resultList.addAll(parseAtm(resultUrl, IS_ATM, cityName));
+            resultList.addAll(parseAtm(resultUrl, IT_IS_ATM, cityName));
             try {
                 Thread.sleep(30);
             } catch (InterruptedException ioe) {
@@ -154,8 +152,8 @@ public class AvalParser extends ParserExecutor{
      */
     public  List<AtmOffice> parseAllCity() throws IOException {
         List<AtmOffice> resultList=new ArrayList<AtmOffice>();
-        resultList.addAll(parseAllCity(IS_ATM));
-        resultList.addAll(parseAllCity(IS_OFFICE));
+        resultList.addAll(parseAllCity(IT_IS_ATM));
+        resultList.addAll(parseAllCity(IT_IS_OFFICE));
         return resultList;
     }
 
@@ -163,12 +161,12 @@ public class AvalParser extends ParserExecutor{
     @Override
     public List<AtmOffice> parse() throws IOException {
         List<AtmOffice> resultList = new ArrayList<>();
-        if(parameters.isEmpty()) {
+        if("true".equals(getProp("all_regions"))) {
             return parseAllCity();
         }else{
-            String cityName = parameters.get("cityName");
-            resultList.addAll(parseCity(cityName, IS_ATM));
-            resultList.addAll(parseCity(cityName, IS_OFFICE));
+            String cityName = getProp("city_name");
+            resultList.addAll(parseCity(cityName, IT_IS_ATM));
+            resultList.addAll(parseCity(cityName, IT_IS_OFFICE));
             return resultList;
         }
     }
