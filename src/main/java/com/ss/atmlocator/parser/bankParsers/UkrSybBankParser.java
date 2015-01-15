@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static com.ss.atmlocator.entity.AtmOffice.AtmType.*;
@@ -20,17 +21,12 @@ public class UkrSybBankParser extends ParserExecutor {
     private final Logger logger = Logger.getLogger(UkrSybBankParser.class);
     private Map<String, String> initSettings = new HashMap<>();
 
-
-    public UkrSybBankParser() {
-        setParameter(Collections.EMPTY_MAP);
-        initSettings.put(getProp("url.region_id"), getProp("url.region_id.val"));
+    private Map<String, String> setPage(String page) {
+        initSettings.put(getProp("url.region.prop"), convertRegion(getProp(("region"))));
         initSettings.put(getProp("url.show_offices"), getProp("url.show_offices.val"));
         initSettings.put(getProp("url.show_atms"), getProp("url.show_atms.val"));
         initSettings.put(getProp("url.type_atms_0"), getProp("url.type_atms_0.val"));
         initSettings.put(getProp("url.type_atms_1"), getProp("url.type_atms_1.val"));
-    }
-
-    private Map<String, String> setPage(String page) {
         initSettings.put(getProp("url.page_offices"), page);
         initSettings.put(getProp("url.page_atms"), page);
         return initSettings;
@@ -107,12 +103,25 @@ public class UkrSybBankParser extends ParserExecutor {
                 .timeout(Integer.valueOf(getProp("global.connection_timeout")))
                 .get();
     }
-    private String getProp(String prop){
-        return (String) parserProperties.get(prop);
+
+    private String convertRegion(String region){
+        Document document;
+        try {
+            document = Jsoup.connect(getProp("global.url"))
+                    .userAgent(getProp("global.user_agent"))
+                    .timeout(Integer.valueOf(getProp("global.connection_timeout")))
+                    .get();
+            Elements elements = document.select(getProp("selector.regions"));
+            for(Element element : elements) {
+                if(element.text().equalsIgnoreCase(region)) return element.attr("value");
+            }
+        } catch (IOException ioe) {
+            logger.error(ioe.getMessage(), ioe);
+        }
+        return getProp("region.all");
     }
 
-    public static void main(String[] args) throws IOException {
-        UkrSybBankParser parser = new UkrSybBankParser();
-        System.out.println(parser.parse());
+    private String getProp(String prop) {
+        return String.valueOf(parserProperties.get(prop));
     }
 }
