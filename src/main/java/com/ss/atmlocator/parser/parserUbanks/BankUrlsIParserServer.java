@@ -36,14 +36,13 @@ public class BankUrlsIParserServer implements IParsers {
         final String ATM_SELECTOR_EXPR = "банкомати";
 
         bankList = new ArrayList<Bank>();
-        AtmParserServise parser = new AtmParserServise();
+        ParserUbank parser = new ParserUbank();
         Map<String, Object> map = new HashMap<String, Object>();
 
         Document doc = null;
         try {
             doc = Jsoup.connect(url).get();
             Elements banks = doc.getElementsByClass(listSelector);
-
             for (Element element : banks) {
                 bankName = element.ownText().trim().toUpperCase();
                // System.out.println(bankName);
@@ -84,13 +83,7 @@ public class BankUrlsIParserServer implements IParsers {
                         }
 
                         bank.setAtmOfficeSet(AtmOfficeSetTmp);
-
                         bankList.add(bank);
-
-                        //System.out.println(bankUrls.getBankName());
-                        //System.out.println(bankUrls.getBankUrl());
-                        //System.out.println(bankUrls.getBankOfficceOrAtm());
-
                 }
             }
 

@@ -23,9 +23,9 @@ public class NbuParser implements IParsers {
     final Logger log = Logger.getLogger(NbuParser.class.getName());
     private List<Bank> banks = new ArrayList<Bank>();// Is it may by Set?
     private String url;
-    private static String NAMEXPATH ;// ="table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a";
-    private static String MFOXPATH ;//="table.col_title_t>tbody>tr:gt(0)>td:eq(2)" ;
-    private static String PAGINATORPATH ;
+    private static String NAME_XPATH;// ="table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a";
+    private static String MFO_XPATH;//="table.col_title_t>tbody>tr:gt(0)>td:eq(2)" ;
+    private static String PAGINATOR_PATH;
 
     public NbuParser() {
     }
@@ -38,12 +38,12 @@ public class NbuParser implements IParsers {
     public void setParameter(Map<String, String> parameters) {
         if(parameters.containsKey("url")){//TODO my by this can block the excess
             url =parameters.get("url");
-        }if(parameters.containsKey("NAMEXPATH")){
-            NAMEXPATH = parameters.get("NAMEXPATH");
-        }if(parameters.containsKey("MFOXPATH")){
-            MFOXPATH = parameters.get("MFOXPATH");
-        } if(parameters.containsKey("PAGINATORPATH")){
-            PAGINATORPATH = parameters.get("PAGINATORPATH");
+        }if(parameters.containsKey("NAME_XPATH")){
+            NAME_XPATH = parameters.get("NAME_XPATH");
+        }if(parameters.containsKey("MFO_XPATH")){
+            MFO_XPATH = parameters.get("MFO_XPATH");
+        } if(parameters.containsKey("PAGINATOR_PATH")){
+            PAGINATOR_PATH = parameters.get("PAGINATOR_PATH");
         }
 
     }
@@ -69,8 +69,8 @@ public class NbuParser implements IParsers {
          Document doc;
         try {
             doc =  Jsoup.connect(url).get(); // create connect to url
-            Elements ElementsNames = doc.select(NAMEXPATH); // select all names of banks by Xpath
-            Elements ElementsMFO =doc.select(MFOXPATH); // selsect mfo of banks by Xpath
+            Elements ElementsNames = doc.select(NAME_XPATH); // select all names of banks by Xpath
+            Elements ElementsMFO =doc.select(MFO_XPATH); // selsect mfo of banks by Xpath
             for (int i = 0; i < ElementsMFO.size(); i++) {                  //
                 Bank bank = new Bank();
                 bank.setName(deleteLastChar(getName(ElementsNames.get(i).text())).toUpperCase());
@@ -116,7 +116,7 @@ public class NbuParser implements IParsers {
         try {
             Document doc = Jsoup.connect(url).get(); // create connect to url
             links = new ArrayList<String>();
-            Elements elementsLinks = doc.select(PAGINATORPATH); // select all Links to other pages
+            Elements elementsLinks = doc.select(PAGINATOR_PATH); // select all Links to other pages
             for(Element link: elementsLinks){
                 links.add(link.attr("abs:href"));
             }

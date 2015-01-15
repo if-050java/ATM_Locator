@@ -98,17 +98,6 @@ function saveNetwork(fd, msg_succes, msg_error){
     }
 }
 
-function showAlertOld(className, html) {
-    var element = $("div.alert");
-    element.removeClass();
-    element.addClass(className);
-    element.children(".close").nextAll().remove();
-    element.append(html);
-    //element.show();
-    element.fadeIn("slow");
-    element.delay(2000).fadeOut("slow");
-}
-
 function loadBanks() {
     $.get(getHomeUrl()+"banksListAjax", function(banks){
         bankslist=banks;
