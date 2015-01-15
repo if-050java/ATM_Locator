@@ -7,7 +7,7 @@ $(document).ready(function () {
         serverSide: true,
         pageLength: 20,
         ajax: {
-            url: "/getBankATMs",
+            url: getHomeUrl() + "getBankATMs",
             data: function ( data ) {
                 planify(data);
                 data.bankId = $("#bankid").val();

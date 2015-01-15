@@ -38,7 +38,7 @@ function deleteBank() {
     form_bank_id = $("#id").val();
     fd.append("id", form_bank_id);
     if (form_bank_id == 0 || form_bank_id == undefined) {
-        showAlert("alert alert-danger", ERROR_DELETE);
+        showBankAlert("alert alert-danger", ERROR_DELETE);
     } else {
         $.ajax({
             url: getHomeUrl() + "adminBankDeleteAjax",
@@ -50,14 +50,14 @@ function deleteBank() {
                 console.log(response);
 
                 if (response.status == 'SUCCESS') {
-                    showAlert("alert alert-success", SUCCESS_DELETE);
+                    showBankAlert("alert alert-success", SUCCESS_DELETE);
                     $("#adminBankDelete").prop("disabled","disabled");
                     //$("#adminBankSave").prop("disabled","disabled");
                     $("#adminBankAtmList").prop("disabled","disabled");
                 } else if (response.status == "ERROR") {
-                    showAlert("alert alert-danger", ERROR_DELETE);
+                    showBankAlert("alert alert-danger", ERROR_DELETE);
                 } else {
-                    showAlert("alert alert-warning", WARNING_MESSAGE);
+                    showBankAlert("alert alert-warning", WARNING_MESSAGE);
                     for (var i = 0; i < response.errorMessageList.length; i++) {
                         var item = response.errorMessageList[i];
                         $('#' + item.cause).attr("data-content", item.message);
@@ -66,7 +66,7 @@ function deleteBank() {
                 }
             },
             error: function () {
-                showAlert("alert alert-danger", ERROR_DELETE);
+                showBankAlert("alert alert-danger", ERROR_DELETE);
             }
         });
     }
@@ -106,7 +106,7 @@ $(document).ready(function () {
     $("#adminBankSave").click(function () {
         var fd = bankFormData();
         if (fd == undefined) {
-            showAlert("alert alert-danger", ERROR_SAVE);
+            showBankAlert("alert alert-danger", ERROR_SAVE);
         } else {
             $.ajax({
                 url: getHomeUrl() + "adminBankSaveAjax",
@@ -118,15 +118,15 @@ $(document).ready(function () {
                     console.log(response);
 
                     if (response.status == 'SUCCESS') {
-                        showAlert("alert alert-success", SUCCESS_SAVE);
+                        showBankAlert("alert alert-success", SUCCESS_SAVE);
                         $("#adminBankSave").prop("disabled","disabled");
                         //$("#adminBankDelete").removeProp("disabled");
                         //$("#adminBankAtmList").removeProp("disabled");
 
                     } else if (response.status == "ERROR") {
-                        showAlert("alert alert-danger", ERROR_SAVE);
+                        showBankAlert("alert alert-danger", ERROR_SAVE);
                     } else {
-                        showAlert("alert alert-warning", WARNING_MESSAGE);
+                        showBankAlert("alert alert-warning", WARNING_MESSAGE);
                         for (var i = 0; i < response.errorMessageList.length; i++) {
                             var item = response.errorMessageList[i];
                             $('#' + item.cause).attr("data-content", item.message);
@@ -135,7 +135,7 @@ $(document).ready(function () {
                     }
                 },
                 error: function () {
-                    showAlert("alert alert-danger", ERROR_SAVE);
+                    showBankAlert("alert alert-danger", ERROR_SAVE);
                 }
             });
         }
@@ -150,3 +150,12 @@ $(document).ready(function () {
         window.location.href = getHomeUrl() + "adminBankAtmList?id="+$("#id").val();
     });
 });
+
+
+function showBankAlert(className, html) {
+    var message = $('<div id="errormessage" class="errormessage '+className+'" style="display: none;">');
+    var close = $('<button type="button" class="close" data dismiss="errormessage">&times</button>');
+    message.append(close); // adding the close button to the message
+    message.append(html); // adding the error response to the message
+    message.appendTo($('body')).fadeIn(10).delay(2000).fadeOut(300);
+}
