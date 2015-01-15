@@ -44,8 +44,8 @@ public class UkrSybBankParser extends ParserExecutor {
         List<AtmOffice> branches = getListElements(totalBranchPages, getProp("selector.branches"));
         List<AtmOffice> atms = getListElements(totalAtmPages, getProp("selector.atms"));
         seperateAtmOffices(resultListAtms, branches, atms);
-        logger.debug("Total branches added: " + resultListAtms.size());
         resultListAtms.addAll(atms);
+        logger.debug("Total parsed: " + resultListAtms.size());
         return resultListAtms;
     }
 
