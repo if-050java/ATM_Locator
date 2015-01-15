@@ -38,12 +38,12 @@ public class OschadBankParser extends ParserExecutor {
     public List<AtmOffice> parse() {
         List<String> regions = new ArrayList<>();
 
-        String singleRegion = parserProperties.getProperty("region");
+        String singleRegion = getProp("region");
         // if empty - parse all regions subsequently
         if (singleRegion.equals("")) {
             try {
                 // get Branch Page before fetching regions list to satisfy the bank's web server
-                Jsoup.connect(parserProperties.getProperty("url.base")).execute();
+                Jsoup.connect(getProp("url.base")).execute();
                 regions = getRegionList();
             } catch (IOException e) {
                 //e.printStackTrace();
@@ -54,17 +54,17 @@ public class OschadBankParser extends ParserExecutor {
         }
 
         RegionParser branchParser = new RegionParser(
-                        parserProperties.getProperty("url.base") + parserProperties.getProperty("page.branch"),
-                        parserProperties.getProperty("selector.branch"),
-                        Integer.parseInt(parserProperties.getProperty("column.address.branch")),
-                        Integer.parseInt(parserProperties.getProperty("column.viddil.branch"))
+                        getProp("url.base") + getProp("page.branch"),
+                        getProp("selector.branch"),
+                        Integer.parseInt(getProp("column.address.branch")),
+                        Integer.parseInt(getProp("column.viddil.branch"))
                 );
 
         RegionParser atmParser = new RegionParser(
-                        parserProperties.getProperty("url.base") + parserProperties.getProperty("page.atm"),
-                        parserProperties.getProperty("selector.atm"),
-                        Integer.parseInt(parserProperties.getProperty("column.address.atm")),
-                        Integer.parseInt(parserProperties.getProperty("column.viddil.atm"))
+                        getProp("url.base") + getProp("page.atm"),
+                        getProp("selector.atm"),
+                        Integer.parseInt(getProp("column.address.atm")),
+                        Integer.parseInt(getProp("column.viddil.atm"))
                 );
 
         List<AtmOffice> atms = new ArrayList<>();
@@ -84,7 +84,7 @@ public class OschadBankParser extends ParserExecutor {
             // Sleep only if have more then one region to parse
             if(regions.size() > 1) {
                 try {
-                    Thread.sleep(Integer.parseInt(parserProperties.getProperty("regions.delay")));
+                    Thread.sleep(Integer.parseInt(getProp("regions.delay")));
                 } catch (InterruptedException ie) {
                     LOGGER.warn(ie.getMessage(), ie);
                 }
@@ -102,7 +102,7 @@ public class OschadBankParser extends ParserExecutor {
      * @return true if items have equal location
      */
     private boolean equalLocality(@NotNull final OschadBankItem item1, @NotNull final OschadBankItem item2) {
-        Pattern p = Pattern.compile(parserProperties.getProperty("pattern.locality"));
+        Pattern p = Pattern.compile(getProp("pattern.locality"));
         Matcher m1 = p.matcher(item1.getAddress());
 
         if (m1.find()) {
@@ -133,7 +133,7 @@ public class OschadBankParser extends ParserExecutor {
         for (OschadBankItem branchItem : branchList) {
             if (branchItem != null) {
                 AtmOffice atmOffice = new AtmOffice();
-                atmOffice.setAddress(regionName + parserProperties.getProperty("separator.region") + branchItem.getAddress());
+                atmOffice.setAddress(regionName + getProp("separator.region") + branchItem.getAddress());
                 int index = atmList.indexOf(branchItem);
                 if (index >= 0 && equalLocality(branchItem, atmList.get(index))) {
                     LOGGER.debug(String.format("Found branch and ATM at same address: %s and %s",
@@ -153,7 +153,7 @@ public class OschadBankParser extends ParserExecutor {
         for (OschadBankItem atmItem : atmList) {
             if (atmItem != null) {
                 AtmOffice atmOffice = new AtmOffice();
-                atmOffice.setAddress(regionName + parserProperties.getProperty("separator.region") + atmItem.getAddress());
+                atmOffice.setAddress(regionName + getProp("separator.region") + atmItem.getAddress());
                 atmOffice.setType(IS_ATM);
                 atms.add(atmOffice);
             }
@@ -188,11 +188,11 @@ public class OschadBankParser extends ParserExecutor {
          */
         Connection createJsoupConnection(final String regionName, final int pageNum) {
             return Jsoup.connect(pageUrl)
-                .data(parserProperties.getProperty("region.param"), regionName)
+                .data(getProp("region.param"), regionName)
                 .data("ib", "atms_ua")
-                .data(parserProperties.getProperty("setfilter.param"), parserProperties.getProperty("setfilter.value"))
-                .data(parserProperties.getProperty("page.param"), (pageNum > 1) ? String.valueOf(pageNum) : "")
-                .timeout(Integer.parseInt(parserProperties.getProperty("reading.timeout")));
+                .data(getProp("setfilter.param"), getProp("setfilter.value"))
+                .data(getProp("page.param"), (pageNum > 1) ? String.valueOf(pageNum) : "")
+                .timeout(Integer.parseInt(getProp("reading.timeout")));
         }
 
         /**
@@ -226,7 +226,7 @@ public class OschadBankParser extends ParserExecutor {
          */
         private List<OschadBankItem> parseTable(final Connection connection) throws IOException {
             List<OschadBankItem> addressList
-                    = new ArrayList<>(Integer.parseInt(parserProperties.getProperty("page.maxrows")));
+                    = new ArrayList<>(Integer.parseInt(getProp("page.maxrows")));
             Connection.Response response = connection.execute();
             LOGGER.trace("Request URL: " + connection.request().url());
             Elements rows = response.parse().select(selector);
@@ -241,21 +241,7 @@ public class OschadBankParser extends ParserExecutor {
             return addressList;
         }
 
-        /**
-         * @return formatted address string based on rawAddress
-         * parameters for formatting get from properties
-         */
-        private String  prepareAddress(String rawAddress) {
-            String result = rawAddress;
-            for (String paramName : new TreeSet<>(parserProperties.stringPropertyNames())) {
-                if (paramName.matches("replace\\.regexp\\..*")) {
-                    String regexp = parserProperties.getProperty(paramName);
-                    String replaceValue = parserProperties.getProperty(paramName.replace("regexp", "value"));
-                    result = result.replaceAll(regexp, replaceValue);
-                }
-            }
-            return result.trim();
-        }
+
 
         /**
          * Parse Branch or ATMs unique office number
@@ -264,7 +250,7 @@ public class OschadBankParser extends ParserExecutor {
          */
         @Nullable
         private String prepareViddil(final String viddil) {
-            Matcher m = Pattern.compile(parserProperties.getProperty("pattern.viddil")).matcher(viddil);
+            Matcher m = Pattern.compile(getProp("pattern.viddil")).matcher(viddil);
             return m.find() ? m.group(1) + "/" + m.group(2) : null;
         }
 
@@ -277,7 +263,7 @@ public class OschadBankParser extends ParserExecutor {
          */
         private int getPageCount(final Connection connection) throws ParseException, IOException {
             Connection.Response response = connection.execute();
-            Elements elems = response.parse().select(parserProperties.getProperty("selector.lastpage"));
+            Elements elems = response.parse().select(getProp("selector.lastpage"));
             if (elems.size() == 0) {
                 throw new ParseException("Can't parse last page number", 0);
             }
@@ -330,7 +316,7 @@ public class OschadBankParser extends ParserExecutor {
                 .header("Host", "www.oschadnybank.com")
                 .referrer("http://www.oschadnybank.com/ua/branches_atms/atms/")
                 .header("X-Requested-With", "XMLHttpRequest")
-                .userAgent(parserProperties.getProperty("user.agent"))
+                .userAgent(getProp("user.agent"))
                 .ignoreContentType(true);
     }
 

@@ -37,24 +37,24 @@ public class KredoBankParser extends ParserExecutor {
     public List<AtmOffice> parse() throws IOException {
         initProperties();
         try{
-            String url = parserProperties.getProperty("url.base") + parserProperties.getProperty("url.atm");
+            String url = getProp("url.base") + getProp("url.atm");
             logger.info("Try to load start page " + url);
             Document mainPage = Jsoup.connect(url)
                                      .method(Connection.Method.GET)
-                                     .userAgent(parserProperties.getProperty("user.agent"))
-                                     .referrer(parserProperties.getProperty("url.base"))
+                                     .userAgent(getProp("user.agent"))
+                                     .referrer(getProp("url.base"))
                                      .execute()
                                      .parse();
                                      //.get();
             int parsedRegions = 0;
-            Elements regionRows = mainPage.getElementsByClass(parserProperties.getProperty("region.element.class"));
+            Elements regionRows = mainPage.getElementsByClass(getProp("region.element.class"));
             for(Element regionRow : regionRows){
-                String regionID = regionRow.id().substring(Integer.parseInt(parserProperties.getProperty("region.id.start.position")));
-                Element regionDiv = regionRow.child(Integer.parseInt(parserProperties.getProperty("region.div.child")));
-                Element regionNameElement = regionDiv.child(Integer.parseInt(parserProperties.getProperty("region.name.element")));
-                if(regions.contains(regionNameElement.text()) || parserProperties.getProperty("regions").isEmpty()){
+                String regionID = regionRow.id().substring(Integer.parseInt(getProp("region.id.start.position")));
+                Element regionDiv = regionRow.child(Integer.parseInt(getProp("region.div.child")));
+                Element regionNameElement = regionDiv.child(Integer.parseInt(getProp("region.name.element")));
+                if(regions.contains(regionNameElement.text()) || getProp("regions").isEmpty()){
                     logger.info("Try to parse atmList from region " + regionNameElement.text());
-                    parseRegion(parserProperties.getProperty("url.base") + parserProperties.getProperty("url.region")+regionID);
+                    parseRegion(getProp("url.base") + getProp("url.region")+regionID);
                     parsedRegions++;
                 }//end if
             }//end for regionRows
@@ -70,7 +70,7 @@ public class KredoBankParser extends ParserExecutor {
     }
 
     private void initProperties(){
-        String[] regionsArray = parserProperties.getProperty("regions").split(",");
+        String[] regionsArray = getProp("regions").split(",");
         for(String region : regionsArray){
             regions.add(region);
         }
@@ -83,14 +83,14 @@ public class KredoBankParser extends ParserExecutor {
     private void parseRegion(String request){
         logger.info("Try to connect to URL "+request);
         try{
-            Document regionXML = Jsoup.connect(request).userAgent(parserProperties.getProperty("user.agent"))
-                    .referrer(parserProperties.getProperty("url.base"))
+            Document regionXML = Jsoup.connect(request).userAgent(getProp("user.agent"))
+                    .referrer(getProp("url.base"))
                     .method(Connection.Method.GET)
                                                        .execute().parse();
-            Elements cityItem = regionXML.getElementsByTag(parserProperties.getProperty("atm.container.tag"));
+            Elements cityItem = regionXML.getElementsByTag(getProp("atm.container.tag"));
             for(Element city : cityItem){
                 logger.info("Try to parse atmList from city " + city.child(0).text());
-                parseCity(parserProperties.getProperty("url.base")+parserProperties.getProperty("url.city") + city.child(Integer.parseInt(parserProperties.getProperty("city.child"))).text());
+                parseCity(getProp("url.base")+getProp("url.city") + city.child(Integer.parseInt(getProp("city.child"))).text());
             }
         }catch(IOException ioe){
             logger.error(ioe.getMessage(), ioe);
@@ -104,21 +104,21 @@ public class KredoBankParser extends ParserExecutor {
     private void parseCity(String request){
         logger.info("Try to connect to URL "+request);
         try{
-            Document cityXML = Jsoup.connect(request).userAgent(parserProperties.getProperty("user.agent"))
-                                                     .referrer(parserProperties.getProperty("url.base"))
+            Document cityXML = Jsoup.connect(request).userAgent(getProp("user.agent"))
+                                                     .referrer(getProp("url.base"))
                                                      .method(Connection.Method.GET)
                                                      .execute().parse();
-            Elements atmItems = cityXML.getElementsByTag(parserProperties.getProperty("atm.container.tag"));
+            Elements atmItems = cityXML.getElementsByTag(getProp("atm.container.tag"));
             for(Element atmItem : atmItems){
-                String address = prepareAddress(atmItem.child(Integer.parseInt(parserProperties.getProperty("address.child"))).text());
+                String address = prepareAddress(atmItem.child(Integer.parseInt(getProp("address.child"))).text());
                 if(isAtmAndOffice(address)){
                     continue;
                 }
 
                 AtmOffice atm = new AtmOffice();
                 atm.setAddress(address);
-                int typeChild = Integer.parseInt(parserProperties.getProperty("type.child"));
-                String atmTypeName = parserProperties.getProperty("atm.type.name");
+                int typeChild = Integer.parseInt(getProp("type.child"));
+                String atmTypeName = getProp("atm.type.name");
                 atm.setType(atmItem.child(typeChild).text().matches(atmTypeName) ? IS_ATM : IS_OFFICE);
                 atm.setLastUpdated(new Timestamp(new Date().getTime()));
                 atm.setState(NO_LOCATION);
@@ -129,22 +129,6 @@ public class KredoBankParser extends ParserExecutor {
         }catch(IOException ioe){
             logger.error(ioe.getMessage(), ioe);
         }
-    }
-
-    /**
-     * @return formated address string based on @param rawAddress from site
-     */
-    private String  prepareAddress(String rawAddress){
-        String[] addressArray = rawAddress.split(parserProperties.getProperty("separator.address"));
-        String address = addressArray[0]+addressArray[1];
-        for(String paramName : parserProperties.stringPropertyNames()){
-            if(paramName.matches("replace\\.regexp\\..*")){
-                String regexp = parserProperties.getProperty(paramName);
-                String replaceValue = parserProperties.getProperty(paramName.replace("regexp", "value"));
-                address = address.replaceAll(regexp, replaceValue);
-            }
-        }
-        return address.trim();
     }
 
     /**

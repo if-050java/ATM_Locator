@@ -171,12 +171,4 @@ public class UkrSybBankParser extends ParserExecutor {
         return getProp("region.all");
     }
 
-    /**
-     * Wrapper on properties
-     * @param prop property key
-     * @return property value
-     */
-    private String getProp(String prop) {
-        return String.valueOf(parserProperties.get(prop));
-    }
 }

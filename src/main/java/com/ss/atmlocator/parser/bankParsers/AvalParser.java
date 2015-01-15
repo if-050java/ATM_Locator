@@ -16,7 +16,7 @@ import java.util.*;
  * This class parses ATMs and branches  Raiffeizen Bank Aval
  */
 public class AvalParser extends ParserExecutor{
-//    Map<String, String> parameters = new HashMap<>();
+
 
     Document doc = null;
     private static final boolean IT_IS_OFFICE = true;
@@ -26,7 +26,6 @@ public class AvalParser extends ParserExecutor{
 
     public AvalParser(){
         Map<String, String> param = new HashMap<>();
-//        param.put("cityName", "Ивано-Франковск");
         setParameter(param);
         cityCodeName = parseCityNameAndKey();
     }
@@ -41,8 +40,8 @@ public class AvalParser extends ParserExecutor{
     private Set<AtmOffice> parseAtm(String url, boolean isOffice, String city) throws IOException {
         Set<AtmOffice> atms=new HashSet<>(); // set, because the page may contain duplicate addresses.
         try {
-            doc = Jsoup.connect(url).userAgent(parserProperties.getProperty("user.agent")).get();
-            Elements addresses = doc.getElementsByClass(parserProperties.getProperty("address"));
+            doc = Jsoup.connect(url).userAgent(getProp("user.agent")).get();
+            Elements addresses = doc.getElementsByClass(getProp("address"));
             for (Element address : addresses) {
                 AtmOffice tempAtm = new AtmOffice();
                 if (isOffice) {
@@ -75,7 +74,7 @@ public class AvalParser extends ParserExecutor{
          logger.info("try load city name and code");
         Map<String, String> cityCodeName=null;
         try {
-            doc = Jsoup.connect(parserProperties.getProperty("url.for.city.codes")).userAgent(parserProperties.getProperty("address")).get();
+            doc = Jsoup.connect(getProp("url.for.city.codes")).userAgent(getProp("address")).get();
             Elements addresses = doc.getElementsByClass("chzn-select");
             Elements address = addresses.select("option");
             cityCodeName = new HashMap<>();
@@ -99,9 +98,9 @@ public class AvalParser extends ParserExecutor{
         String cityKey=cityCodeName.get(cityName);
         String resultUrl;
         if(isOffice){
-            resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("branch")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
+            resultUrl = getProp("url.part1")+getProp("branch")+getProp("url.part2")+cityKey+getProp("url.part3");
         }else{
-            resultUrl = parserProperties.getProperty("url.part1")+parserProperties.getProperty("atm")+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
+            resultUrl = getProp("url.part1")+getProp("atm")+getProp("url.part2")+cityKey+getProp("url.part3");
         }
 
         atms = new ArrayList<>(parseAtm(resultUrl, isOffice, cityName));
@@ -169,8 +168,5 @@ public class AvalParser extends ParserExecutor{
             resultList.addAll(parseCity(cityName, IT_IS_OFFICE));
             return resultList;
         }
-    }
-    private String getProp(String prop) {
-        return String.valueOf(parserProperties.get(prop));
     }
 }

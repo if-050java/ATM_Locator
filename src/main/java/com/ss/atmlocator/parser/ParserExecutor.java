@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeSet;
 
 /**
  *
@@ -114,5 +115,29 @@ public abstract class ParserExecutor implements Job, IParser {
         return applicationContext;
     }
 
+    /**
+     * @return formatted address string based on rawAddress
+     * parameters for formatting get from properties
+     */
+    protected String  prepareAddress(String rawAddress) {
+        String result = rawAddress;
+        for (String paramName : new TreeSet<>(parserProperties.stringPropertyNames())) {
+            if (paramName.matches("replace\\.regexp\\..*")) {
+                String regexp = parserProperties.getProperty(paramName);
+                String replaceValue = parserProperties.getProperty(paramName.replace("regexp", "value"));
+                result = result.replaceAll(regexp, replaceValue);
+            }
+        }
+        return result.trim();
+    }
+
+    /**
+     * Wrapper on properties
+     * @param prop property key
+     * @return property value
+     */
+    protected String getProp(String prop){
+        return (String) parserProperties.get(prop);
+    }
 
 }

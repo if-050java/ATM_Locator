@@ -1,7 +1,6 @@
 package com.ss.atmlocator.entity;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Created by roman on 10.11.14.
@@ -54,14 +53,14 @@ public class Role {
 
         Role role = (Role) o;
 
-        if (!name.equals(role.name)) return false;
+        if (id != role.id) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return id;
     }
 }
 
