@@ -107,9 +107,7 @@ public class UkrSybBankParser extends ParserExecutor {
                 .timeout(Integer.valueOf(getProp("global.connection_timeout")))
                 .get();
     }
-    private String getProp(String prop){
-        return (String) parserProperties.get(prop);
-    }
+
 
     public static void main(String[] args) throws IOException {
         UkrSybBankParser parser = new UkrSybBankParser();
