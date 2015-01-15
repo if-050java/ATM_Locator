@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -50,7 +51,6 @@ public class AvalParser extends ParserExecutor{
                     tempAtm.setType(AtmOffice.AtmType.IS_OFFICE);
                     tempAtm.setAddress(trimFirstNuber(tempAtm.getAddress()));
                 }else {
-
                     tempAtm.setAddress( trimFirstNuber(address.text()));
                     tempAtm.setType(AtmOffice.AtmType.IS_ATM);
                 }
@@ -73,6 +73,7 @@ public class AvalParser extends ParserExecutor{
      * Method create map of parameters where key - city name, value - city key.
      * @return map of parameters where key - city name, value - city key*/
      Map<String, String> parseCityNameAndKey(){
+         logger.info("try load city name and code");
         Map<String, String> cityCodeName=null;
         try {
             doc = Jsoup.connect(parserProperties.getProperty("url.for.city.codes")).userAgent(parserProperties.getProperty("address")).get();
@@ -82,6 +83,7 @@ public class AvalParser extends ParserExecutor{
             for(Element adr: address){
                 cityCodeName.put(adr.text(), adr.val());
             }
+            logger.info(" %d  cities are parsed: name and code  ", cityCodeName.size());
         } catch (IOException ioe) {
             logger.error("creation city name and key - filed", ioe.getMessage());
         }
@@ -92,6 +94,7 @@ public class AvalParser extends ParserExecutor{
      * @param isAtm - type. if it is atm - true, else branch - false
      * @return method parseCity return list of atm`s by city name*/
     public List<AtmOffice> parseCity(String cityName, boolean isAtm){
+        logger.info("try parse atm`s");
         List<AtmOffice> atms=null;
         try {
         String cityKey=cityCodeName.get(cityName);
@@ -107,20 +110,11 @@ public class AvalParser extends ParserExecutor{
         } catch (IOException ioe) {
            logger.error("parse city [ %s ] error ", cityName, ioe.getMessage());
         }
+        logger.info(" %d  atm`s are parsed", atms.size());
         return atms;
 
     }
-    public static void main(String[] args) throws IOException {
-        AvalParser avalParser=new AvalParser();
-        Map<String, String> param = new HashMap<>();
-        param.put("cityName", "Ивано-Франковск");
-        avalParser.setParameter(param);
-        List<AtmOffice> atmOffices =avalParser.parse();
-        System.out.println("------------------------------------------------------");
-        for (AtmOffice atm: atmOffices){
-            System.out.println(atm);
-        }
-    }
+
     /**
      * method parses all the cities on the same type: ATMs or branches
      * @param isAtm - - type. if it is atm - true, else branch - false
@@ -139,6 +133,7 @@ public class AvalParser extends ParserExecutor{
         Set<String> cityNames = cityCodeName.keySet();
         for(String cityName: cityNames){
             String cityKey=cityCodeName.get(cityName);
+
             String resultUrl =parserProperties.getProperty("url.part1")+type+parserProperties.getProperty("url.part2")+cityKey+parserProperties.getProperty("url.part3");
 
             resultList.addAll(parseAtm(resultUrl, IS_ATM, cityName));
@@ -176,5 +171,8 @@ public class AvalParser extends ParserExecutor{
             resultList.addAll(parseCity(cityName, IS_OFFICE));
             return resultList;
         }
+    }
+    private String getProp(String prop) {
+        return String.valueOf(parserProperties.get(prop));
     }
 }

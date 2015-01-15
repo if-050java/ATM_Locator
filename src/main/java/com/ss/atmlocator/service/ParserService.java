@@ -29,9 +29,9 @@ public class ParserService {
         IParsers parser =new NbuParser();
         Map<String, String> par = new HashMap<String, String>();
         par.put("url", "http://www.bank.gov.ua/control/bankdict/banks?type=369&sort=name&cPage=0&startIndx=1");
-        par.put("NAMEXPATH" , "table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a");
-        par.put("MFOXPATH" , "table.col_title_t>tbody>tr:gt(0)>td:eq(2)");
-        par.put("PAGINATORPATH","div.content>table:eq(5)>tbody>tr>td:eq(1)>a");
+        par.put("NAME_XPATH" , "table.col_title_t>tbody>tr:gt(0)>td:eq(0)>a");
+        par.put("MFO_XPATH" , "table.col_title_t>tbody>tr:gt(0)>td:eq(2)");
+        par.put("PAGINATOR_PATH","div.content>table:eq(5)>tbody>tr>td:eq(1)>a");
         parser.setParameter(par);
         List<Bank> bankList = parser.parse();
         banksDAO.saveAllBankNBU(bankList);

@@ -57,18 +57,5 @@ public class AdminParserController {
         return "redirect:/adminBankEdit";
     }
 
-    @RequestMapping(value = "tes")
-    public String testParser() {
-//        TestParserExecutor parserExecutor1 = new TestParserExecutor();
-        /*try {
-            parserExecutor.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
-        return "redirect:/";
-
-    }
 
 }
