@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by maks on 07.01.2015.
+ * Test some methods
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -140,7 +140,6 @@ public class DbParserServiceTest  {
         someBank.setId(1);
         someBank.setWebSite("sdf.sdfsd");
 
-
         atmOne = new AtmOffice();
         atmOne.setType(AtmOffice.AtmType.IS_ATM);
         atmOne.setAddress("st. Horunja 45");
@@ -151,7 +150,6 @@ public class DbParserServiceTest  {
     }
     @Test
     public void testCompareAtm_IfTypeAtmOfficeNotEquals(){
-
         dbParserService.compareAtm(atmOne, atmTwo);
         System.out.println(atmOne.getType());
         assertEquals(AtmOffice.AtmType.IS_OFFICE, atmOne.getType());
@@ -183,8 +181,7 @@ public class DbParserServiceTest  {
     }
     @Test
     public void testUpdate_ifDataIsCorrect(){
-        // when(usersDAO.getUser(anyInt())).thenReturn(savedUser);
-        
+
         when(atmsDAO.getBankAtms(anyInt())).thenReturn(atmFromDatabase);
 
         List<AtmOffice> actualAtmOffices=dbParserService.update(newAtm,1);
@@ -195,7 +192,6 @@ public class DbParserServiceTest  {
         for (int i = 0; i < expectedAtmOffices.size(); i++) {
             assertEquals(expectedAtmOffices.get(i), actualAtmOffices.get(i));
         }
-        //assertSame(expectedAtmOffices, actualAtmOffices);
 
     }
 
