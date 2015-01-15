@@ -7,7 +7,6 @@ import java.util.Map;
  * Created by Olavin on 12.01.2015.
  */
 public class DataTableCriteria {
-    private int bankId;
     private int draw;
     private int start;
     private int length;
@@ -83,11 +82,4 @@ public class DataTableCriteria {
         this.order = order;
     }
 
-    public int getBankId() {
-        return bankId;
-    }
-
-    public void setBankId(int bankId) {
-        this.bankId = bankId;
-    }
 }

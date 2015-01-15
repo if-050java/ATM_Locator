@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -27,13 +26,38 @@ public class LogsDAO {
         return notices;
     }
 
+    static final String WHERE_EXPRESSION = " WHERE a.level like :filter OR a.logger like :filter OR a.message like :filter";
+    static final String COUNT_EXPRESSION = "SELECT count(a.id) FROM Logs AS a";
+
     @Transactional
-    public List<Logs> getLogList(Timestamp newTime) {
-        List<Logs> logList;
-        TypedQuery<Logs> query = entityManager.createQuery("SELECT a FROM Notice AS a WHERE a.time>:newtime ORDER BY a.time", Logs.class);
-        query.setParameter("newtime", newTime);
-        logList = query.getResultList();
-        return logList;
+    public List<Logs> getLogList(final int start, final int length, final String order, final String filter) {
+        String queryString = "SELECT a FROM Logs AS a";
+        if (!filter.isEmpty()) {
+            queryString += WHERE_EXPRESSION;
+        }
+
+        TypedQuery<Logs> query = entityManager.createQuery(queryString + order, Logs.class);
+        if (!filter.isEmpty()) {
+            query.setParameter("filter", filter);
+        }
+        query.setFirstResult(start);
+        query.setMaxResults(length);
+
+        return query.getResultList();
+    }
+
+    @Transactional
+    public long getLogsCount() {
+        TypedQuery<Long> query = entityManager.createQuery(COUNT_EXPRESSION, Long.class);
+        return query.getSingleResult();
+    }
+
+    @Transactional
+    public long getLogsFilteredCount(final String filter) {
+        TypedQuery<Long> query =
+                entityManager.createQuery(COUNT_EXPRESSION + WHERE_EXPRESSION, Long.class);
+        query.setParameter("filter", filter);
+        return query.getSingleResult();
     }
 
 }

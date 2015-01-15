@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -23,10 +25,7 @@ import static java.util.Arrays.asList;
  */
 @Repository
 public class AtmsDAO implements IAtmsDAO {
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AtmsDAO.class);
-
-    //TODO: get count from parameters file;
-    private static final int COUNT_ATMS_AT_PAGE = 20;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AtmsDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -65,21 +64,6 @@ public class AtmsDAO implements IAtmsDAO {
         return entityManager.find(AtmOffice.class, id);
     }
 
-    /**
-     * @return List<AtmOffice>
-     * @param  bankId this is id of banks*/
-
-
-    @Override
-    @Transactional
-    public long getBankAtmsCount(final int bankId) {
-        TypedQuery<Long> query = entityManager
-                .createQuery("SELECT count(a.id) FROM AtmOffice AS a WHERE a.bank.id=:bank_id", Long.class);
-        query.setParameter("bank_id", bankId);
-        return query.getSingleResult();
-    }
-
-
     @Override
     @Transactional
     public List<AtmOffice> getBankAtms(final int bankId) {
@@ -94,19 +78,28 @@ public class AtmsDAO implements IAtmsDAO {
     @Transactional
     public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length, final String order, final String filter) {
         String queryString = "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id";
-        if(!filter.isEmpty()) {
+        if (!filter.isEmpty()) {
             queryString += " and a.address like :filter";
         }
 
-        Query query = entityManager.createQuery(queryString + order, AtmOffice.class);
+        TypedQuery<AtmOffice> query = entityManager.createQuery(queryString + order, AtmOffice.class);
         query.setParameter("bank_id", bankId);
-        if(!filter.isEmpty()) {
+        if (!filter.isEmpty()) {
             query.setParameter("filter", filter);
         }
         query.setFirstResult(start);
         query.setMaxResults(length);
 
         return query.getResultList();
+    }
+
+    @Override
+    @Transactional
+    public long getBankAtmsCount(final int bankId) {
+        TypedQuery<Long> query = entityManager
+                .createQuery("SELECT count(a.id) FROM AtmOffice AS a WHERE a.bank.id=:bank_id", Long.class);
+        query.setParameter("bank_id", bankId);
+        return query.getSingleResult();
     }
 
     @Override
@@ -133,8 +126,8 @@ public class AtmsDAO implements IAtmsDAO {
 
 
     @Override
-    public void persist(AtmOffice Atm) {
-        entityManager.persist(Atm);
+    public void persist(AtmOffice atm) {
+        entityManager.persist(atm);
     }
 
 
@@ -146,11 +139,11 @@ public class AtmsDAO implements IAtmsDAO {
     @Transactional
     public void update(final List<AtmOffice> atmExistList) {
 
-        log.info("[TRANSACTION] update()-- begin transaction");
+        LOGGER.info("[TRANSACTION] update()-- begin transaction");
         for (AtmOffice atm: atmExistList) {
             entityManager.merge(atm);
         }
-        log.info("[TRANSACTION]update()-- end transaction, updated or persisted --->" + atmExistList.size() + " elements");
+        LOGGER.info("[TRANSACTION]update()-- end transaction, updated or persisted --->" + atmExistList.size() + " elements");
     }
 
     /**
@@ -160,14 +153,14 @@ public class AtmsDAO implements IAtmsDAO {
     @Override
     @Transactional
     public void persist(final List<AtmOffice> atmNewList) {
-        log.info("[TRANSACTION] persist()-- begin transaction");
+        LOGGER.info("[TRANSACTION] persist()-- begin transaction");
         for (AtmOffice atm: atmNewList) {
 
             atm.setLastUpdated(TimeUtil.currentTimestamp());
             entityManager.persist(atm);
             entityManager.refresh(atm);
         }
-        log.info("[TRANSACTION] persist()-- end transaction, updated or persisted" + atmNewList.size() + " elements");
+        LOGGER.info("[TRANSACTION] persist()-- end transaction, updated or persisted" + atmNewList.size() + " elements");
     }
 
 }

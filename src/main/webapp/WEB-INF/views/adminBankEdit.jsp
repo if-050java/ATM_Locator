@@ -111,9 +111,6 @@
                               </ul>
                           </div>
                       </div>
-                        <button type="submit" formaction="<c:url value="/bankParser" />" class="btn btn-info " <c:if test="${bank.id == 0}"> disabled="disabled"</c:if> >
-                            Parser parameters
-                        </button>
                     </div>
                   </div>
            </div>

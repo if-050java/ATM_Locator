@@ -7,17 +7,6 @@ var ERROR_SAVE = "<span>Error, bank data is not saved!</span>";
 var ERROR_DELETE = "<span>Error, bank is not deleted!</span>";
 var WARNING_MESSAGE = "<span>Warning, something goes wrong.</span>";
 
-function showAlertOld(className, html) {
-    var element = $("div.alert");
-    element.removeClass();
-    element.addClass(className);
-    element.children(".close").nextAll().remove();
-    element.append(html);
-    //element.show();
-    element.fadeIn("slow");
-    element.delay(2000).fadeOut("slow");
-}
-
 // get uploaded file from input control
 function getFile(input) {
     return ($(input)[0].files[0] != undefined) ? $(input)[0].files[0] : null;
