@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import com.ss.atmlocator.utils.GeoUtil;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -8,36 +10,57 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class GeoPosition {
+    static final double MAX_LONGITUDE = 180.0;
+    static final double MAX_LATITUDE = 180.0;
+    static final double HALF_CIRCLE = 180.0;
+
     @Column
-    double longitude = 0;
+    private double longitude = 0;
     @Column
-    double latitude = 0;
+    private double latitude = 0;
 
     public GeoPosition() {
     }
 
-    public GeoPosition(double longitude, double latitude) {
-        if (longitude > 180 || longitude < -180)
+    public GeoPosition(final double longitude, final double latitude) {
+
+        if (longitude > MAX_LONGITUDE || longitude < -MAX_LONGITUDE) {
             throw new IllegalArgumentException("longitude must be +/- 180 degree");
-        if (latitude > 90 || latitude < -90)
+        }
+        if (latitude > MAX_LATITUDE || latitude < -MAX_LATITUDE) {
             throw new IllegalArgumentException("latitude must be +/- 90 degree");
+        }
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public final double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public final void setLongitude(final double longitude) {
         this.longitude = longitude;
     }
 
-    public double getLatitude() {
+    public final double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public final void setLatitude(final double latitude) {
         this.latitude = latitude;
+    }
+
+    @Override
+    public String toString() {
+        //return String.format("% 2.5f % 2.5f",longitude, latitude);
+        return GeoUtil.geoLocationString(this);
+    }
+
+    public final double getLatInRad() {
+        return latitude / HALF_CIRCLE * Math.PI;
+    }
+
+    public final double getLngInRad() {
+        return longitude / HALF_CIRCLE * Math.PI;
     }
 }

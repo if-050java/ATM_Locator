@@ -30,7 +30,7 @@ public class AtmParser {
     @JoinColumn(name = "bank_id")
     Bank bank;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmParser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "atmParser", fetch = FetchType.EAGER)
     private Set<AtmParserParam> paramSet;
 
     public int getId() {

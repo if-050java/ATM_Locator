@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -12,7 +14,7 @@ import java.sql.Timestamp;
 public class AtmComment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String text;
@@ -20,20 +22,21 @@ public class AtmComment {
     @Column
     private Timestamp timeCreated;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atm_id")
     private AtmOffice atmOffice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getText() {
@@ -66,5 +69,25 @@ public class AtmComment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AtmComment comment = (AtmComment) o;
+
+        if (!timeCreated.equals(comment.timeCreated)) return false;
+        if (!user.equals(comment.user)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = timeCreated.hashCode();
+        result = 31 * result + user.hashCode();
+        return result;
     }
 }

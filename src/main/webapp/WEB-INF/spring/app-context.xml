@@ -8,18 +8,22 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
-
-
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:component-scan base-package="com.ss.atmlocator"/>
+    <context:component-scan base-package="com.ss.atmlocator">
+        <context:exclude-filter type="regex" expression="com\.ss\.atmlocator\.controller.*"/>
+    </context:component-scan>
     <context:annotation-config/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>/WEB-INF/spring/properties/jdbc.properties</value>
+                <value>/WEB-INF/spring/properties/email.properties</value>
+                <value>/WEB-INF/spring/properties/matcher.properties</value>
+                <value>/WEB-INF/spring/properties/banks.properties</value>
             </list>
         </property>
     </bean>
@@ -32,7 +36,7 @@
 
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
         <property name="database" value="MYSQL"/>
-        <property name="showSql" value="true"/>
+        <property name="showSql" value="false"/>
         <property name="generateDdl" value="true"/>
         <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
     </bean>
@@ -45,17 +49,97 @@
             <list>
                 <value>com.ss.atmlocator.entity</value>
                 <value>com.ss.atmlocator.dao</value>
+                <value>com.ss.atmlocator.parser</value>
+                <!--<value>com.ss.atmlocator.parser.testParser</value>-->
             </list>
         </property>
 
     </bean>
+    <!-- Begin Quartz -->
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="quartz-scheduler"></property>
+        <property name="dataSource" ref="dataSource" />
+        <property name="transactionManager" ref="quartzTransactionManager"></property>
+        <property name="jobFactory">
+            <bean class="org.springframework.scheduling.quartz.SpringBeanJobFactory" />
+        </property>
+        <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+        </property>
+        <property name="quartzProperties">
+            <map>
+                <!-- Disable check updates -->
+                <entry key="org.quartz.scheduler.skipUpdateCheck" value="true" />
+            </map>
+        </property>
+    </bean>
 
-    <tx:annotation-driven/>
-
+    <bean id="quartzTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <!-- END Quartz-->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
-    <bean id="userService" class="com.ss.atmlocator.service.UserService"/>
+    <!-- SendMail -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mailserver.ip}" />
+        <property name="port" value="${mailserver.port}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">${smtp.auth}</prop>
+                <prop key="mail.smtp.starttls.enable">${smtp.tls}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="mail" class="com.ss.atmlocator.utils.SendMails" scope="singleton">
+        <property name="mailSender" ref="mailSender" />
+        <property name="from" value="${email.from}" />
+    </bean>
+
+    <bean id="banksService" class="com.ss.atmlocator.service.BanksService">
+        <property name="defaultLogo" value="${banks.default_logo}" />
+        <property name="defaultAtm" value="${banks.default_atm}" />
+        <property name="defaultOffice" value="${banks.default_office}" />
+        <property name="prefixLogo" value="${banks.prefix_logo}" />
+        <property name="prefixAtm" value="${banks.prefix_atm}" />
+        <property name="prefixOffice" value="${banks.prefix_office}" />
+
+    </bean>
+
+    <bean id="emailcreator" class="com.ss.atmlocator.utils.EmailCreator">
+        <constructor-arg name="path" value="email_templates"/>
+    </bean>
+    <!-- User credentials validate -->
+    <bean id="usercredmatcher" class="com.ss.atmlocator.utils.UserCredMatcher">
+        <constructor-arg name="mailRegExp" value="${email.pattern}"/>
+        <constructor-arg name="loginRegExp" value="${login.pattern}"/>
+        <constructor-arg name="passwordRegExp" value="${password.pattern}"/>
+        <constructor-arg name="nickNameRegExp" value="${nickname.pattern}"/>
+    </bean>
+    <!-- Message source for validation-->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="basenames">
+            <list>
+        	    <value>/WEB-INF/spring/properties/messages</value>
+        	</list>
+        </property>
+    </bean>
+
+    <!-- User validator beans for login,password,mail validation -->
+    <bean id="loginvalidator" class="com.ss.atmlocator.service.ValidateUserLoginService"/>
+    <bean id="passwordvalidator" class="com.ss.atmlocator.service.ValidateUserPasswordService"/>
+    <bean id="emailvalidator" class="com.ss.atmlocator.service.ValidateUserEmailService"/>
+    <bean id="imagevalidator" class="com.ss.atmlocator.validator.ImageValidator"/>
+    <bean id="uservalidator" class="com.ss.atmlocator.validator.UserValidator"/>
+
+    <bean id="passwordEncoder"
+          class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
+    <!--Listener for log  loging process -->
+    <bean id="authlogging" class="com.ss.atmlocator.utils.AuthLogging"/>
+
 </beans>

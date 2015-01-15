@@ -1,5 +1,7 @@
 package com.ss.atmlocator.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -9,13 +11,16 @@ import java.util.Set;
  */
 @Entity
 @Table(name="banks")
-public class Bank {
+public class Bank  implements Comparable<Bank> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int Id;
+    private int id;
 
     @Column
     private String name;
+
+    @Column
+    private int mfoCode = 0;
 
     @Column
     private String webSite;
@@ -32,22 +37,24 @@ public class Bank {
     @Column
     private Timestamp lastUpdated;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.LAZY)
     private Set<AtmOffice> atmOfficeSet;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
+    @JsonIgnore //Ignoring this field in JSON serializing
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank", fetch = FetchType.LAZY)
     private Set<AtmParser> atmParserSet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "network_id")
     private AtmNetwork network;
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -56,6 +63,22 @@ public class Bank {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getMfoCode() {
+        return mfoCode;
+    }
+
+    public void setMfoCode(int mfoCode) {
+        this.mfoCode = mfoCode;
+    }
+
+    public Set<AtmParser> getAtmParserSet() {
+        return atmParserSet;
+    }
+
+    public void setAtmParserSet(Set<AtmParser> atmParserSet) {
+        this.atmParserSet = atmParserSet;
     }
 
     public String getWebSite() {
@@ -112,5 +135,25 @@ public class Bank {
 
     public void setNetwork(AtmNetwork network) {
         this.network = network;
+    }
+    
+    @Override
+    public int compareTo(Bank other){
+        return this.getName().compareTo(other.getName());
+    }
+
+    @Override
+    public String toString() {
+        return "Bank{" +
+                "Id=" + id +
+                ", name='" + name + '\'' +
+                ", mfoCode=" + mfoCode +
+                ", webSite='" + webSite + '\'' +
+                ", logo='" + logo + '\'' +
+                ", iconAtm='" + iconAtm + '\'' +
+                ", iconOffice='" + iconOffice + '\'' +
+                ", lastUpdated=" + lastUpdated +
+                ", network=" + network +
+                '}';
     }
 }

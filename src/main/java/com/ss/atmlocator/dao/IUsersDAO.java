@@ -1,13 +1,41 @@
 package com.ss.atmlocator.dao;
 
+import com.ss.atmlocator.entity.AtmOffice;
+import com.ss.atmlocator.entity.Role;
 import com.ss.atmlocator.entity.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface IUsersDAO {
-    User getUserByName(String name);
+    /* Select User from DB by Login or email*/
+    User getUser(String name);
+    /* Select user from DB by id */
+    User getUser(int id);
+    /* Persist updated user information in DB*/
     void updateUser(User user);
-    User getUserByEmail(String email);
+    /* Permanently delete user from DB */
     void deleteUser(int id);
-    void updateUser(int id, User user);
+    /* Get default user role */
+    Role getDefaultUserRole();
+    /* Persist new user in DB */
+    void createUser(User user);
+    /* Verify existing of login in DB */
+    boolean checkExistLoginName(String login);
+    boolean checkExistLoginName(User user);
+    /* Verify existing of email address in DB */
+    boolean checkExistEmail(String email);
+    boolean checkExistEmail(User user);
+    /* Get user names and emails*/
+    List<String> getNames (String partial);
+    void writeLoginTime(String userName);
+    void updateAvatar(int user_id, String avatar);
+
+    //favorites
+    Set<AtmOffice> getFavorites(int userId);
+    void addFavorite(int userId, int atmId);
+    void deleteFavorite(int userId, int atmId);
 }

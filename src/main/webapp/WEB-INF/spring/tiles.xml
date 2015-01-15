@@ -23,12 +23,32 @@
         <put-attribute name="content" value="/WEB-INF/views/adminUsers.jsp"/>
     </definition>
 
-    <definition name="signup" extends=".mainTemplate">
-        <put-attribute name="content" value="/WEB-INF/views/signup_template.jsp"/>
-
+    <definition name="adminBanks" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminBanks.jsp"/>
     </definition>
+
+    <definition name="adminBankEdit" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminBankEdit.jsp"/>
+    </definition>
+
+    <definition name="adminBankAtmList" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminBankAtmList.jsp"/>
+    </definition>
+
     <definition name="profile" extends=".mainTemplate">
         <put-attribute name="content" value="/WEB-INF/views/profile.jsp"/>
+    </definition>
+
+    <definition name="changeParser" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/changeParser.jsp"/>
+    </definition>
+
+    <definition name="jobs" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/jobs.jsp"/>
+    </definition>
+
+    <definition name="adminNotices" extends=".mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/views/adminNotices.jsp"/>
     </definition>
 
 </tiles-definitions>

@@ -1,62 +1,47 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: DrBAX_000
-  Date: 17.11.2014
-  Time: 22:34
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <script src="<c:url value="/resources"/>/scripts/AdminUsers.js"></script>
-    <link rel="stylesheet" href="<c:url value="/resources"/>/styles/styles.css">
+    <!-- custom scripts and css  -->
+    <script src="<c:url value="/resources"/>/scripts/adminUsers.js"></script>
+    <script src="<c:url value="/resources"/>/scripts/FormValidation.js"></script>
+    <script src="<c:url value="/resources"/>/jquery/jquery.autocomplete.min.js"></script>
+    <link href="<c:url value="/resources"/>/styles/adminUsers.css" rel="stylesheet">
+    <!-- Checkbox like iPhone -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.0.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.0.0/js/bootstrap-toggle.min.js"></script>
     <title>AdminUsers</title>
 </head>
 <body>
 <div class="container">
+    <!-- Find -->
     <div class="col-md-9" role="main">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Find user
-                </h3>
-            </div>
-            <div class="panel-body">
-                <form onsubmit="return FindUser()" action="" method="GET" class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="radio" name="findBy" value="name" checked="true" id="byName"
-                                       onchange="SelectFindType()"/>
-                            </span>
-                                <input type="text" name="findName" id="findName" class="form-control"
-                                       placeholder="By name"/>
-                            </div>
-                        </div>
+        <form onsubmit="return FindUser()" action="" method="GET" class="form-horizontal" role="form">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <input type="text" name="findName" id="findName" class="form-control"
+                               placeholder="Enter login or e-mail" onclick="hidePopover('findName')"
+                               onload="onload()" title="" autocomplete="off"
+                               data-content="" data-placement="bottom"
+                               data-toggle="popover" data-original-title=""/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="FindUser()" id="findBtn">
+                                Find user
+                            </button>
+                        </span>
                     </div>
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="radio" name="findBy" value="email" id="byEmail"
-                                       onchange="SelectFindType()"/>
-                            </span>
-                                <input type="text" name="findEmail" disabled="true" id="findEmail" class="form-control"
-                                       placeholder="By e-mail"/>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-default" onclick="FindUser()">Find user</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-    <div class="col-md-9" role="main" id="userData">
+    <!-- User profile-->
+    <div class="col-md-9" role="main" id="userData" style="display: none">
         <div class="panel panel-default">
             <div class="panel-heading">
+                <div type="button" class="close" onclick="clearForm()"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></div>
                 <h3 class="panel-title">
                     User profile
                 </h3>
@@ -64,73 +49,111 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img src="/resources/images/defaultUserAvatar.jpg" class="img-responsive" alt="Responsive image" id="userAvatar">
+                        <img src="" class="img-thumbnail" id="avatar">
                     </div>
                     <div class="col-md-8">
                         <form action="" method="post" class="form-horizontal" role="form">
                             <div class="form-group">
-                                <label for="inputName" class="col-sm-2 control-label">NickName</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="inputName" placeholder="NickName">
+                                <label for="login" class="col-md-3 control-label">Login</label>
+
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="login" placeholder="login"
+                                           title="" data-content="" data-placement="left" data-toggle="popover"
+                                           data-original-title="" onclick="hidePopover('inputLogin')"
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputEmail" class="col-sm-2 control-label">E-mail</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" id="inputEmail" placeholder="Email">
+                                <label for="login" class="col-md-3 control-label">NickName</label>
+
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="name" placeholder="NickName"
+                                           title="" data-content="" data-placement="left" data-toggle="popover"
+                                           data-original-title="" onclick="hidePopover('name')"
+                                           onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-                                <div class="col-md-10">
-                                    <input type="password" class="form-control" id="inputPassword"
-                                           placeholder="Password">
+                                <label for="email" class="col-md-3 control-label">E-mail</label>
+
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="email" placeholder="E-mail"
+                                           title="" data-content="E-mail isn't valid" data-placement="left"
+                                           data-toggle="popover" data-original-title=""
+                                           onclick="hidePopover('email')" onkeyup="setModified()"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputConfirmPassword" class="col-sm-2 control-label">Confirm</label>
-                                <div class="col-md-10">
-                                    <input type="password" class="form-control" id="inputConfirmPassword"
-                                           placeholder="Confirm password">
+                                <label for="enabled" class="col-md-3 control-label">Log in</label>
+
+                                <div class="col-md-3">
+                                    <!-- custom style to set width of switch -->
+                                    <style>
+                                        .toggle.btn {
+                                            min-width: 100px;
+                                        }
+                                    </style>
+                                    <input id="enabled" data-style="width" data-toggle="toggle" unchecked
+                                           data-on="enable" data-off="disable" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
+                                <div class="col-md-6" style="color: #606060">User will not login if disable</div>
                             </div>
                             <div class="form-group">
-                                <label for="enabled" class="col-sm-2 control-label">Enabled</label>
-                                <div class="col-md-10">
-                                    <input type="checkbox" class="checkbox" id="enabled" checked="true">
+                                <label for="genPassword" class="col-md-3 control-label">Reset password</label>
+
+                                <div class="col-md-3">
+                                    <input id="genPassword" data-style="width" data-toggle="toggle" unchecked
+                                           data-on="on" data-off="off" data-onstyle="success"
+                                           data-offstyle="danger" type="checkbox">
                                 </div>
+                                <div class="col-md-6" style="color: #606060">Generate password on server if on</div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><button type="button" class="btn btn-primary col-md-12">Send e-mail</button></div>
-                    <div class="col-md-2"><button type="button" onclick="deleteUser()" class="btn btn-danger col-md-12">Delete user</button></div>
-                    <div class="col-md-6"><button type="button" onclick="updateUser()" class="btn btn-success col-md-12">Save</button></div>
-                    <div class="col-md-2"><button type="button" onclick="cancel()" class="btn btn-warning col-md-12">Cancel</button></div>
+                    <div class="col-md-2 col-lg-offset-8">
+                        <button id="delete" type="button" onclick="askForDeleting()" class="btn btn-warning col-md-12">
+                            Delete
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="updateUser()" class="btn btn-success col-md-12" id="save"
+                                disabled="true">Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!--Модальне вікно при видаленні -->
-    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- modal for request on deleting -->
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+         aria-hidden="true" id="questionModal">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="ModalLabel">Deleting user</h4>
-                </div>
-                <div class="modal-body" id="ModalBody">
-
+                    <strong>Do You realy want to delete this user</strong>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteUser()">Yes</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<!--Result of operation -->
+<div class="container">
+    <div class="col-md-9">
+        <div class="" role="alert" id="message" style="display: none">
+            <div type="button" class="close" onclick="hideAlert()">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+            </div>
+            <label id="resultDefinition"></label>
+        </div>
+    </div>
+</div>
 </body>
 </html>

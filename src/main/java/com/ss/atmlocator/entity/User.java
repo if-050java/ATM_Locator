@@ -1,13 +1,10 @@
 package com.ss.atmlocator.entity;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
-/**
- * Created by roman on 10.11.14.
- */
 @Entity
 @Table(name ="users")
 public class User {
@@ -17,6 +14,9 @@ public class User {
 
     @Column(unique=true)
     private String login;
+
+    @Column
+    private String name;
 
     @Column(unique=true)
     private String email;
@@ -28,21 +28,40 @@ public class User {
     private String avatar;
 
     @Column
-    private int enabled;
+    private UserStatus enabled;
 
-    @JsonIgnore //Ignoring this field in JSON serializing
+    @Column
+    private Date lastLoging;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role")
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "roles_id")
     private Set<Role> roles;
 
     @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
-    private Set<AtmComment> atmComments;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name="favorites",
+               joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
+               inverseJoinColumns = {@JoinColumn(name = "atm_id", nullable = false)})
+    private Set<AtmOffice> atmFavorites;
 
-    @JsonIgnore //Ignoring this field in JSON serializing
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user",fetch = FetchType.EAGER)
-    private Set<AtmFavorite> atmFavorites;
+    public User(int id, String login, String email, String password, UserStatus enabled) {
+        this.id = id;
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+    }
+
+    public User(int id, String login, String name, String email) {
+        this.id = id;
+        this.login = login;
+        this.name = name;
+        this.email = email;
+    }
+
+    public User() {
+    }
 
     public String getAvatar() {
         return avatar;
@@ -60,7 +79,7 @@ public class User {
         this.roles = roles;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -92,28 +111,36 @@ public class User {
         this.password = password;
     }
 
-    public int getEnabled() {
+    public UserStatus getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(int enabled) {
+    public void setEnabled(UserStatus enabled) {
         this.enabled = enabled;
     }
 
-    public Set<AtmComment> getAtmComments() {
-        return atmComments;
-    }
-
-    public void setAtmComments(Set<AtmComment> atmComments) {
-        this.atmComments = atmComments;
-    }
-
-    public Set<AtmFavorite> getAtmFavorites() {
+    public Set<AtmOffice> getAtmFavorites() {
         return atmFavorites;
     }
 
-    public void setAtmFavorites(Set<AtmFavorite> atmFavorites) {
+    public void setAtmFavorites(Set<AtmOffice> atmFavorites) {
         this.atmFavorites = atmFavorites;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getLastLoging() {
+        return lastLoging;
+    }
+
+    public void setLastLoging(Date lastLoging) {
+        this.lastLoging = lastLoging;
     }
 
     @Override
@@ -126,7 +153,6 @@ public class User {
                 ", avatar='" + avatar + '\'' +
                 ", roles=" + roles +
                 ", enabled=" + enabled +
-                ", atmComments=" + atmComments +
                 ", atmFavorites=" + atmFavorites +
                 '}';
     }

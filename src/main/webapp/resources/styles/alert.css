@@ -1,0 +1,8 @@
+#errormessage {
+    position: fixed;
+    top: 10%;
+    left: 30%;
+    margin-left: -150px;
+    width: 300px;
+    z-index: 9999;
+}
