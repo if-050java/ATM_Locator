@@ -39,7 +39,7 @@ function validateForm() {
     if (!validateLogin(updatedUser.login)) {
         showPopover("login", INVALID_LOGIN, result);
     }
-    if (!validateLogin(updatedUser.name)) {
+    if (!validateNickName(updatedUser.name)) {
         showPopover("name", INVALID_NAME, result);
     }
     if (!validateEmail(updatedUser.email)) {
