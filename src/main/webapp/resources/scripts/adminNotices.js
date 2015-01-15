@@ -7,7 +7,7 @@ $(document).ready(function () {
         serverSide: true,
         pageLength: 20,
         ajax: {
-            url: "/getNotices",
+            url: getHomeUrl() + "getNotices",
             data: function ( data ) {
                 planify(data);
             },

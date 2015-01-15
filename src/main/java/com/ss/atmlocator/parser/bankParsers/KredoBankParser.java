@@ -111,6 +111,8 @@ public class KredoBankParser extends ParserExecutor {
             Elements atmItems = cityXML.getElementsByTag(getProp("atm.container.tag"));
             for(Element atmItem : atmItems){
                 String address = prepareAddress(atmItem.child(Integer.parseInt(getProp("address.child"))).text());
+                String[] addressArray = address.split(getProp("separator.address"));
+                address = addressArray[Integer.parseInt(getProp("type.child"))]+addressArray[Integer.parseInt(getProp("address.child"))];
                 if(isAtmAndOffice(address)){
                     continue;
                 }

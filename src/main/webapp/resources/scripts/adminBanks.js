@@ -39,7 +39,7 @@ $(document).ready( function () {
         var fd = new FormData();
         fd.append("id", network_id);
         if (network_id == 0 || network_id == -1 || network_id == undefined) {
-            showAlert("alert alert-danger", FORBID_DELETE);
+            showBankAlert("alert alert-danger", FORBID_DELETE);
         } else {
             $.ajax({
                 url: getHomeUrl() + "adminNetworkDeleteAjax",
@@ -54,13 +54,13 @@ $(document).ready( function () {
                         loadNetworks();
                         $('.dropdown-toggle').html('Filter by ATM network <span class="caret"></span>');
                         showBanks(0);
-                        showAlert("alert alert-success", SUCCESS_DELETE);
+                        showBankAlert("alert alert-success", SUCCESS_DELETE);
                     } else if (response.status == "ERROR") {
-                        showAlert("alert alert-danger", ERROR_DELETE);
+                        showBankAlert("alert alert-danger", ERROR_DELETE);
                     }
                 },
                 error: function () {
-                    showAlert("alert alert-danger", ERROR_DELETE);
+                    showBankAlert("alert alert-danger", ERROR_DELETE);
                 }
             });
             //$("#networks_menu").empty();
@@ -72,7 +72,7 @@ $(document).ready( function () {
 
 function saveNetwork(fd, msg_succes, msg_error){
     if (fd == undefined) {
-        showAlert("alert alert-danger", ERROR_SAVE);
+        showBankAlert("alert alert-danger", ERROR_SAVE);
     } else {
         $.ajax({
             url: getHomeUrl() + "adminNetworkSaveAjax",
@@ -85,14 +85,14 @@ function saveNetwork(fd, msg_succes, msg_error){
                 if (response.status == 'SUCCESS') {
                     $("#network_edit").collapse({ toggle: false });
                     loadNetworks();
-                    showAlert("alert alert-success", msg_succes);
+                    showBankAlert("alert alert-success", msg_succes);
 
                 } else if (response.status == "ERROR") {
-                    showAlert("alert alert-danger", msg_error);
+                    showBankAlert("alert alert-danger", msg_error);
                 }
             },
             error: function () {
-                showAlert("alert alert-danger", msg_error);
+                showBankAlert("alert alert-danger", msg_error);
             }
         });
     }
@@ -181,4 +181,10 @@ function showBanks(network) {
 
 }
 
-
+function showBankAlert(className, html) {
+    var message = $('<div id="errormessage" class="errormessage '+className+'" style="display: none;">');
+    var close = $('<button type="button" class="close" data dismiss="errormessage">&times</button>');
+    message.append(close); // adding the close button to the message
+    message.append(html); // adding the error response to the message
+    message.appendTo($('body')).fadeIn(10).delay(2000).fadeOut(300);
+}
