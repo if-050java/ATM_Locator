@@ -282,7 +282,8 @@ public class OschadBankParser extends ParserExecutor {
      */
     private List<String> getRegionList() throws IOException {
         Set<String> regions = new HashSet<>();
-        Connection.Response response = createRegionListRequest().execute();
+        Connection connection = createRegionListRequest();
+        Connection.Response response = connection.execute();
         Document document = Jsoup.parse(response.parse().outerHtml());
 
         JSONObject jsonObj = (JSONObject) JSONValue.parse(document.text());
@@ -307,14 +308,14 @@ public class OschadBankParser extends ParserExecutor {
      * @return
      */
     private Connection createRegionListRequest() {
-        return Jsoup.connect("http://www.oschadnybank.com/handlers/region1.php")
-                .data("contentType", "application/json; charset=utf-8")
-                .data("p", "1")
-                .data("s", "15")
+        return Jsoup.connect(getProp("regions.list.url"))
+                .data("contentType", getProp("regions.list.contenttype"))
+                .data(getProp("regions.list.p"), getProp("regions.list.datap"))
+                .data(getProp("regions.list.s"), getProp("regions.list.datas"))
                 .method(Connection.Method.GET)
-                .header("Accept", "application/json")
-                .header("Host", "www.oschadnybank.com")
-                .referrer("http://www.oschadnybank.com/ua/branches_atms/atms/")
+                .header("Accept", getProp("regions.list.accept"))
+                .header("Host", getProp("regions.list.host"))
+                .referrer(getProp("regions.referrer"))
                 .header("X-Requested-With", "XMLHttpRequest")
                 .userAgent(getProp("user.agent"))
                 .ignoreContentType(true);
