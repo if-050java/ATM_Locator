@@ -1,0 +1,1136 @@
+<div class="bank-search-results clearfix">
+
+<!-- коментируем условия что б отображать карту всегда -->
+
+            <h1 class="noprint">Результати пошуку</h1>
+    	        <!--<h1>Пошук відділень та банкоматів</h1>--><form class="calc_form  google_form bank-search-form" onsubmit="return validateFilter()"><table><tbody><tr><th class="to_stay"><a href="#" id="form_opener" class="opened">Параметри пошуку</a><a href="./" class="new_search noprint">Новий пошук</a></th><th colspan="2" class="to_hide"></th></tr><tr class="to_hide"><td class="bsf1"><!-- скрытые поля формы для передачи координат улицы и высоты --><input type="hidden" name="hidden_lat" id="hidden_lat" value=""><input type="hidden" name="hidden_lng" id="hidden_lng" value=""><input type="hidden" name="hidden_zoom" id="hidden_zoom" value=""><!-- end --><label for="region_id_13">Область</label><div class="selector" id="uniform-region_id_13"><span>Івано-Франківська</span><select id="region_id_13" name="region_id_13" style="opacity: 0;"><option value="-1">Усі області</option><option value="8">Автономна Республіка Крим</option><option value="6">Вінницька</option><option value="24">Волинська</option><option value="4">Дніпропетровська</option><option value="5">Донецька</option><option value="23">Житомирська</option><option value="12">Закарпатська</option><option value="18">Запорізька</option><option value="13" selected="">Івано-Франківська</option><option value="17">Київська</option><option value="25">Кіровоградська</option><option value="11">Луганська</option><option value="3">Львівська</option><option value="16">Миколаївська</option><option value="9">Одеська</option><option value="19">Полтавська</option><option value="7">Рівненська</option><option value="20">Сумська</option><option value="2">Тернопільська</option><option value="1">Харківська</option><option value="14">Херсонська</option><option value="15">Хмельницька</option><option value="10">Черкаська</option><option value="21">Чернівецька</option><option value="22">Чернігівська</option></select></div><label for="city_id_13">Місто</label><div class="selector" id="uniform-city_id_13"><span>Усі міста</span><select id="city_id_13" name="city_id_13" style="opacity: 0;"><option value="0">Усі міста</option><option value="58">Долина</option><option value="23">Івано-Франківськ</option><option value="33">Калуш</option><option value="101">Коломия</option><option value="175">Косів</option><option value="57">Надвірна</option></select></div><label for="station_id_13">Станція метро</label><input type="hidden" id="station_id_hidden_13" name="station_id_13" value="0"><div class="selector disabled" id="uniform-station_id_13"><span>Усі станції</span><select id="station_id_13" disabled="" style="opacity: 0;"><option value="0">Усі станції</option></select></div><label for="address_13">Адреса</label><input type="text" id="address_13" name="address_13" class="fullsize" placeholder="Введіть місцезнаходження" autocomplete="off"></td><td class="bsf2"><label for="branch_title_id_13">Номер відділення</label><input type="text" id="branch_title_id_13" name="branch_title_13" class="fullsize"><div style="padding-top: 20px;"><input type="radio" id="working_time_0_13" name="working_time_13" value="0" checked="">&nbsp;<label for="working_time_0_13" class="for_checkbox">Будь-який час</label><br><input type="radio" id="working_time_1_13" name="working_time_13" value="1">&nbsp;<label for="working_time_1_13" class="for_checkbox">Вказати час</label><br></div><div id="working_time_fields_13"><label for="day_id_13">Робочі дні</label><div class="selector disabled" id="uniform-day_id_13"><span>З понеділка до п'ятниці</span><select id="day_id_13" name="day_id_13" disabled="" style="opacity: 0;"><option value="1">Усі дні тижня</option><option value="2" selected="">З понеділка до п'ятниці</option><option value="3">Субота</option><option value="4">Неділя</option></select></div><label for="amount">Робочий&nbsp;час</label><div id="slider-range" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all ui-slider-disabled ui-state-disabled ui-disabled" aria-disabled="true"><div class="ui-slider-range ui-widget-header" style="left: 14.2857142857143%; width: 21.4285714285714%;"></div><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" disabled="true" style="left: 14.2857142857143%;"></a><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" disabled="true" style="left: 35.7142857142857%;"></a></div><img class="slider-range-values" src="/common/upload/img/retail/google_icons/google_slider_values_full.png" alt="" title=""><input type="hidden" id="time_from_13" name="time_from_13" value="10" disabled=""><input type="hidden" id="time_to_13" name="time_to_13" value="13" disabled=""></div></td><td class="bsf3"><div class="services_list" style="padding-top:5px;"><input type="checkbox" name="type_branch_13" id="type_branch_13" value="1" checked="">&nbsp;<label for="type_branch_13" class="for_checkbox">Відділення</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="b_box" type="checkbox" name="type_branch_id_13[]" id="type_id_5_13" value="5" checked="">&nbsp;<label for="type_id_5_13" class="for_checkbox">Універсальні</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="b_box" type="checkbox" name="type_branch_id_13[]" id="type_id_3_13" value="3" checked="">&nbsp;<label for="type_id_3_13" class="for_checkbox">Розрахунково-касове обслуговування</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="b_box" type="checkbox" name="type_branch_id_13[]" id="type_id_9_13" value="9" checked="">&nbsp;<label for="type_id_9_13" class="for_checkbox">Для юридичних осіб</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="b_box" type="checkbox" name="type_branch_id_13[]" id="type_id_10_13" value="10">&nbsp;<label for="type_id_10_13" class="for_checkbox">Для клієнтів Private Banking</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="b_box" type="checkbox" name="type_branch_id_13[]" id="type_id_4_13" value="4" checked="">&nbsp;<label for="type_id_4_13" class="for_checkbox">УкрСиббанк express</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="b_box" type="checkbox" name="branch_service_13[]" id="branch_service_id_Depos_13" value="Depos" checked="">&nbsp;<label for="branch_service_id_Depos_13" class="for_checkbox">Індивідуальні сейфи</label><br><input type="checkbox" name="type_atm_13" id="type_atm_13" value="1" checked="">&nbsp;<label for="type_atm_13" class="for_checkbox">Банкомати</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="a_box" type="checkbox" name="type_atm_id_13[]" id="type_id_7_13" value="7" checked="">&nbsp;<label for="type_id_7_13" class="for_checkbox">З можливістю приймання готівки</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="a_box" type="checkbox" name="type_atm_id_13[]" id="type_id_8_13" value="8" checked="">&nbsp;<label for="type_id_8_13" class="for_checkbox">З можливістю видачі готівки</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="a_box" type="checkbox" name="type_atm_id_13[]" id="type_id_11_13" value="11" checked="">&nbsp;<label for="type_id_11_13" class="for_checkbox">Euronet</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="a_box" type="checkbox" name="kiosk_l_13" id="kiosk_l_13" value="1" checked="">&nbsp;&nbsp;<label for="kiosk_l_13" class="for_checkbox">Кіоски</label></div></td></tr></tbody></table><div class="to_hide bank_filter_bottom noprint"><input type="button" onclick="if(validateFilter())this.form.submit()" value="Пошук" class="button"><ul class="bank-search-nav"><li><span>Швидкий пошук</span></li><li><a href="/ua/branches_atms/map/?region_id_13=17&amp;city_id_13=2&amp;station_id_13=0&amp;address_13=&amp;branch_title_13=&amp;working_time_13=0&amp;type_branch_13=1&amp;type_branch_id_13%5B%5D=5&amp;type_branch_id_13%5B%5D=3&amp;type_branch_id_13%5B%5D=9&amp;type_branch_id_13%5B%5D=4&amp;branch_service_13%5B%5D=Depos">Відділення у Києві</a></li><li><a href="/ua/branches_atms/map/?region_id_13=17&amp;city_id_13=2&amp;station_id_13=0&amp;address_13=&amp;branch_title_13=&amp;working_time_13=0&amp;type_atm_13=1&amp;type_atm_id_13%5B%5D=7&amp;type_atm_id_13%5B%5D=8&amp;type_atm_id_13%5B%5D=11&amp;kiosk_l_13%5B%5D=1">Банкомати у Києві</a></li></ul></div></form>
+
+<script type="text/javascript">
+    var area_id = 13;
+    var city_id = 0;
+    var station_id = 0;
+    var sysw_all_cities = 'Усі міста';
+    var sysw_all_stations = 'Усі станції';
+    
+	(function(a){a.uniform={options:{selectClass:"selector",radioClass:"radio",checkboxClass:"checker",fileClass:"uploader",filenameClass:"filename",fileBtnClass:"action",fileDefaultText:"No file selected",fileBtnText:"Choose File",checkedClass:"checked",focusClass:"focus",disabledClass:"disabled",buttonClass:"button",activeClass:"active",hoverClass:"hover",useID:true,idPrefix:"uniform",resetSelector:false,autoHide:true},elements:[]};if(a.browser.msie&&a.browser.version<7){a.support.selectOpacity=false}else{a.support.selectOpacity=true}a.fn.uniform=function(k){k=a.extend(a.uniform.options,k);var d=this;if(k.resetSelector!=false){a(k.resetSelector).mouseup(function(){function l(){a.uniform.update(d)}setTimeout(l,10)})}function j(l){$el=a(l);$el.addClass($el.attr("type"));b(l)}function g(l){a(l).addClass("uniform");b(l)}function i(o){var m=a(o);var p=a("<div>"),l=a("<span>");p.addClass(k.buttonClass);if(k.useID&&m.attr("id")!=""){p.attr("id",k.idPrefix+"-"+m.attr("id"))}var n;if(m.is("a")||m.is("button")){n=m.text()}else{if(m.is(":submit")||m.is(":reset")||m.is("input[type=button]")){n=m.attr("value")}}n=n==""?m.is(":reset")?"Reset":"Submit":n;l.html(n);m.css("opacity",0);m.wrap(p);m.wrap(l);p=m.closest("div");l=m.closest("span");if(m.is(":disabled")){p.addClass(k.disabledClass)}p.bind({"mouseenter.uniform":function(){p.addClass(k.hoverClass)},"mouseleave.uniform":function(){p.removeClass(k.hoverClass);p.removeClass(k.activeClass)},"mousedown.uniform touchbegin.uniform":function(){p.addClass(k.activeClass)},"mouseup.uniform touchend.uniform":function(){p.removeClass(k.activeClass)},"click.uniform touchend.uniform":function(r){if(a(r.target).is("span")||a(r.target).is("div")){if(o[0].dispatchEvent){var q=document.createEvent("MouseEvents");q.initEvent("click",true,true);o[0].dispatchEvent(q)}else{o[0].click()}}}});o.bind({"focus.uniform":function(){p.addClass(k.focusClass)},"blur.uniform":function(){p.removeClass(k.focusClass)}});a.uniform.noSelect(p);b(o)}function e(o){var m=a(o);var p=a("<div />"),l=a("<span />");if(!m.css("display")=="none"&&k.autoHide){p.hide()}p.addClass(k.selectClass);if(k.useID&&o.attr("id")!=""){p.attr("id",k.idPrefix+"-"+o.attr("id"))}var n=o.find(":selected:first");if(n.length==0){n=o.find("option:first")}l.html(n.html());o.css("opacity",0);o.wrap(p);o.before(l);p=o.parent("div");l=o.siblings("span");o.bind({"change.uniform":function(){l.text(o.find(":selected").html());p.removeClass(k.activeClass)},"focus.uniform":function(){p.addClass(k.focusClass)},"blur.uniform":function(){p.removeClass(k.focusClass);p.removeClass(k.activeClass)},"mousedown.uniform touchbegin.uniform":function(){p.addClass(k.activeClass)},"mouseup.uniform touchend.uniform":function(){p.removeClass(k.activeClass)},"click.uniform touchend.uniform":function(){p.removeClass(k.activeClass)},"mouseenter.uniform":function(){p.addClass(k.hoverClass)},"mouseleave.uniform":function(){p.removeClass(k.hoverClass);p.removeClass(k.activeClass)},"keyup.uniform":function(){l.text(o.find(":selected").html())}});if(a(o).attr("disabled")){p.addClass(k.disabledClass)}a.uniform.noSelect(l);b(o)}function f(n){var m=a(n);var o=a("<div />"),l=a("<span />");if(!m.css("display")=="none"&&k.autoHide){o.hide()}o.addClass(k.checkboxClass);if(k.useID&&n.attr("id")!=""){o.attr("id",k.idPrefix+"-"+n.attr("id"))}a(n).wrap(o);a(n).wrap(l);l=n.parent();o=l.parent();a(n).css("opacity",0).bind({"focus.uniform":function(){o.addClass(k.focusClass)},"blur.uniform":function(){o.removeClass(k.focusClass)},"click.uniform touchend.uniform":function(){if(!a(n).attr("checked")){l.removeClass(k.checkedClass)}else{l.addClass(k.checkedClass)}},"mousedown.uniform touchbegin.uniform":function(){o.addClass(k.activeClass)},"mouseup.uniform touchend.uniform":function(){o.removeClass(k.activeClass)},"mouseenter.uniform":function(){o.addClass(k.hoverClass)},"mouseleave.uniform":function(){o.removeClass(k.hoverClass);o.removeClass(k.activeClass)}});if(a(n).attr("checked")){l.addClass(k.checkedClass)}if(a(n).attr("disabled")){o.addClass(k.disabledClass)}b(n)}function c(n){var m=a(n);var o=a("<div />"),l=a("<span />");if(!m.css("display")=="none"&&k.autoHide){o.hide()}o.addClass(k.radioClass);if(k.useID&&n.attr("id")!=""){o.attr("id",k.idPrefix+"-"+n.attr("id"))}a(n).wrap(o);a(n).wrap(l);l=n.parent();o=l.parent();a(n).css("opacity",0).bind({"focus.uniform":function(){o.addClass(k.focusClass)},"blur.uniform":function(){o.removeClass(k.focusClass)},"click.uniform touchend.uniform":function(){if(!a(n).attr("checked")){l.removeClass(k.checkedClass)}else{var p=k.radioClass.split(" ")[0];a("."+p+" span."+k.checkedClass+":has([name='"+a(n).attr("name")+"'])").removeClass(k.checkedClass);l.addClass(k.checkedClass)}},"mousedown.uniform touchend.uniform":function(){if(!a(n).is(":disabled")){o.addClass(k.activeClass)}},"mouseup.uniform touchbegin.uniform":function(){o.removeClass(k.activeClass)},"mouseenter.uniform touchend.uniform":function(){o.addClass(k.hoverClass)},"mouseleave.uniform":function(){o.removeClass(k.hoverClass);o.removeClass(k.activeClass)}});if(a(n).attr("checked")){l.addClass(k.checkedClass)}if(a(n).attr("disabled")){o.addClass(k.disabledClass)}b(n)}function h(q){var o=a(q);var r=a("<div />"),p=a("<span>"+k.fileDefaultText+"</span>"),m=a("<span>"+k.fileBtnText+"</span>");if(!o.css("display")=="none"&&k.autoHide){r.hide()}r.addClass(k.fileClass);p.addClass(k.filenameClass);m.addClass(k.fileBtnClass);if(k.useID&&o.attr("id")!=""){r.attr("id",k.idPrefix+"-"+o.attr("id"))}o.wrap(r);o.after(m);o.after(p);r=o.closest("div");p=o.siblings("."+k.filenameClass);m=o.siblings("."+k.fileBtnClass);if(!o.attr("size")){var l=r.width();o.attr("size",l/10)}var n=function(){var s=o.val();if(s===""){s=k.fileDefaultText}else{s=s.split(/[\/\\]+/);s=s[(s.length-1)]}p.text(s)};n();o.css("opacity",0).bind({"focus.uniform":function(){r.addClass(k.focusClass)},"blur.uniform":function(){r.removeClass(k.focusClass)},"mousedown.uniform":function(){if(!a(q).is(":disabled")){r.addClass(k.activeClass)}},"mouseup.uniform":function(){r.removeClass(k.activeClass)},"mouseenter.uniform":function(){r.addClass(k.hoverClass)},"mouseleave.uniform":function(){r.removeClass(k.hoverClass);r.removeClass(k.activeClass)}});if(a.browser.msie){o.bind("click.uniform.ie7",function(){setTimeout(n,0)})}else{o.bind("change.uniform",n)}if(o.attr("disabled")){r.addClass(k.disabledClass)}a.uniform.noSelect(p);a.uniform.noSelect(m);b(q)}a.uniform.restore=function(l){if(l==undefined){l=a(a.uniform.elements)}a(l).each(function(){if(a(this).is(":checkbox")){a(this).unwrap().unwrap()}else{if(a(this).is("select")){a(this).siblings("span").remove();a(this).unwrap()}else{if(a(this).is(":radio")){a(this).unwrap().unwrap()}else{if(a(this).is(":file")){a(this).siblings("span").remove();a(this).unwrap()}else{if(a(this).is("button, :submit, :reset, a, input[type='button']")){a(this).unwrap().unwrap()}}}}}a(this).unbind(".uniform");a(this).css("opacity","1");var m=a.inArray(a(l),a.uniform.elements);a.uniform.elements.splice(m,1)})};function b(l){l=a(l).get();if(l.length>1){a.each(l,function(m,n){a.uniform.elements.push(n)})}else{a.uniform.elements.push(l)}}a.uniform.noSelect=function(l){function m(){return false}a(l).each(function(){this.onselectstart=this.ondragstart=m;a(this).mousedown(m).css({MozUserSelect:"none"})})};a.uniform.update=function(l){if(l==undefined){l=a(a.uniform.elements)}l=a(l);l.each(function(){var n=a(this);if(n.is("select")){var m=n.siblings("span");var p=n.parent("div");p.removeClass(k.hoverClass+" "+k.focusClass+" "+k.activeClass);m.html(n.find(":selected").html());if(n.is(":disabled")){p.addClass(k.disabledClass)}else{p.removeClass(k.disabledClass)}}else{if(n.is(":checkbox")){var m=n.closest("span");var p=n.closest("div");p.removeClass(k.hoverClass+" "+k.focusClass+" "+k.activeClass);m.removeClass(k.checkedClass);if(n.is(":checked")){m.addClass(k.checkedClass)}if(n.is(":disabled")){p.addClass(k.disabledClass)}else{p.removeClass(k.disabledClass)}}else{if(n.is(":radio")){var m=n.closest("span");var p=n.closest("div");p.removeClass(k.hoverClass+" "+k.focusClass+" "+k.activeClass);m.removeClass(k.checkedClass);if(n.is(":checked")){m.addClass(k.checkedClass)}if(n.is(":disabled")){p.addClass(k.disabledClass)}else{p.removeClass(k.disabledClass)}}else{if(n.is(":file")){var p=n.parent("div");var o=n.siblings(k.filenameClass);btnTag=n.siblings(k.fileBtnClass);p.removeClass(k.hoverClass+" "+k.focusClass+" "+k.activeClass);o.text(n.val());if(n.is(":disabled")){p.addClass(k.disabledClass)}else{p.removeClass(k.disabledClass)}}else{if(n.is(":submit")||n.is(":reset")||n.is("button")||n.is("a")||l.is("input[type=button]")){var p=n.closest("div");p.removeClass(k.hoverClass+" "+k.focusClass+" "+k.activeClass);if(n.is(":disabled")){p.addClass(k.disabledClass)}else{p.removeClass(k.disabledClass)}}}}}}})};return this.each(function(){if(a.support.selectOpacity){var l=a(this);if(l.is("select")){if(l.attr("multiple")!=true){if(l.attr("size")==undefined||l.attr("size")<=1){e(l)}}}else{if(l.is(":checkbox")){f(l)}else{if(l.is(":radio")){c(l)}else{if(l.is(":file")){h(l)}else{if(l.is(":text, :password, input[type='email']")){j(l)}else{if(l.is("textarea")){g(l)}else{if(l.is("a")||l.is(":submit")||l.is(":reset")||l.is("button")||l.is("input[type=button]")){i(l)}}}}}}}}})}})(jQuery);
+	
+	//построение ссылки для автокомплита адреса
+	//Для нового функционала не используется
+	function makeAddressAutocompleteURL() {
+/*
+		var url = 'index.php?';
+		url += 'do_' + area_id + '=addressAutocomplete';
+		url += '&region_id_' + area_id + '=' + $("#region_id_"+area_id).val();
+		url += '&city_id_' + area_id + '=' + $("#city_id_"+area_id).val();
+	
+		return url;
+*/
+	}
+	
+    function adjustWorkingTimeFields(state) {
+		if (state == 1) {
+			$("select#day_id_"+area_id).attr('disabled',false);
+			$("#uniform-day_id_"+area_id).removeClass('disabled');
+			$("input#time_from_"+area_id).attr('disabled',false);
+			$("input#time_to_"+area_id).attr('disabled',false);
+			$("#slider-range").slider( "option", "disabled", false );
+		}
+		else {
+			$("select#day_id_"+area_id).attr('disabled',true);
+			$("#uniform-day_id_"+area_id).addClass('disabled');
+			$("input#time_from_"+area_id).attr('disabled',true);
+			$("input#time_to_"+area_id).attr('disabled',true);
+			$("#slider-range").slider( "option", "disabled", true );
+		}    	
+    }
+	
+    $(function() {
+        $("#slider-range").slider({
+            range: true,
+            min: 8,
+            max: 22,
+            step: 1,
+            values: [$("#time_from_"+area_id).val(), $("#time_to_"+area_id).val()],
+            slide: function(event, ui){
+                $("#time_from_"+area_id).val(ui.values[0]);
+                $("#time_to_"+area_id).val(ui.values[1]);
+            }
+        });
+		$(".bank-search-form select").uniform();
+		$('#form_opener').click(function(){
+			if($(this).hasClass('opened')) {
+				$('.to_hide').hide();
+				$(this).parent().addClass('to_stay');
+				$(this).removeClass('opened');
+			} else {
+				$('.to_hide').show();
+				$(this).parent().removeClass('to_stay');
+				$(this).addClass('opened');
+			}
+			return false;
+		});
+		
+		//отключаю автокомплит, будет использоватся от гугла
+		/*$("#address_"+area_id).autocomplete({
+			source : makeAddressAutocompleteURL(),
+			minLength: 1,
+			open: function(){
+				$(this).autocomplete('widget').css('z-index', 100);
+				return false;
+			}
+		})*/;
+		
+		adjustWorkingTimeFields($("input[name='working_time_"+area_id+"']:checked").val());
+		
+		$("input[name='working_time_"+area_id+"']").click(function(){
+			adjustWorkingTimeFields($(this).val());	
+		});
+    
+	
+    });
+    
+    /****************Добавление события на очистку координат и региона при поиске по номеру ТТ**********/
+    $("#branch_title_id_"+area_id).change(function(){
+    	g_change();
+    	
+	});
+	$("#address_"+area_id).change(function(){
+  //  	$("#address_"+area_id).val('');
+		  document.getElementById('hidden_lat').value = 0;
+          document.getElementById('hidden_lng').value = 0;
+          document.getElementById('hidden_zoom').value = 0;
+          $("#station_id_"+area_id).val('0');
+          //$("#station_id_ " +area_id) + " :nth-child(1)").attr("selected", "selected");
+      //    alert($("#station_id_ " +area_id + " :first").val());
+          $("#station_id_"+area_id).empty().attr("disabled", true);
+		//g_change(true);
+    	
+	});
+	
+	function g_change(){
+    	  gl_change = false;
+	 	  $("#address_"+area_id).val('');
+		  document.getElementById('hidden_lat').value = 0;
+          document.getElementById('hidden_lng').value = 0;
+          document.getElementById('hidden_zoom').value = 0;
+          $("#region_id_"+area_id).val("-1");
+          $("#region_id_"+area_id).trigger('change');
+          $("#city_id_"+area_id).empty().attr("disabled", true);
+       	  $("#station_id_"+area_id).empty().attr("disabled", true);
+       	  gl_change = true;
+	};
+	
+	$("#branch_title_id_"+area_id).keydown(function(e){
+		g_change();
+		if(e.keyCode==13 && validateFilter())
+			this.form.submit()
+	});
+	/**************************/
+    $("#region_id_"+area_id).change(function(){
+        $("#city_id_"+area_id).empty().attr("disabled", true);
+        $("#station_id_"+area_id).empty().attr("disabled", true);
+        json = {"region_id": $(this).val(), "list": "cities", "ajax": "true"};
+        json["t_" + area_id] = new Date().getTime();                
+        $.getJSON("index.php", json, function(data){
+            var options = $("#city_id_"+area_id).attr('options');
+            options[options.length] = new Option(sysw_all_cities, 0, false, false);
+            $.each(data, function(){
+                var selected = city_id == this.BRANCH_CITY_ID;                            
+                options[options.length] = new Option(this.TITLE, this.BRANCH_CITY_ID, selected, selected);
+            });
+            $("#city_id_"+area_id).attr("disabled", false);
+            $("#city_id_"+area_id).trigger("change");
+        });
+        $("#address_"+area_id).val('');
+        $("#address_"+area_id).autocomplete( "option" , 'source' , makeAddressAutocompleteURL() );
+        /* проверка состояния глобальной переменной, если трушное значение значит нужно обнулять поля формы */
+        if(gl_change){
+        	$("#address_"+area_id).val('');
+	        document.getElementById('hidden_lat').value = 0;
+	        document.getElementById('hidden_lng').value = 0;
+	        document.getElementById('hidden_zoom').value = 0;
+	        document.getElementById('branch_title_id_' + area_id).value = '';
+        }
+        /*****************************************/
+        
+    });
+    
+    $("#city_id_"+area_id).change(function(){
+        //$("#is_subway_"+area_id).attr("checked", false).attr("disabled", true);
+        $("#station_id_"+area_id).empty().attr("disabled", true);                            
+        $("#station_id_"+area_id).parent('.selector').addClass('disabled');       
+                 
+        json = {"city_id": $(this).val(), "branch_id" : "", "list": "stations", "ajax": "true"};
+        json["t_" + area_id] = new Date().getTime();
+        $.getJSON("index.php", json, function(data){
+            $('#station_id_'+area_id).empty();
+            var options = $('#station_id_'+area_id).attr('options');
+            options[options.length] = new Option(sysw_all_stations, 0, false, false)
+            $.each(data, function(){
+                var selected = this.CITY_SUBWAY_STATION_ID == station_id;
+                //$("#is_subway_"+area_id).attr("checked", selected ? true : $("#is_subway_"+area_id).attr("checked"));
+                options[options.length] = new Option(this.TITLE, this.CITY_SUBWAY_STATION_ID, selected, selected);                
+            });
+            if (options.length > 1)
+            {
+                $("#is_subway_"+area_id).attr("disabled", false);
+                $("#station_id_"+area_id).attr("disabled", false);
+                $("#station_id_"+area_id).parent('.selector').removeClass('disabled'); 
+            }
+            $("#station_id_"+area_id).trigger("change");   
+            
+        });
+        $("#address_"+area_id).val('');
+        //убираем неиспользуемую функцию Автокомплита
+        //$("#address_"+area_id).autocomplete( "option" , 'source' , makeAddressAutocompleteURL() );
+    });
+        
+    $("#is_subway_"+area_id).change(function(){
+        if ($("#is_subway_"+area_id).attr('checked'))
+        {
+            $("#is_subway_hidden_"+area_id).val(1);
+//            $("#station_id_"+area_id).attr("disabled", false);                    
+        }
+        else
+        {
+            $("#is_subway_hidden_"+area_id).val(0);
+//            $("#station_id_"+area_id).attr("disabled", true);                    
+        }
+        $("#station_id_"+area_id).trigger("change");        
+    });
+    
+    $('#is_subway_"+area_id').click(function(){
+      $('.target').change();
+    });
+    
+    $("#station_id_"+area_id).change(function(){
+        $("#station_id_hidden_"+area_id).val($("#station_id_"+area_id).attr("disabled") ? 
+            0 : $("#station_id_"+area_id+" option:selected").val());
+    });
+
+    $("#type_branch_"+area_id).change(function() {
+        if (this.checked) {
+            $(".b_box").each(function(){this.disabled = 0; if ($(this).val() != 10) $(this).attr('checked', true);})
+        } else {
+            $(".b_box").each(function(){this.disabled = 1;})
+        }
+    });
+    $("#type_atm_"+area_id).change(function() {
+        if (this.checked) {
+            $(".a_box").each(function(){this.disabled = 0; $(this).attr('checked', true);})
+        } else {
+            $(".a_box").each(function(){this.disabled = 1;})
+        }
+    });
+    $(document).ready(function(){
+    	
+        if ($("#type_branch_"+area_id).get(0).checked) {
+            $(".b_box").each(function(){this.disabled = 0;})
+        } else {
+            $(".b_box").each(function(){this.disabled = 1;})
+        }
+        if ($("#type_atm_"+area_id).get(0).checked) {
+            $(".a_box").each(function(){this.disabled = 0;})
+        } else {
+            $(".a_box").each(function(){this.disabled = 1;})
+        }
+    });
+    
+
+    
+</script>
+        		
+		<div id="goggle_tab_branches_nav" class="top_nav_pages" style="">
+			
+		</div>
+				
+		<div id="goggle_tab_atms_nav" class="top_nav_pages" style="display: none;">
+			
+		</div>
+		 
+	
+	<!-- коментируем условия что б отображать карту всегда -->
+	
+    	<div id="google_map" style="width: 960px; height: 460px; position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"><div class="gm-style" style="position: absolute; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%; z-index: 0;"><div style="position: absolute; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%; z-index: 0; cursor: url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur) 8 8, default;"><div style="position: absolute; left: 0px; top: 0px; z-index: 1; width: 100%; transform-origin: 490px 404px 0px; transform: matrix(1, 0, 0, 1, -15, -85);"><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 100; width: 100%;"><div style="position: absolute; left: 0px; top: 0px; z-index: 0;"><div aria-hidden="true" style="position: absolute; left: 0px; top: 0px; z-index: 1;"><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 236px; top: 142px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 492px; top: 142px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 492px; top: -114px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 236px; top: -114px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 236px; top: 398px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 492px; top: 398px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -20px; top: 142px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 748px; top: 142px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -20px; top: 398px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 748px; top: -114px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 748px; top: 398px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -20px; top: -114px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 1004px; top: 142px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -276px; top: 142px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -276px; top: 398px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 1004px; top: -114px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -276px; top: -114px;"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 1004px; top: 398px;"></div></div></div></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 101; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 102; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 103; width: 100%;"><div style="position: absolute; left: 0px; top: 0px; z-index: -1;"><div aria-hidden="true" style="position: absolute; left: 0px; top: 0px; z-index: 1;"><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 236px; top: 142px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 492px; top: 142px;"><canvas draggable="false" height="256" width="256" style="-webkit-user-select: none; position: absolute; left: 0px; top: 0px; height: 256px; width: 256px;"></canvas></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 492px; top: -114px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 236px; top: -114px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 236px; top: 398px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 492px; top: 398px;"><canvas draggable="false" height="256" width="256" style="-webkit-user-select: none; position: absolute; left: 0px; top: 0px; height: 256px; width: 256px;"></canvas></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -20px; top: 142px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 748px; top: 142px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -20px; top: 398px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 748px; top: -114px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 748px; top: 398px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -20px; top: -114px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 1004px; top: 142px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -276px; top: 142px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -276px; top: 398px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 1004px; top: -114px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: -276px; top: -114px;"></div><div style="width: 256px; height: 256px; overflow: hidden; transform: translateZ(0px); position: absolute; left: 1004px; top: 398px;"></div></div></div></div><div style="position: absolute; z-index: 0; left: 15px; top: 85px;"><div style="overflow: hidden; width: 960px; height: 460px;"><img src="https://maps.googleapis.com/maps/api/js/StaticMapService.GetMapImage?1m2&amp;1i4131&amp;2i2503&amp;2e1&amp;3u5&amp;4m2&amp;1u960&amp;2u460&amp;5m5&amp;1e0&amp;5suk&amp;6sus&amp;10b1&amp;12b1&amp;token=32018" style="width: 960px; height: 460px;"></div></div><div style="position: absolute; left: 0px; top: 0px; z-index: 0;"><div aria-hidden="true" style="position: absolute; left: 0px; top: 0px; z-index: 1;"><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 236px; top: 142px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i17!3i10!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 236px; top: -114px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i17!3i9!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 492px; top: 142px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i18!3i10!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 492px; top: -114px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i18!3i9!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 236px; top: 398px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i17!3i11!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 748px; top: 142px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i19!3i10!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 492px; top: 398px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i18!3i11!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -20px; top: 142px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i16!3i10!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 748px; top: -114px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i19!3i9!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -20px; top: 398px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i16!3i11!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 748px; top: 398px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i19!3i11!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -20px; top: -114px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i16!3i9!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -276px; top: 142px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i15!3i10!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 1004px; top: 142px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i20!3i10!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 1004px; top: -114px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i20!3i9!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: 1004px; top: 398px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts0.googleapis.com/vt?pb=!1m4!1m3!1i5!2i20!3i11!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -276px; top: 398px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i15!3i11!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px) translateZ(0px);"></div><div style="width: 256px; height: 256px; transform: translateZ(0px); position: absolute; left: -276px; top: -114px; opacity: 1; transition: opacity 200ms ease-out; -webkit-transition: opacity 200ms ease-out;"><img src="https://mts1.googleapis.com/vt?pb=!1m4!1m3!1i5!2i15!3i9!2m3!1e0!2sm!3i285000000!3m9!2suk!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0" draggable="false" style="width: 256px; height: 256px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; transform: translateZ(0px) translateZ(0px);"></div></div></div></div><div style="position: absolute; left: 0px; top: 0px; z-index: 2; width: 100%; height: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 3; width: 100%; transform-origin: 490px 404px 0px; transform: matrix(1, 0, 0, 1, -15, -85);"><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 104; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 105; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 106; width: 100%;"></div><div style="transform: translateZ(0px); position: absolute; left: 0px; top: 0px; z-index: 107; width: 100%;"></div></div></div><div style="margin-left: 5px; margin-right: 5px; z-index: 1000000; position: absolute; left: 0px; bottom: 0px;"><a target="_blank" href="http://maps.google.com/maps?ll=51.265825,22.610694&amp;z=5&amp;t=m&amp;hl=uk&amp;gl=US&amp;mapclient=apiv3" title="Натисніть, щоб переглянути цю область у Картах Google" style="position: static; overflow: visible; float: none; display: inline;"><div style="width: 62px; height: 26px; cursor: pointer;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/google_white2.png" draggable="false" style="position: absolute; left: 0px; top: 0px; width: 62px; height: 26px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div></a></div><div class="gmnoprint" style="z-index: 1000001; position: absolute; right: 283px; bottom: 0px; width: 540px;"><div draggable="false" class="gm-style-cc" style="-webkit-user-select: none;"><div style="opacity: 0.7; width: 100%; height: 100%; position: absolute;"><div style="width: 1px;"></div><div style="width: auto; height: 100%; margin-left: 1px; background-color: rgb(245, 245, 245);"></div></div><div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right;"><a style="color: rgb(68, 68, 68); text-decoration: none; cursor: pointer; display: none;">Дані мапи</a><span style="">Дані карт ©2015 Basarsoft, GeoBasis-DE/BKG (©2009), Google, Mapa GISrael, ORION-ME, basado en BCN IGN España</span></div></div></div><div style="padding: 15px 21px; border: 1px solid rgb(171, 171, 171); font-family: Roboto, Arial, sans-serif; color: rgb(34, 34, 34); -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 16px; box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 16px; z-index: 10000002; display: none; width: 256px; height: 148px; position: absolute; left: 330px; top: 140px; background-color: white;"><div style="padding: 0px 0px 10px; font-size: 16px;">Дані мапи</div><div style="font-size: 13px;">Дані карт ©2015 Basarsoft, GeoBasis-DE/BKG (©2009), Google, Mapa GISrael, ORION-ME, basado en BCN IGN España</div><div style="width: 13px; height: 13px; overflow: hidden; position: absolute; opacity: 0.7; right: 12px; top: 12px; z-index: 10000; cursor: pointer;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: -2px; top: -336px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div></div><div class="gmnoscreen" style="position: absolute; right: 0px; bottom: 0px;"><div style="font-family: Roboto, Arial, sans-serif; font-size: 11px; color: rgb(68, 68, 68); direction: ltr; text-align: right; background-color: rgb(245, 245, 245);">Дані карт ©2015 Basarsoft, GeoBasis-DE/BKG (©2009), Google, Mapa GISrael, ORION-ME, basado en BCN IGN España</div></div><div class="gmnoprint gm-style-cc" draggable="false" style="z-index: 1000001; position: absolute; -webkit-user-select: none; right: 171px; bottom: 0px;"><div style="opacity: 0.7; width: 100%; height: 100%; position: absolute;"><div style="width: 1px;"></div><div style="width: auto; height: 100%; margin-left: 1px; background-color: rgb(245, 245, 245);"></div></div><div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right;"><a href="http://www.google.com/intl/uk_US/help/terms_maps.html" target="_blank" style="text-decoration: none; cursor: pointer; color: rgb(68, 68, 68);">Умови використання</a></div></div><div draggable="false" class="gm-style-cc" style="-webkit-user-select: none; position: absolute; right: 0px; bottom: 0px;"><div style="opacity: 0.7; width: 100%; height: 100%; position: absolute;"><div style="width: 1px;"></div><div style="width: auto; height: 100%; margin-left: 1px; background-color: rgb(245, 245, 245);"></div></div><div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right;"><a target="_new" title="Повідомити Google про помилки в картографічних даних або зображенні доріг" href="https://www.google.com/maps/@51.2658249,22.6106943,5z/data=!10m1!1e1!12b1?source=apiv3" style="font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); text-decoration: none; position: relative;">Повідомити про помилку на карті</a></div></div><div class="gmnoprint" draggable="false" controlwidth="78" controlheight="356" style="margin: 5px; -webkit-user-select: none; position: absolute; left: 0px; top: 0px;"><div class="gmnoprint" controlwidth="78" controlheight="80" style="cursor: url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur) 8 8, default; width: 78px; height: 78px; position: absolute; left: 0px; top: 0px;"><div class="gmnoprint" controlwidth="78" controlheight="80" style="width: 78px; height: 78px; position: absolute; left: 0px; top: 0px;"><div style="visibility: hidden;"><svg version="1.1" overflow="hidden" width="78px" height="78px" viewBox="0 0 78 78" style="position: absolute; left: 0px; top: 0px;"><circle cx="39" cy="39" r="35" stroke-width="3" fill-opacity="0.2" fill="#f2f4f6" stroke="#f2f4f6"></circle><g transform="rotate(0 39 39)"><rect x="33" y="0" rx="4" ry="4" width="12" height="11" stroke="#a6a6a6" stroke-width="1" fill="#f2f4f6"></rect><polyline points="36.5,8.5 36.5,2.5 41.5,8.5 41.5,2.5" stroke-linejoin="bevel" stroke-width="1.5" fill="#f2f4f6" stroke="#000"></polyline></g></svg></div></div><div class="gmnoprint" controlwidth="59" controlheight="59" style="position: absolute; left: 10px; top: 11px;"><div style="width: 59px; height: 59px; overflow: hidden; position: relative;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: 0px; top: 0px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"><div title="Переміщення вліво" style="position: absolute; left: 0px; top: 20px; width: 19.6666666666667px; height: 19.6666666666667px; cursor: pointer;"></div><div title="Переміщення вправо" style="position: absolute; left: 39px; top: 20px; width: 19.6666666666667px; height: 19.6666666666667px; cursor: pointer;"></div><div title="Переміщення вгору" style="position: absolute; left: 20px; top: 0px; width: 19.6666666666667px; height: 19.6666666666667px; cursor: pointer;"></div><div title="Переміщення вниз" style="position: absolute; left: 20px; top: 39px; width: 19.6666666666667px; height: 19.6666666666667px; cursor: pointer;"></div></div></div></div><div controlwidth="32" controlheight="40" style="cursor: url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur) 8 8, default; position: absolute; left: 23px; top: 85px;"><div style="width: 32px; height: 40px; overflow: hidden; position: absolute; left: 0px; top: 0px;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/cb_scout2.png" draggable="false" style="position: absolute; left: -9px; top: -102px; width: 1028px; height: 214px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div style="width: 32px; height: 40px; overflow: hidden; position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/cb_scout2.png" draggable="false" style="position: absolute; left: -107px; top: -102px; width: 1028px; height: 214px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div style="width: 32px; height: 40px; overflow: hidden; position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/cb_scout2.png" draggable="false" style="position: absolute; left: -58px; top: -102px; width: 1028px; height: 214px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div style="width: 32px; height: 40px; overflow: hidden; position: absolute; left: 0px; top: 0px; visibility: hidden;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/cb_scout2.png" draggable="false" style="position: absolute; left: -205px; top: -102px; width: 1028px; height: 214px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div></div><div class="gmnoprint" controlwidth="0" controlheight="0" style="opacity: 0.6; display: none; position: absolute;"><div title="Повернути карту на 90 градусів" style="width: 22px; height: 22px; overflow: hidden; position: absolute; cursor: pointer;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: -38px; top: -360px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div></div><div class="gmnoprint" controlwidth="25" controlheight="226" style="position: absolute; left: 27px; top: 130px;"><div title="Збільшити" style="width: 23px; height: 24px; overflow: hidden; position: relative; cursor: pointer; z-index: 1;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: -17px; top: -400px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div title="Натисніть, щоб змінити масштаб" style="width: 25px; height: 178px; overflow: hidden; position: relative; cursor: pointer; top: -4px;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: -17px; top: -87px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div title="Перетягніть, щоб змінити масштаб" style="width: 21px; height: 14px; overflow: hidden; position: absolute; -webkit-transition: top 0.25s ease; transition: top 0.25s ease; z-index: 2; cursor: url(https://maps.gstatic.com/mapfiles/openhand_8_8.cur) 8 8, default; left: 2px; top: 148px;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: 0px; top: -384px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div><div title="Зменшити" style="width: 23px; height: 23px; overflow: hidden; position: relative; cursor: pointer; top: -4px; z-index: 3;"><img src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt3.png" draggable="false" style="position: absolute; left: -17px; top: -361px; width: 59px; height: 492px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px;"></div></div></div><div class="gmnoprint" style="margin: 5px; z-index: 0; position: absolute; cursor: pointer; right: 0px; top: 0px;"><div class="gm-style-mtc" style="float: left;"><div draggable="false" title="Показати карту вулиць" style="direction: ltr; overflow: hidden; text-align: center; position: relative; color: rgb(0, 0, 0); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 1px 6px; border-bottom-left-radius: 2px; border-top-left-radius: 2px; -webkit-background-clip: padding-box; border: 1px solid rgba(0, 0, 0, 0.14902); -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; min-width: 33px; font-weight: 500; background-color: rgb(255, 255, 255); background-clip: padding-box;">Карта</div><div style="z-index: -1; padding-top: 2px; -webkit-background-clip: padding-box; border-width: 0px 1px 1px; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-right-color: rgba(0, 0, 0, 0.14902); border-bottom-color: rgba(0, 0, 0, 0.14902); border-left-color: rgba(0, 0, 0, 0.14902); -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; position: absolute; left: 0px; top: 17px; text-align: left; display: none; background-color: white; background-clip: padding-box;"><div draggable="false" title="Показати карту вулиць із ландшафтом" style="color: rgb(0, 0, 0); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 3px 8px 3px 3px; direction: ltr; text-align: left; white-space: nowrap; background-color: rgb(255, 255, 255);"><span role="checkbox" style="box-sizing: border-box; position: relative; line-height: 0; font-size: 0px; margin: 0px 5px 0px 0px; display: inline-block; border: 1px solid rgb(198, 198, 198); border-radius: 1px; width: 13px; height: 13px; vertical-align: middle; background-color: rgb(255, 255, 255);"><div style="position: absolute; left: 1px; top: -2px; width: 13px; height: 11px; overflow: hidden; display: none;"><img src="https://maps.gstatic.com/mapfiles/mv/imgs8.png" draggable="false" style="position: absolute; left: -52px; top: -44px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; width: 68px; height: 67px;"></div></span><label style="vertical-align: middle; cursor: pointer;">Ландшафт</label></div></div></div><div class="gm-style-mtc" style="float: left;"><div draggable="false" title="Показати зображення із супутника" style="direction: ltr; overflow: hidden; text-align: center; position: relative; color: rgb(86, 86, 86); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 1px 6px; border-bottom-right-radius: 2px; border-top-right-radius: 2px; -webkit-background-clip: padding-box; border-width: 1px 1px 1px 0px; border-top-style: solid; border-right-style: solid; border-bottom-style: solid; border-top-color: rgba(0, 0, 0, 0.14902); border-right-color: rgba(0, 0, 0, 0.14902); border-bottom-color: rgba(0, 0, 0, 0.14902); -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; min-width: 49px; background-color: rgb(255, 255, 255); background-clip: padding-box;">Супутник</div><div style="z-index: -1; padding-top: 2px; -webkit-background-clip: padding-box; border-width: 0px 1px 1px; border-right-style: solid; border-bottom-style: solid; border-left-style: solid; border-right-color: rgba(0, 0, 0, 0.14902); border-bottom-color: rgba(0, 0, 0, 0.14902); border-left-color: rgba(0, 0, 0, 0.14902); -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; position: absolute; right: 0px; top: 17px; text-align: left; display: none; background-color: white; background-clip: padding-box;"><div draggable="false" title="Збільшити масштаб, щоб увімкнути перегляд під кутом 45 градусів" style="color: rgb(184, 184, 184); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 3px 8px 3px 3px; direction: ltr; text-align: left; white-space: nowrap; display: none; background-color: rgb(255, 255, 255);"><span role="checkbox" style="box-sizing: border-box; position: relative; line-height: 0; font-size: 0px; margin: 0px 5px 0px 0px; display: inline-block; border: 1px solid rgb(241, 241, 241); border-radius: 1px; width: 13px; height: 13px; vertical-align: middle; background-color: rgb(255, 255, 255);"><div style="position: absolute; left: 1px; top: -2px; width: 13px; height: 11px; overflow: hidden; display: none;"><img src="https://maps.gstatic.com/mapfiles/mv/imgs8.png" draggable="false" style="position: absolute; left: -52px; top: -44px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; width: 68px; height: 67px;"></div></span><label style="vertical-align: middle; cursor: pointer;">45°</label></div><div draggable="false" title="Показати зображення з назвами вулиць" style="color: rgb(0, 0, 0); font-family: Roboto, Arial, sans-serif; -webkit-user-select: none; font-size: 11px; padding: 3px 8px 3px 3px; direction: ltr; text-align: left; white-space: nowrap; background-color: rgb(255, 255, 255);"><span role="checkbox" style="box-sizing: border-box; position: relative; line-height: 0; font-size: 0px; margin: 0px 5px 0px 0px; display: inline-block; border: 1px solid rgb(198, 198, 198); border-radius: 1px; width: 13px; height: 13px; vertical-align: middle; background-color: rgb(255, 255, 255);"><div style="position: absolute; left: 1px; top: -2px; width: 13px; height: 11px; overflow: hidden;"><img src="https://maps.gstatic.com/mapfiles/mv/imgs8.png" draggable="false" style="position: absolute; left: -52px; top: -44px; -webkit-user-select: none; border: 0px; padding: 0px; margin: 0px; width: 68px; height: 67px;"></div></span><label style="vertical-align: middle; cursor: pointer;">Мітки</label></div></div></div></div></div></div>    
+<script type="text/javascript">
+
+	/* Если никакой фильтр не выбран то отображаем по умолчанию на карте всю Украину */
+	var latlng = new google.maps.LatLng(48.40938489799875, 31.160897243749996);
+    var zoom = 6;
+    //var latlng = new google.maps.LatLng(0, 0);
+    
+    var address = '';
+
+    var default_icon = '/common/upload/img/retail/google_icons/default.png';
+    //Зум задается по любому условию, поэтому по умолчанию он не нужен
+    //var zoom = 7;
+    var infos = new Array();        
+
+	var gl_change = true;//глобальная переменная-мьютекс для проверки очистки полей формы
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var marker = new google.maps.Marker({visible: false, icon: default_icon});
+    
+    function displayMap(latlng, zoom, div_id)
+    {
+        var mapDiv = document.getElementById(div_id);
+        var myOptions = {
+            zoom: zoom,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };        
+                
+        map = new google.maps.Map(mapDiv, myOptions);
+        marker.setMap(map);
+        marker.setPosition(latlng);
+
+        mapDiv.style.display = "";        
+    }
+    
+    function addMarker(pos, title, text, icon)
+    {
+        var m = new google.maps.Marker({
+            map: map,
+            position: pos,
+            title: title,
+            icon: icon ? icon : default_icon
+        });
+        var info = new google.maps.InfoWindow({
+            content: text
+        });
+        bounds.extend(pos);
+        infos[infos.length] = info;
+        
+        google.maps.event.addListener(m, 'click', function() {
+            info.open(map, m);
+            for (var i=0; i < infos.length; i++)
+                if (info != infos[i])
+                    infos[i].close();
+        });
+    }
+                    
+    if (address) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                latlng = results[0].geometry.location;
+                displayMap(latlng, zoom, "google_map");       
+                map.setCenter(latlng);
+                marker.setPosition(latlng);
+            } 
+        });
+    } else {
+        displayMap(latlng, zoom, "google_map");
+        google.maps.event.addListenerOnce(map, 'idle', function(){
+    		if(document.getElementById('hidden_lat').value == 0){
+	    		map.setCenter(latlng);
+	    		if($("#region_id_"+area_id).val()==-1 && ($("#branch_title_id_"+area_id).val()=='' ||  false ))
+	    			map.setZoom(zoom);
+    		}else{
+    			map.setCenter(new google.maps.LatLng(document.getElementById('hidden_lat').value, document.getElementById('hidden_lng').value));
+	    		map.setZoom(zoom);
+    		}
+		});
+    }
+    
+</script>
+    
+    
+            
+    		<div id="ref_goggle_tab" class="content_tabnames_list" style="clear: none !important; width: 540px !important; margin-top: 30px !important; ">
+							<div id="ref_goggle_tab_branches" class="active">
+					<span>Відділення (7)</span>
+				</div>
+										<div id="ref_goggle_tab_atms">
+					<span>Банкомати (15)</span>
+				</div>
+								</div>
+		<div class="bank_icons_transcript">
+		<ul>
+			<li class="self_service_kiosk"><img src="/common/upload/img/retail/self_kiosk_print.png" alt="" title=""><span>Кіоски самообслуговування</span></li>
+			<li class="self_service_zone"><img src="/common/upload/img/retail/self_zone_print.png" alt="" title=""><span>Зони самообслуговування</span></li>
+		</ul>
+	</div>
+    <div id="goggle_tab" style="width: 100%; float: left; clear: left; ">
+                    			<div id="goggle_tab_branches" class="content_tabs_list" style="display: block;">
+                	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(49.0441667, 24.359722199999964);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Калуш, пл. Героїв, 11<br><a href="?branch_id_13=67550031">Детальніше...</a></div>', '');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.914892, 24.703645);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Івано-Франківськ, вул. Чорновола, 63<br><a href="?branch_id_13=66240273">Детальніше...</a></div>', '');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.92685952100662, 24.71963873491768);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Івано-Франківськ, вул. Вовчинецька, 26<br><a href="?branch_id_13=66297219">Детальніше...</a></div>', '');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.92960799999999, 24.70994100000007);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Івано-Франківськ, вул. Василіянок, 66/27<br><a href="?branch_id_13=70511223">Детальніше...</a></div>', '');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.528588582357, 25.038103939056);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Коломия, вул. Театральна, 36<br><a href="?branch_id_13=80419827">Детальніше...</a></div>', '');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.91909709999999, 24.710447499999986);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Івано-Франківськ, вул. Січових Стрільців, 23<br><a href="?branch_id_13=81330963">Детальніше...</a></div>', '');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.9727, 24.0077);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Універсальне відділення</strong><br><br>Долина, вул. Братиславська, 18<br><a href="?branch_id_13=72789063">Детальніше...</a></div>', '');
+        	}
+    </script>
+
+<table class="content_tbl2 branches_results bank_results">
+    <tbody><tr>
+        <th class="nowrap w46"><a href="http://my.ukrsibbank.com/ua/branches_atms/map/?hidden_lat=0&amp;hidden_lng=0&amp;hidden_zoom=0&amp;region_id_13=13&amp;city_id_13=0&amp;station_id_13=0&amp;address_13=&amp;branch_title_13=&amp;working_time_13=0&amp;type_branch_13=1&amp;type_branch_id_13%5B%5D=5&amp;type_branch_id_13%5B%5D=3&amp;type_branch_id_13%5B%5D=9&amp;type_branch_id_13%5B%5D=4&amp;branch_service_13%5B%5D=Depos&amp;type_atm_13=1&amp;type_atm_id_13%5B%5D=7&amp;type_atm_id_13%5B%5D=8&amp;type_atm_id_13%5B%5D=11&amp;kiosk_l_13=1&amp;order_13=-1&amp;tab_id=goggle_tab_branches">№</a></th>
+        <th class="br_icon w46"></th>
+        <th class="nowrap w46"><a href="http://my.ukrsibbank.com/ua/branches_atms/map/?hidden_lat=0&amp;hidden_lng=0&amp;hidden_zoom=0&amp;region_id_13=13&amp;city_id_13=0&amp;station_id_13=0&amp;address_13=&amp;branch_title_13=&amp;working_time_13=0&amp;type_branch_13=1&amp;type_branch_id_13%5B%5D=5&amp;type_branch_id_13%5B%5D=3&amp;type_branch_id_13%5B%5D=9&amp;type_branch_id_13%5B%5D=4&amp;branch_service_13%5B%5D=Depos&amp;type_atm_13=1&amp;type_atm_id_13%5B%5D=7&amp;type_atm_id_13%5B%5D=8&amp;type_atm_id_13%5B%5D=11&amp;kiosk_l_13=1&amp;order_13=2&amp;tab_id=goggle_tab_branches">Адреса</a></th>
+        <th class="nowrap w46">Робочий&nbsp;час</th>
+        <th class="nowrap w46" "="">Перерва</th>
+        <th class="nowrap w46">Телефон</th>                
+    </tr>
+    <tr>
+        <td class="branch_number">18</td>
+        <td class="br_icon">
+			<nobr>
+									</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=67550031">Калуш, пл. Героїв, 11</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	13:00 - 14:00                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  726-0623</nobr><br><nobr>726-0575</nobr></div></td>
+    </tr>
+    <tr>
+        <td class="branch_number">142</td>
+        <td class="br_icon">
+			<nobr>
+									</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=66240273">Івано-Франківськ, вул. Чорновола, 63</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	13:00 - 14:00                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  255-2834</nobr><br><nobr>255-2649</nobr></div></td>
+    </tr>
+    <tr>
+        <td class="branch_number">143</td>
+        <td class="br_icon">
+			<nobr>
+									</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=66297219">Івано-Франківськ, вул. Вовчинецька, 26</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	13:00 - 14:00                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  255-6360</nobr><br><nobr>255-6402</nobr></div></td>
+    </tr>
+    <tr>
+        <td class="branch_number">248</td>
+        <td class="br_icon">
+			<nobr>
+												<img src="/common/upload/img/retail/self_zone.png" alt="" title="">
+													</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=70511223">Івано-Франківськ, вул. Василіянок, 66/27</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	Без&nbsp;перерви                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  278-5442</nobr><br><nobr>278-5441</nobr></div></td>
+    </tr>
+    <tr>
+        <td class="branch_number">469</td>
+        <td class="br_icon">
+			<nobr>
+									</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=80419827">Коломия, вул. Театральна, 36</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	13:00 - 14:00                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  332-0997</nobr><br><nobr>335-0001</nobr></div></td>
+    </tr>
+    <tr>
+        <td class="branch_number">493</td>
+        <td class="br_icon">
+			<nobr>
+												<img src="/common/upload/img/retail/self_zone.png" alt="" title="">
+													</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=81330963">Івано-Франківськ, вул. Січових Стрільців, 23</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	Без&nbsp;перерви                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  255-9226</nobr><br><nobr>255-9229</nobr></div></td>
+    </tr>
+    <tr>
+        <td class="branch_number">3007</td>
+        <td class="br_icon">
+			<nobr>
+									</nobr>
+		</td>
+		<td class="w300">
+            <a class="address" href="?branch_id_13=72789063">Долина, вул. Братиславська, 18</a>
+			        </td>
+        <td class="w170">
+                        	09:00 - 17:00                    </td>
+        <td class="w160">
+                        	13:00 - 14:00                 
+        </td>
+        <td class="w140"><div class="bank_phone_num"><nobr><span class="kod">(38034)</span>  772-7452</nobr><br><nobr>772-7450;</nobr></div></td>
+    </tr>
+</tbody></table>
+
+<div style="clear:both"></div>
+            </div>
+                			             <div id="goggle_tab_atms" class="content_tabs_list" style="display: none;">
+                	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.9688, 24.0084);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Долина, вул. Братиславська, 18<br><a href="?branch_id_13=103084335">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.9231699, 24.703879700000016);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Бельведерська, 25<br><a href="?branch_id_13=109405341">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.92960799999999, 24.70994100000007);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю приймання готівки</strong><br><br>Івано-Франківськ, вул. Василіянок, 66<br><a href="?branch_id_13=167091639">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm_cash-in.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.937796237024244, 24.746719142883307);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Василя Стуса, 13<br><a href="?branch_id_13=127172493">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.926869907079435, 24.71963657159722);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Вовчинецька, 26<br><a href="?branch_id_13=139017261">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.8859078, 24.746994500000028);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Марковецька, 3<br><a href="?branch_id_13=156214953">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.9191146, 24.715609599999993);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Незалежності, 53<br><a href="?branch_id_13=209744193">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.91909709999999, 24.710447499999986);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю приймання готівки</strong><br><br>Івано-Франківськ, вул. Січових Стрільців, 23<br><a href="?branch_id_13=173014023">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm_cash-in.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.919051, 24.710501000000022);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю приймання готівки</strong><br><br>Івано-Франківськ, вул. Січових Стрільців, 23<br><a href="?branch_id_13=182865681">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm_cash-in.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.914892, 24.703645);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Чорновола, 63<br><a href="?branch_id_13=125464113">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.9232551, 24.71144800000002);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Івано-Франківськ, вул. Шеремети, 4<br><a href="?branch_id_13=138903369">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(49.0441667, 24.359722199999964);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Калуш, пл. Героїв, 11<br><a href="?branch_id_13=146704971">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.5305556, 25.040277800000012);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю приймання готівки</strong><br><br>Коломия, вул. Театральна, 36<br><a href="?branch_id_13=187307469">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm_cash-in.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.528561104286666, 25.038104637173433);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Коломия, вул. Театральна, 36<br><a href="?branch_id_13=209687247">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+	<script type="text/javascript">
+	if (window.map) {
+    	            var latlng = new google.maps.LatLng(48.63340789999999, 24.564887399999975);
+            addMarker(latlng, '', '<div class="google_infobox"><strong>Банкомат з можливістю видачі готівки</strong><br><br>Надвірна, вул. Грушевського, 4-В<br><a href="?branch_id_13=27767">Детальніше...</a></div>', '/common/upload/img/retail/google_icons/marker_atm.png');
+        	}
+    </script>
+<table class="content_tbl2 branches_results bank_results">
+    <tbody><tr>
+        <th class="w16"></th>
+		<th nowrap="" class="w290">
+			<a href="http://my.ukrsibbank.com/ua/branches_atms/map/?hidden_lat=0&amp;hidden_lng=0&amp;hidden_zoom=0&amp;region_id_13=13&amp;city_id_13=0&amp;station_id_13=0&amp;address_13=&amp;branch_title_13=&amp;working_time_13=0&amp;type_branch_13=1&amp;type_branch_id_13%5B%5D=5&amp;type_branch_id_13%5B%5D=3&amp;type_branch_id_13%5B%5D=9&amp;type_branch_id_13%5B%5D=4&amp;branch_service_13%5B%5D=Depos&amp;type_atm_13=1&amp;type_atm_id_13%5B%5D=7&amp;type_atm_id_13%5B%5D=8&amp;type_atm_id_13%5B%5D=11&amp;kiosk_l_13=1&amp;order_13=-2&amp;tab_id=goggle_tab_atms">Адреса</a>
+			
+		</th>
+        <th nowrap="" class="w180">Робочий&nbsp;час</th>
+		<th nowrap="" class="w160">Перерва</th>
+		<th nowrap="" class="w220">Тип</th>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=103084335">Долина, вул. Братиславська, 18</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=109405341">Івано-Франківськ, вул. Бельведерська, 25</a>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=167091639">Івано-Франківськ, вул. Василіянок, 66</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю приймання готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=127172493">Івано-Франківськ, вул. Василя Стуса, 13</a>
+							<span class="orient">
+					Магазин
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=139017261">Івано-Франківськ, вул. Вовчинецька, 26</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=156214953">Івано-Франківськ, вул. Марковецька, 3</a>
+							<span class="orient">
+					Завод ТОВ "Тайко Електронікс Юкрейн Лімітед"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=209744193">Івано-Франківськ, вул. Незалежності, 53</a>
+							<span class="orient">
+					Національна спілка художників України, Івано-Франківська обласна організація
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=173014023">Івано-Франківськ, вул. Січових Стрільців, 23</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю приймання готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+																			<img src="/common/upload/img/retail/self_kiosk.png" alt="" title="">
+												</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=182865681">Івано-Франківськ, вул. Січових Стрільців, 23</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        		            	            	09:00 - 17:00	                    	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+			 
+				З можливістю приймання готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=125464113">Івано-Франківськ, вул. Чорновола, 63</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=138903369">Івано-Франківськ, вул. Шеремети, 4</a>
+							<span class="orient">
+					Народна Аптека
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=146704971">Калуш, пл. Героїв, 11</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+																			<img src="/common/upload/img/retail/self_kiosk.png" alt="" title="">
+												</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=187307469">Коломия, вул. Театральна, 36</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        		            	            	09:00 - 17:00	                    	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+			 
+				З можливістю приймання готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=209687247">Коломия, вул. Театральна, 36</a>
+							<span class="orient">
+					Відділення АТ "УкрСиббанк"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+    <tr>
+        <td class="br_icon w16">
+			<nobr>
+											</nobr>
+		</td>
+		<td class="w290">
+            <a class="address" href="?branch_id_13=27767">Надвірна, вул. Грушевського, 4-В</a>
+							<span class="orient">
+					Магазин "Євробуд"
+				</span>
+			        </td>
+        <td class="w180">
+        	        		Цілодобово
+        	        </td>
+		<td class="w160">
+                        	Без&nbsp;перерви             
+		</td>
+		<td class="w220">
+							Банкомат з можливістю видачі готівки
+			 
+		</td>
+    </tr>
+</tbody></table>
+
+<div style="clear:both"></div>
+            </div>
+                   
+    </div>
+      <script type="text/javascript">
+   if (window.map) {
+		map.fitBounds(bounds);
+   }
+   </script>
+      <script type="text/javascript">
+   
+   //Добавляем функию проверки правильности заполнения формы 
+   function validateFilter(){
+   	var objects = $('input[type=checkbox]:checked');
+   	var q = 0;
+   	for(var i in objects){
+   		if(objects[i].checked && !objects[i].disabled){
+   			q++;
+   		}
+   	}
+   	if((
+			document.getElementById('region_id_13').value == -1
+		&& 
+			document.getElementById('branch_title_id_13').value == ''
+		&&
+			document.getElementById('hidden_lat').value == 0) 
+			|| q==0
+		
+		){
+			alert('Будь ласка, оберіть параметр для пошуку');
+			return false;
+		}
+		if(
+			document.getElementById('region_id_13').value != -1
+				||
+			document.getElementById('branch_title_id_13').value != ''){
+			
+			document.getElementById('address_13').value = '';
+		}
+		return true;
+	}
+	
+    $(document).ready(function(){
+    	var cururl = window.location.search;
+		if (cururl.match(/goggle_tab_branches$/)) {
+			var tabref = "ref_goggle_tab_branches";
+		} else if (cururl.match(/goggle_tab_atms$/)) {
+			var tabref = "ref_goggle_tab_atms";
+		} else if (cururl.match(/goggle_tab_euronet$/)) {
+			var tabref = "ref_goggle_tab_euronet";
+		} else {
+			var tabref = "ref_goggle_tab DIV:first";
+		}
+		$("#" + tabref).siblings().removeClass("active");
+		$("#" + tabref).addClass("active");
+		var tab_id = $("#" + tabref).get(0);//.id;
+		//Проверка существования табика во избежании исключения
+		if(tab_id){
+			tab_id = tab_id.id;
+			$("#goggle_tab > DIV").hide();
+			$("#"+tab_id.replace("ref_","")).show();
+			$("#"+tab_id.replace("ref_","")+'_nav').show();
+		}
+		
+		//основной код для отображения и поиска по гуглкарте
+		var input = document.getElementById('address_13');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+		autocomplete.setTypes(['geocode']);
+		
+        autocomplete.bindTo('bounds', map);
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({map: map});
+        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+          infowindow.close();
+          input.className = '';
+          var place = autocomplete.getPlace();
+          if (!place.geometry) {
+            // Inform the user that the place was not found and return.
+            input.className = 'notfound';
+            return;
+          }
+          if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+          } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);  // Why 17? Because it looks good.
+          }
+          var address = '';
+          var new_value_address = document.getElementById("address_"+area_id).value;
+          if (place.address_components) {
+            address = [
+              (place.address_components[0] && place.address_components[0].short_name || ''),
+              (place.address_components[1] && place.address_components[1].short_name || ''),
+              (place.address_components[2] && place.address_components[2].short_name || '')
+            ].join(' ');
+          }
+          infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+          infowindow.open(map, marker);
+          gl_change = false;
+          document.getElementById('hidden_lat').value = place.geometry.location.lat()
+          document.getElementById('hidden_lng').value = place.geometry.location.lng();
+          document.getElementById('hidden_zoom').value = map.zoom;
+          document.getElementById('branch_title_id_' + area_id).value = '';
+          $("#region_id_"+area_id).val("-1");
+          $("#region_id_"+area_id).trigger('change');
+          
+          //$("#address_id_"+area_id).val(address);
+          //$("#address_id_"+area_id).trigger('change');
+          
+          $("#city_id_"+area_id).empty().attr("disabled", true);
+       	  $("#station_id_"+area_id).empty().attr("disabled", true);
+       	  
+          
+       	  gl_change = true;
+       	  setTimeout(function(){
+		 // 	alert(address);
+		  document.getElementById("address_"+area_id).value = new_value_address;	
+		 // document.getElementById("address_"+area_id).value = address;	
+		  //alert(address);
+		  document.getElementById('hidden_lat').form.onsubmit = function(){return true;};
+       	  	document.getElementById('hidden_lat').form.submit();      
+		   }, 200);
+		    });
+		 google.maps.event.addListener(map, 'zoom_changed', function() {
+			//неиспользуемый обработчик зуммирования карты для отладки
+		  });
+		$(".content_tabnames_list DIV").keyup(function(e){
+			if(e.keyCode == 13)
+			{
+				$('.top_nav_pages').hide();
+				$("#"+this.id.replace("ref_","")+'_nav').show();
+				return false;
+			}
+		});
+		$(".content_tabnames_list DIV").click(function() {
+
+			$('.top_nav_pages').hide();
+			$("#"+this.id.replace("ref_","")+'_nav').show();
+			return false;
+		});
+		
+	});
+   
+   </script>
+   <!-- конец условия, тоже коментим -->
+   
+   <script type="text/javascript">
+   
+      $(document).ready(function(){
+	$(".navitem a").each(function() {
+		$(this).attr("href", function(){
+        	var tmp_href = this.href.replace(/&tab_id=[.*]&/, "");
+            return tmp_href+"&tab_id="+this.parentNode.parentNode.parentNode.id.replace(/_nav$/,'');
+        });
+	});
+	$(".branches_results th a").each(function() {
+		$(this).attr("href", function(){
+                                    var tmp_href = this.href.replace(/&tab_id=[.*]&/, "");
+                                    return tmp_href+"&tab_id="+this.parentNode.parentNode.parentNode.parentNode.parentNode.id;
+                                });
+	});
+      });
+   
+   </script>
+    <!-- p><a href="./">Новий пошук</a></p -->
+
+<ul class="bank_back_nav noprint" style="margin:20px 0 30px 10px; clear:both;">
+		<li><a href="./" class="new_search">Новий пошук</a></li>
+	<li>
+		<a href="./printable.php?print=1&amp;hidden_lat=0&amp;hidden_lng=0&amp;hidden_zoom=0&amp;region_id_13=13&amp;city_id_13=0&amp;station_id_13=0&amp;address_13=&amp;branch_title_13=&amp;working_time_13=0&amp;type_branch_13=1&amp;type_branch_id_13%5B%5D=5&amp;type_branch_id_13%5B%5D=3&amp;type_branch_id_13%5B%5D=9&amp;type_branch_id_13%5B%5D=4&amp;branch_service_13%5B%5D=Depos&amp;type_atm_13=1&amp;type_atm_id_13%5B%5D=7&amp;type_atm_id_13%5B%5D=8&amp;type_atm_id_13%5B%5D=11&amp;kiosk_l_13=1" class="print_version_link" target="_blank">Версія для друку</a>
+	</li>
+		<li>
+		<!--<a href="#share_link_1210" class="share_link">Поділитись посиланням</a>-->
+	</li>
+</ul>
+
+
+</div>

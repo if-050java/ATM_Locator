@@ -13,6 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ *
+ */
 @Service
 public class ImageValidator implements Validator {
 
@@ -22,11 +25,21 @@ public class ImageValidator implements Validator {
     @Autowired
     private MessageSource messages;
 
+    /**
+     * Uses for checking supported classes
+     * @param Clazz validated object
+     * @return true if class is supported
+     */
     @Override
     public boolean supports(Class<?> Clazz) {
         return UploadedFile.class.isAssignableFrom(Clazz);
     }
 
+    /**
+     * Rejects the filed errors into map <b>errors</b>
+     * @param object validated image
+     * @param errors map of field errors
+     */
     @Override
     public void validate(Object object, Errors errors) {
         UploadedFile file = (UploadedFile) object;
@@ -40,6 +53,11 @@ public class ImageValidator implements Validator {
         }
     }
 
+    /**
+     * Returns true if image is valid
+     * @param image Multipart file
+     * @return
+     */
     private boolean isValidExtension(MultipartFile image) {
         String extension = FilenameUtils.getExtension(image.getOriginalFilename());
         return EXTENSIONS.contains(extension);
