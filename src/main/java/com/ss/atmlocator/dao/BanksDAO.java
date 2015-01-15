@@ -113,7 +113,7 @@ public class BanksDAO implements IBanksDAO {
     public void saveAllBankNBU(final List<Bank> banks) {
         Bank tempBank;
         AtmNetwork unassigned = entityManager.find(AtmNetwork.class, UNASSIGNED_NETWORK);
-
+        int count = 0;
         for (Bank bank : banks) {
             int mfoCode = bank.getMfoCode();
             try {
@@ -123,11 +123,12 @@ public class BanksDAO implements IBanksDAO {
 
                 tempBank = query.getSingleResult();
                 if (bank.getMfoCode() == tempBank.getMfoCode()) {
-                    System.out.println("------I'm in continue-----");
+
                     continue;
                 }
             } catch (NoResultException nre) {
-                LOGGER.warn("he bank with mfo code not found" + nre.getMessage());
+                count++;
+                LOGGER.warn("it bank with mfo code not found --- [" + nre.getMessage()+"]; found one new bank, all bank are/is ---"+count);
             }
             bank.setLastUpdated(TimeUtil.currentTimestamp());
             bank.setNetwork(unassigned);
