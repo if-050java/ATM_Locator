@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
+import com.ss.atmlocator.parser.ParserExecutor;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +24,7 @@ import static com.ss.atmlocator.entity.AtmState.NO_LOCATION;
 
 
 
-public class CrediAgricoleParser implements IParser {
+public class CrediAgricoleParser extends ParserExecutor {
 
     private String region = "11";
     private String url = "https://credit-agricole.ua/branches/otdelenija-i-bankomaty/";
