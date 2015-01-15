@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
- * Created by Vasyl Danylyuk on 02.12.2014.
+ * Service for working with ATMs
  */
 
 @Service
@@ -28,12 +29,12 @@ public class ATMService {
      * @param bank_id
      * @param userPosition
      * @param radius
-     * @return Collection<AtmOffice>
+     * @return List<AtmOffice>
      */
-    public Collection<AtmOffice> getATMs(Integer network_id, Integer bank_id,
+    public List<AtmOffice> getATMs(Integer network_id, Integer bank_id,
                                          boolean showAtms, boolean showOffices, GeoPosition userPosition, int radius) {
 
-        Collection<AtmOffice> result = new ArrayList<AtmOffice>();
+        List<AtmOffice> result = new ArrayList<AtmOffice>();
 
         addBankATMsToResult(result, network_id, bank_id, showAtms, showOffices, userPosition, radius);
 
@@ -57,6 +58,11 @@ public class ATMService {
         }
     }
 
+    /**
+     * Returns ATM with current id
+     * @param id Id of ATM office
+     * @return
+     */
     public AtmOffice getAtmById(int id) {
         return atmsDAO.getAtmById(id);
     }

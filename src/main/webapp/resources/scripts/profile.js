@@ -60,8 +60,7 @@ function showAlert(className, html) {
     element.addClass(className);
     element.children(".close").nextAll().remove();
     element.append(html);
-    element.fadeIn("slow");
-    element.delay(3000).fadeOut("slow");
+    element.fadeIn("slow").delay(3000).fadeOut("slow");
 }
 
 function prepareUser(updatedUser, persistedUser) {
@@ -83,8 +82,6 @@ function checkFileExtention(extention) {
 function checkFileSize(size) {
     return size <= MAX_FILE_SIZE;
 }
-
-
 function changeImage(input) {
     if (input.files && input.files[0]) {
         var user = {
@@ -152,8 +149,6 @@ $(document).ready(function () {
     persistedUser = getUser();
 
     $("input:not(input[type=file],#login)").on("input", function () {
-        console.log(this.value);
-        console.log(persistedUser[this.id]);
         if (this.value != persistedUser[this.id]) {
             $("#save").prop("disabled", false);
         } else {
@@ -166,11 +161,9 @@ $(document).ready(function () {
     });
 
     $("#save").click(function () {
-
         if (validateForm()) {
             var user = getUser();
             prepareUser(user, persistedUser);
-            // var fd = new FormData();
             var url = getHomeUrl() + "users/" + user.id;
             $.ajax({
                 url: url,
@@ -179,6 +172,7 @@ $(document).ready(function () {
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(user),
                 dataType: "json",
+                async:false,
                 statusCode: {
                     200: function (response) {
                         showOK(response);
@@ -190,7 +184,6 @@ $(document).ready(function () {
                         showOK(response);
                     },
                     406: function (response) {
-                        console.log(response);
                         showAlert("alert alert-warning", WARNING_MESSAGE);
                         for (var i = 0; i < response.responseJSON.length; i++) {
                             var item = response.responseJSON[i];

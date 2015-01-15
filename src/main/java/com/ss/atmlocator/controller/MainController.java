@@ -10,7 +10,7 @@ import java.security.Principal;
 
 
 /**
- * Created by roman on 11.11.14.
+ * Controller for main page
  */
 @Controller
 @RequestMapping("/")
@@ -20,6 +20,12 @@ public class MainController {
     @Autowired
     private BanksService banksService;
 
+    /**
+     * Returns main page
+     * @param model Model map
+     * @param user Logged user
+     * @return
+     */
     @RequestMapping
     public String indexPage(ModelMap model, Principal user) {
 

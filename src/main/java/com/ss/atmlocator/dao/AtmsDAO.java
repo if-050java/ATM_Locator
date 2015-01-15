@@ -21,7 +21,6 @@ import static java.util.Arrays.asList;
 
 /**
  * Data access class for ATM entity
- * Created by Olavin on 10.12.2014.
  */
 @Repository
 public class AtmsDAO implements IAtmsDAO {
@@ -30,53 +29,70 @@ public class AtmsDAO implements IAtmsDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Returns list of bank atms by filter params
+     * @param networkId ID of selected ATM network
+     * @param bankId ID of selected bank
+     * @param showAtms Show or not atms
+     * @param showOffices Show or not offices
+     * @return List of found ATMs
+     */
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(final Integer networkId,
-                                       final Integer bankId,
-                                       final boolean showAtms,
-                                       final boolean showOffices) {
+    public List<AtmOffice> getBankAtms(Integer networkId,
+                                       Integer bankId,
+                                       boolean showAtms,
+                                       boolean showOffices) {
+        if (!showAtms && !showOffices) {
+            return Collections.emptyList();
+        }
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AtmOffice> criteria = builder.createQuery(AtmOffice.class);
         Root<AtmOffice> atmOfficeRoot = criteria.from(AtmOffice.class);
         criteria.select(atmOfficeRoot);
-        Predicate where = builder.conjunction();
+        Predicate predicate = builder.conjunction();
+        predicate = setPredicate(networkId, bankId, showAtms, showOffices, builder, atmOfficeRoot, predicate);
+        return entityManager.createQuery(criteria.where(predicate)).getResultList();
+    }
 
+    private Predicate setPredicate(Integer networkId, Integer bankId, boolean showAtms, boolean showOffices, CriteriaBuilder builder, Root<AtmOffice> atmOfficeRoot, Predicate predicate) {
         if (networkId != null) {
-            where = builder.and(where, builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), networkId));
+            predicate = builder.and(predicate, builder.equal(atmOfficeRoot.join("bank").join("network").get("id"), networkId));
         }
         if (bankId != null) {
-            where = builder.and(where, builder.equal(atmOfficeRoot.join("bank").get("id"), bankId));
+            predicate = builder.and(predicate, builder.equal(atmOfficeRoot.join("bank").get("id"), bankId));
         }
         if (showAtms && !showOffices) {
-            where = builder.and(where, atmOfficeRoot.get("type").in(asList(IS_ATM, IS_ATM_OFFICE)));
+            predicate = builder.and(predicate, atmOfficeRoot.get("type").in(asList(IS_ATM, IS_ATM_OFFICE)));
         }
-        if (showOffices && !showAtms) {
-            where = builder.and(where, atmOfficeRoot.get("type").in(asList(IS_OFFICE, IS_ATM_OFFICE)));
+        if  (showOffices && !showAtms) {
+            predicate = builder.and(predicate, atmOfficeRoot.get("type").in(asList(IS_OFFICE, IS_ATM_OFFICE)));
         }
-        if (!showAtms && !showOffices) {
-            return Collections.emptyList();
-        }
-        return entityManager.createQuery(criteria.where(where)).getResultList();
+        return predicate;
     }
 
     public AtmOffice getAtmById(final int id) {
         return entityManager.find(AtmOffice.class, id);
     }
 
+    /**
+     * Returns list  of ATMs by bank id
+     */
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(final int bankId) {
+    public List<AtmOffice> getBankAtms(int bankId) {
         TypedQuery<AtmOffice> query = entityManager
                 .createQuery("SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id", AtmOffice.class);
         query.setParameter("bank_id", bankId);
         return query.getResultList();
     }
 
-
+    /**
+     * Returns list  of ATMs by filter params
+     */
     @Override
     @Transactional
-    public List<AtmOffice> getBankAtms(final int bankId, final int start, final int length, final String order, final String filter) {
+    public List<AtmOffice> getBankAtms(int bankId, int start, int length, String order, String filter) {
         String queryString = "SELECT a FROM AtmOffice AS a WHERE a.bank.id=:bank_id";
         if (!filter.isEmpty()) {
             queryString += " and a.address like :filter";

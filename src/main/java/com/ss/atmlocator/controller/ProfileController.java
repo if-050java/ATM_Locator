@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
-
+/**
+ * UserProfile controller
+ */
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
@@ -16,6 +18,9 @@ public class ProfileController {
     @Autowired
     private UserService userService;
 
+    /**
+     *  Returns user profile page
+     */
     @RequestMapping
     public String profile(ModelMap model, Principal principal) {
         String userName = principal.getName();

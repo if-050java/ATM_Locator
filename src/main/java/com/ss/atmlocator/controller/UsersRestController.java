@@ -30,7 +30,9 @@ import java.util.Set;
 
 import static com.ss.atmlocator.utils.Constants.USER_AVATAR_PREFIX;
 
-
+/**
+ * REST based controller for managing users
+ */
 @Controller
 @RequestMapping("/users")
 public class UsersRestController {
@@ -50,12 +52,20 @@ public class UsersRestController {
     @Qualifier("imagevalidator")
     private Validator imageValidator;
 
+    /**
+     * Returns suggestions for the autocompleter
+     */
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<JQueryAutoCompleteResponse> getUserNames(@RequestParam("query") String query) {
         List<String> listUsers = userService.getNames(query);
         return new ResponseEntity<>(new JQueryAutoCompleteResponse(query, listUsers), HttpStatus.OK);
     }
 
+    /**
+     * Returns founded user
+     * @param value Search query
+     * @return Founded user entity
+     */
     @RequestMapping(value = "/{value}", method = RequestMethod.GET)
     public ResponseEntity<User> findUser(@PathVariable("value") String value) {
         try {
@@ -66,6 +76,11 @@ public class UsersRestController {
         }
     }
 
+    /**
+     * Deletes user by id
+     * @param id id of user
+     * @return void
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> deleteUser(@PathVariable("id") int id) {
         try {
@@ -81,6 +96,13 @@ public class UsersRestController {
         }
     }
 
+    /**
+     * Updates user by id
+     * @param id id of user
+     * @param updatedUser Updated User entity
+     * @param genPassword Generate password option
+     * @return List of validation messages
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<List<FieldError>> updateUser(
             @PathVariable("id") int id,
@@ -107,6 +129,12 @@ public class UsersRestController {
         }
     }
 
+    /**
+     * Updates user avatar by id
+     * @param id id of updated user
+     * @param file user avatar
+     * @return List of validation messages
+     */
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<List<ObjectError>> updateAvatar(

@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Created by roman on 11.11.14.
+ * Controller for login page
  */
 @Controller
 public class LoginController {
 
-
+    /**
+     * Returns login page
+     */
     @RequestMapping(value = "/login")
     public String login(@RequestParam(value = "error", required = false) String error, ModelMap model) {
         if (error != null) {
