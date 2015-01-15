@@ -31,6 +31,12 @@ public class UserValidator implements Validator {
     @Autowired
     private MessageSource messages;
 
+
+    /**
+     * Rejects field errors into map <b>errors</b>
+     * @param object validated image
+     * @param errors map of field errors
+     */
     public void validate(Object object, Errors errors) {
         User updatedUser = (User) object;
 
@@ -52,12 +58,21 @@ public class UserValidator implements Validator {
             validateNickName(updatedUser, errors);
         }
     }
-
+    /**
+     * Uses for checking supported classes
+     * @param Clazz validated object
+     * @return true if class is supported
+     */
     @Override
     public boolean supports(Class<?> Clazz) {
         return User.class.isAssignableFrom(Clazz);
     }
 
+    /**
+     * Rejects email field errors into map <b>errors</b>
+     * @param user validated user
+     * @param errors map of field errors
+     */
     public void validateEmail(User user, Errors errors) {
         final String email = user.getEmail();
         if (userCredMatcher.validateEmail(email)) {
@@ -71,6 +86,11 @@ public class UserValidator implements Validator {
         }
     }
 
+    /**
+     * Rejects  login field errors into map <b>errors</b>
+     * @param user validated user
+     * @param errors map of field errors
+     */
     public void validateLogin(User user, Errors errors) {
         final String login = user.getLogin();
         if (userCredMatcher.validateLogin(login)) {
@@ -84,6 +104,11 @@ public class UserValidator implements Validator {
         }
     }
 
+    /**
+     * Rejects password field errors into map <b>errors</b>
+     * @param user validated user
+     * @param errors map of field errors
+     */
     public void validatePassword(User user, Errors errors) {
         final String password = user.getPassword();
         if (!userCredMatcher.validatePassword(password)) {
@@ -92,6 +117,11 @@ public class UserValidator implements Validator {
         }
     }
 
+    /**
+     * Rejects nickname field errors into map <b>errors</b>
+     * @param user validated user
+     * @param errors map of field errors
+     */
     public void validateNickName(User user, Errors errors) {
         final String nickName = user.getName();
         if (!userCredMatcher.validateNickName(nickName)) {
